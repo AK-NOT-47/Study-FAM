@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Embroidery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Caveat:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --linen:#efe6d3;
+    --linen-deep:#e6d9bf;
+    --canvas:#f6efe0;
+    --thread-red:#c64b3c;
+    --thread-rust:#b9603a;
+    --thread-gold:#d8a23b;
+    --thread-teal:#2f7d72;
+    --thread-deep-teal:#1f5a52;
+    --thread-navy:#2c4a6e;
+    --thread-plum:#7a4263;
+    --ink:#3a3026;
+    --ink-soft:#6b5d4a;
+    --cream:#fbf6ea;
+    --stitch:#cdbf9f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Outfit',sans-serif;
+    color:var(--ink);
+    background-color:var(--linen);
+    /* woven fabric weave */
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.20) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(90deg, rgba(120,100,70,.10) 0 1px, transparent 1px 4px),
+      radial-gradient(circle at 20% 10%, rgba(214,162,59,.10), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(47,125,114,.10), transparent 45%);
+    background-size:4px 4px,4px 4px,100% 100%,100% 100%;
+    line-height:1.55;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ===== dashed-stitch helper ===== */
+  .stitched{
+    position:relative;
+    border:2px dashed transparent;
+  }
+
+  .wrap{
+    max-width:1280px;
+    margin:0 auto;
+    padding:26px clamp(16px,3vw,40px) 60px;
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:30px;
+  }
+
+  /* ===================== SIDEBAR / HOOP ===================== */
+  .hoop{
+    position:relative;
+    background:var(--cream);
+    border-radius:26px;
+    padding:26px 22px;
+    align-self:start;
+    box-shadow:0 0 0 6px var(--linen-deep), 0 14px 34px rgba(58,48,38,.18);
+    overflow:hidden;
+  }
+  .hoop::before{ /* inner embroidery hoop stitch ring */
+    content:"";
+    position:absolute; inset:12px;
+    border:3px dashed var(--stitch);
+    border-radius:18px;
+    pointer-events:none;
+  }
+  .hoop-inner{position:relative;z-index:2}
+
+  .brand{
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:6px;
+  }
+  .m-mark{
+    width:54px;height:54px;flex:none;
+    border-radius:14px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.18) 0 3px, transparent 3px 6px),
+      linear-gradient(135deg,var(--thread-red),var(--thread-rust));
+    box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--thread-gold), 0 6px 14px rgba(198,75,60,.35);
+    display:grid;place-items:center;
+    position:relative;
+  }
+  .m-mark svg{width:34px;height:34px}
+  .brand-name{font-family:'Pacifico',cursive;font-size:1.32rem;color:var(--thread-red);line-height:1.05}
+  .brand-tag{font-family:'Caveat',cursive;font-size:1rem;color:var(--thread-teal);font-weight:600}
+
+  .needle-divider{
+    height:18px; margin:18px 0 14px;
+    display:flex;align-items:center;gap:8px;color:var(--thread-gold);
+  }
+  .needle-divider::before,.needle-divider::after{
+    content:""; height:0; flex:1;
+    border-top:3px dashed var(--thread-gold); opacity:.7;
+  }
+  .needle-divider span{font-size:1rem}
+
+  .nav-label{
+    font-family:'Caveat',cursive;font-weight:700;
+    font-size:1.15rem;color:var(--thread-plum);
+    letter-spacing:.4px;
+    display:flex;align-items:center;gap:8px;
+    margin:6px 2px 10px;
+  }
+  .nav-label .pill{
+    font-family:'Outfit';font-size:.6rem;font-weight:600;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--cream);
+    background:var(--thread-plum);
+    padding:3px 9px;border-radius:20px;
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.45);
+  }
+
+  nav ul{list-style:none}
+  nav li a{
+    display:flex;align-items:center;gap:11px;
+    padding:9px 12px;margin-bottom:5px;
+    border-radius:12px;
+    font-weight:500;font-size:.96rem;color:var(--ink);
+    position:relative;
+    transition:.18s;
+  }
+  nav li a .dot{
+    width:13px;height:13px;flex:none;border-radius:50%;
+    box-shadow:0 0 0 2px var(--cream),0 0 0 4px currentColor;
+    position:relative;
+  }
+  nav li a .dot::after{ /* tiny french-knot highlight */
+    content:"";position:absolute;inset:3px;border-radius:50%;
+    background:rgba(255,255,255,.55);
+  }
+  nav li:nth-child(1) a .dot{color:var(--thread-red)}
+  nav li:nth-child(2) a .dot{color:var(--thread-gold)}
+  nav li:nth-child(3) a .dot{color:var(--thread-teal)}
+  nav li:nth-child(4) a .dot{color:var(--thread-navy)}
+  nav li:nth-child(5) a .dot{color:var(--thread-rust)}
+  nav li:nth-child(6) a .dot{color:var(--thread-plum)}
+  nav li a:hover{
+    background:var(--linen);
+    box-shadow:inset 0 0 0 2px var(--stitch);
+    transform:translateX(3px);
+  }
+  nav li a.active{
+    background:linear-gradient(135deg,#fff,var(--canvas));
+    box-shadow:inset 0 0 0 2px var(--thread-teal);
+    font-weight:600;
+  }
+  nav li a .ch{margin-left:auto;font-family:'Caveat';font-weight:700;color:var(--ink-soft);font-size:1.05rem}
+
+  .swatch-strip{
+    display:flex;gap:6px;margin-top:18px;justify-content:center;
+  }
+  .swatch-strip i{
+    width:26px;height:13px;border-radius:7px;display:inline-block;
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4),0 2px 4px rgba(0,0,0,.12);
+  }
+
+  /* ===================== MAIN ===================== */
+  main{display:flex;flex-direction:column;gap:26px;min-width:0}
+
+  /* top thin banner */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;
+    background:var(--cream);
+    border-radius:18px;
+    padding:12px 20px;
+    box-shadow:0 6px 18px rgba(58,48,38,.10);
+    position:relative;
+  }
+  .topbar::after{
+    content:"";position:absolute;inset:5px;border:2px dashed var(--stitch);border-radius:13px;pointer-events:none;
+  }
+  .topbar .tb-left{font-family:'Caveat';font-weight:600;font-size:1.15rem;color:var(--thread-teal);position:relative;z-index:2}
+  .topbar .tb-right{display:flex;gap:8px;position:relative;z-index:2;flex-wrap:wrap}
+  .chip{
+    font-size:.74rem;font-weight:600;letter-spacing:.4px;
+    padding:5px 11px;border-radius:20px;
+    background:var(--linen);
+    box-shadow:inset 0 0 0 1.5px var(--stitch);
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(circle at 88% 12%, rgba(214,162,59,.16), transparent 45%),
+      linear-gradient(160deg,#fdf9ef,#f3ead7);
+    border-radius:26px;
+    padding:34px clamp(22px,3.5vw,46px) 36px;
+    box-shadow:0 16px 40px rgba(58,48,38,.16);
+    overflow:hidden;
+  }
+  .hero::before{ /* outer stitch frame */
+    content:"";position:absolute;inset:11px;border:3px dashed var(--thread-red);border-radius:18px;opacity:.55;pointer-events:none;
+  }
+  .hero-eyebrow{
+    font-family:'Caveat',cursive;font-weight:700;font-size:1.4rem;color:var(--thread-rust);
+    display:flex;align-items:center;gap:10px;
+  }
+  .hero-eyebrow .sun{font-size:1.2rem}
+  .hero h1{
+    font-family:'Fraunces',serif;font-weight:900;
+    font-size:clamp(2.3rem,5.2vw,3.7rem);
+    line-height:1.02;letter-spacing:-1px;
+    margin:8px 0 14px;
+    color:var(--thread-red);
+    /* stitched-thread look via layered shadow */
+    text-shadow:
+      1px 1px 0 var(--thread-gold),
+      2px 2px 0 rgba(184,96,58,.25);
+  }
+  .hero h1 .underline{
+    position:relative;white-space:nowrap;
+  }
+  .hero h1 .underline::after{
+    content:"";position:absolute;left:0;right:0;bottom:-6px;height:8px;
+    background:
+      repeating-linear-gradient(90deg, var(--thread-teal) 0 11px, transparent 11px 19px);
+    border-radius:4px;opacity:.85;
+  }
+  .hero p.lede{
+    max-width:62ch;font-size:1.05rem;color:var(--ink-soft);font-weight:400;
+  }
+
+  /* stats row */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px;position:relative;z-index:2;
+  }
+  .stat{
+    background:var(--cream);
+    border-radius:18px;
+    padding:18px 16px;
+    position:relative;
+    box-shadow:0 8px 18px rgba(58,48,38,.12);
+  }
+  .stat::after{content:"";position:absolute;inset:5px;border:2px dashed var(--stitch);border-radius:13px;pointer-events:none}
+  .stat .num{font-family:'Fraunces',serif;font-weight:700;font-size:2.1rem;line-height:1}
+  .stat .lbl{font-size:.82rem;color:var(--ink-soft);font-weight:500;margin-top:4px}
+  .stat .sub{font-family:'Caveat';font-weight:600;font-size:1rem;margin-top:2px}
+  .stat.s1 .num{color:var(--thread-red)} .stat.s1 .sub{color:var(--thread-red)}
+  .stat.s2 .num{color:var(--thread-teal)} .stat.s2 .sub{color:var(--thread-teal)}
+  .stat.s3 .num{color:var(--thread-gold)} .stat.s3 .sub{color:var(--thread-rust)}
+
+  /* progress mini hoop in stat 1 */
+  .prog-track{
+    height:9px;background:var(--linen-deep);border-radius:20px;margin-top:10px;overflow:hidden;
+    box-shadow:inset 0 0 0 1px var(--stitch);
+  }
+  .prog-fill{
+    height:100%;width:72%;border-radius:20px;
+    background:
+      repeating-linear-gradient(45deg, var(--thread-red) 0 6px, var(--thread-gold) 6px 12px);
+  }
+
+  /* ===== content grid ===== */
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:24px}
+  .card{
+    background:var(--cream);
+    border-radius:22px;
+    padding:24px;
+    position:relative;
+    box-shadow:0 12px 28px rgba(58,48,38,.13);
+  }
+  .card::after{content:"";position:absolute;inset:8px;border:2px dashed var(--stitch);border-radius:15px;pointer-events:none}
+  .card-inner{position:relative;z-index:2}
+  .card h3{
+    font-family:'Fraunces',serif;font-weight:700;font-size:1.35rem;color:var(--ink);
+    display:flex;align-items:center;gap:9px;margin-bottom:4px;
+  }
+  .card .tag-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+  .tag{
+    font-size:.72rem;font-weight:600;letter-spacing:.3px;
+    padding:4px 10px;border-radius:14px;color:var(--cream);
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4);
+  }
+  .tag.t-red{background:var(--thread-red)} .tag.t-teal{background:var(--thread-teal)}
+  .tag.t-gold{background:var(--thread-gold);color:var(--ink)} .tag.t-navy{background:var(--thread-navy)}
+  .tag.t-plum{background:var(--thread-plum)}
+
+  .lede-line{color:var(--ink-soft);font-size:.97rem}
+
+  /* exam FAM card */
+  .exam-card{
+    background:
+      repeating-linear-gradient(45deg, rgba(44,74,110,.05) 0 6px, transparent 6px 12px),
+      linear-gradient(155deg,#fdfaf2,#eee3cc);
+  }
+  .exam-badge{
+    width:46px;height:46px;border-radius:12px;flex:none;
+    background:linear-gradient(135deg,var(--thread-navy),var(--thread-deep-teal));
+    color:var(--cream);display:grid;place-items:center;font-family:'Fraunces';font-weight:900;font-size:1.2rem;
+    box-shadow:0 0 0 2px var(--cream),0 0 0 4px var(--thread-gold);
+  }
+
+  /* formula block */
+  .formula-block{
+    margin-top:16px;
+    background:#1f5a52;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 5px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.10) 0 1px, transparent 1px 5px);
+    border-radius:16px;
+    padding:18px 18px 16px;
+    position:relative;
+    box-shadow:inset 0 0 0 3px rgba(216,162,59,.55), 0 8px 18px rgba(31,90,82,.3);
+  }
+  .formula-block .fhdr{
+    font-family:'Caveat';font-weight:700;color:var(--thread-gold);font-size:1.1rem;margin-bottom:10px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .formula{
+    font-family:'Fraunces',serif;
+    color:var(--cream);
+    font-size:1.06rem;
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;
+    line-height:1.9;
+  }
+  .formula .eq{
+    background:rgba(255,255,255,.07);
+    padding:6px 12px;border-radius:10px;
+    box-shadow:inset 0 0 0 1.5px rgba(216,162,59,.4);
+    white-space:nowrap;
+  }
+  .formula .dotsep{color:var(--thread-gold);font-weight:700}
+  sup{font-size:.7em}
+  sub{font-size:.72em}
+
+  /* common trap */
+  .trap{
+    margin-top:18px;
+    background:
+      repeating-linear-gradient(45deg, rgba(198,75,60,.10) 0 8px, transparent 8px 16px),
+      #fbeee6;
+    border-radius:16px;
+    padding:16px 18px;
+    position:relative;
+    box-shadow:inset 0 0 0 2.5px var(--thread-red);
+  }
+  .trap .trap-h{
+    font-family:'Caveat';font-weight:700;color:var(--thread-red);font-size:1.25rem;
+    display:flex;align-items:center;gap:8px;margin-bottom:3px;
+  }
+  .trap p{font-size:.93rem;color:var(--ink)}
+  .trap em{font-style:normal;font-weight:700;color:var(--thread-rust);
+    text-decoration:underline wavy var(--thread-gold) 1.5px;text-underline-offset:3px}
+
+  /* worked example teaser */
+  .example{
+    margin-top:18px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:linear-gradient(135deg,#fff,var(--canvas));
+    border-radius:16px;padding:14px 16px;
+    box-shadow:inset 0 0 0 2px var(--stitch);
+  }
+  .example .ex-icn{
+    width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;
+    background:radial-gradient(circle at 35% 30%, var(--thread-gold), var(--thread-rust));
+    color:var(--cream);font-family:'Fraunces';font-weight:900;
+    box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--thread-teal);
+  }
+  .example .ex-txt b{font-family:'Fraunces';font-weight:700;display:block}
+  .example .ex-txt span{font-size:.85rem;color:var(--ink-soft)}
+
+  /* buttons */
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+  .btn{
+    font-family:'Outfit';font-weight:600;font-size:.98rem;
+    padding:13px 24px;border-radius:30px;cursor:pointer;border:none;
+    display:inline-flex;align-items:center;gap:9px;
+    position:relative;transition:.16s;
+  }
+  .btn::after{content:"";position:absolute;inset:4px;border:2px dashed rgba(255,255,255,.55);border-radius:24px;pointer-events:none}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--thread-red),var(--thread-rust));
+    color:var(--cream);
+    box-shadow:0 8px 18px rgba(198,75,60,.4);
+  }
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{
+    background:var(--cream);color:var(--thread-teal);
+    box-shadow:inset 0 0 0 2.5px var(--thread-teal);
+  }
+  .btn-ghost::after{border-color:rgba(47,125,114,.4)}
+  .btn-ghost:hover{background:#fff;transform:translateY(-2px)}
+
+  /* right column secondary cards */
+  .side-col{display:flex;flex-direction:column;gap:24px}
+  .mini-plan li{
+    list-style:none;display:flex;align-items:center;gap:11px;
+    padding:9px 0;border-bottom:2px dashed var(--stitch);font-size:.92rem;
+  }
+  .mini-plan li:last-child{border-bottom:none}
+  .mini-plan .tick{
+    width:22px;height:22px;border-radius:6px;flex:none;display:grid;place-items:center;
+    font-size:.8rem;color:var(--cream);
+  }
+  .mini-plan .done{background:var(--thread-teal)}
+  .mini-plan .now{background:var(--thread-gold);color:var(--ink)}
+  .mini-plan .todo{background:var(--linen-deep);box-shadow:inset 0 0 0 2px var(--stitch)}
+
+  /* sampler embroidery motif card */
+  .sampler{
+    background:linear-gradient(160deg,#fdf9ef,#efe2c9);
+    text-align:center;
+  }
+  .sampler .grid-stitch{
+    display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:14px auto 4px;max-width:230px;
+  }
+  .sampler .grid-stitch i{
+    aspect-ratio:1;border-radius:4px;transform:rotate(45deg);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+  }
+  .sampler .cap{font-family:'Caveat';font-weight:600;color:var(--thread-plum);font-size:1.1rem}
+
+  /* ===== FOOTER ===== */
+  footer{
+    grid-column:1 / -1;
+    margin-top:8px;
+    background:var(--cream);
+    border-radius:22px;
+    padding:22px 26px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    position:relative;
+    box-shadow:0 10px 24px rgba(58,48,38,.12);
+  }
+  footer::after{content:"";position:absolute;inset:7px;border:2px dashed var(--stitch);border-radius:15px;pointer-events:none}
+  .foot-brand{display:flex;align-items:center;gap:12px;position:relative;z-index:2}
+  .foot-brand .fm{
+    width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--thread-red),var(--thread-rust));
+    box-shadow:0 0 0 2px var(--cream),0 0 0 4px var(--thread-gold);
+  }
+  .foot-brand .fm svg{width:24px;height:24px}
+  .foot-name{font-family:'Pacifico';color:var(--thread-red);font-size:1.05rem;line-height:1}
+  .foot-tag{font-family:'Caveat';color:var(--thread-teal);font-weight:600;font-size:.95rem}
+  .foot-stitch{font-family:'Caveat';color:var(--ink-soft);font-weight:600;font-size:1rem;position:relative;z-index:2}
+
+  /* ===== responsive ===== */
+  @media(max-width:980px){
+    .wrap{grid-template-columns:1fr}
+    .hoop{position:static}
+    .grid{grid-template-columns:1fr}
+  }
+  @media(max-width:560px){
+    .stats{grid-template-columns:1fr}
+    .formula{font-size:.95rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ SIDEBAR: EMBROIDERY HOOP ============ -->
+  <aside class="hoop">
+   <div class="hoop-inner">
+    <div class="brand">
+      <div class="m-mark">
+        <svg viewBox="0 0 32 32" fill="none" stroke="#fbf6ea" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 2.4">
+          <path d="M5 25 L5 7 L16 18 L27 7 L27 25"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">Me Studing Stuff</div>
+        <div class="brand-tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+
+    <div class="needle-divider"><span>&#10047;</span></div>
+
+    <div class="nav-label">
+      Core Topics <span class="pill">FAM-L / FAM-S</span>
+    </div>
+
+    <nav>
+      <ul>
+        <li><a class="active" href="#"><span class="dot"></span> Survival Models <span class="ch">&#10003;</span></a></li>
+        <li><a href="#"><span class="dot"></span> Life Tables <span class="ch">&#10003;</span></a></li>
+        <li><a href="#"><span class="dot"></span> Life Insurance <span class="ch">&#9733;</span></a></li>
+        <li><a href="#"><span class="dot"></span> Life Annuities <span class="ch">&#8230;</span></a></li>
+        <li><a href="#"><span class="dot"></span> Premiums <span class="ch">&#8230;</span></a></li>
+        <li><a href="#"><span class="dot"></span> Policy Values <span class="ch">&#8230;</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="needle-divider"><span>&#9986;</span></div>
+
+    <div class="swatch-strip">
+      <i style="background:var(--thread-red)"></i>
+      <i style="background:var(--thread-gold)"></i>
+      <i style="background:var(--thread-teal)"></i>
+      <i style="background:var(--thread-navy)"></i>
+      <i style="background:var(--thread-rust)"></i>
+      <i style="background:var(--thread-plum)"></i>
+    </div>
+   </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+
+    <!-- top banner -->
+    <div class="topbar">
+      <div class="tb-left">&#9986; Threaded &amp; ready — your study sampler awaits.</div>
+      <div class="tb-right">
+        <span class="chip">FAM-L / FAM-S</span>
+        <span class="chip">Spring sitting</span>
+        <span class="chip">finance@solidarity.com.bh</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow"><span class="sun">&#127769;</span> Good evening</div>
+      <h1>Let's get you <span class="underline">that pass.</span></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <div class="stats">
+        <div class="stat s1">
+          <div class="num">72%</div>
+          <div class="lbl">Overall progress</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="prog-track"><div class="prog-fill"></div></div>
+        </div>
+        <div class="stat s2">
+          <div class="num">86</div>
+          <div class="lbl">Exam countdown</div>
+          <div class="sub">days to stitch it up</div>
+        </div>
+        <div class="stat s3">
+          <div class="num">8</div>
+          <div class="lbl">Topics solid</div>
+          <div class="sub">locked &amp; knotted</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT GRID -->
+    <div class="grid">
+
+      <!-- LEFT: topic preview + formula + trap + example + buttons -->
+      <section class="card">
+       <div class="card-inner">
+        <h3>&#129525; Life Insurance Present Values</h3>
+        <p class="lede-line">The first knots of every premium — discount a benefit back to today, then measure how much it wobbles.</p>
+
+        <div class="formula-block">
+          <div class="fhdr">&#10047; Stitch these into memory</div>
+          <div class="formula">
+            <span class="eq">A<sub>x</sub> = 1 &minus; d&middot;&auml;<sub>x</sub></span>
+            <span class="dotsep">&middot;</span>
+            <span class="eq">Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)<sup>2</sup></span>
+            <span class="dotsep">&middot;</span>
+            <span class="eq">&auml;<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</span>
+          </div>
+        </div>
+
+        <div class="trap">
+          <div class="trap-h">&#9888;&#65039; Common trap</div>
+          <p>Under UDD, multiply <em>ONLY</em> the term/death piece by i/&delta; — the pure endowment is never rescaled.</p>
+        </div>
+
+        <div class="example">
+          <div class="ex-icn">1</div>
+          <div class="ex-txt">
+            <b>Example 1 — Whole life EPV &amp; variance</b>
+            <span>Discount the benefit, square it, subtract — a clean worked walkthrough.</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary">&#9986; Start studying</button>
+          <button class="btn btn-ghost">&#8635; Resume</button>
+        </div>
+       </div>
+      </section>
+
+      <!-- RIGHT: exam card + plan + sampler -->
+      <div class="side-col">
+
+        <section class="card exam-card">
+         <div class="card-inner">
+          <h3><span class="exam-badge">FAM</span> Exam FAM</h3>
+          <p class="lede-line">Fundamentals of Actuarial Mathematics — your headline target.</p>
+          <div class="tag-row">
+            <span class="tag t-navy">SOA</span>
+            <span class="tag t-teal">34 questions</span>
+            <span class="tag t-red">pass = 6/10</span>
+            <span class="tag t-gold">Fundamentals</span>
+          </div>
+         </div>
+        </section>
+
+        <section class="card">
+         <div class="card-inner">
+          <h3>&#128221; Tonight's plan</h3>
+          <ul class="mini-plan">
+            <li><span class="tick done">&#10003;</span> Survival Models — wrapped</li>
+            <li><span class="tick done">&#10003;</span> Life Tables — wrapped</li>
+            <li><span class="tick now">&#9986;</span> Life Insurance — stitching now</li>
+            <li><span class="tick todo"></span> Life Annuities — up next</li>
+            <li><span class="tick todo"></span> Premiums &amp; Policy Values</li>
+          </ul>
+         </div>
+        </section>
+
+        <section class="card sampler">
+         <div class="card-inner">
+          <h3 style="justify-content:center">&#10047; Cross-stitch sampler</h3>
+          <div class="grid-stitch">
+            <i style="background:var(--thread-red)"></i><i style="background:var(--thread-gold)"></i><i style="background:var(--thread-teal)"></i><i style="background:var(--thread-navy)"></i><i style="background:var(--thread-rust)"></i><i style="background:var(--thread-plum)"></i><i style="background:var(--thread-gold)"></i><i style="background:var(--thread-red)"></i>
+            <i style="background:var(--thread-teal)"></i><i style="background:var(--thread-navy)"></i><i style="background:var(--thread-red)"></i><i style="background:var(--thread-gold)"></i><i style="background:var(--thread-plum)"></i><i style="background:var(--thread-teal)"></i><i style="background:var(--thread-rust)"></i><i style="background:var(--thread-navy)"></i>
+          </div>
+          <div class="cap">every topic, one neat stitch at a time</div>
+         </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="foot-brand">
+        <div class="fm">
+          <svg viewBox="0 0 32 32" fill="none" stroke="#fbf6ea" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 2.4">
+            <path d="M5 25 L5 7 L16 18 L27 7 L27 25"/>
+          </svg>
+        </div>
+        <div>
+          <div class="foot-name">Me Studing Stuff</div>
+          <div class="foot-tag">Study smarter. Pass exams.</div>
+        </div>
+      </div>
+      <div class="foot-stitch">&#9986; Hand-stitched for SOA Exam FAM &middot; &copy; 2026</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

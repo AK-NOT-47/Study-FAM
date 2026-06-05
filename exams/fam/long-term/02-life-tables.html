@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Tables and Fractional Ages · FAM-L · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="lt-02" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Long-Term · Topic 2</div>
+      <h1>Life Tables and Fractional Ages</h1>
+      <p class="lede">Every survival probability is a ratio of $l$ values — and between integer ages, one of two simple rules (UDD or constant force) fills in the gap. Add selection and you can read any select-and-ultimate table.</p>
+      <div class="meta-row">
+        <span class="chip">📖 AMLCR · Ch. 2–3 · SULT</span>
+        <span class="chip">⏱️ ~3 hrs</span>
+        <span class="chip">🔑 $l_x$ · $d_x$ · $K_x$</span>
+        <span class="chip">🔑 UDD vs CFM</span>
+        <span class="chip">🔑 select &amp; ultimate</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After studying this note you should be able to:</p>
+        <ul>
+          <li>Define and interpret the life table functions $l_x$, $d_x$, the radix $l_{x_0}$, and the limiting age $\omega$.</li>
+          <li>Compute survival and death probabilities — ${}_tp_x$, ${}_tq_x$, ${}_{u|t}q_x$ — directly from a life table, and in all three forms of the deferred-death probability ($p{-}p$, $q{-}q$, $p\times q$).</li>
+          <li><strong>Build a life table</strong> from given $p_x$ / $q_x$ values, and recover missing $l_x$ entries — the workhorse technique for table problems.</li>
+          <li>Work with the <strong>curtate future lifetime</strong> $K_x = \lfloor T_x \rfloor$: its pmf, distribution, and the curtate expectation $e_x$.</li>
+          <li>Use the <strong>Standard Ultimate Life Table (SULT)</strong> efficiently, including normal-approximation problems over <strong>non-homogeneous cohorts</strong>.</li>
+          <li>Apply the two standard <strong>fractional age assumptions</strong> to interpolate between integer ages — <strong>Uniform Distribution of Deaths (UDD)</strong> (linear interpolation) and <strong>Constant Force of Mortality (CFM)</strong> (exponential interpolation) — and know to <em>split at integer boundaries</em> when $s+t>1$.</li>
+          <li>Derive and apply formulas for ${}_sq_x$, ${}_sp_x$, $\mu_{x+s}$, $f_x(s)$, and the curtate/complete life expectancies (including the recursion $\overset{\circ}{e}_x = 0.5q_x + p_x(1+\overset{\circ}{e}_{x+1})$) under each assumption.</li>
+          <li>Understand <strong>select and ultimate</strong> mortality, read a <strong>select life table</strong> in both layouts (issue-age rows and attained-age rows), use the $[x]+t$ notation, and identify when selection has worn off (the <strong>select period</strong>).</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. The Life Table — Intuition First</h3>
+      <p>A <strong>life table</strong> is just a bookkeeping device — a useful way to summarize a survival model, usually built from the mortality experience of a whole population (and often split into subgroups: male/female, smoker/non-smoker). Imagine a large cohort of $l_{x_0}$ newborns (or lives starting at some initial age $x_0$). The number $l_{x_0}$ is called the <strong>radix</strong> — an arbitrary positive scaling constant (commonly 100,000). As the cohort ages, people die. The table records:</p>
+      <ul>
+        <li>$l_x$ = the <strong>expected number of survivors</strong> to exact age $x$.</li>
+        <li>${}_nd_x$ = the <strong>expected number of deaths</strong> between exact ages $x$ and $x+n$. If $n=1$ the prefix is dropped, so $d_x$ means deaths in $[x,x+1)$.</li>
+        <li>$\omega$ = the <strong>limiting age</strong> — the age by which all lives are dead, i.e. the smallest age with $l_\omega = 0$.</li>
+      </ul>
+      <p>Because everyone alive at age $x$ either survives to $x+1$ or dies in that year:</p>
+      <div class="formula">$$d_x = l_x - l_{x+1}.$$</div>
+      <p>The whole power of the life table is this: <strong>all survival probabilities are ratios of $l$ values.</strong> If you want the probability a life aged $x$ survives $t$ years, just count how many of the $l_x$ survivors are still alive at $x+t$:</p>
+      <div class="formula">$$ {}_tp_x = \frac{l_{x+t}}{l_x}.$$</div>
+      <p>This is a frequentist reading of probability — proportion of the cohort that survives. It connects to the continuous survival model via $l_{x} = l_{x_0}\,\cdot\,{}_{x-x_0}p_{x_0}$, i.e. $l_x \propto S_0(x)$, the survival function.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Reading the radix</div>
+        <p>The radix affects only the <em>interpretation</em> (how many lives we imagine), <strong>not the probabilities</strong>, which are always ratios. The $l_x$ values themselves need not be integers. On the FAM-L exam the symbol $\ell_x$ may also appear — it means the same thing as $l_x$.</p>
+      </div>
+
+      <h3>Survival model basics — the continuous foundation</h3>
+      <p>Before the table, there is the <strong>random variable</strong>. Let $(x)$ denote a life aged $x$ and $T_x$ its <strong>future lifetime</strong> — a continuous random variable, the time from now until $(x)$ dies. Two functions describe its distribution:</p>
+      <ul>
+        <li>The <strong>survival function</strong> $S_x(t) = \Pr[T_x \gt t]$ — the probability $(x)$ survives at least $t$ years. (In actuarial notation this <em>is</em> ${}_tp_x$.)</li>
+        <li>The <strong>cumulative distribution function</strong> $F_x(t) = \Pr[T_x \le t]$ — the probability $(x)$ dies within $t$ years. (This <em>is</em> ${}_tq_x$.)</li>
+      </ul>
+      <p>They are complements, and any $S_x$ is just a re-based version of the newborn's survival function $S_0$:</p>
+      <div class="formula">
+        $$ S_x(t) = \frac{S_0(x+t)}{S_0(x)}, \qquad F_x(t) = 1 - S_x(t). $$
+      </div>
+      <p>The re-basing identity $S_x(t)=S_0(x+t)/S_0(x)$ comes straight from conditional probability: to be a life aged $x$ surviving $t$ more years, the newborn must reach $x+t$ <em>given</em> it reached $x$. This is the continuous twin of the life-table ratio ${}_tp_x = l_{x+t}/l_x$ — indeed $l_x \propto S_0(x)$.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>$S_x(t)$ — three properties</th><th>$F_x(t)$ — three properties</th></tr></thead>
+        <tbody>
+          <tr><td>$S_x(0) = 1$ (alive now)</td><td>$F_x(0) = 0$ (not yet dead)</td></tr>
+          <tr><td>$S_x(\infty) = 0$ (no one lives forever)</td><td>$F_x(\infty) = 1$ (everyone eventually dies)</td></tr>
+          <tr><td>non-<strong>increasing</strong> in $t$</td><td>non-<strong>decreasing</strong> in $t$</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Notation bridge — same idea, two languages</div>
+        <p>$S_x(t) = {}_tp_x$ and $F_x(t) = {}_tq_x$. Everything you do with $l$-ratios on a table you can also do in closed form whenever you are handed $S_0(x)$ — and the exam loves to hand you a closed-form $S_0(x)$ and ask for ${}_tp_x$, ${}_tq_x$, or a deferred probability (Example 9).</p>
+      </div>
+
+      <h3>2. Probabilities From the Table</h3>
+      <p>The three core symbols (with FAM/AMLCR meaning):</p>
+      <ul>
+        <li>${}_tp_x$ — probability $(x)$ survives at least $t$ years.</li>
+        <li>${}_tq_x$ — probability $(x)$ dies within $t$ years. ${}_tq_x = 1 - {}_tp_x$.</li>
+        <li>${}_{u|t}q_x$ — <strong>deferred</strong> mortality: probability $(x)$ survives $u$ years and then dies in the next $t$ years.</li>
+      </ul>
+      <p>When $t=1$ the left subscript is dropped: $p_x = {}_1p_x$, $q_x = {}_1q_x$. The one-year rate $q_x$ is also called simply the <strong>mortality rate at age $x$</strong>.</p>
+
+      <h4>Survival decomposes into one-year pieces</h4>
+      <p>To survive $t$ years you must survive every year along the way, so ${}_tp_x$ is a product of one-year survival probabilities — the <strong>multiplicative law</strong>:</p>
+      <div class="formula">
+        $$ {}_tp_x = p_x\cdot p_{x+1}\cdots p_{x+t-1}, \qquad {}_{t+u}p_x = {}_tp_x \cdot {}_up_{x+t}. $$
+      </div>
+      <p>The second form can be split anywhere: ${}_5p_{20} = {}_2p_{20}\cdot{}_3p_{22} = {}_1p_{20}\cdot{}_4p_{21} = \dots$ — whichever cut matches the data you're given. This is the single most-used manipulation in FAM-L.</p>
+
+      <h4>The deferred death probability — three forms</h4>
+      <p>${}_{u|t}q_x = \Pr[u < T_x \le u+t]$ can be written three equivalent ways. Pick whichever matches the given quantities:</p>
+      <div class="formula">
+        <span class="formula-label">$p-p$ form</span> $$ {}_{u|t}q_x = {}_up_x - {}_{u+t}p_x $$
+        <span class="formula-label">$q-q$ form</span> $$ {}_{u|t}q_x = {}_{u+t}q_x - {}_uq_x $$
+        <span class="formula-label">$p\times q$ form</span> $$ {}_{u|t}q_x = {}_up_x \cdot {}_tq_{x+u} $$
+      </div>
+
+      <h3>3. Building a Life Table From $p$ and $q$</h3>
+      <p>Many exam problems hand you a few $p_x$ or $q_x$ values and ask for a probability. The clean technique: <strong>pick an arbitrary radix</strong> (say $l_x = 1{,}000$), then fill in survivors with $l_{x+1} = l_x\,p_x$. Once the $l$ column exists, every probability is just a ratio. Where a $q$ is given non-sequentially, back out the missing $l$ from $q_x = 1 - l_{x+1}/l_x$. This turns a tangle of $p$'s and $q$'s into a single tidy table (see Example 2).</p>
+
+      <h3>4. Curtate Future Lifetime $K_x$</h3>
+      <p>Alongside the continuous $T_x$ we use the <strong>curtate future lifetime</strong> $K_x$ — the number of <em>complete</em> future years lived: $K_x = \lfloor T_x \rfloor$. If $(x)$ dies at age $21.4$ then $T_x = 1.4$ and $K_x = 1$. Its distribution:</p>
+      <div class="formula">
+        $$ \Pr[K_x = k] = {}_kp_x\,q_{x+k} = {}_{k|}q_x, \qquad \Pr[K_x > k] = {}_{k+1}p_x, \qquad \Pr[K_x \le k] = {}_{k+1}q_x. $$
+      </div>
+      <p>Summing the pmf gives the <strong>curtate expectation</strong> $e_x = \sum_{k=1}^{\infty}{}_kp_x$. And the death-within-$n$-years probability is a sum of deferred one-year deaths:</p>
+      <div class="formula">$$ {}_nq_x = \sum_{k=0}^{n-1} {}_{k|}q_x = q_x + {}_{1|}q_x + \cdots + {}_{n-1|}q_x. $$</div>
+
+      <h3>5. The Standard Ultimate Life Table (SULT)</h3>
+      <p>The SULT is a <strong>specific, exam-supplied table</strong> built from Makeham's law with $A = 0.00022$, $B = 2.7\times10^{-6}$, $c = 1.124$, with a radix of $l_{20} = 100{,}000$ and starting age 20. On the exam you are <em>given</em> the SULT; you do not derive it. It tabulates, at integer ages (typically 20–100):</p>
+      <ul>
+        <li>$l_x$ and $q_x$ (sometimes $1000\,q_x$),</li>
+        <li>the complete and curtate expectations $\overset{\circ}{e}_x$, $e_x$,</li>
+        <li>annuity and insurance EPVs: $A_x$, ${}^2A_x$, $\ddot a_x$, and various term/endowment values at the standard interest rate $i = 0.05$.</li>
+      </ul>
+      <p><strong>Why it matters:</strong> the SULT lets you answer many problems by <em>table lookup</em> rather than computation. Master reading $l_x$ for ${}_tp_x = l_{x+t}/l_x$, and reading $\ddot a_x$, $A_x$ directly for insurance/annuity problems. Always confirm the interest rate (SULT uses 5%). Only the $l_x$ and $q_x$ columns are <em>interest-free</em> — the financial columns assume $i=0.05$.</p>
+
+      <h3>6. Fractional Ages — The Problem</h3>
+      <p>Life tables only give values at <strong>integer</strong> ages. But policies pay, and people die, at non-integer times. We need a rule to "fill in" the gap between age $x$ and age $x+1$. The two standard rules are <strong>UDD</strong> and <strong>constant force</strong>. In all that follows, take $0 \le s < 1$ and $0 \le s+t \le 1$, and let $q_x$ be the known integer-age value.</p>
+
+      <h4>(a) Uniform Distribution of Deaths (UDD)</h4>
+      <p><strong>Intuition:</strong> spread the year's deaths evenly across the year. Equivalently, $l$ falls <strong>linearly</strong> between integer ages — so $l_{x+t}$ is a <strong>linear interpolation</strong> of $l_x$ and $l_{x+1}$:</p>
+      <div class="formula">$$ l_{x+t} = (1-t)\,l_x + t\,l_{x+1}, \qquad {}_tq_x = t\, q_x \quad(x\text{ integer}). $$</div>
+      <p><em>Why the weights tilt toward the nearer age:</em> $l_{20.3} = 0.7\,l_{20} + 0.3\,l_{21}$ — more weight ($0.7$) on $l_{20}$ because $20.3$ is closer to $20$.</p>
+      <p>Consequences:</p>
+      <ul>
+        <li>${}_sp_x = 1 - s\,q_x$ (linear, decreasing).</li>
+        <li>The <strong>force of mortality increases</strong> through the year (denominator shrinks): $\mu_{x+s} = \dfrac{q_x}{1 - s\,q_x}$.</li>
+        <li>The future-lifetime density within the year is <strong>constant</strong>: $f_x(s) = q_x$ for $0 \le s < 1$.</li>
+      </ul>
+
+      <h4>(b) Constant Force of Mortality (CFM)</h4>
+      <p><strong>Intuition:</strong> assume the hazard rate $\mu$ is a constant $\mu^*$ throughout the year. Then survival is exponential within the year, and $l$ is <strong>exponentially interpolated</strong>:</p>
+      <div class="formula">$$ {}_sp_x = e^{-\mu^* s} = (p_x)^s, \qquad \mu^* = -\ln p_x, \qquad l_{x+t} = (l_x)^{1-t}\,(l_{x+1})^{t}. $$</div>
+      <p>Consequences:</p>
+      <ul>
+        <li>${}_sq_x = 1 - (p_x)^s$.</li>
+        <li>The force is <strong>flat</strong> within the year (by construction): $\mu_{x+s} = -\ln p_x = \mu^*$.</li>
+        <li>The within-year density is exponential: $f_x(s) = (p_x)^s\,\mu^*$, so slightly <em>more</em> deaths early in the year.</li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Mnemonic &amp; the two-line strategy</div>
+        <p>UDD → "deaths uniform, force rising," <strong>linear</strong> interpolation, <strong>work with $q$'s</strong>.<br>
+        CFM → "force flat, survival exponential ($p^s$)," <strong>exponential</strong> interpolation, <strong>work with $p$'s</strong>.</p>
+      </div>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">The universal method for any fractional-age probability</div>
+        <p>Express the probability <strong>in terms of $l$ values</strong>, then interpolate each $l$ (linearly for UDD, exponentially for CFM). This works <em>regardless</em> of whether $s+t\le 1$, so it never trips on integer boundaries. The shortcut formulas (next section) are faster but only valid inside one year of age.</p>
+      </div>
+
+      <h3>7. Select and Ultimate Mortality</h3>
+      <p>When someone <strong>buys a life insurance policy</strong> they are usually <strong>underwritten</strong> — screened for health (the <strong>selection</strong> process). Consider two people aged 50: Mike just bought a policy; Dave bought the same policy two years ago (selected at 48). Mike's health was <em>just</em> reviewed, so he meets today's criteria; Dave's health was last checked two years ago and may have drifted. So we expect $q$ for Dave to be <em>higher</em>: the beneficial effect of selection <strong>wears off</strong> with time.</p>
+      <ul>
+        <li>$[x]$ denotes a life <strong>selected at age $x$</strong> (just underwritten).</li>
+        <li>$[x]+t$ denotes a life selected at age $x$, now $t$ years later (current age $x+t$), still carrying the (fading) effect of selection.</li>
+        <li>The effect wears off after the <strong>select period</strong> of $n$ years. After that, mortality depends only on attained age — the <strong>ultimate</strong> portion.</li>
+      </ul>
+      <p>All four examples $q_{[50]},\ q_{[49]+1},\ q_{[48]+2},\ q_{[41]+9}$ describe a life <em>currently aged 50</em> — they differ only in the age at selection. Because selection wears off, the longer ago you were selected, the higher the rate: $q_{[x]} \le q_{[x-1]+1} \le q_{[x-2]+2} \le \cdots$. Once $t \ge n$, $q_{[x]+t} = q_{x+t}$ (ultimate).</p>
+      <p>A <strong>select life table</strong> is read <strong>across the row</strong> for the select period, then <strong>down the ultimate column</strong> once selection wears off. Survival probabilities still come from $l$ ratios, but you must track <em>both</em> the selection age and duration:</p>
+      <div class="formula">$$ {}_tp_{[x]+s} = \frac{l_{[x]+s+t}}{l_{[x]+s}}.$$</div>
+      <p>Once attained age $\ge x+n$, you use the ultimate $l_{x+t}$ values.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Two table layouts (the SOA notation note)</div>
+        <p>A select-and-ultimate table comes in one of two layouts, inferable from the headers:</p>
+        <ul>
+          <li><strong>Issue-age rows</strong> (headers $q_{[x]}, q_{[x]+1}, \dots, q_{x+n}$): each row is one age at selection. Read <strong>across then down</strong>.</li>
+          <li><strong>Attained-age rows</strong> (headers $q_{[x]}, q_{[x-1]+1}, q_{[x-2]+2}, \dots, q_x$): every entry in a row is the same <em>current</em> age but a different selection age. Here you read <strong>down the diagonal</strong> until the ultimate column, then straight down.</li>
+        </ul>
+      </div>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">You can never turn $[x]$ into $[x+1]$</div>
+        <p>The bracket is fixed at the age the life was selected — a life selected at $x$ is never "re-selected." So to move from the $[x]$ row to the $[x+1]$ row in an $l$ table you must <strong>route through the ultimate column</strong>: build forward from $[x]$ to an ultimate $l$, then divide backward by the $[x+1]$ select rates. See Example 4.</p>
+      </div>
+
+      <h3>8. Moments / Expectations — how long does $(x)$ live?</h3>
+      <p>The whole point of a survival model is to <strong>average</strong> over future lifetime. There are two future-lifetime variables, so two expectations:</p>
+      <ul>
+        <li><strong>Complete expectation</strong> $\overset{\circ}{e}_x = \mathrm E[T_x]$ — average future lifetime measured to the exact instant of death (includes the fractional final year).</li>
+        <li><strong>Curtate expectation</strong> $e_x = \mathrm E[K_x]$ — average number of <em>complete</em> future years (whole years only).</li>
+      </ul>
+      <p>Each has a clean "survival-function" formula — no density needed, just sum/integrate the survival probability:</p>
+      <div class="formula">
+        <span class="formula-label">Complete (continuous)</span>
+        $$ \overset{\circ}{e}_x = \mathrm E[T_x] = \int_0^\infty {}_tp_x\,dt, \qquad \mathrm E[T_x^2] = \int_0^\infty 2t\,{}_tp_x\,dt. $$
+        <span class="formula-label">Curtate (discrete)</span>
+        $$ e_x = \mathrm E[K_x] = \sum_{k=1}^{\infty} {}_kp_x, \qquad \mathrm E[K_x^2] = \sum_{k=1}^{\infty} (2k-1)\,{}_kp_x. $$
+      </div>
+      <p>Both second-moment forms are the "$\int 2t\,S$" / "$\sum(2k-1)\,S$" tricks for a non-negative variable — they save you from ever touching the density $f_x(t)={}_tp_x\,\mu_{x+t}$. Variances then follow the usual way:</p>
+      <div class="formula">
+        $$ \mathrm{Var}[T_x] = \mathrm E[T_x^2] - \big(\overset{\circ}{e}_x\big)^2, \qquad \mathrm{Var}[K_x] = \mathrm E[K_x^2] - \big(e_x\big)^2. $$
+      </div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The two-line recipe for any moment problem</div>
+        <p>(i) Write ${}_tp_x$ (from a table, or from $S_0$). (ii) Plug into $\int_0^\infty{}_tp_x\,dt$ (mean) or $\int_0^\infty 2t\,{}_tp_x\,dt$ (second moment) — or the curtate sums. That's the entire machine. The $\overset{\circ}{e}_x \approx e_x + 0.5$ shortcut connects the two, but is <strong>exact only under UDD</strong>.</p>
+      </div>
+
+      <h3>9. Temporary (limited) expectations</h3>
+      <p>Often a contract only cares about the next $n$ years (a term annuity, an $n$-year benefit). The relevant variable is $\min(T_x,n)$ or $\min(K_x,n)$, capped at $n$. The expectations just <strong>truncate the integral / sum at $n$</strong>:</p>
+      <div class="formula">
+        <span class="formula-label">$n$-year temporary complete expectation</span>
+        $$ \overset{\circ}{e}_{x:\overline{n}|} = \mathrm E[\min(T_x,n)] = \int_0^n {}_tp_x\,dt. $$
+        <span class="formula-label">$n$-year temporary curtate expectation</span>
+        $$ e_{x:\overline{n}|} = \mathrm E[\min(K_x,n)] = \sum_{k=1}^{n} {}_kp_x. $$
+      </div>
+      <p>The curtate sum literally adds up the first $n$ survival probabilities $p_x + {}_2p_x + \cdots + {}_np_x$ — on a life table this is just $\frac{1}{l_x}\big(l_{x+1}+l_{x+2}+\cdots+l_{x+n}\big)$ (Example 11).</p>
+
+      <h3>10. Expectation recursions — stepping between ages</h3>
+      <p>Both expectations split at any horizon $n$: live the first $n$ years, then (if you survive) carry on from age $x+n$:</p>
+      <div class="formula">
+        $$ \overset{\circ}{e}_x = \overset{\circ}{e}_{x:\overline{n}|} + {}_np_x\,\overset{\circ}{e}_{x+n}, \qquad e_x = e_{x:\overline{n}|} + {}_np_x\,e_{x+n}. $$
+      </div>
+      <p>Setting $n=1$ in the curtate version (using $e_{x:\overline{1}|}=p_x$) gives the single most-used recursion in this whole topic:</p>
+      <div class="formula">
+        <span class="formula-label">Curtate one-step recursion (memorize)</span>
+        $$ e_x = p_x\,(1 + e_{x+1}). $$
+      </div>
+      <p>Read it: "survive the year (prob $p_x$); having done so you have lived 1 year <em>plus</em> whatever $(x+1)$ expects." It steps an $e$-column up or down one age at a time.</p>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">There is NO clean continuous analog $\overset{\circ}{e}_x = p_x(1+\overset{\circ}{e}_{x+1})$</div>
+        <p>The tidy $e_x = p_x(1+e_{x+1})$ is a <strong>curtate</strong>-only result. The honest continuous recursion is $\overset{\circ}{e}_x = \overset{\circ}{e}_{x:\overline{1}|} + p_x\,\overset{\circ}{e}_{x+1}$ with $\overset{\circ}{e}_{x:\overline{1}|}=\int_0^1{}_tp_x\,dt$. Only <strong>under UDD</strong> does $\overset{\circ}{e}_{x:\overline{1}|}=p_x+0.5\,q_x$ collapse it to $\overset{\circ}{e}_x = 0.5\,q_x + p_x(1+\overset{\circ}{e}_{x+1})$.</p>
+      </div>
+
+      <h2>Formulas</h2>
+
+      <h3>Life table relationships</h3>
+      <div class="formula">
+        $$ d_x = l_x - l_{x+1}, \qquad {}_tp_x = \frac{l_{x+t}}{l_x}, \qquad {}_tq_x = \frac{l_x - l_{x+t}}{l_x} = 1 - \frac{l_{x+t}}{l_x}. $$
+        $$ {}_{u|t}q_x = {}_up_x \cdot {}_tq_{x+u} = \frac{l_{x+u} - l_{x+u+t}}{l_x}, \qquad {}_{u|}q_x \equiv {}_{u|1}q_x = \frac{l_{x+u}-l_{x+u+1}}{l_x} = \frac{d_{x+u}}{l_x}. $$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <p>$l_x$ = expected survivors to age $x$; $d_x$ = expected deaths in $[x,x+1)$; $\omega$ = limiting age ($l_\omega=0$); ${}_tp_x$, ${}_tq_x$ = $t$-year survival / death probabilities for a life now aged $x$; ${}_{u|t}q_x$ = probability of surviving $u$ then dying within the next $t$; $K_x=\lfloor T_x\rfloor$ = curtate future lifetime; $\mu_{x}$ = force of mortality at exact age $x$.</p>
+      </div>
+
+      <h3>Curtate lifetime</h3>
+      <div class="formula">
+        $$ \Pr[K_x = k] = {}_{k|}q_x = {}_kp_x\,q_{x+k}, \qquad \Pr[K_x > k] = {}_{k+1}p_x, \qquad e_x = \sum_{k=1}^{\infty}{}_kp_x. $$
+        $$ \text{Caution: } {}_tq_x \ne q_x\,q_{x+1}\cdots q_{x+t-1}. \quad\text{Instead } {}_tq_x = 1-\prod_{k=0}^{t-1}(1-q_{x+k}). $$
+      </div>
+
+      <h3>Survival model (closed-form $S_0$)</h3>
+      <div class="formula">
+        $$ {}_tp_x = S_x(t) = \frac{S_0(x+t)}{S_0(x)}, \qquad {}_tq_x = F_x(t) = 1 - \frac{S_0(x+t)}{S_0(x)}, \qquad {}_{u|t}q_x = \frac{S_0(x+u) - S_0(x+u+t)}{S_0(x)}. $$
+      </div>
+
+      <h3>Moments and expectations</h3>
+      <div class="formula">
+        <span class="formula-label">Complete (continuous) $T_x$</span>
+        $$ \overset{\circ}{e}_x = \int_0^\infty {}_tp_x\,dt, \qquad \mathrm E[T_x^2] = \int_0^\infty 2t\,{}_tp_x\,dt, \qquad \mathrm{Var}[T_x] = \mathrm E[T_x^2] - \big(\overset{\circ}{e}_x\big)^2. $$
+        <span class="formula-label">Curtate (discrete) $K_x$</span>
+        $$ e_x = \sum_{k=1}^{\infty} {}_kp_x, \qquad \mathrm E[K_x^2] = \sum_{k=1}^{\infty} (2k-1)\,{}_kp_x, \qquad \mathrm{Var}[K_x] = \mathrm E[K_x^2] - \big(e_x\big)^2. $$
+        <span class="formula-label">Temporary (limited to $n$ years)</span>
+        $$ \overset{\circ}{e}_{x:\overline{n}|} = \int_0^n {}_tp_x\,dt, \qquad e_{x:\overline{n}|} = \sum_{k=1}^{n} {}_kp_x. $$
+        <span class="formula-label">Recursions</span>
+        $$ \overset{\circ}{e}_x = \overset{\circ}{e}_{x:\overline{n}|} + {}_np_x\,\overset{\circ}{e}_{x+n}, \qquad e_x = e_{x:\overline{n}|} + {}_np_x\,e_{x+n}, \qquad e_x = p_x\,(1 + e_{x+1}). $$
+        <span class="formula-label">Continuous ↔ curtate link (exact only under UDD)</span>
+        $$ \overset{\circ}{e}_x \approx e_x + \tfrac12, \qquad \overset{\circ}{e}_x = 0.5\,q_x + p_x\,(1+\overset{\circ}{e}_{x+1})\ \text{(UDD)}. $$
+      </div>
+
+      <h3>Force of mortality and density (general)</h3>
+      <div class="formula">
+        $$ \mu_{x} = -\frac{1}{l_x}\frac{d\,l_x}{dx} = -\frac{d}{dx}\ln l_x, \qquad {}_tp_x = \exp\!\left(-\int_0^t \mu_{x+r}\,dr\right), \qquad f_x(t) = {}_tp_x\,\mu_{x+t}. $$
+      </div>
+      <p>Here $f_x(t)$ is the probability density of the future lifetime $T_x$ of $(x)$.</p>
+
+      <h3>Fractional ages — let $0 \le s < 1$, $q_x$ the integer-age death prob</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Quantity</th><th><strong>UDD</strong> (linear interp.)</th><th><strong>Constant Force (CFM)</strong> (exp. interp.)</th></tr></thead>
+        <tbody>
+          <tr><td>$l_{x+t}$</td><td>$(1-t)\,l_x + t\,l_{x+1}$</td><td>$(l_x)^{1-t}\,(l_{x+1})^{t}$</td></tr>
+          <tr><td>${}_sq_x$</td><td>$s\,q_x$</td><td>$1 - (p_x)^s = 1 - e^{-\mu^* s}$</td></tr>
+          <tr><td>${}_sp_x$</td><td>$1 - s\,q_x$</td><td>$(p_x)^s = e^{-\mu^* s}$</td></tr>
+          <tr><td>$\mu_{x+s}$</td><td>$\dfrac{q_x}{1 - s\,q_x}$</td><td>$\mu^* = -\ln p_x$</td></tr>
+          <tr><td>$f_x(s)$</td><td>$q_x$</td><td>$(p_x)^s\,\mu^* = -(p_x)^s\ln p_x$</td></tr>
+          <tr><td>${}_uq_{x+s}$, $0\le s+u\le 1$</td><td>$\dfrac{u\,q_x}{1 - s\,q_x}$</td><td>$1 - (p_x)^u$</td></tr>
+        </tbody>
+      </table></div>
+      <p>where $\mu^* = -\ln p_x$ is the constant force over the year $[x,x+1)$.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbol notes</div>
+        <p>$p_x = 1-q_x$; $s$, $u$ are fractional offsets within a single year of age. The shortcuts ${}_uq_{x+s}$ require the whole interval $[x+s,\,x+s+u]$ to lie within one year ($0\le s+u\le 1$); if $s+u>1$, <strong>split at the integer boundary</strong> (or just interpolate $l$ values). Under CFM the within-year survival depends only on the <em>length</em> $u$, not the start $s$ (memoryless), so ${}_uq_{x+s} = 1-(p_x)^u$.</p>
+      </div>
+
+      <h3>Complete expectation of life under each assumption</h3>
+      <p>Define the <strong>curtate expectation</strong> $e_x = \sum_{k=1}^{\infty} {}_kp_x$ (whole years only). The <strong>complete expectation</strong> $\overset{\circ}{e}_x = \int_0^\infty {}_tp_x\,dt$ adds the average fractional year lived in the year of death. Writing $T_x = K_x + R_x$ (with $R_x$ the fraction lived in the death year), under UDD $R_x$ is uniform on $[0,1)$ and independent of $K_x$, so $\mathrm E[R_x]=\tfrac12$.</p>
+      <ul>
+        <li><strong>UDD</strong> (deaths uniform → on average die mid-year):
+          <div class="formula">$$ \overset{\circ}{e}_x = e_x + \tfrac{1}{2}, \qquad \overset{\circ}{e}_{x:\overline{1}|} = p_x + 0.5\,q_x, \qquad \overset{\circ}{e}_x = 0.5\,q_x + p_x\,(1 + \overset{\circ}{e}_{x+1}). $$</div>
+          The "+½" is exact under UDD; the last identity is the UDD <strong>recursion</strong> — extremely handy for stepping between ages.
+        </li>
+        <li><strong>Constant force</strong>: there is no clean "+½"; integrate within each year:
+          <div class="formula">$$ \overset{\circ}{e}_x = \sum_{k=0}^{\infty} {}_kp_x \int_0^1 (p_{x+k})^s\,ds = \sum_{k=0}^{\infty} {}_kp_x\cdot \frac{1-p_{x+k}}{\mu^*_{x+k}}. $$</div>
+          For the contribution of a <em>single</em> year, the mean fraction lived is $\displaystyle \int_0^1 {}_sp_x\,ds = \frac{1-p_x}{-\ln p_x} = \frac{q_x}{\mu^*}$ under CFM, versus $\tfrac{1}{2}(1+p_x)$ under UDD.
+        </li>
+      </ul>
+
+      <h3>Select and ultimate</h3>
+      <div class="formula">
+        $$ {}_tp_{[x]+s} = \frac{l_{[x]+s+t}}{l_{[x]+s}}, \qquad q_{[x]+t} = q_{x+t}\ \text{ for } t \ge n\ (\text{select period}), \qquad q_{[x]} \le q_{[x-1]+1}. $$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <p>$[x]+t$ = life selected at age $x$, now $t$ years past selection (attained age $x+t$); $n$ = length of select period; $l_{[x]+t}$ = select life table survivor count. Keep $[x]$ fixed: a life selected at $x$ is tracked as $[x]+t$ for all $t$, never $[x+1]$.</p>
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Probabilities straight from $l_x$ (with a deferred death) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>You are given the following extract:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>60</th><th>61</th><th>62</th><th>63</th><th>64</th></tr></thead>
+            <tbody><tr><td>$l_x$</td><td>88,950</td><td>87,400</td><td>85,700</td><td>83,820</td><td>81,740</td></tr></tbody>
+          </table></div>
+          <p>Compute (a) ${}_3p_{60}$, (b) ${}_2q_{61}$, (c) ${}_{2|1}q_{60}$ (survive 2 years, die in the 3rd).</p>
+          <p><strong>Solution.</strong></p>
+          <p>(a) $\displaystyle {}_3p_{60} = \frac{l_{63}}{l_{60}} = \frac{83{,}820}{88{,}950} = 0.94233.$</p>
+          <p>(b) $\displaystyle {}_2q_{61} = 1 - \frac{l_{63}}{l_{61}} = 1 - \frac{83{,}820}{87{,}400} = 1 - 0.95904 = 0.04096.$</p>
+          <p>(c) Deferred: survive to 62, die before 63.</p>
+          $$ {}_{2|1}q_{60} = \frac{l_{62} - l_{63}}{l_{60}} = \frac{85{,}700 - 83{,}820}{88{,}950} = \frac{1{,}880}{88{,}950} = 0.021136. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $\boxed{0.94233}$ &nbsp;·&nbsp; (b) $\boxed{0.04096}$ &nbsp;·&nbsp; (c) $\boxed{0.02114}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Build a life table from scattered $p$ and $q$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>You are given $p_{20}=0.98$, $p_{21}=0.975$, ${}_3p_{21}=0.94$, $q_{23}=0.03$. Calculate ${}_2p_{20}$, ${}_2p_{21}$, ${}_3p_{20}$, ${}_{1|}q_{20}$.</p>
+          <p><strong>Solution.</strong> Don't juggle the $p$'s and $q$'s — <strong>build a table</strong>. Pick radix $l_{20}=1{,}000$.</p>
+          <p>$l_{21} = l_{20}\,p_{20} = 1{,}000(0.98) = 980$;&nbsp; $l_{22} = l_{21}\,p_{21} = 980(0.975) = 955.5$;&nbsp; $l_{24} = l_{21}\,{}_3p_{21} = 980(0.94) = 921.2$.</p>
+          <p>Now back out $l_{23}$ from $q_{23} = 1 - l_{24}/l_{23} = 0.03 \Rightarrow l_{23} = 921.2/0.97 = 949.6907$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>20</th><th>21</th><th>22</th><th>23</th><th>24</th></tr></thead>
+            <tbody><tr><td>$l_x$</td><td>1,000</td><td>980</td><td>955.5</td><td>949.6907</td><td>921.2</td></tr></tbody>
+          </table></div>
+          <p>Every answer is now a ratio:</p>
+          <p>${}_2p_{20} = l_{22}/l_{20} = 0.9555$;&nbsp; ${}_2p_{21} = l_{23}/l_{21} = 0.9691$;&nbsp; ${}_3p_{20} = l_{23}/l_{20} = 0.9497$;&nbsp; ${}_{1|}q_{20} = (l_{21}-l_{22})/l_{20} = 24.5/1000 = 0.0245$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{0.9555}$ · $\boxed{0.9691}$ · $\boxed{0.9497}$ · $\boxed{0.0245}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> UDD vs Constant Force within a year <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $q_{70} = 0.04$ (so $p_{70} = 0.96$). Under <strong>each</strong> fractional-age assumption, find: (a) ${}_{0.5}q_{70}$, (b) $\mu_{70.5}$, (c) ${}_{0.3}q_{70.5}$ (die between ages 70.5 and 70.8).</p>
+          <p><strong>Solution — UDD.</strong></p>
+          <p>(a) ${}_{0.5}q_{70} = s\,q_x = 0.5 \times 0.04 = 0.02.$</p>
+          <p>(b) $\displaystyle \mu_{70.5} = \frac{q_{70}}{1 - 0.5\,q_{70}} = \frac{0.04}{1 - 0.02} = \frac{0.04}{0.98} = 0.040816.$</p>
+          <p>(c) Use ${}_uq_{x+s} = \dfrac{u\,q_x}{1 - s\,q_x}$ with $s = 0.5,\ u = 0.3$:</p>
+          $$ {}_{0.3}q_{70.5} = \frac{0.3 \times 0.04}{1 - 0.5\times0.04} = \frac{0.012}{0.98} = 0.012245. $$
+          <p><strong>Solution — Constant Force.</strong> $\mu^* = -\ln(0.96) = 0.040822.$</p>
+          <p>(a) ${}_{0.5}q_{70} = 1 - (0.96)^{0.5} = 1 - 0.979796 = 0.020204.$</p>
+          <p>(b) $\mu_{70.5} = \mu^* = 0.040822$ (flat).</p>
+          <p>(c) Memoryless in length $u = 0.3$: ${}_{0.3}q_{70.5} = 1 - (0.96)^{0.3} = 1 - 0.987879 = 0.012121.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>
+            <p><strong>(UDD):</strong> (a) $\boxed{0.02000}$ &nbsp;·&nbsp; (b) $\boxed{0.040816}$ &nbsp;·&nbsp; (c) $\boxed{0.012245}$.</p>
+            <p><strong>(CFM):</strong> (a) $\boxed{0.020204}$ &nbsp;·&nbsp; (b) $\boxed{0.040822}$ &nbsp;·&nbsp; (c) $\boxed{0.012121}$.</p>
+          </div>
+          <p><em>Note how close the two methods are when $q$ is small — and how the UDD force exceeds $\mu^*$ at mid-year while CFM stays flat.</em></p>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Crossing the integer boundary — split, don't break the formula <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $l_{20}=80,\ l_{21}=76,\ l_{22}=71$. Calculate ${}_{0.8}q_{20.3}$ assuming <strong>UDD</strong>.</p>
+          <p><strong>Why the shortcut fails.</strong> Here $s+t = 0.3+0.8 = 1.1 > 1$, so the death interval $[20.3,\,21.1)$ straddles age 21. You <em>cannot</em> write ${}_{0.8}q_{20.3} = \tfrac{0.8\,q_{20}}{1-0.3\,q_{20}}$.</p>
+          <p><strong>Universal method — interpolate $l$ values.</strong> Express in $l$'s, then linear-interpolate each:</p>
+          $$ {}_{0.8}q_{20.3} = \frac{l_{20.3} - l_{21.1}}{l_{20.3}}. $$
+          <p>$l_{20.3} = 0.7(80) + 0.3(76) = 78.8$;&nbsp; $l_{21.1} = 0.9(76) + 0.1(71) = 75.5$.</p>
+          $$ {}_{0.8}q_{20.3} = \frac{78.8 - 75.5}{78.8} = \frac{3.3}{78.8} = 0.04188. $$
+          <p><strong>Mixed-assumption variant.</strong> If instead deaths in $[20,21)$ were UDD but deaths in $[21,22)$ were constant force, recompute $l_{21.1}$ with exponential interpolation: $l_{21.1}=(76)^{0.9}(71)^{0.1}=75.4845$, giving ${}_{0.8}q_{20.3}=(78.8-75.4845)/78.8 = 0.04207$. Same method — just match each $l$ to the assumption governing its year.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{0.04188}$ (pure UDD). <em>Lesson: when $s+t>1$, interpolate $l$'s — the shortcut is local to one year.</em></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Backing out $q$ from $\mu$, then a two-year UDD death probability <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For a mortality table you are given $\mu_{80.5}=0.0202,\ \mu_{81.5}=0.0408,\ \mu_{82.5}=0.0619$, with deaths uniformly distributed between integral ages. Calculate the probability a person aged $80.5$ dies within two years, ${}_2q_{80.5}$.</p>
+          <p><strong>Step 1 — recover $q_x$ from $\mu_{x+0.5} = \dfrac{q_x}{1-0.5q_x}$:</strong></p>
+          <p>$q_{80}=0.02$, $q_{81}=0.04$, $q_{82}=0.06$.</p>
+          <p><strong>Step 2 — build $l$'s</strong> from radix $l_{80}=100$: $l_{81}=98$, $l_{82}=98(0.96)=94.0815$, $l_{83}=94.0815(0.94)=88.4327$.</p>
+          <p><strong>Step 3 — interpolate the fractional $l$'s and take the ratio:</strong></p>
+          $$ {}_2q_{80.5} = 1 - \frac{l_{82.5}}{l_{80.5}} = 1 - \frac{0.5\,l_{82}+0.5\,l_{83}}{0.5\,l_{80}+0.5\,l_{81}} = 1 - \frac{0.5(94.0815)+0.5(88.4327)}{0.5(100)+0.5(98)} = 0.0782. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{{}_2q_{80.5} = 0.0782}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Complete expectation: the "+½" rule and the UDD recursion <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><strong>Part A.</strong> A life table gives curtate expectation $e_{65}=14.20$. Under UDD, $\overset{\circ}{e}_{65} = e_{65}+\tfrac12 = \boxed{14.70}$.</p>
+          <p><strong>Part B (recursion).</strong> Deaths are UDD over each year of age, $q_x=0.6$, $\overset{\circ}{e}_x=10$. Find $\overset{\circ}{e}_{x+1}$.</p>
+          <p>Use $\overset{\circ}{e}_x = 0.5\,q_x + p_x(1+\overset{\circ}{e}_{x+1})$ directly:</p>
+          $$ 10 = 0.5(0.6) + (0.4)(1+\overset{\circ}{e}_{x+1}) = 0.3 + 0.4(1+\overset{\circ}{e}_{x+1}) \;\Rightarrow\; \overset{\circ}{e}_{x+1} = 23.25. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(A) $\boxed{14.70}$ &nbsp;·&nbsp; (B) $\boxed{\overset{\circ}{e}_{x+1}=23.25}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Reading a select table: across, then down <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A select-and-ultimate table has a <strong>3-year select period</strong>:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>$q_{[x]}$</th><th>$q_{[x]+1}$</th><th>$q_{[x]+2}$</th><th>$q_{x+3}$</th></tr></thead>
+            <tbody>
+              <tr><td>21</td><td>0.00120</td><td>0.00150</td><td>0.00170</td><td>0.00180</td></tr>
+              <tr><td>22</td><td>0.00125</td><td>0.00155</td><td>0.00175</td><td>0.00185</td></tr>
+              <tr><td>23</td><td>0.00130</td><td>0.00160</td><td>0.00180</td><td>0.00195</td></tr>
+            </tbody>
+          </table></div>
+          <p>What is the probability that $(22)$ <strong>who has been insured for one year</strong> lives to age 26?</p>
+          <p><strong>Solution.</strong> Insured one year and currently 22 means selected at age 21. We need ${}_4p_{[21]+1}$ — read across the $[21]$ row to the end of the select period (durations 1, 2), then drop into the ultimate column (ages 24, 25):</p>
+          $$ {}_4p_{[21]+1} = p_{[21]+1}\,p_{[21]+2}\,p_{24}\,p_{25} = (1{-}.0015)(1{-}.0017)(1{-}.0018)(1{-}.00185) = 0.99317. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{0.99317}$. Note $q_{[21]+3}=q_{24}$ — selection has worn off by duration 3.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Building a select $l$ table — routing through the ultimate column <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A 2-year select period, with $q_{[50]}=0.012,\ q_{[50]+1}=0.024,\ q_{52}=0.036$ and $q_{[51]}=0.022,\ q_{[51]+1}=0.034$. Starting from $l_{[50]}=100{,}000$, find $l_{[51]}$.</p>
+          <p><strong>The catch:</strong> you cannot step from $l_{[50]}$ directly to $l_{[51]}$ — a life selected at 50 is never re-selected at 51. Route through the <em>ultimate</em> $l_{52}$:</p>
+          <p>Forward along the $[50]$ row: $l_{[50]+1} = 100{,}000(0.988) = 98{,}800$;&nbsp; $l_{52} = 98{,}800(0.976) = 96{,}428.80$.</p>
+          <p>Forward one more ultimate step: $l_{53} = l_{52}\,p_{52} = 96{,}428.80(0.964) = 92{,}957.36$.</p>
+          <p>Now climb <em>backward</em> up the $[51]$ row using its select rates ($l_{[51]+1}=l_{53}/p_{[51]+1}$, then $l_{[51]}=l_{[51]+1}/p_{[51]}$):</p>
+          $$ l_{[51]+1} = \frac{92{,}957.36}{0.966} = 96{,}229.15, \qquad l_{[51]} = \frac{96{,}229.15}{0.978} = 98{,}393.82. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{l_{[51]} = 98{,}393.82}$. The detour through $l_{52}/l_{53}$ (ultimate) is the only legal bridge between selection ages.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Probabilities from a closed-form $S_0(x)$ — two classic SOA setups <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For a life aged 20, compute ${}_5p_{20}$, ${}_5q_{20}$, and the deferred ${}_{5|3}q_{20}$ (survive 5 years, die in the next 3) under <strong>each</strong> survival law.</p>
+          <p><strong>Setup A — $S_0(x) = 1 - 0.01x$, $0 \le x \le 100$ (de Moivre / uniform).</strong> First re-base to age 20:</p>
+          $$ {}_tp_{20} = \frac{S_0(20+t)}{S_0(20)} = \frac{1 - 0.01(20+t)}{1 - 0.01(20)} = \frac{0.8 - 0.01t}{0.8} = 1 - \frac{t}{80}. $$
+          <p>$\displaystyle {}_5p_{20} = 1 - \tfrac{5}{80} = 0.9375$;&nbsp; ${}_5q_{20} = 1 - 0.9375 = 0.0625$;&nbsp; ${}_{5|3}q_{20} = {}_5p_{20} - {}_8p_{20} = 0.9375 - \big(1-\tfrac{8}{80}\big) = 0.9375 - 0.90 = 0.0375.$</p>
+          <p><strong>Setup B — $S_0(x) = \left(\dfrac{50}{50+x}\right)^3$, $x \ge 0$.</strong> Re-base:</p>
+          $$ {}_tp_{20} = \frac{S_0(20+t)}{S_0(20)} = \frac{\big(\frac{50}{70+t}\big)^3}{\big(\frac{50}{70}\big)^3} = \left(\frac{70}{70+t}\right)^3. $$
+          <p>$\displaystyle {}_5p_{20} = \left(\tfrac{70}{75}\right)^3 = 0.81317$;&nbsp; ${}_5q_{20} = 1 - 0.81317 = 0.18683$;&nbsp; ${}_{5|3}q_{20} = {}_5p_{20} - {}_8p_{20} = \left(\tfrac{70}{75}\right)^3 - \left(\tfrac{70}{78}\right)^3 = 0.81317 - 0.72281 = 0.09036.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>
+            <p><strong>(A, uniform):</strong> $\boxed{0.9375}$ · $\boxed{0.0625}$ · $\boxed{0.0375}$.</p>
+            <p><strong>(B, $(50/(50{+}x))^3$):</strong> $\boxed{0.81317}$ · $\boxed{0.18683}$ · $\boxed{0.09036}$.</p>
+          </div>
+          <p><em>The only step is re-basing with ${}_tp_x = S_0(x+t)/S_0(x)$; after that every quantity is arithmetic.</em></p>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Variance of complete future lifetime — $\mathrm{Var}[T_{20}] = 3675$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[SOA3-F04:24]</em> The future lifetime of $(0)$ follows $S_0(x) = \left(\dfrac{50}{50+x}\right)^3,\ x\ge 0$. Calculate $\mathrm{Var}[T_{20}]$.</p>
+          <p><strong>Step 1 — survival probability.</strong> From Example 9, ${}_tp_{20} = \left(\dfrac{70}{70+t}\right)^3.$</p>
+          <p><strong>Step 2 — first moment (mean).</strong></p>
+          $$ \overset{\circ}{e}_{20} = \int_0^\infty {}_tp_{20}\,dt = 70^3\!\int_0^\infty (70+t)^{-3}\,dt = 70^3\left[\frac{(70+t)^{-2}}{-2}\right]_0^\infty = \frac{70^3}{2\cdot 70^2} = \frac{70}{2} = 35. $$
+          <p><strong>Step 3 — second moment</strong> via $\mathrm E[T^2] = \int_0^\infty 2t\,{}_tp_x\,dt$, with the substitution $u = 70+t$:</p>
+          $$ \mathrm E[T_{20}^2] = \int_0^\infty 2t\left(\frac{70}{70+t}\right)^3 dt = 2(70^3)\!\int_{70}^\infty \frac{u-70}{u^3}\,du = 2(70^3)\Big[-u^{-1} + 35u^{-2}\Big]_{70}^\infty = 4{,}900. $$
+          <p><strong>Step 4 — variance.</strong> $\mathrm{Var}[T_{20}] = \mathrm E[T_{20}^2] - \big(\overset{\circ}{e}_{20}\big)^2 = 4{,}900 - 35^2 = 4{,}900 - 1{,}225 = 3{,}675.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\mathrm{Var}[T_{20}] = 3{,}675}$. (Mean $35$, second moment $4{,}900$.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Temporary expectations — one integral, one table sum <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><strong>Part A — by integration.</strong> With $S_0(x) = \left(\dfrac{50}{50+x}\right)^3$ (so ${}_tp_{20}=\left(\tfrac{70}{70+t}\right)^3$), find the 15-year temporary complete expectation $\overset{\circ}{e}_{20:\overline{15}|}$.</p>
+          $$ \overset{\circ}{e}_{20:\overline{15}|} = \int_0^{15} {}_tp_{20}\,dt = 70^3\left[\frac{(70+t)^{-2}}{-2}\right]_0^{15} = \frac{70^3}{2}\left(\frac{1}{70^2} - \frac{1}{85^2}\right) = 35 - 23.737 = 11.263. $$
+          <p><strong>Part B — by life-table summation.</strong> Given the table below, find the 4-year temporary curtate expectation $e_{80:\overline{4}|}$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>80</th><th>81</th><th>82</th><th>83</th><th>84</th></tr></thead>
+            <tbody><tr><td>$l_x$</td><td>100</td><td>90</td><td>76</td><td>58</td><td>40</td></tr></tbody>
+          </table></div>
+          $$ e_{80:\overline{4}|} = \sum_{k=1}^{4} {}_kp_{80} = \frac{l_{81}+l_{82}+l_{83}+l_{84}}{l_{80}} = \frac{90 + 76 + 58 + 40}{100} = \frac{264}{100} = 2.64. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(A) $\boxed{\overset{\circ}{e}_{20:\overline{15}|} = 11.263}$ &nbsp;·&nbsp; (B) $\boxed{e_{80:\overline{4}|} = 2.64}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Expectation recursions — the general split and the one-step curtate <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><strong>Part A (general split).</strong> Given $\overset{\circ}{e}_0 = 62$, $\overset{\circ}{e}_{40} = 50$, ${}_{40}p_0 = 0.6$. Find $\overset{\circ}{e}_{0:\overline{40}|}$.</p>
+          <p>Use $\overset{\circ}{e}_x = \overset{\circ}{e}_{x:\overline{n}|} + {}_np_x\,\overset{\circ}{e}_{x+n}$ with $x=0,\ n=40$:</p>
+          $$ 62 = \overset{\circ}{e}_{0:\overline{40}|} + 0.6(50) \;\Rightarrow\; \overset{\circ}{e}_{0:\overline{40}|} = 62 - 30 = 32. $$
+          <p><strong>Part B (one-step curtate).</strong> Given $e_x = 70$ and $p_x = 0.99$, find $e_{x+1}$ using $e_x = p_x(1+e_{x+1})$:</p>
+          $$ 70 = 0.99\,(1 + e_{x+1}) \;\Rightarrow\; 1 + e_{x+1} = \frac{70}{0.99} = 70.7071 \;\Rightarrow\; e_{x+1} = 69.71. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(A) $\boxed{\overset{\circ}{e}_{0:\overline{40}|} = 32}$ &nbsp;·&nbsp; (B) $\boxed{e_{x+1} = 69.71}$.</div>
+          <p><em>The one-step recursion $e_x = p_x(1+e_{x+1})$ is curtate-only — there is no clean $\overset{\circ}{e}_x = p_x(1+\overset{\circ}{e}_{x+1})$ (see Traps).</em></p>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Median (percentile) of future lifetime <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[CAS4A-F93:20]</em> You are given $S_0(x) = 1 - 0.01x$ for $0 \lt x \le 100$. Determine the <strong>median</strong> future lifetime of a life aged 10.</p>
+          <p><strong>Solution.</strong> The median $m = \pi_{0.50}$ satisfies $\Pr[T_{10} \le m] = 0.5$, equivalently $S_{10}(m) = {}_mp_{10} = 0.5$:</p>
+          $$ {}_mp_{10} = \frac{S_0(10+m)}{S_0(10)} = \frac{1 - 0.01(10+m)}{1 - 0.01(10)} = \frac{0.9 - 0.01m}{0.9} = 0.5. $$
+          $$ 0.9 - 0.01m = 0.45 \;\Rightarrow\; 0.01m = 0.45 \;\Rightarrow\; m = 45. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{m = 45}$ years. (A $100p$-th percentile $\pi_p$ solves ${}_{\pi_p}p_x = 1-p$; here $p=0.5$.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> Single-cohort binomial — at least 2 of 3 die in a window <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>You are given $S_{40}(10) = 0.7$ and $F_{40}(20) = 0.5$. Three lives, all aged 40 with independent future lifetimes. Find the probability that <strong>at least two</strong> die between ages 50 and 60.</p>
+          <p><strong>Step 1 — per-life probability of dying in the window $[50,60)$,</strong> i.e. $\Pr[10 \lt T_{40} \lt 20]$:</p>
+          $$ \Pr[10 \lt T_{40} \lt 20] = S_{40}(10) - S_{40}(20) = S_{40}(10) - \big[1 - F_{40}(20)\big] = 0.7 - (1 - 0.5) = 0.2. $$
+          <p><strong>Step 2 — binomial.</strong> Let $N\sim\text{Binomial}(n=3,\ p=0.2)$ count the deaths in the window. We want $\Pr[N\ge 2]$:</p>
+          $$ \Pr[N=2] = \binom{3}{2}(0.2)^2(0.8)^1 = 3(0.04)(0.8) = 0.096, \qquad \Pr[N=3] = (0.2)^3 = 0.008. $$
+          $$ \Pr[N\ge 2] = 0.096 + 0.008 = 0.104. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{0.104}$. The survival model gives the binomial $p$; the rest is Exam-P counting.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ol>
+          <li><strong>Inverting the $l$ ratio.</strong> ${}_tp_x = l_{x+t}/l_x$ — the <strong>older</strong> age is in the <strong>numerator</strong>. Writing $l_x/l_{x+t}$ gives a number $> 1$. Sanity check: a probability is $\le 1$.</li>
+          <li><strong>Confusing $d_x$ direction.</strong> $d_x = l_x - l_{x+1}$ (current minus next), never the reverse. The deferred-death formula ${}_{u|}q_x = d_{x+u}/l_x$ uses the deaths at the <em>attained</em> age $x+u$, divided by the <em>original</em> $l_x$ — not $l_{x+u}$.</li>
+          <li><strong>Multiplying $q$'s.</strong> ${}_tq_x \ne q_x\,q_{x+1}\cdots$. The right route is through the $p$'s: ${}_tq_x = 1 - \prod(1-q_{x+k})$, or sum the deferred deaths $\sum_{k=0}^{t-1}{}_{k|}q_x$.</li>
+          <li><strong>UDD force vs CFM force.</strong> Under UDD the force $\mu_{x+s} = q_x/(1-s q_x)$ <strong>increases</strong> with $s$; under CFM it is <strong>constant</strong> $=-\ln p_x$. Also: under UDD the <em>density</em> is constant ($f_x(s)=q_x$), while under CFM the <em>force</em> is constant — opposite functions are flat.</li>
+          <li><strong>Using $s q_x$ for a sub-interval not starting at the integer.</strong> ${}_uq_{x+s} = \dfrac{u\,q_x}{1-s q_x}$ under UDD (note the denominator), <strong>not</strong> $u\,q_x$.</li>
+          <li><strong>Crossing the integer boundary.</strong> The shortcut formulas need the whole interval inside one year of age ($s+u\le1$). When $s+u>1$, <strong>split at the integer</strong> or — safer — express in $l$'s and interpolate. (Example 4.)</li>
+          <li><strong>Wrong interpolation for the assumption.</strong> UDD uses <strong>linear</strong> interpolation of $l$; CFM uses <strong>exponential</strong> ($l_{x+t}=l_x^{1-t}l_{x+1}^t$). Mixing them up is a classic slip — and watch for problems that put UDD on some years and CFM on others.</li>
+          <li><strong>CFM is memoryless in length, UDD is not.</strong> Under CFM ${}_uq_{x+s}$ depends only on $u$; under UDD it depends on both $s$ and $u$.</li>
+          <li><strong>"+½" rule is UDD-only.</strong> $\overset{\circ}{e}_x = e_x + \tfrac12$ holds <strong>exactly only under UDD</strong>. Under constant force it is an approximation (within-year mean lived is $q_x/\mu^*$, not exactly ½).</li>
+          <li><strong>Select tables: read across, then down.</strong> Advance along the row for the whole select period, then switch to the ultimate column at attained age $x+n$. Don't jump straight to ultimate at duration 0. And $q_{[x]+t} \le q_{x+t}$ — selection <em>lowers</em> mortality.</li>
+          <li><strong>Mixing select age and attained age.</strong> $[60]+2$ and $[62]$ are both attained age 62 but have <strong>different</strong> mortality. Track the bracket — and remember $[x]$ never becomes $[x+1]$; to change selection age you must route through the ultimate column.</li>
+          <li><strong>Diagonal vs across.</strong> If the table's headers are $q_{[x]}, q_{[x-1]+1}, \dots$ (attained-age rows), read <strong>down the diagonal</strong> to the ultimate column, not across. Check the headers first.</li>
+          <li><strong>Wrong interest rate / wrong table.</strong> The SULT is at $i = 0.05$. With a different interest rate you cannot use the tabulated $A_x$, $\ddot a_x$ — only the $l_x$ and $q_x$ columns are interest-free.</li>
+          <li><strong>Curtate $e_x$ sums from $k=1$, not $k=0$.</strong> $e_x = \sum_{k=1}^{\infty}{}_kp_x$. Starting at $k=0$ adds ${}_0p_x = 1$ and inflates your answer by exactly 1. (The pmf sum $\sum_{k=0}^\infty k\cdot{}_{k|}q_x$ <em>does</em> start at 0 — but its $k=0$ term is zero, so it agrees.)</li>
+          <li><strong>No clean continuous recursion.</strong> $e_x = p_x(1+e_{x+1})$ is <strong>curtate-only</strong>. There is <em>no</em> $\overset{\circ}{e}_x = p_x(1+\overset{\circ}{e}_{x+1})$. The correct continuous step is $\overset{\circ}{e}_x = \overset{\circ}{e}_{x:\overline{1}|} + p_x\,\overset{\circ}{e}_{x+1}$, which only simplifies to $\overset{\circ}{e}_x = 0.5q_x + p_x(1+\overset{\circ}{e}_{x+1})$ under UDD.</li>
+          <li><strong>"$+0.5$" is UDD-only.</strong> $\overset{\circ}{e}_x \approx e_x + 0.5$ is <strong>exact only under UDD</strong> (and a trapezoidal approximation otherwise). Don't apply it as if it were always exact.</li>
+        </ol>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Write ${}_tq_x$ in terms of $l$ values, and give all three forms of ${}_{u|t}q_x$.</summary>
+        <div class="qa-answer">$\displaystyle {}_tq_x = \frac{l_x - l_{x+t}}{l_x} = 1 - \frac{l_{x+t}}{l_x}$. Deferred death: $p{-}p$ form ${}_up_x - {}_{u+t}p_x$; $q{-}q$ form ${}_{u+t}q_x - {}_uq_x$; $p\times q$ form ${}_up_x\cdot{}_tq_{x+u}$; and in $l$'s $\dfrac{l_{x+u}-l_{x+u+t}}{l_x}$.</div>
+      </details>
+      <details class="qa"><summary>You are given only $p_{20}=0.98$, $p_{21}=0.975$, ${}_3p_{21}=0.94$, $q_{23}=0.03$. How would you find ${}_3p_{20}$ cleanly, and what is it?</summary>
+        <div class="qa-answer">Build a table off radix $l_{20}=1000$: $l_{21}=980$, $l_{22}=955.5$, $l_{24}=921.2$, then back out $l_{23}=921.2/0.97=949.69$. Then ${}_3p_{20}=l_{23}/l_{20}=0.9497$.</div>
+      </details>
+      <details class="qa"><summary>What is $\Pr[K_x = k]$, and what does $K_x$ equal in terms of $T_x$? If a life aged 20 dies at 21.4, what are $T_{20}$ and $K_{20}$?</summary>
+        <div class="qa-answer">$\Pr[K_x=k]={}_kp_x\,q_{x+k}={}_{k|}q_x$ (survive $k$ years, die in the next). $K_x=\lfloor T_x\rfloor$. If death is at $21.4$: $T_{20}=1.4$, $K_{20}=\lfloor1.4\rfloor=1$.</div>
+      </details>
+      <details class="qa"><summary>Under UDD with $q_x = 0.10$, what is $\mu_{x+0.5}$? Under constant force with the same $q_x$?</summary>
+        <div class="qa-answer"><strong>UDD:</strong> $\mu_{x+0.5} = \dfrac{0.10}{1 - 0.5(0.10)} = \dfrac{0.10}{0.95} = 0.10526$.  <strong>CFM:</strong> $\mu_{x+0.5} = -\ln(0.90) = 0.10536$ (constant at any $s$).</div>
+      </details>
+      <details class="qa"><summary>You need ${}_{0.8}q_{20.3}$ under UDD. Why can't you just write $\tfrac{0.8\,q_{20}}{1-0.3\,q_{20}}$, and what should you do instead?</summary>
+        <div class="qa-answer">Because $s+t=0.3+0.8=1.1>1$ — the interval crosses age 21, leaving the single year of age the shortcut requires. Instead express in $l$'s and interpolate: ${}_{0.8}q_{20.3}=\dfrac{l_{20.3}-l_{21.1}}{l_{20.3}}$ with each $l$ linearly interpolated. (With $l_{20}=80,l_{21}=76,l_{22}=71$ this gives $0.04188$.)</div>
+      </details>
+      <details class="qa"><summary>True/False: Under constant force, ${}_{0.4}q_{x+0.3}$ equals ${}_{0.4}q_{x}$ within the same year of age. Explain.</summary>
+        <div class="qa-answer"><strong>True.</strong> CFM within-year survival is exponential, hence memoryless: ${}_uq_{x+s} = 1 - (p_x)^u$ depends only on length $u=0.4$, not the start $s$. So ${}_{0.4}q_{x+0.3}={}_{0.4}q_{x}=1-(p_x)^{0.4}$. (<strong>False</strong> under UDD, where the denominator $1 - s q_x$ matters.)</div>
+      </details>
+      <details class="qa"><summary>Under UDD, $q_x=0.6$ and $\overset{\circ}{e}_x=10$. Find $\overset{\circ}{e}_{x+1}$ in one step.</summary>
+        <div class="qa-answer">Use $\overset{\circ}{e}_x = 0.5q_x + p_x(1+\overset{\circ}{e}_{x+1})$: $10 = 0.3 + 0.4(1+\overset{\circ}{e}_{x+1}) \Rightarrow \overset{\circ}{e}_{x+1}=23.25$.</div>
+      </details>
+      <details class="qa"><summary>A select table has a 3-year select period. A life is selected at age 55. Are $q_{[55]+1}$, $q_{[55]+3}$, $q_{56}$ equal or different? Express $q_{[55]+3}$ as an ultimate rate.</summary>
+        <div class="qa-answer">Selection wears off at duration 3 (attained 58). $q_{[55]+1}$ (attained 56, still select) is generally <strong>lower</strong> than $q_{56}$ (just selected at 56) — they <strong>differ</strong>. $q_{[55]+3}$ is at attained 58 with duration $=$ select period, so $q_{[55]+3}=q_{58}$ (ultimate).</div>
+      </details>
+      <details class="qa"><summary>In a select $l$ table, why can't you compute $l_{[51]}$ directly from $l_{[50]}$, and what's the route?</summary>
+        <div class="qa-answer">A life selected at 50 is never re-selected at 51, so $[50]$ and $[51]$ are separate cohorts — there's no direct $p$ linking them. Route through the <strong>ultimate</strong> column: build forward from $l_{[50]}$ to an ultimate $l$ (e.g. $l_{52},l_{53}$), then divide backward by the $[51]$ select survival rates to climb up the $[51]$ row.</div>
+      </details>
+      <details class="qa"><summary>A select table's headers are $q_{[x]},\,q_{[x-1]+1},\,q_{[x-2]+2},\,q_x$. How do you read it to get ${}_kp_{[x]+1}$?</summary>
+        <div class="qa-answer">This is the attained-age layout: each row is one current age. Read <strong>down a diagonal</strong> (matching fixed selection age $[x]$ as duration grows) until you hit the ultimate column, then continue straight down. (Not across, which would mix selection ages.)</div>
+      </details>
+      <details class="qa"><summary>Write the survival-function (no-density) formulas for $\overset{\circ}{e}_x$, $\mathrm E[T_x^2]$, $e_x$, and $\mathrm E[K_x^2]$. Watch the lower limits.</summary>
+        <div class="qa-answer">$\displaystyle \overset{\circ}{e}_x = \int_0^\infty {}_tp_x\,dt$, &nbsp; $\displaystyle \mathrm E[T_x^2] = \int_0^\infty 2t\,{}_tp_x\,dt$, &nbsp; $\displaystyle e_x = \sum_{k=1}^{\infty}{}_kp_x$ (starts at $k=1$!), &nbsp; $\displaystyle \mathrm E[K_x^2] = \sum_{k=1}^{\infty}(2k-1)\,{}_kp_x$. Then $\mathrm{Var} = \mathrm E[\cdot^2] - (\text{mean})^2$.</div>
+      </details>
+      <details class="qa"><summary>Given $S_0(x)=\left(\tfrac{50}{50+x}\right)^3$, you found $\overset{\circ}{e}_{20}=35$ and $\mathrm E[T_{20}^2]=4900$. What is $\mathrm{Var}[T_{20}]$? And what is $\overset{\circ}{e}_{20:\overline{15}|}$?</summary>
+        <div class="qa-answer">$\mathrm{Var}[T_{20}] = 4900 - 35^2 = 3675$. The temporary expectation truncates the integral at 15: $\overset{\circ}{e}_{20:\overline{15}|} = \int_0^{15}\left(\tfrac{70}{70+t}\right)^3 dt = \tfrac{70^3}{2}\left(\tfrac{1}{70^2}-\tfrac{1}{85^2}\right) = 35 - 23.737 = 11.263$.</div>
+      </details>
+      <details class="qa"><summary>$e_x = 70$ and $p_x = 0.99$ — find $e_{x+1}$. Why can't you write $\overset{\circ}{e}_x = p_x(1+\overset{\circ}{e}_{x+1})$ the same way?</summary>
+        <div class="qa-answer">Curtate recursion: $e_x = p_x(1+e_{x+1}) \Rightarrow 70 = 0.99(1+e_{x+1}) \Rightarrow e_{x+1}=69.71$. The continuous form has <strong>no</strong> clean $p_x(1+\overset{\circ}{e}_{x+1})$; the honest version is $\overset{\circ}{e}_x = \overset{\circ}{e}_{x:\overline{1}|}+p_x\overset{\circ}{e}_{x+1}$, simplifying to $0.5q_x + p_x(1+\overset{\circ}{e}_{x+1})$ only under UDD.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

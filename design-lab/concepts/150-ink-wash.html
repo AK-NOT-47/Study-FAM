@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500;700;900&family=Shippori+Mincho:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#16130f;
+    --ink-soft:#3a342c;
+    --ink-faint:#6f675b;
+    --paper:#f7f3ea;
+    --paper-2:#efe8da;
+    --wash:#e6ddcb;
+    --vermillion:#b4332a;      /* hanko seal red */
+    --vermillion-deep:#8e2620;
+    --line:#d8cfbc;
+    --glow:rgba(22,19,15,.08);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Shippori Mincho", serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---- Paper texture + subtle ink bleed in the background ---- */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(420px 520px at 84% -6%, rgba(22,19,15,.05), transparent 70%),
+      radial-gradient(560px 460px at -8% 108%, rgba(22,19,15,.045), transparent 72%),
+      repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(22,19,15,.012) 3px, rgba(22,19,15,.012) 4px);
+  }
+
+  a{color:inherit;text-decoration:none}
+
+  .wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,54px)}
+
+  /* ====================== ENSO / brush flourishes ====================== */
+  .enso{position:absolute;pointer-events:none;z-index:0}
+
+  /* ============================ HEADER ============================ */
+  header{
+    position:relative;z-index:2;
+    padding-top:clamp(26px,4vw,46px);
+  }
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:24px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:16px}
+  .mmark{
+    width:58px;height:58px;flex:0 0 auto;position:relative;
+    display:grid;place-items:center;
+  }
+  .mmark svg{width:100%;height:100%;display:block}
+  .brand-txt{display:flex;flex-direction:column;line-height:1.05}
+  .brand-name{
+    font-family:"Zen Old Mincho",serif;font-weight:900;
+    font-size:clamp(20px,2.1vw,25px);letter-spacing:.04em;
+  }
+  .brand-name .ink-dot{color:var(--vermillion)}
+  .brand-tag{
+    font-size:12px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--ink-faint);margin-top:3px;font-family:"Spline Sans Mono",monospace;
+  }
+
+  /* primary nav */
+  nav.primary{display:flex;align-items:center;gap:clamp(8px,1.6vw,26px);flex-wrap:wrap}
+  .seal-label{
+    font-family:"Spline Sans Mono",monospace;
+    font-size:11px;letter-spacing:.18em;
+    color:var(--paper);background:var(--vermillion);
+    padding:7px 12px;border-radius:3px;
+    box-shadow:0 3px 0 var(--vermillion-deep);
+    transform:rotate(-1.5deg);
+  }
+  nav.primary a{
+    position:relative;font-size:15px;color:var(--ink-soft);
+    padding:4px 2px;transition:color .25s;
+  }
+  nav.primary a::after{
+    content:"";position:absolute;left:0;right:100%;bottom:-3px;height:2px;
+    background:var(--ink);transition:right .3s ease;border-radius:2px;
+  }
+  nav.primary a:hover{color:var(--ink)}
+  nav.primary a:hover::after{right:0}
+
+  /* brush divider */
+  .brush-rule{
+    margin:clamp(22px,3vw,34px) 0 0;height:14px;width:100%;
+    background:no-repeat center/100% 100%;
+  }
+  .brush-rule svg{width:100%;height:14px;display:block}
+
+  /* ============================ HERO ============================ */
+  .hero{
+    position:relative;z-index:2;
+    display:grid;grid-template-columns:1.45fr 1fr;
+    gap:clamp(26px,4vw,60px);
+    align-items:center;
+    padding:clamp(34px,5vw,64px) 0 clamp(26px,3vw,40px);
+  }
+  .greeting{
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:"Spline Sans Mono",monospace;
+    font-size:13px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:20px;
+  }
+  .greeting .moon{font-size:16px;filter:grayscale(1) contrast(1.1)}
+  .greeting::before{content:"";width:34px;height:1px;background:var(--ink-faint)}
+
+  h1.headline{
+    font-family:"Zen Old Mincho",serif;font-weight:900;
+    font-size:clamp(42px,6.4vw,86px);line-height:.98;
+    letter-spacing:-.01em;margin-bottom:24px;
+    position:relative;
+  }
+  h1.headline .stroke{
+    position:relative;display:inline-block;
+  }
+  h1.headline .stroke::after{
+    content:"";position:absolute;left:-4px;right:-6px;bottom:.06em;height:.42em;
+    background:var(--vermillion);opacity:.16;border-radius:60% 40% 55% 45%;
+    transform:rotate(-1deg);z-index:-1;
+  }
+  .lede{
+    font-size:clamp(16px,1.5vw,19px);color:var(--ink-soft);
+    max-width:52ch;margin-bottom:30px;
+  }
+  .cta-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .btn{
+    font-family:"Shippori Mincho",serif;font-weight:600;
+    font-size:16px;padding:14px 30px;border:none;cursor:pointer;
+    position:relative;transition:transform .2s, box-shadow .2s;
+  }
+  .btn-primary{
+    background:var(--ink);color:var(--paper);
+    border-radius:30px 28px 32px 26px;
+    box-shadow:0 8px 24px rgba(22,19,15,.22);
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(22,19,15,.3)}
+  .btn-ghost{
+    background:transparent;color:var(--ink);
+    border:1.5px solid var(--ink);
+    border-radius:28px 30px 26px 32px;
+  }
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);transform:translateY(-3px)}
+
+  /* hero side: the enso + exam seal card */
+  .hero-side{position:relative;display:flex;justify-content:center;align-items:center;min-height:300px}
+  .enso-stage{position:relative;width:min(330px,82vw);aspect-ratio:1}
+  .enso-stage svg{width:100%;height:100%;display:block}
+  .enso-center{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;text-align:center;gap:2px;
+  }
+  .enso-pct{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:clamp(44px,7vw,64px);line-height:1}
+  .enso-cap{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase}
+  .enso-sub{font-size:13px;color:var(--ink-soft)}
+
+  /* ============================ STATS ============================ */
+  .stats{
+    position:relative;z-index:2;
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:clamp(14px,2vw,26px);margin:clamp(8px,2vw,18px) 0 clamp(34px,5vw,56px);
+  }
+  .stat{
+    background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
+    border:1px solid var(--line);
+    border-radius:4px 18px 4px 18px;
+    padding:24px 26px 22px;position:relative;overflow:hidden;
+  }
+  .stat::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+    background:var(--ink);
+  }
+  .stat.accent::before{background:var(--vermillion)}
+  .stat-k{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+  .stat-v{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:clamp(34px,4vw,46px);line-height:1}
+  .stat-v small{font-size:.4em;font-weight:500;color:var(--ink-faint);letter-spacing:.02em}
+  .stat-d{font-size:14px;color:var(--ink-soft);margin-top:8px}
+  .stat-bar{height:7px;background:var(--wash);border-radius:6px;margin-top:14px;overflow:hidden}
+  .stat-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ink),var(--ink-soft));border-radius:6px}
+
+  /* ============================ MAIN GRID ============================ */
+  .grid{
+    position:relative;z-index:2;
+    display:grid;grid-template-columns:280px 1fr;
+    gap:clamp(20px,3vw,40px);
+    padding-bottom:clamp(40px,6vw,80px);
+  }
+
+  /* ---- sidebar topic list ---- */
+  aside{position:relative}
+  .panel{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px 4px 22px 4px;
+    padding:26px 24px;
+    position:sticky;top:24px;
+  }
+  .panel-h{
+    font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--ink-faint);
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .panel-h::after{content:"";flex:1;height:1px;background:var(--line)}
+  .topic{
+    display:flex;align-items:center;gap:13px;
+    padding:11px 4px;border-bottom:1px dashed var(--line);
+    font-size:16px;color:var(--ink-soft);
+    transition:color .2s, padding-left .2s;
+  }
+  .topic:last-child{border-bottom:none}
+  .topic:hover{color:var(--ink);padding-left:8px}
+  .topic .idx{
+    font-family:"Spline Sans Mono",monospace;font-size:12px;
+    color:var(--paper);background:var(--ink);
+    width:24px;height:24px;border-radius:50%;
+    display:grid;place-items:center;flex:0 0 auto;
+  }
+  .topic.done .idx{background:var(--vermillion)}
+  .topic .chk{margin-left:auto;font-size:13px;color:var(--vermillion);font-family:"Spline Sans Mono",monospace}
+
+  .section-tag{
+    margin:22px 0 6px;
+    font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--paper);
+    background:var(--ink);display:inline-block;padding:5px 11px;border-radius:3px;
+  }
+
+  /* ---- main content column ---- */
+  .content{display:flex;flex-direction:column;gap:clamp(20px,3vw,28px)}
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:clamp(24px,3vw,38px);
+    position:relative;
+  }
+  .card-eyebrow{
+    font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--vermillion);margin-bottom:12px;
+    display:flex;align-items:center;gap:9px;
+  }
+  .card-title{
+    font-family:"Zen Old Mincho",serif;font-weight:700;
+    font-size:clamp(22px,2.6vw,30px);line-height:1.1;margin-bottom:14px;
+  }
+  .card-lede{font-size:16px;color:var(--ink-soft);max-width:60ch}
+
+  /* exam FAM card — like a stamped certificate */
+  .exam-card{
+    display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;
+    background:
+      linear-gradient(180deg,#fffdf7,#f4ecdc);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    overflow:hidden;position:relative;
+  }
+  .exam-card::after{
+    content:"";position:absolute;inset:7px;border:1px solid var(--line);
+    border-radius:3px;pointer-events:none;
+  }
+  .exam-left{padding:clamp(26px,3vw,38px);position:relative;z-index:1}
+  .exam-kicker{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px}
+  .exam-name{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:clamp(30px,4.4vw,52px);line-height:1;margin-bottom:6px}
+  .exam-full{font-size:16px;color:var(--ink-soft);margin-bottom:18px}
+  .exam-meta{display:flex;gap:22px;flex-wrap:wrap}
+  .exam-meta div{display:flex;flex-direction:column;gap:2px}
+  .exam-meta .m-k{font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+  .exam-meta .m-v{font-family:"Zen Old Mincho",serif;font-weight:700;font-size:19px}
+  /* hanko seal */
+  .hanko{
+    flex:0 0 auto;align-self:center;margin:clamp(20px,2vw,30px);
+    width:clamp(96px,11vw,128px);height:clamp(96px,11vw,128px);
+    display:grid;place-items:center;position:relative;z-index:1;
+    color:var(--paper);font-family:"Zen Old Mincho",serif;font-weight:900;
+    text-align:center;line-height:1.05;
+  }
+  .hanko svg{position:absolute;inset:0;width:100%;height:100%}
+  .hanko span{position:relative;font-size:clamp(13px,1.4vw,16px);letter-spacing:.04em;padding:6px}
+
+  /* formula block */
+  .formula-card{position:relative}
+  .formula{
+    margin-top:20px;
+    background:var(--ink);color:var(--paper);
+    border-radius:5px;
+    padding:clamp(20px,2.5vw,30px);
+    display:flex;flex-direction:column;gap:0;
+    position:relative;overflow:hidden;
+  }
+  .formula::before{
+    content:"";position:absolute;right:-40px;top:-50px;
+    width:200px;height:200px;border-radius:50%;
+    border:18px solid rgba(247,243,234,.05);
+  }
+  .formula .frow{
+    display:flex;align-items:center;gap:16px;
+    padding:14px 4px;
+    border-bottom:1px solid rgba(247,243,234,.12);
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .fnum{
+    font-family:"Spline Sans Mono",monospace;font-size:12px;
+    color:var(--vermillion);flex:0 0 auto;
+    width:26px;
+  }
+  .fexpr{
+    font-family:"Spline Sans Mono",monospace;
+    font-size:clamp(16px,1.9vw,21px);letter-spacing:.01em;
+    color:var(--paper);
+  }
+  .fexpr b{color:#f0c27a;font-weight:500}
+
+  /* common trap callout */
+  .trap{
+    background:linear-gradient(180deg,#fbf1ea,#f6e6dc);
+    border:1.5px solid var(--vermillion);
+    border-left-width:7px;
+    border-radius:4px 14px 14px 4px;
+    padding:22px 26px;display:flex;gap:18px;align-items:flex-start;
+  }
+  .trap .mark{
+    font-family:"Zen Old Mincho",serif;font-weight:900;font-size:30px;
+    color:var(--vermillion);flex:0 0 auto;line-height:1;
+  }
+  .trap-body h4{
+    font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--vermillion-deep);margin-bottom:6px;
+  }
+  .trap-body p{font-size:16px;color:var(--ink-soft)}
+  .trap-body p code{
+    font-family:"Spline Sans Mono",monospace;background:rgba(180,51,42,.12);
+    padding:1px 6px;border-radius:3px;color:var(--vermillion-deep);font-size:.92em;
+  }
+
+  /* worked example teaser */
+  .example{
+    display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:6px;padding:clamp(22px,3vw,32px);
+  }
+  .example .ex-num{
+    font-family:"Zen Old Mincho",serif;font-weight:900;
+    font-size:clamp(40px,5vw,60px);color:var(--wash);
+    -webkit-text-stroke:1.5px var(--ink-faint);line-height:1;flex:0 0 auto;
+  }
+  .ex-info{flex:1;min-width:200px}
+  .ex-info .ex-eyebrow{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--vermillion);margin-bottom:6px}
+  .ex-info .ex-t{font-family:"Zen Old Mincho",serif;font-weight:700;font-size:clamp(20px,2.3vw,26px);line-height:1.12}
+  .ex-cta{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* ============================ FOOTER ============================ */
+  footer{
+    position:relative;z-index:2;
+    border-top:1px solid var(--line);
+    padding:30px 0 46px;margin-top:10px;
+    display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+  }
+  .foot-brand{display:flex;align-items:center;gap:12px;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:18px}
+  .foot-dot{color:var(--vermillion)}
+  .foot-tag{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase}
+
+  /* ============================ RESPONSIVE ============================ */
+  @media (max-width:980px){
+    .hero{grid-template-columns:1fr}
+    .hero-side{order:-1}
+    .grid{grid-template-columns:1fr}
+    .panel{position:relative;top:0}
+  }
+  @media (max-width:700px){
+    .stats{grid-template-columns:1fr}
+    nav.primary{gap:10px 14px}
+    nav.primary a{font-size:14px}
+    .exam-card{flex-direction:column}
+    .hanko{align-self:flex-end;margin-top:0}
+  }
+
+  /* gentle brush draw-in */
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.4s cubic-bezier(.5,0,.2,1) forwards}
+  @media (prefers-reduced-motion:reduce){.draw{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<!-- background brush flourishes -->
+<svg class="enso" style="top:-60px;left:-90px;width:340px;height:340px;opacity:.05" viewBox="0 0 200 200" aria-hidden="true">
+  <path d="M40,120 C20,60 90,20 140,40 C190,60 180,140 120,160 C70,176 30,150 60,110"
+        fill="none" stroke="#16130f" stroke-width="14" stroke-linecap="round"/>
+</svg>
+<svg class="enso" style="bottom:6%;right:-70px;width:300px;height:300px;opacity:.045" viewBox="0 0 200 200" aria-hidden="true">
+  <path d="M30,30 C120,10 200,90 150,160 C120,200 40,180 50,120" fill="none" stroke="#16130f" stroke-width="16" stroke-linecap="round"/>
+</svg>
+
+<div class="wrap">
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="mmark" aria-label="M mark">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <!-- brushed M -->
+            <path d="M14,82 C18,52 20,30 22,20 C30,40 40,62 50,68 C60,62 70,40 78,20 C80,30 82,52 86,82"
+                  fill="none" stroke="#16130f" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="20" r="6.5" fill="#b4332a"/>
+          </svg>
+        </div>
+        <div class="brand-txt">
+          <span class="brand-name">Me Studing Stuff<span class="ink-dot">.</span></span>
+          <span class="brand-tag">Study smarter · Pass exams</span>
+        </div>
+      </div>
+
+      <nav class="primary" aria-label="Primary">
+        <span class="seal-label">FAM-L / FAM-S</span>
+        <a href="#">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+      </nav>
+    </div>
+
+    <div class="brush-rule" aria-hidden="true">
+      <svg viewBox="0 0 1200 14" preserveAspectRatio="none">
+        <path class="draw" d="M2,8 C180,2 340,12 520,7 C760,1 980,13 1198,6"
+              fill="none" stroke="#16130f" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-main">
+      <div class="greeting"><span class="moon">🌙</span> Good evening</div>
+      <h1 class="headline">Let&rsquo;s get you<br/>that <span class="stroke">pass.</span></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary">Start studying →</button>
+        <button class="btn btn-ghost">Resume</button>
+      </div>
+    </div>
+
+    <div class="hero-side">
+      <div class="enso-stage" aria-label="Overall progress 72 percent">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <!-- faint full enso -->
+          <path d="M100,18
+                   C150,18 184,55 184,100
+                   C184,150 145,184 100,184
+                   C50,184 16,148 16,100
+                   C16,58 46,24 92,19"
+                fill="none" stroke="#d8cfbc" stroke-width="13" stroke-linecap="round"/>
+          <!-- inked 72% portion -->
+          <path class="draw" d="M100,18
+                   C150,18 184,55 184,100
+                   C184,150 145,184 100,184
+                   C66,184 38,164 24,134"
+                fill="none" stroke="#16130f" stroke-width="13" stroke-linecap="round"/>
+        </svg>
+        <div class="enso-center">
+          <div class="enso-pct">72%</div>
+          <div class="enso-cap">Overall progress</div>
+          <div class="enso-sub">12 of 17 topics</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats" aria-label="Study statistics">
+    <div class="stat">
+      <div class="stat-k">Overall progress</div>
+      <div class="stat-v">72<small>%</small></div>
+      <div class="stat-d">12 of 17 topics covered</div>
+      <div class="stat-bar"><i style="width:72%"></i></div>
+    </div>
+    <div class="stat accent">
+      <div class="stat-k">Exam countdown</div>
+      <div class="stat-v">86 <small>days</small></div>
+      <div class="stat-d">Until your sitting</div>
+      <div class="stat-bar"><i style="width:34%;background:linear-gradient(90deg,#b4332a,#8e2620)"></i></div>
+    </div>
+    <div class="stat">
+      <div class="stat-k">Topics solid</div>
+      <div class="stat-v">8 <small>/ 17</small></div>
+      <div class="stat-d">Mastered & retained</div>
+      <div class="stat-bar"><i style="width:47%"></i></div>
+    </div>
+  </section>
+
+  <!-- ================= MAIN GRID ================= -->
+  <div class="grid">
+
+    <!-- sidebar -->
+    <aside>
+      <div class="panel">
+        <div class="panel-h">Syllabus path</div>
+
+        <a class="topic done"><span class="idx">1</span> Survival Models <span class="chk">solid</span></a>
+        <a class="topic done"><span class="idx">2</span> Life Tables <span class="chk">solid</span></a>
+        <a class="topic"><span class="idx">3</span> Life Insurance</a>
+        <a class="topic"><span class="idx">4</span> Life Annuities</a>
+        <a class="topic"><span class="idx">5</span> Premiums</a>
+        <a class="topic"><span class="idx">6</span> Policy Values</a>
+
+        <span class="section-tag">FAM-L / FAM-S</span>
+        <a class="topic" style="margin-top:6px"><span class="idx">S</span> Short-Term Models</a>
+        <a class="topic"><span class="idx">P</span> Pricing & Reserving</a>
+      </div>
+    </aside>
+
+    <!-- content -->
+    <main class="content">
+
+      <!-- Exam FAM certificate card -->
+      <section class="exam-card">
+        <div class="exam-left">
+          <div class="exam-kicker">Now sitting</div>
+          <div class="exam-name">Exam FAM</div>
+          <div class="exam-full">Fundamentals of Actuarial Mathematics</div>
+          <div class="exam-meta">
+            <div><span class="m-k">Body</span><span class="m-v">SOA</span></div>
+            <div><span class="m-k">Questions</span><span class="m-v">34</span></div>
+            <div><span class="m-k">Pass mark</span><span class="m-v">6 / 10</span></div>
+          </div>
+        </div>
+        <div class="hanko" aria-label="FAM seal">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <rect x="6" y="6" width="108" height="108" rx="10"
+                  fill="#b4332a" stroke="#8e2620" stroke-width="3"/>
+            <rect x="14" y="14" width="92" height="92" rx="6"
+                  fill="none" stroke="#f7f3ea" stroke-width="2" opacity=".5"/>
+          </svg>
+          <span>合<br/>FAM<br/>格</span>
+        </div>
+      </section>
+
+      <!-- Topic preview: Life Insurance Present Values + formula -->
+      <section class="card formula-card">
+        <div class="card-eyebrow">◦ Topic preview · Life Insurance</div>
+        <h2 class="card-title">Life Insurance Present Values</h2>
+        <p class="card-lede">The three relationships you will lean on for whole-life EPVs, their variance, and the annuity bridge — commit the shapes, not the symbols.</p>
+        <div class="formula" role="img" aria-label="Three life insurance formulas">
+          <div class="frow"><span class="fnum">i</span><span class="fexpr"><b>A_x</b> = 1 − d·ä_x</span></div>
+          <div class="frow"><span class="fnum">ii</span><span class="fexpr"><b>Var(Z)</b> = ²A_x − (A_x)²</span></div>
+          <div class="frow"><span class="fnum">iii</span><span class="fexpr"><b>ä_x</b> = (1 − A_x) / d</span></div>
+        </div>
+      </section>
+
+      <!-- Common trap -->
+      <section class="trap">
+        <span class="mark">注</span>
+        <div class="trap-body">
+          <h4>Common trap</h4>
+          <p>Under UDD, multiply <code>ONLY</code> the term/death piece by <code>i/δ</code> — the pure endowment is never rescaled.</p>
+        </div>
+      </section>
+
+      <!-- Worked example teaser -->
+      <section class="example">
+        <div class="ex-num">01</div>
+        <div class="ex-info">
+          <div class="ex-eyebrow">Worked example</div>
+          <div class="ex-t">Example 1 — Whole life EPV &amp; variance</div>
+        </div>
+        <div class="ex-cta">
+          <button class="btn btn-primary">Start studying →</button>
+          <button class="btn btn-ghost">Resume</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <div class="foot-brand">
+      <svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M14,82 C18,52 20,30 22,20 C30,40 40,62 50,68 C60,62 70,40 78,20 C80,30 82,52 86,82"
+              fill="none" stroke="#16130f" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="50" cy="20" r="6.5" fill="#b4332a"/>
+      </svg>
+      Me Studing Stuff<span class="foot-dot">.</span>
+    </div>
+    <div class="foot-tag">Study smarter. Pass exams. · SOA Exam FAM</div>
+  </footer>
+
+</div>
+</body>
+</html>

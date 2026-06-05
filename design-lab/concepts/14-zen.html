@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Inter:wght@300;400;500&family=Newsreader:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f6f2;
+    --paper-2:#fbfaf7;
+    --ink:#1c1d1a;
+    --ink-soft:#52544e;
+    --ink-faint:#8e8f88;
+    --line:#e3e1d9;
+    --line-soft:#ecebe4;
+    --accent:#5b6f5a;      /* quiet sage */
+    --accent-deep:#3f5240;
+    --accent-wash:#eef0ec;
+    --space:clamp(1.5rem,4vw,4rem);
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --serif-it:'Newsreader',Georgia,'Times New Roman',serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+
+  body{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 78% 8%, var(--accent-wash) 0, transparent 42%);
+    color:var(--ink);
+    line-height:1.6;
+    font-weight:300;
+    letter-spacing:.01em;
+    min-height:100vh;
+  }
+
+  ::selection{background:var(--accent-wash);color:var(--accent-deep);}
+
+  a{color:inherit;text-decoration:none;}
+
+  .shell{
+    max-width:1180px;
+    margin:0 auto;
+    padding:clamp(2rem,5vw,4.5rem) var(--space) 0;
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:clamp(2.5rem,5vw,4rem);
+  }
+  .brand{display:flex;align-items:center;gap:.85rem;}
+  .mark{
+    width:40px;height:40px;border-radius:50%;
+    border:1.5px solid var(--ink);
+    border-right-color:var(--accent);
+    border-bottom-color:transparent;
+    transform:rotate(-18deg);
+    display:grid;place-items:center;
+    font-family:var(--serif);
+    font-weight:400;font-size:1.15rem;
+    color:var(--ink);
+    line-height:1;
+  }
+  .mark span{display:block;transform:rotate(18deg);}
+  .brand-name{
+    font-family:var(--serif);
+    font-weight:400;font-size:1.05rem;
+    letter-spacing:.02em;
+  }
+  .brand-tag{
+    display:block;
+    font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:400;margin-top:.15rem;
+  }
+  .section-pill{
+    font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent-deep);
+    border:1px solid var(--line);
+    padding:.5rem .9rem;border-radius:999px;
+    background:var(--paper-2);
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:clamp(2rem,5vw,5rem);
+    padding-bottom:6rem;
+  }
+
+  /* ---------- SIDEBAR NAV ---------- */
+  nav.side{position:sticky;top:2.5rem;align-self:start;}
+  .nav-label{
+    font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:1.4rem;font-weight:400;
+  }
+  .nav-list{list-style:none;display:flex;flex-direction:column;gap:.1rem;}
+  .nav-list a{
+    display:flex;align-items:baseline;gap:.7rem;
+    padding:.55rem 0;
+    font-size:.92rem;color:var(--ink-soft);
+    border-bottom:1px solid transparent;
+    transition:color .25s ease, padding .25s ease;
+  }
+  .nav-list a .idx{
+    font-family:var(--serif-it);font-style:italic;
+    font-size:.78rem;color:var(--ink-faint);width:1.2rem;
+  }
+  .nav-list a:hover{color:var(--ink);padding-left:.4rem;}
+  .nav-list a.active{color:var(--accent-deep);font-weight:400;}
+  .nav-list a.active .idx{color:var(--accent);}
+  .nav-list a.active::after{
+    content:"";margin-left:auto;align-self:center;
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+  }
+  .nav-foot{
+    margin-top:2.2rem;padding-top:1.4rem;border-top:1px solid var(--line);
+    font-size:.78rem;color:var(--ink-faint);line-height:1.7;
+  }
+
+  /* ---------- MAIN ---------- */
+  main{min-width:0;}
+
+  .greeting{
+    font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:1.6rem;font-weight:400;
+    display:flex;align-items:center;gap:.7rem;
+  }
+  .greeting::before{content:"";width:26px;height:1px;background:var(--accent);}
+
+  h1.hero{
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.6rem,6.5vw,5rem);
+    line-height:1.02;
+    letter-spacing:-.015em;
+    color:var(--ink);
+    max-width:14ch;
+  }
+  h1.hero em{font-style:italic;color:var(--accent-deep);}
+
+  .lede{
+    margin-top:1.8rem;
+    max-width:46ch;
+    font-size:1.05rem;
+    color:var(--ink-soft);
+    font-weight:300;
+  }
+
+  /* ---------- STATS ---------- */
+  .stats{
+    margin-top:clamp(3rem,6vw,4.5rem);
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-top:1px solid var(--line);
+  }
+  .stat{padding:1.8rem 1.4rem 1.4rem 0;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;padding-right:0;}
+  .stat .num{
+    font-family:var(--serif);font-weight:300;
+    font-size:clamp(2rem,4vw,2.7rem);line-height:1;color:var(--ink);
+    letter-spacing:-.01em;
+  }
+  .stat .num span{font-size:1.1rem;color:var(--ink-faint);}
+  .stat .lab{
+    margin-top:.7rem;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .stat .sub{font-size:.82rem;color:var(--ink-soft);margin-top:.35rem;}
+  .bar{height:2px;background:var(--line-soft);margin-top:1rem;border-radius:2px;overflow:hidden;}
+  .bar>i{display:block;height:100%;width:72%;background:var(--accent);}
+
+  /* ---------- CARD GRID ---------- */
+  .grid{
+    margin-top:clamp(3rem,6vw,4.5rem);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.4rem;
+  }
+  .card{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:clamp(1.6rem,3vw,2.2rem);
+  }
+  .card-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:1.3rem;
+  }
+  .eyebrow{
+    font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:400;
+  }
+
+  /* Exam card */
+  .exam-card{grid-column:span 1;display:flex;flex-direction:column;}
+  .exam-title{
+    font-family:var(--serif);font-weight:300;font-size:1.8rem;
+    line-height:1.1;color:var(--ink);
+  }
+  .exam-sub{font-size:.9rem;color:var(--ink-soft);margin-top:.5rem;}
+  .exam-meta{
+    margin-top:auto;padding-top:1.5rem;
+    display:flex;flex-wrap:wrap;gap:.5rem;
+  }
+  .chip{
+    font-size:.72rem;color:var(--ink-soft);
+    border:1px solid var(--line);border-radius:999px;
+    padding:.32rem .8rem;background:var(--paper);
+  }
+  .chip.pass{color:var(--accent-deep);border-color:var(--accent-wash);background:var(--accent-wash);}
+
+  /* Content preview card spans both */
+  .preview-card{grid-column:1 / -1;}
+  .preview-title{
+    font-family:var(--serif);font-weight:300;font-size:1.7rem;
+    color:var(--ink);line-height:1.1;
+  }
+  .preview-lede{font-size:.95rem;color:var(--ink-soft);margin-top:.55rem;max-width:60ch;}
+
+  .formula{
+    margin-top:1.8rem;
+    display:flex;flex-wrap:wrap;align-items:stretch;
+    gap:0;
+    border:1px solid var(--line);border-radius:12px;
+    background:var(--paper);
+    overflow:hidden;
+  }
+  .formula .f{
+    flex:1 1 200px;
+    padding:1.4rem 1.6rem;
+    font-family:var(--serif-it);
+    font-size:1.18rem;color:var(--ink);
+    display:flex;flex-direction:column;gap:.55rem;justify-content:center;
+    border-right:1px solid var(--line-soft);
+  }
+  .formula .f:last-child{border-right:none;}
+  .formula .f .cap{
+    font-family:'Inter',sans-serif;font-size:.62rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink-faint);font-weight:400;
+  }
+  .formula sub{font-size:.7em;}
+  .formula sup{font-size:.7em;}
+
+  /* trap callout */
+  .trap{
+    margin-top:1.6rem;
+    border-left:2px solid var(--accent);
+    padding:.2rem 0 .2rem 1.5rem;
+  }
+  .trap .t-lab{
+    font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent-deep);font-weight:500;margin-bottom:.5rem;
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .trap p{font-size:.95rem;color:var(--ink-soft);max-width:62ch;}
+  .trap em{font-style:normal;color:var(--ink);border-bottom:1px solid var(--accent-wash);}
+
+  /* example teaser */
+  .example{
+    margin-top:1.8rem;padding-top:1.8rem;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:1.5rem;
+  }
+  .ex-text .ex-lab{
+    font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:.4rem;
+  }
+  .ex-text .ex-name{
+    font-family:var(--serif-it);font-style:italic;font-size:1.25rem;color:var(--ink);
+  }
+  .actions{display:flex;gap:.8rem;}
+  .btn{
+    font-size:.85rem;letter-spacing:.04em;
+    padding:.85rem 1.7rem;border-radius:999px;
+    border:1px solid var(--ink);
+    transition:all .25s ease;cursor:pointer;
+    font-family:'Inter',sans-serif;font-weight:400;
+  }
+  .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);}
+  .btn.ghost{background:transparent;color:var(--ink);}
+  .btn.ghost:hover{background:var(--paper);border-color:var(--ink-soft);color:var(--accent-deep);}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:2.2rem var(--space);
+  }
+  .foot-inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:1rem;
+    font-size:.78rem;color:var(--ink-faint);
+  }
+  .foot-inner .brand-name{font-size:.92rem;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:880px){
+    .layout{grid-template-columns:1fr;gap:2.5rem;}
+    nav.side{position:static;}
+    .nav-list{flex-direction:row;flex-wrap:wrap;gap:.2rem 1.6rem;}
+    .nav-list a{border-bottom:none;padding:.3rem 0;}
+    .nav-list a.active::after{display:none;}
+    .nav-foot{display:none;}
+    .grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .stat{border-right:none;border-bottom:1px solid var(--line);padding:1.4rem 0;}
+    .stat:last-child{border-bottom:none;}
+    .formula .f{flex:1 1 100%;border-right:none;border-bottom:1px solid var(--line-soft);}
+    .formula .f:last-child{border-bottom:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="shell">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark"><span>M</span></div>
+        <div>
+          <span class="brand-name">Me Studing Stuff</span>
+          <span class="brand-tag">Study smarter · Pass exams</span>
+        </div>
+      </div>
+      <span class="section-pill">FAM-L / FAM-S</span>
+    </header>
+
+    <div class="layout">
+
+      <!-- SIDEBAR NAV -->
+      <nav class="side">
+        <div class="nav-label">Topics</div>
+        <ul class="nav-list">
+          <li><a href="#"><span class="idx">i</span>Survival Models</a></li>
+          <li><a href="#"><span class="idx">ii</span>Life Tables</a></li>
+          <li><a class="active" href="#"><span class="idx">iii</span>Life Insurance</a></li>
+          <li><a href="#"><span class="idx">iv</span>Life Annuities</a></li>
+          <li><a href="#"><span class="idx">v</span>Premiums</a></li>
+          <li><a href="#"><span class="idx">vi</span>Policy Values</a></li>
+          <li><a href="#"><span class="idx">vii</span>Multiple States</a></li>
+          <li><a href="#"><span class="idx">viii</span>Short-Term Insurance</a></li>
+        </ul>
+        <div class="nav-foot">
+          17 topics in all.<br>
+          A calm, steady path<br>to your pass.
+        </div>
+      </nav>
+
+      <!-- MAIN -->
+      <main>
+        <p class="greeting">Good evening</p>
+        <h1 class="hero">Let&rsquo;s get you that <em>pass.</em></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+        <!-- STATS -->
+        <section class="stats">
+          <div class="stat">
+            <div class="num">72<span>%</span></div>
+            <div class="lab">Overall progress</div>
+            <div class="sub">12 of 17 topics</div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="stat">
+            <div class="num">86</div>
+            <div class="lab">Exam countdown</div>
+            <div class="sub">days remaining</div>
+          </div>
+          <div class="stat">
+            <div class="num">8</div>
+            <div class="lab">Topics solid</div>
+            <div class="sub">reviewed &amp; secure</div>
+          </div>
+        </section>
+
+        <!-- CARDS -->
+        <section class="grid">
+
+          <!-- EXAM CARD -->
+          <article class="card exam-card">
+            <div class="card-head">
+              <span class="eyebrow">Your exam</span>
+            </div>
+            <div class="exam-title">Exam FAM</div>
+            <div class="exam-sub">Fundamentals of Actuarial Mathematics</div>
+            <div class="exam-meta">
+              <span class="chip">SOA</span>
+              <span class="chip">34 questions</span>
+              <span class="chip pass">Pass = 6/10</span>
+            </div>
+          </article>
+
+          <!-- A SMALL COMPANION CARD: example teaser preview -->
+          <article class="card">
+            <div class="card-head">
+              <span class="eyebrow">Up next</span>
+            </div>
+            <div class="exam-title" style="font-size:1.4rem;">Whole life EPV<br>&amp; variance</div>
+            <div class="exam-sub">A guided worked example to anchor today&rsquo;s session in Life Insurance.</div>
+            <div class="exam-meta">
+              <span class="chip">Example 1</span>
+              <span class="chip">~ 15 min</span>
+            </div>
+          </article>
+
+          <!-- CONTENT PREVIEW (full width) -->
+          <article class="card preview-card">
+            <div class="card-head">
+              <span class="eyebrow">Topic preview · Life Insurance</span>
+            </div>
+            <h2 class="preview-title">Life Insurance Present Values</h2>
+            <p class="preview-lede">Express the EPV of a benefit as a present-value random variable, then read its mean and variance straight from the standard relationships.</p>
+
+            <!-- FORMULA BLOCK -->
+            <div class="formula">
+              <div class="f">
+                <span class="cap">Whole-life EPV</span>
+                <span>A<sub>x</sub> = 1 &minus; d&middot;&auml;<sub>x</sub></span>
+              </div>
+              <div class="f">
+                <span class="cap">Variance of Z</span>
+                <span>Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)<sup>2</sup></span>
+              </div>
+              <div class="f">
+                <span class="cap">Annuity link</span>
+                <span>&auml;<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</span>
+              </div>
+            </div>
+
+            <!-- TRAP -->
+            <div class="trap">
+              <div class="t-lab">⚠ Common trap</div>
+              <p>Under UDD, multiply <em>ONLY the term/death piece</em> by i/&delta; — the pure endowment is never rescaled.</p>
+            </div>
+
+            <!-- EXAMPLE + ACTIONS -->
+            <div class="example">
+              <div class="ex-text">
+                <div class="ex-lab">Worked example</div>
+                <div class="ex-name">Example 1 — Whole life EPV &amp; variance</div>
+              </div>
+              <div class="actions">
+                <a class="btn primary" href="#">Start studying</a>
+                <a class="btn ghost" href="#">Resume</a>
+              </div>
+            </div>
+          </article>
+
+        </section>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-inner">
+      <div class="brand">
+        <div class="mark" style="width:30px;height:30px;font-size:.95rem;"><span>M</span></div>
+        <span class="brand-name">Me Studing Stuff</span>
+      </div>
+      <span>Study smarter. Pass exams. · SOA Exam FAM</span>
+    </div>
+  </footer>
+
+</body>
+</html>

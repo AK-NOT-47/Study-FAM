@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --leaf-900:#16321f;
+    --leaf-800:#1d4129;
+    --leaf-700:#265234;
+    --leaf-600:#356b43;
+    --leaf-500:#4a8a57;
+    --moss:#7fb069;
+    --sage:#a7c4a0;
+    --mint:#d4e6cd;
+    --cream:#f6f3e7;
+    --paper:#fbf9f0;
+    --gold:#e3a72f;
+    --gold-deep:#c2841a;
+    --amber:#f0c14b;
+    --bark:#3e2f1c;
+    --ink:#1a2c1d;
+    --shadow:rgba(22,50,31,.22);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Spline Sans',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(240,193,75,.22), transparent 60%),
+      radial-gradient(900px 600px at -5% 100%, rgba(127,176,105,.28), transparent 55%),
+      linear-gradient(160deg,#fdfbf2 0%, #f1efe0 40%, #eef3e6 100%);
+    background-color:var(--paper);
+    min-height:100vh;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;text-decoration:none}
+
+  /* ============ LAYOUT SHELL ============ */
+  .shell{
+    display:grid;
+    grid-template-columns:288px 1fr;
+    min-height:100vh;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    position:relative;
+    background:
+      linear-gradient(180deg,var(--leaf-800),var(--leaf-900) 70%, #112619);
+    color:var(--mint);
+    padding:34px 26px 40px;
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+    overflow:hidden;
+    box-shadow:14px 0 40px -24px var(--shadow);
+  }
+  /* decorative climbing vine in sidebar */
+  .sidebar::before{
+    content:"";
+    position:absolute;
+    right:-30px; top:-20px; bottom:-20px; width:120px;
+    background:
+      radial-gradient(circle at 30% 12%, rgba(127,176,105,.5) 0 7px, transparent 8px),
+      radial-gradient(circle at 70% 26%, rgba(227,167,47,.45) 0 5px, transparent 6px),
+      radial-gradient(circle at 35% 40%, rgba(127,176,105,.45) 0 9px, transparent 10px),
+      radial-gradient(circle at 72% 58%, rgba(127,176,105,.4) 0 6px, transparent 7px),
+      radial-gradient(circle at 32% 72%, rgba(227,167,47,.4) 0 6px, transparent 7px),
+      radial-gradient(circle at 66% 86%, rgba(127,176,105,.45) 0 8px, transparent 9px);
+    -webkit-mask:linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent);
+            mask:linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent);
+    pointer-events:none;
+    opacity:.8;
+  }
+  .sidebar::after{
+    content:"";
+    position:absolute;
+    right:18px; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg,transparent,rgba(127,176,105,.55),rgba(227,167,47,.4),transparent);
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    position:relative;
+    z-index:2;
+  }
+  .mark{
+    width:52px;height:52px;flex:none;
+    border-radius:16px 16px 16px 4px;
+    background:radial-gradient(circle at 30% 25%, var(--amber), var(--gold-deep));
+    display:grid;place-items:center;
+    box-shadow:0 8px 20px -8px rgba(227,167,47,.7), inset 0 0 0 2px rgba(255,255,255,.25);
+    position:relative;
+  }
+  .mark svg{width:34px;height:34px}
+  .brand-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.18rem;
+    color:var(--paper);
+    line-height:1.05;
+    letter-spacing:.2px;
+  }
+  .brand-tag{
+    font-size:.66rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--moss);
+    margin-top:3px;
+  }
+
+  .nav{position:relative;z-index:2;display:flex;flex-direction:column;gap:6px}
+  .nav-label{
+    font-size:.64rem;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:14px 6px 8px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(227,167,47,.5),transparent)}
+  .nav-section-tag{
+    align-self:flex-start;
+    margin:2px 6px 4px;
+    font-family:'Fraunces',serif;
+    font-size:.74rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--leaf-900);
+    background:linear-gradient(120deg,var(--moss),var(--amber));
+    padding:5px 12px;
+    border-radius:999px;
+    font-weight:600;
+    box-shadow:0 4px 12px -6px rgba(0,0,0,.5);
+  }
+  .nav a{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 14px;
+    border-radius:11px;
+    font-size:.95rem;
+    color:var(--sage);
+    transition:.2s;
+    position:relative;
+  }
+  .nav a .leaf-ico{
+    width:16px;height:16px;flex:none;opacity:.85;
+    color:var(--moss);
+  }
+  .nav a:hover{background:rgba(127,176,105,.14);color:var(--paper)}
+  .nav a.active{
+    background:linear-gradient(90deg,rgba(127,176,105,.26),rgba(127,176,105,.04));
+    color:var(--paper);
+    box-shadow:inset 3px 0 0 var(--gold);
+  }
+  .nav a.active .leaf-ico{color:var(--amber);opacity:1}
+
+  .sidebar-foot{
+    margin-top:auto;
+    position:relative;z-index:2;
+    font-size:.74rem;
+    color:var(--sage);
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(127,176,105,.2);
+    border-radius:14px;
+    padding:14px 16px;
+  }
+  .sidebar-foot b{color:var(--amber);font-family:'Fraunces',serif}
+
+  /* ============ MAIN ============ */
+  .main{
+    padding:34px 44px 56px;
+    position:relative;
+    overflow:hidden;
+  }
+  /* sun ornament top-right */
+  .sun{
+    position:absolute;top:-90px;right:-90px;width:280px;height:280px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(240,193,75,.55), rgba(240,193,75,.08) 60%, transparent 70%);
+    pointer-events:none;
+  }
+  .sun::before{
+    content:"";position:absolute;inset:64px;border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, var(--amber), var(--gold-deep));
+    box-shadow:0 0 60px rgba(227,167,47,.6);
+  }
+
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;margin-bottom:30px;position:relative;z-index:2;
+  }
+  .crumbs{
+    font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--leaf-600);
+    display:flex;align-items:center;gap:10px;
+  }
+  .crumbs .dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .top-actions{display:flex;align-items:center;gap:12px}
+  .pill-search{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.7);
+    border:1px solid var(--sage);
+    border-radius:999px;padding:8px 16px;font-size:.85rem;color:var(--leaf-700);
+    box-shadow:0 6px 18px -12px var(--shadow);
+  }
+  .avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--moss), var(--leaf-700));
+    display:grid;place-items:center;color:var(--paper);
+    font-family:'Fraunces',serif;font-weight:600;
+    box-shadow:0 6px 16px -8px var(--shadow), inset 0 0 0 2px var(--amber);
+  }
+
+  /* HERO */
+  .hero{position:relative;z-index:2;margin-bottom:34px;max-width:780px}
+  .greeting{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
+    font-size:1.5rem;color:var(--gold-deep);margin-bottom:6px;
+  }
+  .greeting .moon{font-size:1.3rem}
+  h1.headline{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(2.6rem,5.4vw,4.3rem);
+    line-height:1.02;
+    letter-spacing:-1px;
+    color:var(--leaf-900);
+    margin:2px 0 16px;
+  }
+  h1.headline em{
+    font-style:italic;
+    color:var(--leaf-600);
+    position:relative;
+  }
+  h1.headline em::after{
+    content:"";position:absolute;left:0;right:0;bottom:6px;height:10px;
+    background:linear-gradient(90deg,var(--amber),var(--moss));
+    opacity:.45;border-radius:6px;z-index:-1;
+  }
+  .lede{
+    font-size:1.08rem;color:var(--leaf-800);max-width:640px;
+  }
+
+  /* STATS */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    margin:30px 0 34px;position:relative;z-index:2;
+  }
+  .stat{
+    position:relative;
+    background:linear-gradient(165deg,var(--paper),var(--cream));
+    border:1px solid var(--sage);
+    border-radius:20px;
+    padding:22px 22px 20px;
+    box-shadow:0 18px 40px -28px var(--shadow);
+    overflow:hidden;
+  }
+  .stat::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,var(--moss),var(--gold));
+  }
+  .stat .ico{
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    background:rgba(127,176,105,.18);color:var(--leaf-700);margin-bottom:12px;font-size:1.1rem;
+  }
+  .stat .num{
+    font-family:'Fraunces',serif;font-weight:600;font-size:2.5rem;
+    color:var(--leaf-900);line-height:1;
+  }
+  .stat .num small{font-size:1.1rem;color:var(--gold-deep)}
+  .stat .lbl{font-size:.82rem;color:var(--leaf-600);margin-top:6px}
+  .stat .sub{font-size:.74rem;color:var(--moss);margin-top:2px}
+  /* progress ring bar */
+  .ring{
+    margin-top:12px;height:8px;border-radius:999px;background:rgba(127,176,105,.22);overflow:hidden;
+  }
+  .ring > span{
+    display:block;height:100%;width:72%;
+    background:linear-gradient(90deg,var(--moss),var(--amber));
+    border-radius:999px;
+  }
+
+  /* CONTENT GRID */
+  .grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:24px;
+    position:relative;z-index:2;
+  }
+
+  .card{
+    background:rgba(251,249,240,.92);
+    border:1px solid var(--sage);
+    border-radius:22px;
+    padding:26px;
+    box-shadow:0 20px 50px -34px var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .card-eyebrow{
+    font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);
+    display:flex;align-items:center;gap:8px;margin-bottom:10px;font-weight:600;
+  }
+  .card-eyebrow .seed{width:8px;height:8px;border-radius:50% 50% 50% 0;background:var(--gold);transform:rotate(45deg)}
+  .card h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:1.6rem;color:var(--leaf-900);
+    line-height:1.1;margin-bottom:8px;
+  }
+  .card p.note{color:var(--leaf-700);font-size:.95rem}
+
+  /* FORMULA */
+  .formula{
+    margin-top:18px;
+    background:linear-gradient(160deg,var(--leaf-800),var(--leaf-900));
+    border-radius:16px;
+    padding:20px 22px;
+    color:var(--mint);
+    position:relative;
+    box-shadow:inset 0 0 0 1px rgba(127,176,105,.25);
+    overflow:hidden;
+  }
+  .formula::after{
+    content:"🌿";position:absolute;right:14px;top:10px;font-size:1.2rem;opacity:.5;
+  }
+  .formula .frow{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:9px 0;font-family:'Cormorant Garamond',serif;font-size:1.45rem;
+    border-bottom:1px dashed rgba(127,176,105,.28);
+  }
+  .formula .frow:last-child{border-bottom:none;padding-bottom:2px}
+  .formula .frow:first-child{padding-top:2px}
+  .formula .tag{
+    font-family:'Spline Sans',sans-serif;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--leaf-900);background:var(--moss);padding:3px 8px;border-radius:6px;flex:none;font-weight:600;
+  }
+  .formula b{color:var(--amber)}
+  .formula sup{color:var(--amber);font-size:.75em}
+
+  /* TRAP CALLOUT */
+  .trap{
+    margin-top:20px;
+    display:flex;gap:14px;align-items:flex-start;
+    background:linear-gradient(120deg,rgba(240,193,75,.2),rgba(227,167,47,.1));
+    border:1px solid var(--amber);
+    border-left:5px solid var(--gold-deep);
+    border-radius:14px;
+    padding:16px 18px;
+  }
+  .trap .bug{font-size:1.5rem;flex:none;line-height:1}
+  .trap .t-title{
+    font-family:'Fraunces',serif;font-weight:600;color:var(--bark);font-size:.95rem;
+    text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;
+  }
+  .trap p{font-size:.92rem;color:var(--leaf-900)}
+  .trap b{color:var(--gold-deep)}
+
+  /* RIGHT COLUMN */
+  .stack{display:flex;flex-direction:column;gap:24px}
+
+  .exam-card{
+    background:linear-gradient(160deg,var(--leaf-700),var(--leaf-900));
+    color:var(--mint);
+    border:1px solid var(--leaf-600);
+  }
+  .exam-card .card-eyebrow{color:var(--amber)}
+  .exam-card h2{color:var(--paper)}
+  .exam-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Fraunces',serif;font-size:.78rem;letter-spacing:.12em;
+    background:linear-gradient(120deg,var(--moss),var(--amber));
+    color:var(--leaf-900);padding:5px 12px;border-radius:999px;font-weight:600;margin-bottom:14px;
+  }
+  .exam-meta{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .exam-meta .row{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:.9rem;padding-bottom:9px;border-bottom:1px dashed rgba(127,176,105,.3);
+  }
+  .exam-meta .row:last-child{border-bottom:none;padding-bottom:0}
+  .exam-meta .k{color:var(--sage)}
+  .exam-meta .v{font-family:'Fraunces',serif;color:var(--paper);font-weight:600}
+  .exam-meta .v.pass{color:var(--amber)}
+
+  /* EXAMPLE TEASER */
+  .example .ex-flag{
+    display:inline-block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold-deep);font-weight:600;margin-bottom:8px;
+  }
+  .example h3{
+    font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;color:var(--leaf-900);
+    line-height:1.15;margin-bottom:12px;
+  }
+  .example .mini{
+    background:rgba(127,176,105,.12);border:1px dashed var(--moss);border-radius:12px;
+    padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--leaf-800);
+    margin-bottom:16px;
+  }
+  .btns{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{
+    flex:1;min-width:130px;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 20px;border-radius:13px;font-size:.95rem;font-weight:600;cursor:pointer;
+    transition:.2s;border:none;font-family:'Spline Sans',sans-serif;
+  }
+  .btn-primary{
+    background:linear-gradient(120deg,var(--gold),var(--gold-deep));
+    color:#fff;box-shadow:0 12px 26px -12px rgba(194,132,26,.8);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 30px -12px rgba(194,132,26,.9)}
+  .btn-ghost{
+    background:rgba(127,176,105,.16);color:var(--leaf-800);border:1px solid var(--moss);
+  }
+  .btn-ghost:hover{background:rgba(127,176,105,.28);transform:translateY(-2px)}
+
+  /* FOOTER */
+  footer{
+    margin-top:40px;position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding-top:22px;border-top:1px solid var(--sage);
+    font-size:.82rem;color:var(--leaf-600);
+  }
+  footer .f-brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;color:var(--leaf-800);font-weight:600}
+  footer .f-brand .dotm{
+    width:26px;height:26px;border-radius:8px 8px 8px 2px;
+    background:radial-gradient(circle at 30% 25%, var(--amber), var(--gold-deep));
+    display:grid;place-items:center;color:var(--leaf-900);font-family:'Fraunces',serif;font-size:.85rem;
+  }
+  footer .vine{color:var(--moss)}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:1040px){
+    .grid{grid-template-columns:1fr}
+  }
+  @media (max-width:900px){
+    .shell{grid-template-columns:1fr}
+    .sidebar{
+      flex-direction:row;flex-wrap:wrap;align-items:center;gap:16px 22px;
+      padding:20px 24px;
+    }
+    .sidebar::before,.sidebar::after{display:none}
+    .nav{flex-direction:row;flex-wrap:wrap;gap:6px;flex:1}
+    .nav-label{display:none}
+    .nav-section-tag{margin:0}
+    .nav a{padding:8px 12px;font-size:.85rem}
+    .sidebar-foot{display:none}
+    .main{padding:28px 24px 44px}
+  }
+  @media (max-width:700px){
+    .stats{grid-template-columns:1fr}
+    .top-actions .pill-search{display:none}
+    .main{padding:24px 18px 40px}
+    .formula .frow{font-size:1.25rem}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M5 25V10c0-1 1.2-1.6 2-1l5 4 4-5 4 5 5-4c.8-.6 2 0 2 1v15" stroke="#16321f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 8c0 4-3 5-3 5s3 1 3 5c0-4 3-5 3-5s-3-1-3-5z" fill="#16321f"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">Me Studing Stuff</div>
+        <div class="brand-tag">Study smarter · Pass exams</div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Primary">
+      <div class="nav-section-tag">FAM-L / FAM-S</div>
+      <div class="nav-label">Core Topics</div>
+      <a href="#" class="active"><span class="leaf-ico">🌱</span> Survival Models</a>
+      <a href="#"><span class="leaf-ico">🍃</span> Life Tables</a>
+      <a href="#"><span class="leaf-ico">🌿</span> Life Insurance</a>
+      <a href="#"><span class="leaf-ico">🌾</span> Life Annuities</a>
+      <a href="#"><span class="leaf-ico">🌻</span> Premiums</a>
+      <a href="#"><span class="leaf-ico">🪴</span> Policy Values</a>
+      <div class="nav-label">Practice</div>
+      <a href="#"><span class="leaf-ico">📓</span> Worked Problems</a>
+      <a href="#"><span class="leaf-ico">🗓️</span> Study Plan</a>
+    </nav>
+
+    <div class="sidebar-foot">
+      Growing season: <b>Day 7</b> of your plan.<br>
+      Keep watering the streak. 🌞
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <div class="sun" aria-hidden="true"></div>
+
+    <div class="topbar">
+      <div class="crumbs">Dashboard <span class="dot"></span> Survival Models <span class="dot"></span> Life Insurance</div>
+      <div class="top-actions">
+        <div class="pill-search">🔍 <span>Search notes &amp; formulas</span></div>
+        <div class="avatar" title="finance@solidarity.com.bh">M</div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="greeting"><span class="moon">🌙</span> Good evening</div>
+      <h1 class="headline">Let's get you <em>that pass.</em></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats" aria-label="Progress">
+      <div class="stat">
+        <div class="ico">🌳</div>
+        <div class="num">72<small>%</small></div>
+        <div class="lbl">Overall progress</div>
+        <div class="sub">12 of 17 topics</div>
+        <div class="ring"><span></span></div>
+      </div>
+      <div class="stat">
+        <div class="ico">⏳</div>
+        <div class="num">86<small> days</small></div>
+        <div class="lbl">Exam countdown</div>
+        <div class="sub">Plant now, harvest soon</div>
+        <div class="ring"><span style="width:38%"></span></div>
+      </div>
+      <div class="stat">
+        <div class="ico">🌻</div>
+        <div class="num">8</div>
+        <div class="lbl">Topics solid</div>
+        <div class="sub">Fully bloomed &amp; reviewed</div>
+        <div class="ring"><span style="width:47%"></span></div>
+      </div>
+    </section>
+
+    <!-- CONTENT GRID -->
+    <div class="grid">
+
+      <!-- LEFT: topic preview + trap -->
+      <section class="card">
+        <div class="card-eyebrow"><span class="seed"></span> Topic preview · Life Insurance</div>
+        <h2>Life Insurance Present Values</h2>
+        <p class="note">The actuarial present value of a benefit paid on death — the seed from which premiums, reserves and variance all grow.</p>
+
+        <div class="formula" role="img" aria-label="Key life insurance present value formulas">
+          <div class="frow"><span class="tag">EPV</span> <span><b>A</b><sub>x</sub> = 1 − <b>d</b>·ä<sub>x</sub></span></div>
+          <div class="frow"><span class="tag">Variance</span> <span>Var(<b>Z</b>) = <sup>2</sup><b>A</b><sub>x</sub> − (<b>A</b><sub>x</sub>)²</span></div>
+          <div class="frow"><span class="tag">Annuity</span> <span>ä<sub>x</sub> = (1 − <b>A</b><sub>x</sub>) / <b>d</b></span></div>
+        </div>
+
+        <div class="trap">
+          <div class="bug">🐛</div>
+          <div>
+            <div class="t-title">Common trap</div>
+            <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: exam card + example -->
+      <div class="stack">
+
+        <section class="card exam-card">
+          <div class="card-eyebrow"><span class="seed"></span> Your exam</div>
+          <div class="exam-badge">🌿 Exam FAM</div>
+          <h2>Fundamentals of Actuarial Mathematics</h2>
+          <div class="exam-meta">
+            <div class="row"><span class="k">Provider</span><span class="v">SOA</span></div>
+            <div class="row"><span class="k">Questions</span><span class="v">34</span></div>
+            <div class="row"><span class="k">Pass mark</span><span class="v pass">6 / 10</span></div>
+          </div>
+        </section>
+
+        <section class="card example">
+          <span class="ex-flag">🌾 Worked example · teaser</span>
+          <h3>Example 1 — Whole life EPV &amp; variance</h3>
+          <div class="mini">Aₓ &nbsp;→&nbsp; ²Aₓ &nbsp;→&nbsp; Var(Z) &nbsp;→&nbsp; äₓ</div>
+          <div class="btns">
+            <button class="btn btn-primary">🌱 Start studying</button>
+            <button class="btn btn-ghost">↻ Resume</button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="f-brand"><span class="dotm">M</span> Me Studing Stuff</div>
+      <div class="vine">🌿 Study smarter. Pass exams. · Grown with sunlight &amp; spaced repetition.</div>
+      <div>© 2026 · SOA Exam FAM hub</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

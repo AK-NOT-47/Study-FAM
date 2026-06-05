@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Dithered Lo-fi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     DITHERED LO-FI — 1-bit / retro-computer / monochrome texture
+     ============================================================ */
+
+  :root{
+    --ink:#15140f;        /* near-black */
+    --paper:#e8e6d8;      /* bone paper */
+    --paper2:#d9d6c2;     /* slightly darker paper */
+    --line:#15140f;
+    --accent:#15140f;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{ -webkit-font-smoothing:none; image-rendering:pixelated; }
+
+  body{
+    font-family:'Space Mono', monospace;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+    /* global dither grain via stacked tiny radial gradients */
+    background-image:
+      radial-gradient(var(--ink) 0.5px, transparent 0.6px),
+      radial-gradient(var(--ink) 0.5px, transparent 0.6px);
+    background-size:4px 4px, 4px 4px;
+    background-position:0 0, 2px 2px;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* scanline overlay for CRT feel */
+  body::after{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:999;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(21,20,15,0.06) 0px,
+      rgba(21,20,15,0.06) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode:multiply;
+  }
+
+  /* ---- DITHER UTILITY FILLS (Bayer-ish patterns made from gradients) ---- */
+  .dith-25{
+    background-color:var(--paper);
+    background-image:
+      repeating-linear-gradient(45deg, var(--ink) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(-45deg, var(--ink) 0 1px, transparent 1px 4px);
+    background-size:4px 4px;
+  }
+  .dith-50{
+    background-color:var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, var(--ink) 0 1px, transparent 1px 2px),
+      repeating-linear-gradient(90deg, var(--ink) 0 1px, transparent 1px 2px);
+    background-size:2px 2px;
+  }
+  .dith-checker{
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(45deg, var(--ink) 25%, transparent 25%, transparent 75%, var(--ink) 75%),
+      linear-gradient(45deg, var(--ink) 25%, transparent 25%, transparent 75%, var(--ink) 75%);
+    background-size:4px 4px;
+    background-position:0 0, 2px 2px;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ======================= SHELL / GRID ======================= */
+  .crt{
+    max-width:1280px;
+    margin:0 auto;
+    padding:18px;
+    min-height:100vh;
+  }
+
+  .frame{
+    border:3px solid var(--ink);
+    box-shadow:6px 6px 0 var(--ink);
+    background:var(--paper);
+    position:relative;
+  }
+
+  /* corner bolts */
+  .frame::before, .frame::after{
+    content:"";
+    position:absolute; width:8px; height:8px;
+    background:var(--ink); border-radius:50%;
+  }
+  .frame::before{ top:6px; left:6px; }
+  .frame::after{ top:6px; right:6px; }
+
+  /* ----- title bar (window chrome) ----- */
+  .titlebar{
+    display:flex; align-items:center; gap:10px;
+    background:var(--ink); color:var(--paper);
+    padding:6px 12px;
+    font-size:13px; letter-spacing:1px; text-transform:uppercase;
+    border-bottom:3px solid var(--ink);
+  }
+  .titlebar .dots{ display:flex; gap:5px; }
+  .titlebar .dots span{
+    width:11px; height:11px; border:2px solid var(--paper); display:block;
+  }
+  .titlebar .dots span:nth-child(2){ background:var(--paper); }
+  .titlebar .path{ opacity:.85; }
+  .titlebar .clock{ margin-left:auto; font-family:'VT323',monospace; font-size:20px; letter-spacing:0; }
+
+  /* ----- main two-column layout ----- */
+  .layout{
+    display:grid;
+    grid-template-columns:248px 1fr;
+  }
+
+  /* ======================= SIDEBAR / NAV ======================= */
+  aside{
+    border-right:3px solid var(--ink);
+    background:var(--paper2);
+    padding:0;
+  }
+
+  .brand{
+    padding:20px 18px;
+    border-bottom:3px solid var(--ink);
+    display:flex; align-items:center; gap:12px;
+  }
+  .mmark{
+    width:54px; height:54px; flex:none;
+    border:3px solid var(--ink);
+    display:grid; place-items:center;
+    font-family:'VT323',monospace;
+    font-size:46px; line-height:1;
+    box-shadow:3px 3px 0 var(--ink);
+    background:var(--paper);
+    position:relative; overflow:hidden;
+  }
+  .mmark span{ position:relative; z-index:2; }
+  .mmark::before{
+    content:""; position:absolute; inset:0; z-index:1; opacity:.35;
+    background-image:
+      linear-gradient(45deg, var(--ink) 25%, transparent 25%, transparent 75%, var(--ink) 75%),
+      linear-gradient(45deg, var(--ink) 25%, transparent 25%, transparent 75%, var(--ink) 75%);
+    background-size:4px 4px; background-position:0 0,2px 2px;
+  }
+  .brand .bt{ font-family:'VT323',monospace; }
+  .brand .bt b{ display:block; font-size:26px; line-height:.95; letter-spacing:0; text-transform:uppercase; }
+  .brand .bt small{ font-size:12px; font-family:'Space Mono',monospace; opacity:.75; letter-spacing:.5px; }
+
+  nav{ padding:14px 0 18px; }
+  .navlabel{
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    padding:14px 18px 6px; opacity:.6;
+    display:flex; align-items:center; gap:8px;
+  }
+  .navlabel::after{ content:""; flex:1; height:0; border-top:2px dotted var(--ink); opacity:.5; }
+
+  .navitem{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 18px;
+    font-size:14px;
+    border-bottom:1px dashed rgba(21,20,15,.25);
+    position:relative;
+  }
+  .navitem .ic{
+    width:18px; height:18px; flex:none; border:2px solid var(--ink);
+    display:grid; place-items:center; font-size:10px; line-height:1;
+    font-family:'VT323',monospace;
+  }
+  .navitem .cnt{ margin-left:auto; font-size:11px; opacity:.6; }
+  .navitem:hover{ background:var(--ink); color:var(--paper); }
+  .navitem:hover .ic{ border-color:var(--paper); }
+  .navitem.active{
+    background:var(--ink); color:var(--paper);
+    box-shadow:inset 4px 0 0 var(--paper), inset 6px 0 0 var(--ink);
+  }
+  .navitem.active .ic{ border-color:var(--paper); background:var(--paper); color:var(--ink); }
+
+  .navchip{
+    margin:16px 14px 4px; padding:8px 10px;
+    border:2px solid var(--ink); font-size:11px;
+    text-transform:uppercase; letter-spacing:1px;
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--paper);
+  }
+  .navchip b{ font-family:'VT323',monospace; font-size:18px; letter-spacing:0; }
+
+  /* ======================= MAIN ======================= */
+  main{ padding:24px 26px 30px; min-width:0; }
+
+  .topline{
+    display:flex; align-items:baseline; gap:14px;
+    flex-wrap:wrap; margin-bottom:4px;
+  }
+  .greet{
+    font-family:'VT323',monospace; font-size:22px; letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .greet::before{ content:"▸ "; }
+  .blink{ display:inline-block; width:10px; height:20px; background:var(--ink); vertical-align:-3px; margin-left:2px; animation:blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  h1{
+    font-family:'VT323',monospace;
+    font-size:clamp(44px, 8vw, 88px);
+    line-height:.86; letter-spacing:1px;
+    margin:6px 0 14px; text-transform:uppercase;
+    /* dither shadow */
+    text-shadow:3px 3px 0 var(--paper2), 5px 5px 0 var(--ink);
+  }
+
+  .lede{
+    max-width:640px; font-size:14.5px; line-height:1.6;
+    border-left:4px solid var(--ink); padding-left:14px;
+    margin-bottom:22px;
+  }
+
+  /* ----- STATS ROW ----- */
+  .stats{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:14px; margin-bottom:24px;
+  }
+  .stat{
+    border:3px solid var(--ink);
+    box-shadow:4px 4px 0 var(--ink);
+    padding:14px 16px 16px;
+    background:var(--paper);
+    position:relative; overflow:hidden;
+  }
+  .stat .tag{ font-size:11px; letter-spacing:1.5px; text-transform:uppercase; opacity:.7; }
+  .stat .big{
+    font-family:'VT323',monospace; font-size:54px; line-height:.9; margin:4px 0 2px;
+  }
+  .stat .sub{ font-size:11.5px; opacity:.75; }
+  .stat .band{
+    position:absolute; top:0; right:0; bottom:0; width:34px;
+  }
+  /* progress bar drawn in dither */
+  .pbar{ height:14px; border:2px solid var(--ink); margin-top:8px; position:relative; background:var(--paper); }
+  .pbar i{ position:absolute; inset:0 28% 0 0; }
+
+  /* ----- CONTENT GRID (cards) ----- */
+  .grid{
+    display:grid; grid-template-columns:1.15fr 1fr;
+    gap:18px; align-items:start;
+  }
+
+  .card{
+    border:3px solid var(--ink);
+    box-shadow:5px 5px 0 var(--ink);
+    background:var(--paper);
+  }
+  .card .hd{
+    background:var(--ink); color:var(--paper);
+    padding:7px 14px; font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    display:flex; align-items:center; gap:8px;
+  }
+  .card .hd .x{ margin-left:auto; border:2px solid var(--paper); width:14px; height:14px; display:grid; place-items:center; font-size:9px; }
+  .card .bd{ padding:16px 16px 18px; }
+
+  /* Exam FAM card */
+  .examcard .bd{ display:flex; gap:16px; align-items:center; }
+  .examglyph{
+    width:96px; height:96px; flex:none; border:3px solid var(--ink);
+    display:grid; place-items:center; box-shadow:3px 3px 0 var(--ink);
+    font-family:'VT323',monospace; font-size:14px; text-align:center; line-height:1;
+    position:relative; overflow:hidden; background:var(--paper);
+  }
+  .examglyph b{ position:relative; z-index:2; font-size:40px; display:block; }
+  .examglyph em{ position:relative; z-index:2; font-style:normal; font-size:11px; letter-spacing:1px; }
+  .examglyph::before{
+    content:""; position:absolute; inset:0; z-index:1; opacity:.4;
+    background-image:
+      repeating-linear-gradient(45deg, var(--ink) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(-45deg, var(--ink) 0 1px, transparent 1px 4px);
+    background-size:4px 4px;
+  }
+  .examcard h3{ font-family:'VT323',monospace; font-size:30px; line-height:.9; text-transform:uppercase; }
+  .examcard .meta{ font-size:12px; line-height:1.7; opacity:.85; margin-top:4px; }
+  .pill{
+    display:inline-block; border:2px solid var(--ink); padding:1px 7px; font-size:11px;
+    text-transform:uppercase; letter-spacing:.5px; margin:6px 4px 0 0;
+  }
+  .pill.solid{ background:var(--ink); color:var(--paper); }
+
+  /* Formula block */
+  .topic h2{ font-family:'VT323',monospace; font-size:34px; line-height:.9; text-transform:uppercase; }
+  .topic .lede2{ font-size:13px; opacity:.85; margin:4px 0 12px; }
+  .formula{
+    border:3px double var(--ink);
+    background:var(--paper);
+    padding:14px 14px;
+    font-family:'VT323',monospace;
+    position:relative;
+  }
+  .formula::before{
+    content:"// FORMULA.DAT"; position:absolute; top:-11px; left:12px;
+    background:var(--paper); padding:0 6px; font-size:11px; font-family:'Space Mono',monospace;
+    letter-spacing:1px;
+  }
+  .formula .row{
+    font-size:24px; line-height:1.5; letter-spacing:1px;
+    padding:5px 0; border-bottom:2px dotted rgba(21,20,15,.4);
+    display:flex; align-items:center; gap:10px;
+  }
+  .formula .row:last-child{ border-bottom:none; }
+  .formula .row .n{ font-family:'Space Mono',monospace; font-size:11px; opacity:.5; }
+  sub{ font-size:.62em; }
+  sup{ font-size:.62em; }
+
+  /* Trap callout */
+  .trap{
+    border:3px solid var(--ink); background:var(--paper);
+    box-shadow:5px 5px 0 var(--ink);
+    margin-top:18px; display:flex; align-items:stretch;
+  }
+  .trap .bang{
+    width:60px; flex:none; border-right:3px solid var(--ink);
+    display:grid; place-items:center;
+    font-family:'VT323',monospace; font-size:46px; color:var(--paper);
+  }
+  .trap .tx{ padding:12px 16px; }
+  .trap .tx b{ font-size:12px; letter-spacing:1.5px; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .trap .tx p{ font-size:13.5px; line-height:1.55; }
+
+  /* Worked example teaser + buttons */
+  .teaser{
+    margin-top:18px; border:3px solid var(--ink); background:var(--paper);
+    box-shadow:5px 5px 0 var(--ink); padding:0;
+  }
+  .teaser .hd2{
+    padding:8px 14px; border-bottom:3px solid var(--ink);
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    display:flex; align-items:center; gap:8px;
+  }
+  .teaser .hd2 .num{ font-family:'VT323',monospace; font-size:20px; letter-spacing:0; }
+  .teaser .bd2{ padding:14px 16px; }
+  .teaser .bd2 p{ font-size:13px; opacity:.85; margin-bottom:14px; }
+  .btns{ display:flex; gap:12px; flex-wrap:wrap; }
+  .btn{
+    font-family:'VT323',monospace; font-size:22px; letter-spacing:1px;
+    text-transform:uppercase; padding:8px 20px;
+    border:3px solid var(--ink); background:var(--ink); color:var(--paper);
+    box-shadow:4px 4px 0 var(--ink); cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn.ghost{ background:var(--paper); color:var(--ink); }
+  .btn:hover{ transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }
+  .btn:active{ transform:translate(4px,4px); box-shadow:0 0 0 var(--ink); }
+
+  /* ======================= FOOTER ======================= */
+  footer{
+    border-top:3px solid var(--ink);
+    margin-top:0;
+    padding:14px 26px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    font-size:12px; letter-spacing:1px; text-transform:uppercase;
+    background:var(--paper2);
+  }
+  footer .fm{
+    width:26px; height:26px; border:2px solid var(--ink); display:grid; place-items:center;
+    font-family:'VT323',monospace; font-size:22px;
+  }
+  footer .sp{ margin-left:auto; opacity:.6; }
+
+  /* ======================= RESPONSIVE ======================= */
+  @media (max-width:920px){
+    .grid{ grid-template-columns:1fr; }
+    .stats{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:760px){
+    .layout{ grid-template-columns:1fr; }
+    aside{ border-right:none; border-bottom:3px solid var(--ink); }
+    nav{ display:grid; grid-template-columns:1fr 1fr; padding:10px; gap:0; }
+    .navlabel{ grid-column:1 / -1; }
+    .navchip{ grid-column:1 / -1; }
+    .navitem{ border-bottom:1px dashed rgba(21,20,15,.25); }
+    .stats{ grid-template-columns:1fr; }
+    .examcard .bd{ flex-direction:column; align-items:flex-start; }
+    h1{ text-shadow:2px 2px 0 var(--paper2), 3px 3px 0 var(--ink); }
+  }
+</style>
+</head>
+<body>
+<div class="crt">
+  <div class="frame">
+
+    <!-- WINDOW TITLE BAR -->
+    <div class="titlebar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span class="path">C:\MESTUDING\FAM\dashboard.exe</span>
+      <span class="clock">21:47</span>
+    </div>
+
+    <div class="layout">
+
+      <!-- ============ SIDEBAR ============ -->
+      <aside>
+        <div class="brand">
+          <div class="mmark"><span>M</span></div>
+          <div class="bt">
+            <b>Me Studing<br>Stuff</b>
+            <small>Study smarter. Pass exams.</small>
+          </div>
+        </div>
+
+        <nav>
+          <div class="navlabel">FAM-L / FAM-S</div>
+
+          <a class="navitem active" href="#"><span class="ic">▤</span> Survival Models <span class="cnt">01</span></a>
+          <a class="navitem" href="#"><span class="ic">▦</span> Life Tables <span class="cnt">02</span></a>
+          <a class="navitem" href="#"><span class="ic">▥</span> Life Insurance <span class="cnt">03</span></a>
+          <a class="navitem" href="#"><span class="ic">▧</span> Life Annuities <span class="cnt">04</span></a>
+          <a class="navitem" href="#"><span class="ic">▨</span> Premiums <span class="cnt">05</span></a>
+          <a class="navitem" href="#"><span class="ic">▩</span> Policy Values <span class="cnt">06</span></a>
+
+          <div class="navchip">
+            <span>Topics solid</span>
+            <b>8 / 17</b>
+          </div>
+          <div class="navchip" style="margin-top:8px;">
+            <span>Mode</span>
+            <b>1-BIT</b>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- ============ MAIN ============ -->
+      <main>
+        <div class="topline">
+          <span class="greet">Good evening<span class="blink"></span></span>
+        </div>
+
+        <h1>Let's get you<br>that pass.</h1>
+
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+        <!-- STATS -->
+        <section class="stats">
+          <div class="stat">
+            <div class="tag">Overall progress</div>
+            <div class="big">72%</div>
+            <div class="sub">12 of 17 topics</div>
+            <div class="pbar"><i class="dith-checker"></i></div>
+            <div class="band dith-25"></div>
+          </div>
+          <div class="stat">
+            <div class="tag">Exam countdown</div>
+            <div class="big">86</div>
+            <div class="sub">days remaining</div>
+            <div class="pbar"><i class="dith-50" style="inset:0 64% 0 0;"></i></div>
+            <div class="band dith-50"></div>
+          </div>
+          <div class="stat">
+            <div class="tag">Topics solid</div>
+            <div class="big">8</div>
+            <div class="sub">locked &amp; reviewed</div>
+            <div class="pbar"><i class="dith-checker" style="inset:0 53% 0 0;"></i></div>
+            <div class="band dith-checker"></div>
+          </div>
+        </section>
+
+        <!-- CONTENT GRID -->
+        <div class="grid">
+
+          <!-- LEFT COLUMN -->
+          <div>
+            <!-- EXAM FAM CARD -->
+            <section class="card examcard">
+              <div class="hd">Exam FAM <span class="x">×</span></div>
+              <div class="bd">
+                <div class="examglyph"><b>FAM</b><em>SOA</em></div>
+                <div>
+                  <h3>Fundamentals of<br>Actuarial Mathematics</h3>
+                  <div class="meta">Society of Actuaries</div>
+                  <span class="pill">34 questions</span>
+                  <span class="pill solid">pass = 6 / 10</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- COMMON TRAP -->
+            <section class="trap">
+              <div class="bang dith-50">!</div>
+              <div class="tx">
+                <b>Common trap</b>
+                <p>Under UDD, multiply ONLY the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+              </div>
+            </section>
+
+            <!-- WORKED EXAMPLE TEASER -->
+            <section class="teaser">
+              <div class="hd2"><span class="num">Ex.1</span> Whole life EPV &amp; variance</div>
+              <div class="bd2">
+                <p>Walk through a clean computation of the expected present value of a whole life insurance and the variance of its present-value random variable Z — step by step, no skipped algebra.</p>
+                <div class="btns">
+                  <a class="btn" href="#">▶ Start studying</a>
+                  <a class="btn ghost" href="#">↺ Resume</a>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div>
+            <!-- TOPIC PREVIEW + FORMULA -->
+            <section class="card topic">
+              <div class="hd">Topic preview <span class="x">_</span></div>
+              <div class="bd">
+                <h2>Life Insurance<br>Present Values</h2>
+                <p class="lede2">The EPV of a benefit, and how its variance falls out of the second moment.</p>
+
+                <div class="formula">
+                  <div class="row"><span class="n">01</span> A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+                  <div class="row"><span class="n">02</span> Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></div>
+                  <div class="row"><span class="n">03</span> ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <span class="fm">M</span>
+      <span>Me Studing Stuff</span>
+      <span style="opacity:.6;">· Study smarter. Pass exams.</span>
+      <span class="sp">© 2026 · 1-BIT BUILD · v1.57</span>
+    </footer>
+
+  </div>
+</div>
+</body>
+</html>

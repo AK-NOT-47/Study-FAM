@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --emerald-deep:#06342a;
+    --emerald:#0c4a3a;
+    --emerald-mid:#125a48;
+    --emerald-soft:#1c6e57;
+    --cream:#f6f1e3;
+    --cream-pure:#fbf7ec;
+    --cream-warm:#efe7d2;
+    --gold:#c9a24b;
+    --gold-bright:#e3c074;
+    --gold-deep:#a9842f;
+    --ink:#13261f;
+    --line:rgba(201,162,75,.32);
+    --line-soft:rgba(201,162,75,.16);
+    --shadow:0 30px 70px -32px rgba(4,28,22,.55);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Jost',sans-serif;
+    background:var(--emerald-deep);
+    color:var(--cream);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ============ DECORATIVE BACKDROP ============ */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background:
+      radial-gradient(1200px 700px at 78% -8%, rgba(201,162,75,.10), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(28,110,87,.45), transparent 55%),
+      linear-gradient(160deg,#06342a 0%,#0a3e32 48%,#073128 100%);
+    z-index:-2;
+  }
+  body::after{
+    content:"";
+    position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(201,162,75,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(201,162,75,.04) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 30%,#000,transparent 80%);
+    mask-image:radial-gradient(ellipse 90% 80% at 50% 30%,#000,transparent 80%);
+    z-index:-1;
+  }
+
+  .shell{
+    max-width:1320px;
+    margin:0 auto;
+    padding:28px clamp(18px,4vw,46px) 60px;
+  }
+
+  /* ============ TOP BAR ============ */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:24px;
+    padding:14px 26px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:linear-gradient(180deg,rgba(8,52,42,.7),rgba(6,42,34,.55));
+    backdrop-filter:blur(6px);
+    box-shadow:var(--shadow);
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .mark{
+    width:52px;height:52px;flex:none;
+    border-radius:14px;
+    display:grid;place-items:center;
+    background:radial-gradient(circle at 32% 28%,#1c6e57,#0a3e32);
+    border:1px solid rgba(201,162,75,.5);
+    box-shadow:inset 0 0 18px rgba(201,162,75,.18), 0 10px 24px -10px rgba(0,0,0,.6);
+    position:relative;
+  }
+  .mark span{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:700;font-size:34px;
+    line-height:1;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    padding-bottom:2px;
+  }
+  .mark::after{
+    content:"";position:absolute;inset:5px;border-radius:9px;
+    border:1px solid rgba(201,162,75,.22);
+  }
+  .brand-txt h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;font-size:24px;letter-spacing:.01em;
+    color:var(--cream-pure);line-height:1.05;
+  }
+  .brand-txt p{
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold-bright);font-weight:500;margin-top:3px;
+  }
+
+  /* ============ NAV ============ */
+  nav.primary{
+    display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+  }
+  .seclabel{
+    font-size:10px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 12px;
+    margin-right:6px;
+    white-space:nowrap;
+  }
+  nav.primary a{
+    color:var(--cream);
+    text-decoration:none;
+    font-size:13.5px;font-weight:400;letter-spacing:.01em;
+    padding:8px 13px;border-radius:10px;
+    position:relative;
+    transition:color .25s, background .25s;
+    white-space:nowrap;
+  }
+  nav.primary a::after{
+    content:"";position:absolute;left:13px;right:13px;bottom:5px;height:1px;
+    background:var(--gold);transform:scaleX(0);transform-origin:left;
+    transition:transform .3s ease;
+  }
+  nav.primary a:hover{color:var(--gold-bright);}
+  nav.primary a:hover::after{transform:scaleX(1);}
+  nav.primary a.active{
+    color:var(--emerald-deep);
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    font-weight:500;
+  }
+  nav.primary a.active::after{display:none;}
+
+  /* ============ LAYOUT GRID ============ */
+  .layout{
+    display:grid;
+    grid-template-columns:264px 1fr;
+    gap:30px;
+    margin-top:30px;
+  }
+
+  /* ============ SIDEBAR ============ */
+  aside{
+    border:1px solid var(--line-soft);
+    border-radius:22px;
+    padding:26px 22px;
+    background:linear-gradient(180deg,rgba(9,56,45,.55),rgba(6,42,34,.4));
+    align-self:start;
+    position:sticky;top:24px;
+  }
+  .aside-h{
+    font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:16px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .aside-h::after{content:"";flex:1;height:1px;background:var(--line-soft);}
+  .topiclist{list-style:none;display:flex;flex-direction:column;gap:3px;}
+  .topiclist a{
+    display:flex;align-items:center;gap:12px;
+    color:var(--cream);text-decoration:none;
+    padding:11px 12px;border-radius:12px;
+    font-size:14.5px;
+    transition:background .22s,color .22s,padding .22s;
+  }
+  .topiclist a .num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:15px;color:var(--gold);width:22px;flex:none;
+    font-style:italic;
+  }
+  .topiclist a .dot{
+    margin-left:auto;width:8px;height:8px;border-radius:50%;flex:none;
+    background:var(--emerald-soft);box-shadow:0 0 0 1px rgba(201,162,75,.2);
+  }
+  .topiclist a .dot.solid{background:var(--gold-bright);box-shadow:0 0 10px rgba(227,192,116,.6);}
+  .topiclist a:hover{background:rgba(201,162,75,.1);color:var(--gold-bright);padding-left:16px;}
+  .topiclist a.current{
+    background:linear-gradient(90deg,rgba(201,162,75,.16),transparent);
+    border-left:2px solid var(--gold);color:var(--cream-pure);
+  }
+  .aside-sep{height:1px;background:var(--line-soft);margin:22px 0;}
+  .plan-note{
+    font-size:12.5px;color:rgba(246,241,227,.72);line-height:1.7;
+    font-style:italic;font-family:'Cormorant Garamond',serif;font-size:16px;
+  }
+  .plan-note b{color:var(--gold-bright);font-style:normal;font-family:'Jost';font-size:12px;
+    display:block;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;font-weight:500;}
+
+  /* ============ MAIN ============ */
+  main{display:flex;flex-direction:column;gap:26px;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:26px;
+    padding:clamp(26px,4vw,46px);
+    background:
+      radial-gradient(600px 320px at 88% -20%,rgba(201,162,75,.16),transparent 70%),
+      linear-gradient(150deg,rgba(12,74,58,.82),rgba(6,42,34,.7));
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .hero::before{
+    content:"";position:absolute;top:-120px;right:-120px;
+    width:340px;height:340px;border-radius:50%;
+    border:1px solid rgba(201,162,75,.22);
+  }
+  .hero::after{
+    content:"";position:absolute;top:-70px;right:-70px;
+    width:240px;height:240px;border-radius:50%;
+    border:1px solid rgba(201,162,75,.14);
+  }
+  .greeting{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--gold-bright);font-weight:500;
+    margin-bottom:18px;
+  }
+  .greeting::before{content:"";width:30px;height:1px;background:var(--gold);}
+  .hero h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(38px,6vw,68px);
+    line-height:.98;letter-spacing:-.015em;
+    color:var(--cream-pure);
+    max-width:14ch;
+  }
+  .hero h2 em{
+    font-style:italic;
+    background:linear-gradient(120deg,var(--gold-bright),var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero p.lede{
+    margin-top:22px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(18px,2.2vw,23px);
+    line-height:1.55;
+    color:rgba(246,241,227,.85);
+    max-width:54ch;
+  }
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px;}
+  .btn{
+    font-family:'Jost';font-size:14px;font-weight:500;letter-spacing:.04em;
+    text-decoration:none;cursor:pointer;border:none;
+    padding:14px 28px;border-radius:13px;
+    display:inline-flex;align-items:center;gap:10px;
+    transition:transform .2s, box-shadow .2s, background .2s;
+  }
+  .btn-gold{
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    color:var(--emerald-deep);
+    box-shadow:0 14px 30px -12px rgba(201,162,75,.6);
+  }
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 20px 38px -12px rgba(201,162,75,.75);}
+  .btn-ghost{
+    background:transparent;color:var(--cream-pure);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{background:rgba(201,162,75,.12);transform:translateY(-2px);border-color:var(--gold);}
+  .btn svg{width:15px;height:15px;}
+
+  /* STATS */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  }
+  .stat{
+    border:1px solid var(--line-soft);
+    border-radius:20px;
+    padding:24px 22px;
+    background:linear-gradient(180deg,rgba(9,56,45,.5),rgba(6,42,34,.36));
+    position:relative;overflow:hidden;
+  }
+  .stat .label{
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:14px;
+  }
+  .stat .big{
+    font-family:'Fraunces',serif;font-weight:600;
+    font-size:46px;line-height:1;color:var(--cream-pure);
+    display:flex;align-items:baseline;gap:8px;
+  }
+  .stat .big small{font-size:18px;color:var(--gold-bright);font-family:'Jost';font-weight:400;}
+  .stat .sub{font-size:12.5px;color:rgba(246,241,227,.62);margin-top:10px;}
+  .ring{
+    --p:72;
+    width:62px;height:62px;border-radius:50%;flex:none;
+    background:
+      conic-gradient(var(--gold-bright) calc(var(--p)*1%), rgba(201,162,75,.15) 0);
+    display:grid;place-items:center;position:absolute;top:22px;right:22px;
+  }
+  .ring::after{
+    content:"72%";position:absolute;width:46px;height:46px;border-radius:50%;
+    background:var(--emerald);display:grid;place-items:center;
+    font-size:12px;font-weight:600;color:var(--gold-bright);
+    font-family:'Jost';letter-spacing:.02em;
+  }
+  .progressbar{
+    margin-top:16px;height:6px;border-radius:99px;
+    background:rgba(201,162,75,.16);overflow:hidden;
+  }
+  .progressbar span{display:block;height:100%;width:72%;border-radius:99px;
+    background:linear-gradient(90deg,var(--gold),var(--gold-bright));}
+
+  /* CONTENT ROW */
+  .content-row{
+    display:grid;grid-template-columns:1.35fr 1fr;gap:26px;
+  }
+
+  .card{
+    border:1px solid var(--line-soft);
+    border-radius:22px;
+    padding:28px;
+    background:linear-gradient(180deg,rgba(9,56,45,.5),rgba(6,42,34,.38));
+  }
+  .card-kicker{
+    font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  .card-kicker::after{content:"";flex:1;height:1px;background:var(--line-soft);}
+  .card h3{
+    font-family:'Fraunces',serif;font-weight:600;
+    font-size:27px;line-height:1.12;color:var(--cream-pure);
+  }
+  .card .lede-line{
+    font-family:'Cormorant Garamond',serif;font-size:18px;
+    color:rgba(246,241,227,.8);margin-top:10px;line-height:1.5;
+  }
+
+  /* FORMULA BLOCK */
+  .formula{
+    margin-top:22px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:
+      linear-gradient(180deg,rgba(4,28,22,.55),rgba(6,42,34,.4));
+    padding:6px;
+  }
+  .formula-inner{
+    border:1px solid var(--line-soft);
+    border-radius:11px;
+    padding:20px 22px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .formula .fline{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(19px,2.4vw,25px);
+    color:var(--cream-pure);
+    letter-spacing:.01em;
+    display:flex;align-items:center;gap:14px;
+  }
+  .formula .fline .glyph{color:var(--gold-bright);font-style:italic;}
+  .formula .fline:not(:last-child){
+    padding-bottom:14px;border-bottom:1px dashed rgba(201,162,75,.2);
+  }
+  .formula sup,.formula sub{font-size:.62em;}
+
+  /* TRAP CALLOUT */
+  .trap{
+    margin-top:22px;
+    border-left:3px solid var(--gold);
+    background:linear-gradient(90deg,rgba(201,162,75,.12),transparent 80%);
+    border-radius:0 14px 14px 0;
+    padding:18px 22px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .trap .ic{
+    font-size:20px;flex:none;line-height:1.3;
+    filter:saturate(.9);
+  }
+  .trap .ttl{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold-bright);font-weight:600;margin-bottom:5px;
+  }
+  .trap p{font-size:14.5px;color:rgba(246,241,227,.86);line-height:1.6;}
+  .trap p b{color:var(--gold-bright);font-weight:600;}
+
+  /* RIGHT COLUMN STACK */
+  .right-stack{display:flex;flex-direction:column;gap:26px;}
+
+  /* EXAM CARD */
+  .exam-card{
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:26px;
+    background:
+      radial-gradient(400px 240px at 110% -30%,rgba(201,162,75,.18),transparent 70%),
+      linear-gradient(160deg,rgba(12,74,58,.7),rgba(6,42,34,.6));
+    position:relative;overflow:hidden;
+  }
+  .exam-badge{
+    width:56px;height:56px;border-radius:14px;
+    display:grid;place-items:center;margin-bottom:18px;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+    color:var(--emerald-deep);font-family:'Fraunces',serif;font-weight:600;
+    font-size:13px;letter-spacing:.04em;
+    box-shadow:0 12px 26px -12px rgba(201,162,75,.7);
+    text-align:center;line-height:1.05;
+  }
+  .exam-card h3{
+    font-family:'Fraunces',serif;font-weight:600;font-size:25px;
+    color:var(--cream-pure);line-height:1.1;
+  }
+  .exam-card .full{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:17px;color:var(--gold-bright);margin-top:6px;
+  }
+  .exam-meta{
+    list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:0;
+    border-top:1px solid var(--line-soft);
+  }
+  .exam-meta li{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 2px;font-size:13.5px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .exam-meta li span:first-child{color:rgba(246,241,227,.66);letter-spacing:.03em;}
+  .exam-meta li span:last-child{color:var(--cream-pure);font-weight:500;
+    font-family:'Cormorant Garamond',serif;font-size:17px;}
+  .exam-meta li span.pass{color:var(--gold-bright);}
+
+  /* EXAMPLE TEASER */
+  .example{
+    border:1px solid var(--line-soft);
+    border-radius:22px;padding:26px;
+    background:linear-gradient(180deg,rgba(9,56,45,.5),rgba(6,42,34,.38));
+  }
+  .example .tag{
+    display:inline-block;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--emerald-deep);background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    padding:5px 12px;border-radius:999px;font-weight:600;margin-bottom:16px;
+  }
+  .example h4{
+    font-family:'Fraunces',serif;font-weight:600;font-size:22px;
+    color:var(--cream-pure);line-height:1.15;
+  }
+  .example .mini{
+    font-size:13.5px;color:rgba(246,241,227,.7);margin-top:10px;line-height:1.55;
+  }
+  .example .mini code{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;
+    color:var(--gold-bright);
+  }
+  .example .ex-cta{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;}
+  .example .ex-cta .btn{padding:12px 22px;font-size:13.5px;}
+
+  /* FOOTER */
+  footer{
+    margin-top:50px;padding-top:26px;
+    border-top:1px solid var(--line-soft);
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;
+  }
+  footer .fbrand{display:flex;align-items:center;gap:12px;}
+  footer .fmark{
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    border:1px solid rgba(201,162,75,.45);
+    background:radial-gradient(circle at 32% 28%,#1c6e57,#0a3e32);
+  }
+  footer .fmark span{
+    font-family:'Cormorant Garamond',serif;font-weight:700;font-size:22px;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  footer .fbrand b{font-family:'Cormorant Garamond',serif;font-weight:600;
+    font-size:18px;color:var(--cream-pure);}
+  footer .fbrand small{display:block;font-size:10px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--gold);}
+  footer .fnote{font-size:12px;color:rgba(246,241,227,.5);letter-spacing:.04em;}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:1040px){
+    .layout{grid-template-columns:1fr;}
+    aside{position:static;}
+    .content-row{grid-template-columns:1fr;}
+  }
+  @media (max-width:760px){
+    .topbar{flex-direction:column;align-items:flex-start;gap:18px;}
+    nav.primary{gap:2px;}
+    nav.primary a{padding:7px 10px;font-size:12.5px;}
+    .stats{grid-template-columns:1fr;}
+    .hero h2{font-size:40px;}
+    .ring{position:static;margin-top:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark"><span>M</span></div>
+      <div class="brand-txt">
+        <h1>Me Studing Stuff</h1>
+        <p>Study smarter. Pass exams.</p>
+      </div>
+    </div>
+    <nav class="primary" aria-label="Primary">
+      <span class="seclabel">FAM-L / FAM-S</span>
+      <a href="#" class="active">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </nav>
+  </header>
+
+  <!-- ============ LAYOUT ============ -->
+  <div class="layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside>
+      <div class="aside-h">Curriculum</div>
+      <ul class="topiclist">
+        <li><a href="#" class="current"><span class="num">I</span>Survival Models<span class="dot solid"></span></a></li>
+        <li><a href="#"><span class="num">II</span>Life Tables<span class="dot solid"></span></a></li>
+        <li><a href="#"><span class="num">III</span>Life Insurance<span class="dot solid"></span></a></li>
+        <li><a href="#"><span class="num">IV</span>Life Annuities<span class="dot"></span></a></li>
+        <li><a href="#"><span class="num">V</span>Premiums<span class="dot"></span></a></li>
+        <li><a href="#"><span class="num">VI</span>Policy Values<span class="dot"></span></a></li>
+      </ul>
+      <div class="aside-sep"></div>
+      <div class="aside-h">Study plan</div>
+      <p class="plan-note"><b>Today's focus</b>Wrap Life Insurance present values, then drill UDD adjustments before annuities open up.</p>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="greeting">Good evening</div>
+        <h2>Let's get you <em>that pass.</em></h2>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="hero-cta">
+          <a href="#" class="btn btn-gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Start studying
+          </a>
+          <a href="#" class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v5h5"/></svg>
+            Resume
+          </a>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat">
+          <div class="label">Overall progress</div>
+          <div class="ring"></div>
+          <div class="big">72<small>%</small></div>
+          <div class="sub">12 of 17 topics complete</div>
+          <div class="progressbar"><span></span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Exam countdown</div>
+          <div class="big">86<small>days</small></div>
+          <div class="sub">until your scheduled sitting</div>
+          <div class="progressbar"><span style="width:54%"></span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Topics solid</div>
+          <div class="big">8<small>/ 17</small></div>
+          <div class="sub">mastered and review-ready</div>
+          <div class="progressbar"><span style="width:47%"></span></div>
+        </div>
+      </section>
+
+      <!-- CONTENT ROW -->
+      <div class="content-row">
+
+        <!-- LEFT: TOPIC PREVIEW -->
+        <section class="card">
+          <div class="card-kicker">Topic preview · Life Insurance</div>
+          <h3>Life Insurance Present Values</h3>
+          <p class="lede-line">The expected present value of a benefit paid on death — the backbone of every premium and reserve you'll compute.</p>
+
+          <div class="formula">
+            <div class="formula-inner">
+              <div class="fline"><span class="glyph">A<sub>x</sub></span>= 1 − d&nbsp;·&nbsp;ä<sub>x</sub></div>
+              <div class="fline"><span class="glyph">Var(Z)</span>= <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></div>
+              <div class="fline"><span class="glyph">ä<sub>x</sub></span>= (1 − A<sub>x</sub>) / d</div>
+            </div>
+          </div>
+
+          <div class="trap">
+            <div class="ic">⚠️</div>
+            <div>
+              <div class="ttl">Common trap</div>
+              <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT STACK -->
+        <div class="right-stack">
+
+          <!-- EXAM CARD -->
+          <section class="exam-card">
+            <div class="exam-badge">Exam<br>FAM</div>
+            <h3>Exam FAM</h3>
+            <div class="full">Fundamentals of Actuarial Mathematics</div>
+            <ul class="exam-meta">
+              <li><span>Provider</span><span>SOA</span></li>
+              <li><span>Questions</span><span>34 questions</span></li>
+              <li><span>Pass mark</span><span class="pass">6 / 10</span></li>
+            </ul>
+          </section>
+
+          <!-- EXAMPLE TEASER -->
+          <section class="example">
+            <span class="tag">Worked example</span>
+            <h4>Example 1 — Whole life EPV &amp; variance</h4>
+            <p class="mini">Compute <code>A_x</code> from the annuity relation, then recover the variance via <code>²A_x − (A_x)²</code>. A clean walk-through, step by step.</p>
+            <div class="ex-cta">
+              <a href="#" class="btn btn-gold">Start studying</a>
+              <a href="#" class="btn btn-ghost">Resume</a>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="fbrand">
+          <div class="fmark"><span>M</span></div>
+          <div>
+            <b>Me Studing Stuff</b>
+            <small>Study smarter. Pass exams.</small>
+          </div>
+        </div>
+        <div class="fnote">A calm hub for SOA Exam FAM · © 2026</div>
+      </footer>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

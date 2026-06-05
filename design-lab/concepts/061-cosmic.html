@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff · Cosmic — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --void:#05060f;
+    --deep:#0a0d1f;
+    --navy:#0e1430;
+    --panel:#121a3a;
+    --panel-2:#161f47;
+    --ink:#eef1ff;
+    --mute:#9aa6d6;
+    --faint:#6a76aa;
+    --line:rgba(140,160,255,.14);
+    --line-2:rgba(140,160,255,.28);
+    --star:#dfe6ff;
+    --neb-pink:#ff6ad5;
+    --neb-violet:#9d6bff;
+    --neb-blue:#3aa0ff;
+    --neb-cyan:#3af0ff;
+    --cyan:#52e6ff;
+    --gold:#ffd479;
+    --aurora:#67ffce;
+    --grad-hero:linear-gradient(120deg,#ff8ad8 0%,#b18bff 38%,#6aa9ff 72%,#52e6ff 100%);
+    --shadow:0 30px 80px -30px rgba(0,0,0,.85);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Sora',system-ui,sans-serif;
+    background:var(--void);
+    color:var(--ink);
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ============ COSMIC BACKDROP ============ */
+  .cosmos{position:fixed;inset:0;z-index:-3;overflow:hidden;background:
+      radial-gradient(120% 90% at 80% -10%, #15183f 0%, rgba(21,24,63,0) 55%),
+      radial-gradient(90% 80% at 10% 110%, #1a1240 0%, rgba(26,18,64,0) 50%),
+      radial-gradient(70% 60% at 50% 50%, #0a0d22 0%, #05060f 100%);
+  }
+  /* nebula clouds */
+  .nebula{position:fixed;inset:-20%;z-index:-2;pointer-events:none;filter:blur(40px);opacity:.55;
+    background:
+      radial-gradient(28% 24% at 22% 30%, rgba(255,106,213,.45), transparent 70%),
+      radial-gradient(34% 30% at 78% 22%, rgba(124,107,255,.42), transparent 70%),
+      radial-gradient(30% 26% at 68% 78%, rgba(58,160,255,.40), transparent 72%),
+      radial-gradient(24% 20% at 16% 82%, rgba(103,255,206,.28), transparent 70%);
+    animation:drift 26s ease-in-out infinite alternate;
+  }
+  @keyframes drift{
+    0%{transform:translate3d(0,0,0) scale(1)}
+    100%{transform:translate3d(0,-3%,0) scale(1.08)}
+  }
+
+  /* starfields via radial-gradient dots, 3 parallax layers */
+  .stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .stars span{position:absolute;inset:-50% -50%;background-repeat:repeat}
+  .s1{
+    background-image:
+      radial-gradient(1.4px 1.4px at 20px 30px, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 120px 80px, #cdd7ff, transparent),
+      radial-gradient(1.6px 1.6px at 220px 160px, #fff, transparent),
+      radial-gradient(1px 1px at 300px 60px, #aeb9ff, transparent),
+      radial-gradient(1.3px 1.3px at 380px 220px, #fff, transparent);
+    background-size:420px 320px;
+    animation:tw 4.5s ease-in-out infinite alternate, floatY 90s linear infinite;
+    opacity:.9;
+  }
+  .s2{
+    background-image:
+      radial-gradient(1.8px 1.8px at 60px 120px, #fff, transparent),
+      radial-gradient(2px 2px at 250px 40px, #ffe9c4, transparent),
+      radial-gradient(1.5px 1.5px at 180px 260px, #cfe0ff, transparent),
+      radial-gradient(2.2px 2.2px at 400px 180px, #fff, transparent);
+    background-size:520px 460px;
+    animation:tw 6s ease-in-out infinite alternate, floatY 140s linear infinite;
+    opacity:.8;
+  }
+  .s3{
+    background-image:
+      radial-gradient(2.6px 2.6px at 140px 90px, #fff, transparent),
+      radial-gradient(2.4px 2.4px at 330px 300px, #b6c6ff, transparent);
+    background-size:680px 600px;
+    animation:tw 8s ease-in-out infinite alternate, floatY 200s linear infinite;
+    opacity:.7;
+  }
+  @keyframes tw{from{opacity:.45}to{opacity:1}}
+  @keyframes floatY{from{transform:translateY(0)}to{transform:translateY(-320px)}}
+
+  /* a couple of shooting stars */
+  .shoot{position:fixed;top:0;left:0;width:2px;height:2px;border-radius:50%;background:#fff;
+    box-shadow:0 0 8px 2px #fff;z-index:-1;pointer-events:none;opacity:0}
+  .shoot::after{content:"";position:absolute;top:50%;right:0;width:120px;height:1px;
+    transform:translateY(-50%);background:linear-gradient(90deg,#fff,transparent)}
+  .shoot.a{animation:shoot 9s linear infinite;animation-delay:2s}
+  .shoot.b{animation:shoot 13s linear infinite;animation-delay:7s}
+  @keyframes shoot{
+    0%{transform:translate(8vw,12vh) rotate(20deg);opacity:0}
+    4%{opacity:1}
+    14%{transform:translate(70vw,52vh) rotate(20deg);opacity:0}
+    100%{opacity:0}
+  }
+
+  /* ============ SHELL ============ */
+  .shell{max-width:1320px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+  /* ============ TOPBAR ============ */
+  header.top{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px);
+    background:linear-gradient(180deg, rgba(8,10,26,.82), rgba(8,10,26,.35));
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{display:flex;align-items:center;gap:26px;padding:18px 0}
+  .brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--ink)}
+  .mmark{
+    width:46px;height:46px;border-radius:14px;flex:none;position:relative;
+    display:grid;place-items:center;
+    background:radial-gradient(120% 120% at 30% 20%, #1d2756, #0c1130);
+    border:1px solid var(--line-2);
+    box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 8px 24px -8px rgba(124,107,255,.6), inset 0 0 18px rgba(124,107,255,.18);
+  }
+  .mmark svg{width:30px;height:30px}
+  .mmark::after{content:"";position:absolute;inset:-6px;border-radius:18px;
+    background:conic-gradient(from 0deg, transparent, rgba(82,230,255,.5), transparent 40%);
+    opacity:.4;animation:spin 8s linear infinite;z-index:-1}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .brand b{font-family:'Space Grotesk';font-weight:700;font-size:1.06rem;letter-spacing:.2px;line-height:1.05;display:block}
+  .brand small{display:block;color:var(--faint);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;margin-top:2px}
+
+  nav.topnav{margin-left:auto;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+  nav.topnav a{
+    color:var(--mute);text-decoration:none;font-size:.84rem;font-weight:500;
+    padding:9px 13px;border-radius:10px;transition:.2s;white-space:nowrap;
+  }
+  nav.topnav a:hover{color:var(--ink);background:rgba(140,160,255,.08)}
+  nav.topnav a.active{color:#fff;background:rgba(124,107,255,.16);box-shadow:inset 0 0 0 1px var(--line-2)}
+  .seg{
+    margin-left:6px;font-family:'Spline Sans Mono';font-size:.66rem;letter-spacing:.18em;
+    color:var(--cyan);border:1px solid rgba(82,230,255,.35);border-radius:999px;
+    padding:6px 12px;text-transform:uppercase;background:rgba(82,230,255,.06);white-space:nowrap;
+  }
+
+  /* ============ LAYOUT GRID ============ */
+  .layout{display:grid;grid-template-columns:262px 1fr;gap:34px;padding:40px 0 60px}
+
+  /* ---- SIDEBAR / CONSTELLATION NAV ---- */
+  aside.side{position:relative}
+  .side-inner{position:sticky;top:104px;display:flex;flex-direction:column;gap:14px}
+  .side-label{
+    font-family:'Spline Sans Mono';font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--faint);padding:0 6px 2px;display:flex;align-items:center;gap:10px;
+  }
+  .side-label::before{content:"✦";color:var(--neb-violet)}
+  .const{
+    position:relative;border:1px solid var(--line);border-radius:20px;
+    background:linear-gradient(180deg, rgba(18,26,58,.7), rgba(10,14,33,.7));
+    padding:14px 12px;overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .const::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(60% 40% at 80% 0%, rgba(124,107,255,.18), transparent 70%);pointer-events:none}
+  /* constellation connecting line */
+  .const .cline{position:absolute;left:26px;top:54px;bottom:30px;width:1px;
+    background:linear-gradient(180deg, transparent, var(--line-2) 12%, var(--line-2) 88%, transparent);z-index:0}
+  .topic{
+    position:relative;z-index:1;display:flex;align-items:center;gap:13px;
+    text-decoration:none;color:var(--mute);padding:11px 12px;border-radius:13px;
+    font-size:.9rem;font-weight:500;transition:.2s;
+  }
+  .topic .dot{
+    width:12px;height:12px;border-radius:50%;flex:none;position:relative;
+    background:#202a55;box-shadow:0 0 0 1px var(--line-2);
+  }
+  .topic .dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--faint)}
+  .topic:hover{color:var(--ink);background:rgba(140,160,255,.07)}
+  .topic.done .dot{background:radial-gradient(circle, #fff, var(--aurora));box-shadow:0 0 12px 1px rgba(103,255,206,.7), 0 0 0 1px rgba(103,255,206,.5)}
+  .topic.done .dot::after{display:none}
+  .topic.now{color:#fff;background:linear-gradient(90deg, rgba(124,107,255,.2), transparent)}
+  .topic.now .dot{background:radial-gradient(circle,#fff,var(--neb-pink));box-shadow:0 0 14px 2px rgba(255,106,213,.7),0 0 0 1px rgba(255,106,213,.5)}
+  .topic.now .dot::after{display:none}
+  .topic span.n{margin-left:auto;font-family:'Spline Sans Mono';font-size:.7rem;color:var(--faint)}
+  .topic.done span.n{color:var(--aurora)}
+
+  .side-mini{
+    border:1px solid var(--line);border-radius:20px;padding:16px 16px 18px;
+    background:linear-gradient(180deg, rgba(18,26,58,.55), rgba(10,14,33,.55));
+    box-shadow:var(--shadow);
+  }
+  .side-mini h4{font-size:.78rem;letter-spacing:.06em;color:var(--mute);font-weight:600;margin-bottom:10px;text-transform:uppercase}
+  .orbit{
+    position:relative;height:96px;display:grid;place-items:center;margin:6px 0 4px;
+  }
+  .orbit .ring{position:absolute;border:1px dashed var(--line-2);border-radius:50%}
+  .orbit .r1{width:90px;height:90px}
+  .orbit .r2{width:60px;height:60px;animation:spin 18s linear infinite}
+  .orbit .planet{position:absolute;top:-4px;left:50%;width:8px;height:8px;border-radius:50%;
+    background:var(--cyan);box-shadow:0 0 10px 2px rgba(82,230,255,.8)}
+  .orbit .sun{width:30px;height:30px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, var(--gold) 60%, #c98a1f);
+    box-shadow:0 0 22px 4px rgba(255,212,121,.6)}
+  .side-mini p{font-size:.78rem;color:var(--faint);text-align:center}
+  .side-mini p b{color:var(--gold)}
+
+  /* ============ MAIN ============ */
+  main{display:flex;flex-direction:column;gap:30px;min-width:0}
+
+  /* ---- HERO ---- */
+  .hero{
+    position:relative;border:1px solid var(--line);border-radius:28px;overflow:hidden;
+    padding:40px 42px 38px;
+    background:
+      radial-gradient(90% 130% at 100% 0%, rgba(124,107,255,.22), transparent 55%),
+      radial-gradient(80% 120% at 0% 100%, rgba(255,106,213,.16), transparent 55%),
+      linear-gradient(180deg, rgba(16,22,52,.75), rgba(9,12,30,.85));
+    box-shadow:var(--shadow);
+  }
+  .hero::after{content:"";position:absolute;inset:0;border-radius:28px;pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+  .greet{display:inline-flex;align-items:center;gap:10px;font-family:'Spline Sans Mono';
+    font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);
+    padding:7px 14px;border:1px solid rgba(82,230,255,.3);border-radius:999px;background:rgba(82,230,255,.06)}
+  .greet .moon{width:13px;height:13px;border-radius:50%;
+    background:radial-gradient(circle at 65% 35%, #fff 0 45%, transparent 46%), #cfe0ff;
+    box-shadow:0 0 10px 1px rgba(207,224,255,.5)}
+  .hero h1{
+    font-family:'Sora';font-weight:800;font-size:clamp(2.3rem,5vw,3.5rem);line-height:1.02;
+    letter-spacing:-.02em;margin:18px 0 16px;max-width:16ch;
+  }
+  .hero h1 em{font-style:normal;background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 22px rgba(157,107,255,.35))}
+  .hero p.lede{font-size:1.04rem;color:var(--mute);max-width:60ch;line-height:1.65}
+
+  /* stat trio */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  .stat{
+    position:relative;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;overflow:hidden;
+    background:linear-gradient(180deg, rgba(20,28,62,.6), rgba(11,15,36,.6));
+  }
+  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .stat.p::before{background:linear-gradient(180deg,var(--neb-violet),var(--neb-pink))}
+  .stat.c::before{background:linear-gradient(180deg,var(--cyan),var(--neb-blue))}
+  .stat.s::before{background:linear-gradient(180deg,var(--aurora),#3af0ff)}
+  .stat .k{font-family:'Spline Sans Mono';font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .stat .v{font-family:'Space Grotesk';font-weight:700;font-size:2.05rem;line-height:1;margin:9px 0 4px;letter-spacing:-.01em}
+  .stat .v small{font-size:1rem;color:var(--mute);font-weight:500}
+  .stat .sub{font-size:.78rem;color:var(--mute)}
+  .stat.p .v{color:var(--neb-pink)}
+  .stat.c .v{color:var(--cyan)}
+  .stat.s .v{color:var(--aurora)}
+  /* progress ring inside first stat */
+  .track{height:7px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:11px}
+  .track i{display:block;height:100%;width:72%;border-radius:999px;
+    background:linear-gradient(90deg,var(--neb-violet),var(--neb-pink));box-shadow:0 0 14px rgba(255,106,213,.5)}
+
+  /* ---- TWO-COLUMN CONTENT ---- */
+  .grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:24px}
+
+  .card{
+    position:relative;border:1px solid var(--line);border-radius:24px;overflow:hidden;
+    background:linear-gradient(180deg, rgba(16,22,52,.7), rgba(9,12,30,.8));
+    box-shadow:var(--shadow);
+  }
+  .card .pad{padding:26px 28px}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-family:'Spline Sans Mono';
+    font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+  .eyebrow .pip{width:7px;height:7px;border-radius:50%;background:var(--neb-violet);box-shadow:0 0 8px var(--neb-violet)}
+  .card h2{font-family:'Sora';font-weight:700;font-size:1.5rem;letter-spacing:-.01em;line-height:1.1}
+  .card h3{font-family:'Sora';font-weight:600;font-size:1.18rem}
+  .lede-sm{color:var(--mute);font-size:.95rem;margin-top:8px;line-height:1.6}
+
+  /* formula block */
+  .formula{
+    margin-top:20px;border:1px solid var(--line-2);border-radius:16px;padding:4px;
+    background:radial-gradient(120% 100% at 0% 0%, rgba(124,107,255,.14), transparent 60%), #090c1e;
+  }
+  .formula-inner{border-radius:13px;background:
+      repeating-linear-gradient(0deg, rgba(140,160,255,.04) 0 1px, transparent 1px 26px);
+    padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+  .fline{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .fline .eq{font-family:'Spline Sans Mono';font-size:1.02rem;color:#eaf0ff;letter-spacing:.2px}
+  .fline .eq b{color:var(--cyan);font-weight:600}
+  .fline .tag{font-family:'Spline Sans Mono';font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:3px 8px;margin-left:auto}
+  .fdiv{height:1px;background:var(--line)}
+
+  /* trap callout */
+  .trap{
+    position:relative;border-radius:18px;padding:20px 22px 20px 56px;margin-top:22px;
+    border:1px solid rgba(255,212,121,.32);
+    background:linear-gradient(180deg, rgba(255,212,121,.10), rgba(255,140,80,.05));
+  }
+  .trap::before{content:"⚠";position:absolute;left:18px;top:18px;font-size:1.3rem;
+    filter:drop-shadow(0 0 8px rgba(255,212,121,.6))}
+  .trap .lab{font-family:'Spline Sans Mono';font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .trap p{margin-top:6px;color:#f4ead0;font-size:.92rem;line-height:1.6}
+  .trap p b{color:#fff}
+
+  /* exam FAM card */
+  .exam{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(90% 120% at 100% 0%, rgba(82,230,255,.16), transparent 55%),
+      radial-gradient(80% 120% at 0% 100%, rgba(157,107,255,.18), transparent 55%),
+      linear-gradient(180deg, rgba(18,24,56,.85), rgba(10,14,33,.9));
+  }
+  .exam .badge{
+    width:52px;height:52px;border-radius:15px;display:grid;place-items:center;flex:none;
+    font-family:'Space Grotesk';font-weight:700;font-size:.8rem;color:var(--void);
+    background:linear-gradient(135deg,#fff,var(--cyan));box-shadow:0 8px 22px -6px rgba(82,230,255,.6)}
+  .exam-head{display:flex;gap:16px;align-items:center}
+  .exam-head .t b{display:block;font-family:'Space Grotesk';font-weight:700;font-size:1.32rem}
+  .exam-head .t span{color:var(--mute);font-size:.84rem}
+  .exam-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+  .meta{
+    border:1px solid var(--line);border-radius:13px;padding:13px 14px;
+    background:rgba(255,255,255,.025);
+  }
+  .meta .mk{font-family:'Spline Sans Mono';font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .meta .mv{font-family:'Space Grotesk';font-weight:600;font-size:1.02rem;margin-top:5px}
+  .meta .mv b{color:var(--aurora)}
+
+  /* example teaser + buttons */
+  .example{
+    margin-top:22px;border:1px solid var(--line);border-radius:16px;padding:18px 20px;
+    display:flex;align-items:center;gap:16px;
+    background:linear-gradient(90deg, rgba(124,107,255,.10), transparent);
+  }
+  .example .glyph{width:42px;height:42px;border-radius:12px;flex:none;display:grid;place-items:center;font-size:1.2rem;
+    background:rgba(255,106,213,.12);border:1px solid rgba(255,106,213,.3)}
+  .example .ex-t b{display:block;font-weight:600;font-size:1rem}
+  .example .ex-t span{font-size:.8rem;color:var(--faint);font-family:'Spline Sans Mono';letter-spacing:.08em}
+
+  .btns{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .btn{
+    appearance:none;border:0;cursor:pointer;text-decoration:none;
+    font-family:'Sora';font-weight:600;font-size:.92rem;
+    padding:14px 24px;border-radius:13px;display:inline-flex;align-items:center;gap:10px;transition:.2s;
+  }
+  .btn-primary{color:#0a0d22;background:var(--grad-hero);box-shadow:0 14px 30px -10px rgba(124,107,255,.7)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 20px 40px -10px rgba(124,107,255,.85)}
+  .btn-ghost{color:var(--ink);background:rgba(140,160,255,.08);border:1px solid var(--line-2)}
+  .btn-ghost:hover{background:rgba(140,160,255,.16);transform:translateY(-2px)}
+  .btn .ar{font-size:1.05rem}
+
+  /* small "constellation map" decorative svg card */
+  .mapcard{position:relative;overflow:hidden}
+  .mapcard svg{display:block;width:100%;height:auto}
+  .mapcard .pad{position:relative;z-index:1}
+
+  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--line);margin-top:18px;
+    background:linear-gradient(180deg, transparent, rgba(8,10,26,.6));
+  }
+  .foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:30px 0 46px;color:var(--faint);font-size:.82rem}
+  .foot .brand b{font-size:.96rem}
+  .foot .brand small{font-size:.62rem}
+  .foot .dotsep{margin:0 4px;color:var(--line-2)}
+  .foot .right{margin-left:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .foot a{color:var(--mute);text-decoration:none}
+  .foot a:hover{color:var(--cyan)}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:1040px){
+    .layout{grid-template-columns:1fr;gap:26px}
+    aside.side .side-inner{position:static;flex-direction:row;flex-wrap:wrap}
+    .const,.side-mini{flex:1 1 280px}
+    .side-label{width:100%}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media (max-width:720px){
+    .shell{padding:0 18px}
+    nav.topnav{display:none}
+    .hero{padding:30px 22px}
+    .card .pad{padding:22px 20px}
+    .stats{grid-template-columns:1fr}
+    .exam-meta{grid-template-columns:1fr}
+    .fline .tag{display:none}
+    .topbar{gap:14px}
+  }
+</style>
+</head>
+<body>
+
+<div class="cosmos"></div>
+<div class="nebula"></div>
+<div class="stars">
+  <span class="s1"></span>
+  <span class="s2"></span>
+  <span class="s3"></span>
+</div>
+<i class="shoot a"></i>
+<i class="shoot b"></i>
+
+<!-- ============ TOPBAR ============ -->
+<header class="top">
+  <div class="shell topbar">
+    <a class="brand" href="#">
+      <span class="mmark">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="mg" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0" stop-color="#ff8ad8"/><stop offset=".5" stop-color="#9d6bff"/><stop offset="1" stop-color="#52e6ff"/>
+            </linearGradient>
+          </defs>
+          <path d="M4 25V8.5c0-1 1.2-1.5 1.9-.7L16 19l10.1-11.2c.7-.8 1.9-.3 1.9.7V25" stroke="url(#mg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="16" cy="6" r="1.6" fill="#fff"/>
+        </svg>
+      </span>
+      <span>
+        <b>Me Studing Stuff</b>
+        <small>Study smarter · Pass exams</small>
+      </span>
+    </a>
+
+    <nav class="topnav">
+      <a href="#" class="active">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+      <span class="seg">FAM-L / FAM-S</span>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ BODY ============ -->
+<div class="shell">
+  <div class="layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="side">
+      <div class="side-inner">
+
+        <div style="width:100%">
+          <div class="side-label">Star Chart · Topics</div>
+          <div class="const">
+            <span class="cline"></span>
+            <a class="topic done" href="#"><span class="dot"></span>Survival Models <span class="n">100%</span></a>
+            <a class="topic done" href="#"><span class="dot"></span>Life Tables <span class="n">100%</span></a>
+            <a class="topic now" href="#"><span class="dot"></span>Life Insurance <span class="n">now</span></a>
+            <a class="topic" href="#"><span class="dot"></span>Life Annuities <span class="n">61%</span></a>
+            <a class="topic" href="#"><span class="dot"></span>Premiums <span class="n">40%</span></a>
+            <a class="topic" href="#"><span class="dot"></span>Policy Values <span class="n">12%</span></a>
+          </div>
+        </div>
+
+        <div class="side-mini">
+          <h4>Mission Clock</h4>
+          <div class="orbit">
+            <span class="ring r1"></span>
+            <span class="ring r2"><span class="planet"></span></span>
+            <span class="sun"></span>
+          </div>
+          <p><b>86 days</b> to launch — stay in orbit.</p>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main>
+
+      <!-- HERO -->
+      <section class="hero">
+        <span class="greet"><span class="moon"></span> Good evening</span>
+        <h1>Let's get you <em>that pass.</em></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+        <div class="stats">
+          <div class="stat p">
+            <div class="k">Overall progress</div>
+            <div class="v">72<small>%</small></div>
+            <div class="sub">12 of 17 topics</div>
+            <div class="track"><i></i></div>
+          </div>
+          <div class="stat c">
+            <div class="k">Exam countdown</div>
+            <div class="v">86<small> days</small></div>
+            <div class="sub">until exam day</div>
+          </div>
+          <div class="stat s">
+            <div class="k">Topics solid</div>
+            <div class="v">8</div>
+            <div class="sub">mastered &amp; locked in</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TWO COLUMN -->
+      <div class="grid2">
+
+        <!-- LEFT: topic preview + formula + trap -->
+        <section class="card">
+          <div class="pad">
+            <div class="eyebrow"><span class="pip"></span> Topic preview · Life Insurance</div>
+            <h2>Life Insurance Present Values</h2>
+            <p class="lede-sm">The expected present value of a benefit paid on death — and the variance that tells you how risky that bet really is.</p>
+
+            <div class="formula">
+              <div class="formula-inner">
+                <div class="fline"><span class="eq"><b>A&#x0078;</b> = 1 − d·ä&#x0078;</span><span class="tag">EPV</span></div>
+                <div class="fdiv"></div>
+                <div class="fline"><span class="eq"><b>Var(Z)</b> = ²A&#x0078; − (A&#x0078;)²</span><span class="tag">Variance</span></div>
+                <div class="fdiv"></div>
+                <div class="fline"><span class="eq"><b>ä&#x0078;</b> = (1 − A&#x0078;) / d</span><span class="tag">Annuity link</span></div>
+              </div>
+            </div>
+
+            <div class="trap">
+              <div class="lab">Common trap</div>
+              <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: exam card + example + buttons -->
+        <section class="card exam">
+          <div class="pad">
+            <div class="exam-head">
+              <span class="badge">FAM</span>
+              <span class="t">
+                <b>Exam FAM</b>
+                <span>Fundamentals of Actuarial Mathematics</span>
+              </span>
+            </div>
+
+            <div class="exam-meta">
+              <div class="meta"><div class="mk">Body</div><div class="mv">SOA</div></div>
+              <div class="meta"><div class="mk">Questions</div><div class="mv">34</div></div>
+              <div class="meta"><div class="mk">Pass mark</div><div class="mv"><b>6 / 10</b></div></div>
+              <div class="meta"><div class="mk">Sitting</div><div class="mv">FAM-L / FAM-S</div></div>
+            </div>
+
+            <div class="example">
+              <span class="glyph">✶</span>
+              <span class="ex-t">
+                <b>Example 1 — Whole life EPV &amp; variance</b>
+                <span>WORKED · STEP BY STEP</span>
+              </span>
+            </div>
+
+            <div class="btns">
+              <a class="btn btn-primary" href="#">Start studying <span class="ar">→</span></a>
+              <a class="btn btn-ghost" href="#">Resume</a>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="shell foot">
+    <a class="brand" href="#" style="text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:11px">
+      <span class="mmark" style="width:36px;height:36px;border-radius:11px">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M4 25V8.5c0-1 1.2-1.5 1.9-.7L16 19l10.1-11.2c.7-.8 1.9-.3 1.9.7V25" stroke="url(#mg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand"><b>Me Studing Stuff</b><small>Study smarter · Pass exams</small></span>
+    </a>
+    <div class="right">
+      <span>© 2026 · A calm place to study</span>
+      <span class="dotsep">✦</span>
+      <a href="#">SOA Exam FAM</a>
+      <a href="#">FAM-L / FAM-S</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

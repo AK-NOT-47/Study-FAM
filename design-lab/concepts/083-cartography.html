@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Exam FAM Cartography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IM+Fell+English+SC&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#3a2a16;
+    --ink-soft:#5c4628;
+    --sepia:#7a5a30;
+    --gold:#9c6b2a;
+    --gold-bright:#c08a3e;
+    --parch:#e9d8b4;
+    --parch-light:#f2e6c9;
+    --parch-deep:#dcc69a;
+    --rust:#9c4a2a;
+    --teal:#3c5d52;
+    --line:#b89a64;
+    --shadow:rgba(58,42,22,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Spectral',serif;
+    color:var(--ink);
+    background:#cbb589;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Parchment texture ---------- */
+  .parchment{
+    background:
+      radial-gradient(ellipse 120% 90% at 18% 8%, rgba(255,248,225,.55), transparent 55%),
+      radial-gradient(ellipse 90% 70% at 92% 95%, rgba(120,82,40,.30), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(247,234,200,.35), transparent 70%),
+      repeating-linear-gradient(46deg, rgba(150,110,60,.035) 0 3px, transparent 3px 8px),
+      repeating-linear-gradient(-44deg, rgba(120,82,40,.03) 0 2px, transparent 2px 9px),
+      linear-gradient(135deg,#ecdbb6 0%, #e3cfa3 45%, #d8c091 100%);
+  }
+  /* mottled stains via pseudo */
+  .stainlayer{position:relative}
+  .stainlayer::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(circle at 12% 22%, rgba(120,80,38,.16), transparent 9%),
+      radial-gradient(circle at 78% 14%, rgba(120,80,38,.13), transparent 7%),
+      radial-gradient(circle at 88% 72%, rgba(100,64,30,.15), transparent 11%),
+      radial-gradient(circle at 30% 88%, rgba(120,80,38,.10), transparent 8%),
+      radial-gradient(circle at 60% 40%, rgba(140,100,55,.07), transparent 14%);
+    mix-blend-mode:multiply;
+  }
+
+  /* ---------- Layout shell ---------- */
+  .map{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:300px 1fr;
+    position:relative;
+  }
+  .map::after{ /* aged outer vignette / burnt edges */
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+    box-shadow:inset 0 0 90px rgba(70,46,20,.45), inset 0 0 18px rgba(50,30,12,.4);
+    border:14px solid transparent;
+    border-image:linear-gradient(135deg,#7a5a30,#5c4628,#7a5a30,#4a371f) 1;
+  }
+
+  /* ---------- SIDEBAR (the legend / nav) ---------- */
+  .legend{
+    position:relative;z-index:2;
+    padding:30px 26px 40px;
+    border-right:3px double var(--sepia);
+    background:
+      linear-gradient(180deg, rgba(120,82,40,.10), transparent 30%),
+      linear-gradient(90deg, transparent 80%, rgba(120,82,40,.12));
+  }
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .seal{
+    width:62px;height:62px;flex:none;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, #c79a4f, #8a5a26 70%, #5c3a16);
+    border:2px solid #4a2f12;
+    display:grid;place-items:center;
+    box-shadow:0 3px 8px var(--shadow), inset 0 2px 6px rgba(255,240,200,.4);
+    position:relative;
+  }
+  .seal::after{
+    content:"";position:absolute;inset:5px;border:1px dashed rgba(255,240,200,.55);border-radius:50%;
+  }
+  .seal span{font-family:'Cinzel',serif;font-weight:800;font-size:32px;color:#f4e7c5;text-shadow:0 1px 1px #4a2f12;position:relative}
+  .brand-txt h1{font-family:'Cinzel',serif;font-weight:700;font-size:1.18rem;letter-spacing:.5px;line-height:1.05;color:var(--ink)}
+  .brand-txt p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.02rem;color:var(--sepia)}
+
+  .compass-mini{margin:22px auto 14px;display:block}
+
+  .legend-title{
+    font-family:'IM Fell English SC',serif;
+    font-size:.84rem;letter-spacing:3px;text-transform:uppercase;
+    color:var(--rust);margin:24px 0 10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .legend-title::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 5px,transparent 5px 9px)}
+
+  nav ul{list-style:none}
+  nav li a{
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:var(--ink-soft);
+    font-family:'Spectral',serif;font-size:1.05rem;
+    padding:8px 10px;border-radius:4px;
+    transition:.22s;position:relative;
+  }
+  nav li a .pin{
+    width:14px;height:14px;flex:none;position:relative;
+  }
+  nav li a .pin::before{ /* little X / marker */
+    content:"✕";position:absolute;inset:0;display:grid;place-items:center;
+    font-size:.7rem;color:var(--gold);font-weight:700;
+  }
+  nav li a:hover, nav li a.active{
+    background:linear-gradient(90deg, rgba(156,107,42,.18), transparent);
+    color:var(--ink);
+    transform:translateX(3px);
+  }
+  nav li a.active{font-weight:600}
+  nav li a.active .pin::before{content:"★";color:var(--rust)}
+  nav li a::after{
+    content:attr(data-dist);
+    margin-left:auto;font-family:'IM Fell English SC',serif;
+    font-size:.72rem;color:var(--sepia);opacity:.7;
+  }
+
+  .legend-foot{
+    margin-top:30px;padding-top:16px;border-top:1px dashed var(--line);
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:1.02rem;color:var(--sepia);
+  }
+  .scale-bar{margin-top:14px}
+  .scale-bar svg{width:100%;height:26px}
+  .scale-bar small{font-family:'IM Fell English SC',serif;font-size:.7rem;letter-spacing:1px;color:var(--sepia)}
+
+  /* ---------- MAIN CHART AREA ---------- */
+  .chart{
+    position:relative;z-index:1;
+    padding:30px 40px 50px;
+    display:flex;flex-direction:column;gap:26px;
+  }
+
+  /* decorative big compass watermark */
+  .chart::before{
+    content:"";position:absolute;top:60px;right:30px;width:340px;height:340px;
+    pointer-events:none;opacity:.10;z-index:0;
+    background:
+      conic-gradient(from 0deg, transparent 0 43deg, rgba(90,60,28,.9) 44deg 46deg, transparent 47deg 90deg) ,
+      conic-gradient(from 90deg, transparent 0 43deg, rgba(90,60,28,.5) 44deg 46deg, transparent 47deg 90deg);
+    -webkit-mask:radial-gradient(circle, #000 60%, transparent 62%);
+            mask:radial-gradient(circle, #000 60%, transparent 62%);
+    border-radius:50%;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;z-index:2}
+  .hero .greet{
+    font-family:'IM Fell English SC',serif;
+    letter-spacing:4px;text-transform:uppercase;font-size:.92rem;
+    color:var(--rust);display:flex;align-items:center;gap:12px;
+  }
+  .hero .greet::before{content:"⚜";font-size:1.2rem;color:var(--gold)}
+  .hero h2{
+    font-family:'Cinzel',serif;font-weight:800;
+    font-size:clamp(2.3rem,5vw,3.7rem);line-height:1.02;
+    color:var(--ink);margin:8px 0 6px;
+    text-shadow:1px 1px 0 rgba(255,245,220,.6);
+  }
+  .hero h2 em{font-style:normal;color:var(--rust)}
+  .hero .lede{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.42rem;max-width:60ch;color:var(--ink-soft);
+    font-style:italic;line-height:1.4;
+  }
+
+  /* flourish divider */
+  .flourish{display:flex;align-items:center;gap:14px;color:var(--gold);margin:4px 0}
+  .flourish .ln{flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+  .flourish span{font-size:1.4rem}
+
+  /* ---------- STATS (three cartouches) ---------- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative;z-index:2}
+  .cartouche{
+    position:relative;padding:22px 22px 20px;text-align:center;
+    background:
+      linear-gradient(180deg, rgba(255,248,225,.5), rgba(216,192,145,.35));
+    border:2px solid var(--sepia);border-radius:10px;
+    box-shadow:0 4px 12px var(--shadow), inset 0 1px 3px rgba(255,245,220,.6);
+  }
+  .cartouche::before,.cartouche::after{
+    content:"❦";position:absolute;font-size:1rem;color:var(--gold);
+  }
+  .cartouche::before{top:6px;left:9px}
+  .cartouche::after{bottom:4px;right:9px}
+  .cartouche .lab{
+    font-family:'IM Fell English SC',serif;letter-spacing:2px;text-transform:uppercase;
+    font-size:.74rem;color:var(--sepia);
+  }
+  .cartouche .big{
+    font-family:'Cinzel',serif;font-weight:700;font-size:2.4rem;color:var(--rust);line-height:1.1;margin:4px 0 2px;
+  }
+  .cartouche .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--ink-soft)}
+  .progress-ring{display:inline-block}
+
+  /* ---------- GRID of panels ---------- */
+  .grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:22px;position:relative;z-index:2}
+  .panel{
+    position:relative;
+    background:linear-gradient(160deg, rgba(255,249,228,.55), rgba(219,196,150,.30));
+    border:1.5px solid var(--line);border-radius:8px;
+    padding:24px 26px;
+    box-shadow:0 5px 16px var(--shadow), inset 0 1px 4px rgba(255,245,220,.55);
+  }
+  .panel.tornedge{
+    border-style:double;border-width:3px;border-color:var(--sepia);
+  }
+  .panel h3{
+    font-family:'Cinzel',serif;font-weight:700;font-size:1.25rem;color:var(--ink);
+    display:flex;align-items:center;gap:10px;margin-bottom:4px;
+  }
+  .panel h3 .mk{color:var(--gold);font-size:1.1rem}
+  .panel .lede2{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:var(--ink-soft);margin-bottom:14px}
+
+  /* Exam card */
+  .examcard{
+    display:flex;flex-direction:column;gap:14px;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(156,74,42,.10), transparent 40%),
+      linear-gradient(160deg, rgba(255,249,228,.6), rgba(219,196,150,.35));
+  }
+  .examcard .crest{
+    display:flex;align-items:center;gap:16px;
+  }
+  .crest .shield{
+    width:58px;height:66px;flex:none;
+    background:linear-gradient(160deg,#b07a36,#7a4e22);
+    clip-path:polygon(50% 0,100% 0,100% 64%,50% 100%,0 64%,0 0);
+    display:grid;place-items:center;
+    border:2px solid #4a2f12;
+    box-shadow:inset 0 2px 5px rgba(255,240,200,.4);
+  }
+  .crest .shield b{font-family:'Cinzel',serif;color:#f4e7c5;font-size:1.5rem}
+  .crest .ct h3{margin:0}
+  .crest .ct p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.08rem;color:var(--sepia)}
+  .exammeta{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{
+    font-family:'IM Fell English SC',serif;font-size:.78rem;letter-spacing:1px;
+    padding:5px 11px;border:1px solid var(--sepia);border-radius:20px;
+    background:rgba(255,248,225,.5);color:var(--ink-soft);
+  }
+  .tag.pass{background:var(--teal);color:#f2e6c9;border-color:var(--teal)}
+
+  /* Formula block */
+  .formula{
+    margin-top:6px;
+    background:linear-gradient(180deg, rgba(58,42,22,.92), rgba(42,30,16,.95));
+    border:2px solid var(--gold);border-radius:6px;
+    padding:18px 20px;color:#f0e2bf;
+    box-shadow:inset 0 0 24px rgba(0,0,0,.4), 0 4px 12px var(--shadow);
+    position:relative;
+  }
+  .formula::before{
+    content:"⊹ FORMULARIUM ⊹";position:absolute;top:-11px;left:18px;
+    background:#3a2a16;padding:0 10px;font-family:'IM Fell English SC',serif;
+    font-size:.72rem;letter-spacing:2px;color:var(--gold-bright);
+  }
+  .formula .eq{
+    font-family:'Cormorant Garamond',serif;font-size:1.3rem;
+    padding:7px 0;display:flex;align-items:center;gap:10px;
+    border-bottom:1px dashed rgba(192,138,62,.35);
+  }
+  .formula .eq:last-child{border-bottom:none}
+  .formula .eq .star{color:var(--gold-bright);font-size:.9rem}
+  .formula sup,.formula sub{font-size:.7em}
+
+  /* Common trap callout */
+  .trap{
+    position:relative;z-index:2;
+    background:
+      linear-gradient(160deg, rgba(156,74,42,.16), rgba(156,74,42,.06)),
+      linear-gradient(160deg, rgba(255,249,228,.5), rgba(219,196,150,.3));
+    border:2px dashed var(--rust);border-radius:8px;
+    padding:20px 24px 20px 64px;
+    box-shadow:0 4px 12px var(--shadow);
+  }
+  .trap::before{
+    content:"☠";position:absolute;left:20px;top:50%;transform:translateY(-50%);
+    font-size:2rem;color:var(--rust);
+  }
+  .trap h4{
+    font-family:'IM Fell English SC',serif;letter-spacing:2px;text-transform:uppercase;
+    font-size:.9rem;color:var(--rust);margin-bottom:3px;
+  }
+  .trap p{font-family:'Spectral',serif;font-size:1.08rem;color:var(--ink)}
+  .trap p b{color:var(--rust)}
+
+  /* Worked example teaser */
+  .example{
+    position:relative;z-index:2;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;
+    background:linear-gradient(160deg, rgba(60,93,82,.14), rgba(255,249,228,.5));
+    border:1.5px solid var(--teal);border-radius:8px;
+    padding:22px 26px;box-shadow:0 5px 16px var(--shadow);
+  }
+  .example .ex-txt h3{
+    font-family:'Cinzel',serif;font-weight:700;font-size:1.2rem;color:var(--ink);
+    display:flex;align-items:center;gap:10px;
+  }
+  .example .ex-txt h3 .qm{color:var(--teal)}
+  .example .ex-txt p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--ink-soft)}
+  .actions{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    font-family:'Cinzel',serif;font-weight:600;font-size:.92rem;letter-spacing:1px;
+    padding:13px 26px;border-radius:6px;text-decoration:none;cursor:pointer;
+    border:2px solid var(--sepia);transition:.2s;display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,var(--rust),#7a3820);color:#f4e7c5;border-color:#5c2818;
+    box-shadow:0 4px 0 #5c2818, 0 6px 12px var(--shadow);
+  }
+  .btn-primary:hover{transform:translateY(2px);box-shadow:0 2px 0 #5c2818,0 4px 8px var(--shadow)}
+  .btn-ghost{
+    background:rgba(255,248,225,.55);color:var(--ink);
+    box-shadow:0 4px 0 var(--sepia),0 6px 10px var(--shadow);
+  }
+  .btn-ghost:hover{transform:translateY(2px);box-shadow:0 2px 0 var(--sepia),0 3px 6px var(--shadow)}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    position:relative;z-index:2;margin-top:8px;
+    text-align:center;padding:24px;
+    border-top:3px double var(--sepia);
+    font-family:'IM Fell English SC',serif;letter-spacing:2px;
+    font-size:.82rem;color:var(--sepia);
+  }
+  footer .compass-foot{font-size:1.3rem;color:var(--gold);display:block;margin-bottom:6px}
+  footer b{color:var(--ink);font-family:'Cinzel',serif;letter-spacing:1px}
+
+  /* compass spin */
+  @keyframes slowspin{to{transform:rotate(360deg)}}
+  .spin{animation:slowspin 90s linear infinite;transform-origin:center}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:980px){
+    .map{grid-template-columns:1fr}
+    .legend{border-right:none;border-bottom:3px double var(--sepia)}
+    .grid2{grid-template-columns:1fr}
+    .chart::before{display:none}
+  }
+  @media(max-width:760px){
+    .chart{padding:22px 18px 40px}
+    .legend{padding:24px 18px 30px}
+    .stats{grid-template-columns:1fr;gap:14px}
+    .formula .eq{font-size:1.12rem}
+    .example{flex-direction:column;align-items:flex-start}
+  }
+</style>
+</head>
+<body class="parchment stainlayer">
+<div class="map">
+
+  <!-- ============ SIDEBAR / LEGEND ============ -->
+  <aside class="legend">
+    <div class="brand">
+      <div class="seal"><span>M</span></div>
+      <div class="brand-txt">
+        <h1>Me Studing<br>Stuff</h1>
+        <p>Study smarter. Pass exams.</p>
+      </div>
+    </div>
+
+    <!-- mini compass rose -->
+    <svg class="compass-mini" width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
+      <g class="spin">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="#7a5a30" stroke-width="1.5" stroke-dasharray="2 4"/>
+        <circle cx="60" cy="60" r="44" fill="none" stroke="#9c6b2a" stroke-width="1"/>
+        <!-- 8-point star -->
+        <polygon points="60,8 67,53 60,60 53,53" fill="#9c4a2a"/>
+        <polygon points="112,60 67,67 60,60 67,53" fill="#7a5a30"/>
+        <polygon points="60,112 53,67 60,60 67,67" fill="#9c4a2a"/>
+        <polygon points="8,60 53,53 60,60 53,67" fill="#7a5a30"/>
+        <polygon points="60,18 64,56 60,60 56,56" fill="#c08a3e"/>
+        <polygon points="60,102 56,64 60,60 64,64" fill="#c08a3e"/>
+        <polygon points="102,60 64,64 60,60 64,56" fill="#c08a3e"/>
+        <polygon points="18,60 56,56 60,60 56,64" fill="#c08a3e"/>
+      </g>
+      <circle cx="60" cy="60" r="5" fill="#3a2a16"/>
+      <text x="60" y="6" text-anchor="middle" font-family="IM Fell English SC" font-size="9" fill="#9c4a2a">N</text>
+    </svg>
+
+    <div class="legend-title">FAM-L / FAM-S</div>
+    <nav>
+      <ul>
+        <li><a href="#" class="active" data-dist="I"><span class="pin"></span>Survival Models</a></li>
+        <li><a href="#" data-dist="II"><span class="pin"></span>Life Tables</a></li>
+        <li><a href="#" data-dist="III"><span class="pin"></span>Life Insurance</a></li>
+        <li><a href="#" data-dist="IV"><span class="pin"></span>Life Annuities</a></li>
+        <li><a href="#" data-dist="V"><span class="pin"></span>Premiums</a></li>
+        <li><a href="#" data-dist="VI"><span class="pin"></span>Policy Values</a></li>
+      </ul>
+    </nav>
+
+    <div class="legend-foot">
+      &ldquo;Chart the territory before you sail it.&rdquo;
+      <div class="scale-bar">
+        <svg viewBox="0 0 200 26" preserveAspectRatio="none">
+          <rect x="0" y="8" width="50" height="9" fill="#3a2a16"/>
+          <rect x="50" y="8" width="50" height="9" fill="#e9d8b4" stroke="#3a2a16"/>
+          <rect x="100" y="8" width="50" height="9" fill="#3a2a16"/>
+          <rect x="150" y="8" width="50" height="9" fill="#e9d8b4" stroke="#3a2a16"/>
+        </svg>
+        <small>0&nbsp;&nbsp;&nbsp;&nbsp;TOPICS&nbsp;&nbsp;&nbsp;&nbsp;17</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN CHART ============ -->
+  <main class="chart">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="greet">Good evening, Navigator</div>
+      <h2>Let's get you <em>that pass.</em></h2>
+      <div class="flourish"><span>⚜</span><div class="ln"></div><span>✦</span><div class="ln"></div><span>⚜</span></div>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="cartouche">
+        <div class="lab">Overall Progress</div>
+        <svg class="progress-ring" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+          <circle cx="42" cy="42" r="34" fill="none" stroke="rgba(58,42,22,.18)" stroke-width="8"/>
+          <circle cx="42" cy="42" r="34" fill="none" stroke="#9c4a2a" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="59.8"
+                  transform="rotate(-90 42 42)"/>
+          <text x="42" y="48" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="20" fill="#9c4a2a">72%</text>
+        </svg>
+        <div class="sub">12 of 17 topics</div>
+      </div>
+      <div class="cartouche">
+        <div class="lab">Exam Countdown</div>
+        <div class="big">86</div>
+        <div class="sub">days until you set sail</div>
+      </div>
+      <div class="cartouche">
+        <div class="lab">Topics Solid</div>
+        <div class="big">8</div>
+        <div class="sub">charted &amp; conquered</div>
+      </div>
+    </section>
+
+    <!-- GRID: exam card + topic/formula -->
+    <section class="grid2">
+
+      <!-- Topic preview + formula -->
+      <div class="panel tornedge">
+        <h3><span class="mk">✦</span>Life Insurance Present Values</h3>
+        <p class="lede2">The expected present value of a benefit paid at death — your compass for every insurance function.</p>
+        <div class="formula">
+          <div class="eq"><span class="star">✶</span>A<sub>x</sub> = 1 &minus; d&middot;ä<sub>x</sub></div>
+          <div class="eq"><span class="star">✶</span>Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)<sup>2</sup></div>
+          <div class="eq"><span class="star">✶</span>ä<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</div>
+        </div>
+      </div>
+
+      <!-- Exam FAM card -->
+      <div class="panel examcard">
+        <div class="crest">
+          <div class="shield"><b>FAM</b></div>
+          <div class="ct">
+            <h3>Exam FAM</h3>
+            <p>Fundamentals of Actuarial Mathematics</p>
+          </div>
+        </div>
+        <div class="exammeta">
+          <span class="tag">SOA</span>
+          <span class="tag">34 questions</span>
+          <span class="tag pass">Pass = 6 / 10</span>
+        </div>
+        <p class="lede2" style="margin:auto 0 0">Your voyage spans two seas — the long-form life contingencies of <strong>FAM-L</strong> and the short-term coverages of <strong>FAM-S</strong>.</p>
+      </div>
+    </section>
+
+    <!-- COMMON TRAP -->
+    <section class="trap">
+      <h4>Common Trap — read the rocks</h4>
+      <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/&delta;</b> — the pure endowment is never rescaled.</p>
+    </section>
+
+    <!-- WORKED EXAMPLE TEASER -->
+    <section class="example">
+      <div class="ex-txt">
+        <h3><span class="qm">❡</span>Example 1 — Whole life EPV &amp; variance</h3>
+        <p>Plot a course through A<sub>x</sub>, then sound the depths of Var(Z). A guided expedition.</p>
+      </div>
+      <div class="actions">
+        <a href="#" class="btn btn-primary">⚓ Start studying</a>
+        <a href="#" class="btn btn-ghost">↻ Resume</a>
+      </div>
+    </section>
+
+    <footer>
+      <span class="compass-foot">✦ ❦ ✦</span>
+      <b>Me Studing Stuff</b> &nbsp;·&nbsp; Study smarter. Pass exams. &nbsp;·&nbsp; Charted for SOA Exam FAM
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

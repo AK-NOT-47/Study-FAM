@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Bubblegum Pop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff5fa2;
+    --pink-deep:#ff2e88;
+    --pink-soft:#ffd6e8;
+    --pink-mist:#fff0f7;
+    --sky:#4bc4ff;
+    --sky-deep:#1aa6ef;
+    --sky-soft:#cdefff;
+    --sky-mist:#eef9ff;
+    --grape:#8a6bff;
+    --mint:#5fe3b3;
+    --lemon:#ffe066;
+    --ink:#5a2a52;
+    --ink-soft:#9b6f94;
+    --cream:#fff8fc;
+    --white:#ffffff;
+    --shadow-pink:rgba(255,46,136,.30);
+    --shadow-sky:rgba(26,166,239,.30);
+    --radius:30px;
+    --radius-sm:20px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, var(--pink-soft) 0%, transparent 38%),
+      radial-gradient(circle at 88% 20%, var(--sky-soft) 0%, transparent 40%),
+      radial-gradient(circle at 75% 95%, #ffe7f3 0%, transparent 45%),
+      linear-gradient(160deg, #fff4fb 0%, #f1faff 60%, #fff0f8 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+    line-height:1.55;
+  }
+
+  /* floating candy dots in the background */
+  .bg-candy{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg-candy span{
+    position:absolute;border-radius:50%;
+    filter:blur(.3px);
+    box-shadow:inset -6px -8px 14px rgba(255,255,255,.65), 0 8px 20px rgba(255,46,136,.18);
+    animation:float 9s ease-in-out infinite;
+  }
+  .bg-candy span:nth-child(1){width:90px;height:90px;top:14%;left:6%;background:radial-gradient(circle at 32% 28%,#ffd1e6,#ff7fb4);animation-delay:0s}
+  .bg-candy span:nth-child(2){width:54px;height:54px;top:68%;left:9%;background:radial-gradient(circle at 32% 28%,#d4f1ff,#5fc6ff);animation-delay:1.5s}
+  .bg-candy span:nth-child(3){width:120px;height:120px;top:8%;right:8%;background:radial-gradient(circle at 32% 28%,#e7ddff,#a98bff);animation-delay:.8s}
+  .bg-candy span:nth-child(4){width:46px;height:46px;top:80%;right:14%;background:radial-gradient(circle at 32% 28%,#fff0bf,#ffd23d);animation-delay:2.2s}
+  .bg-candy span:nth-child(5){width:70px;height:70px;top:46%;right:4%;background:radial-gradient(circle at 32% 28%,#cffbe9,#4fe0ad);animation-delay:1.1s}
+  .bg-candy span:nth-child(6){width:38px;height:38px;top:40%;left:3%;background:radial-gradient(circle at 32% 28%,#ffd1e6,#ff7fb4);animation-delay:2.6s}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-26px) rotate(8deg)}}
+
+  .shell{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:26px clamp(16px,4vw,40px) 60px}
+
+  /* ===== TOP BAR ===== */
+  .topbar{
+    display:flex;align-items:center;gap:18px;
+    background:var(--white);
+    border:3px solid var(--white);
+    border-radius:50px;
+    padding:12px 16px 12px 16px;
+    box-shadow:0 18px 40px var(--shadow-pink), 0 4px 0 #ffd9ea;
+    position:sticky;top:14px;z-index:30;
+    backdrop-filter:saturate(1.2);
+  }
+  .brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .m-mark{
+    width:52px;height:52px;border-radius:18px;flex-shrink:0;
+    background:linear-gradient(150deg,var(--pink) 0%,var(--pink-deep) 55%,var(--grape) 100%);
+    display:grid;place-items:center;
+    font-family:'Baloo 2',cursive;font-weight:800;font-size:30px;color:#fff;
+    box-shadow:inset 0 4px 8px rgba(255,255,255,.55), inset 0 -6px 10px rgba(0,0,0,.12), 0 8px 16px var(--shadow-pink);
+    position:relative;
+    transform:rotate(-6deg);
+  }
+  .m-mark::after{content:"";position:absolute;top:8px;left:10px;width:16px;height:9px;border-radius:50%;background:rgba(255,255,255,.7);filter:blur(1px)}
+  .brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.32rem;line-height:1;color:var(--ink)}
+  .brand-tag{font-size:.72rem;font-weight:700;color:var(--pink-deep);letter-spacing:.3px}
+
+  .topnav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;align-items:center}
+  .topnav a{
+    text-decoration:none;font-weight:800;font-size:.84rem;color:var(--ink-soft);
+    padding:9px 15px;border-radius:30px;transition:.18s;white-space:nowrap;
+  }
+  .topnav a:hover{color:var(--pink-deep);background:var(--pink-mist);transform:translateY(-2px)}
+  .topnav a.pill-sky{background:linear-gradient(140deg,var(--sky),var(--sky-deep));color:#fff;box-shadow:0 8px 16px var(--shadow-sky)}
+  .topnav a.pill-sky:hover{color:#fff;background:linear-gradient(140deg,var(--sky),var(--sky-deep))}
+
+  /* ===== LAYOUT GRID ===== */
+  .grid{display:grid;grid-template-columns:268px 1fr;gap:26px;margin-top:26px}
+
+  /* ===== SIDEBAR ===== */
+  .side{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:22px 18px;
+    box-shadow:0 18px 40px rgba(75,196,255,.20), 0 4px 0 #d7f0ff;
+    border:3px solid #fff;
+    align-self:start;position:sticky;top:96px;
+  }
+  .side-label{
+    font-family:'Baloo 2',cursive;font-weight:700;font-size:.72rem;letter-spacing:1.5px;
+    text-transform:uppercase;color:#fff;
+    background:linear-gradient(135deg,var(--grape),var(--pink));
+    display:inline-block;padding:6px 14px;border-radius:30px;margin-bottom:14px;
+    box-shadow:0 6px 14px rgba(138,107,255,.35);
+  }
+  .nav-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .nav-list a{
+    display:flex;align-items:center;gap:12px;text-decoration:none;
+    padding:11px 14px;border-radius:18px;font-weight:700;font-size:.95rem;color:var(--ink);
+    transition:.18s;border:2px solid transparent;
+  }
+  .nav-list a .ic{
+    width:34px;height:34px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;font-size:1.05rem;
+    box-shadow:inset 0 3px 5px rgba(255,255,255,.6), inset 0 -4px 6px rgba(0,0,0,.08);
+  }
+  .nav-list a:hover{background:var(--pink-mist);border-color:var(--pink-soft);transform:translateX(4px)}
+  .nav-list a.active{background:linear-gradient(135deg,var(--pink-mist),var(--sky-mist));border-color:var(--pink-soft)}
+  .nav-list a.active::after{content:"";margin-left:auto;width:10px;height:10px;border-radius:50%;background:var(--pink-deep);box-shadow:0 0 0 4px var(--pink-soft)}
+  .c1{background:radial-gradient(circle at 30% 25%,#ffd1e6,#ff7fb4)}
+  .c2{background:radial-gradient(circle at 30% 25%,#d4f1ff,#5fc6ff)}
+  .c3{background:radial-gradient(circle at 30% 25%,#e7ddff,#a98bff)}
+  .c4{background:radial-gradient(circle at 30% 25%,#cffbe9,#4fe0ad)}
+  .c5{background:radial-gradient(circle at 30% 25%,#fff0bf,#ffd23d)}
+  .c6{background:radial-gradient(circle at 30% 25%,#ffe0d1,#ff9d6e)}
+
+  .side-divider{height:3px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--pink-soft) 0 8px,transparent 8px 16px);margin:16px 4px}
+
+  .mini-exam{
+    background:linear-gradient(150deg,var(--sky-mist),var(--pink-mist));
+    border-radius:22px;padding:14px;text-align:center;border:2px dashed var(--sky);
+  }
+  .mini-exam b{font-family:'Baloo 2',cursive;display:block;font-size:1.5rem;color:var(--sky-deep);line-height:1}
+  .mini-exam small{font-size:.74rem;font-weight:700;color:var(--ink-soft)}
+
+  /* ===== MAIN ===== */
+  .main{display:flex;flex-direction:column;gap:26px;min-width:0}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    background:linear-gradient(140deg,var(--pink) 0%,var(--pink-deep) 50%,var(--grape) 110%);
+    border-radius:38px;padding:34px clamp(22px,4vw,42px);color:#fff;overflow:hidden;
+    box-shadow:0 24px 50px var(--shadow-pink), inset 0 3px 0 rgba(255,255,255,.35);
+  }
+  .hero::before{content:"";position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.5),rgba(255,255,255,0) 60%);}
+  .hero::after{content:"";position:absolute;bottom:-90px;left:-50px;width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,var(--sky) ,transparent 65%);opacity:.55;filter:blur(4px)}
+  .hero-inner{position:relative;z-index:2;max-width:640px}
+  .greet{
+    display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;letter-spacing:.5px;
+    background:rgba(255,255,255,.22);padding:7px 16px;border-radius:30px;margin-bottom:16px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  .greet .dot{width:9px;height:9px;border-radius:50%;background:var(--lemon);box-shadow:0 0 0 4px rgba(255,224,102,.35)}
+  .hero h1{
+    font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(2.1rem,5vw,3.3rem);line-height:1.02;
+    text-shadow:0 4px 0 rgba(0,0,0,.10);letter-spacing:-.5px;
+  }
+  .hero h1 .swoop{color:var(--lemon)}
+  .hero p{margin-top:14px;font-size:1.04rem;font-weight:600;max-width:560px;color:#fff;opacity:.96}
+
+  .hero-bubbles{position:absolute;right:26px;top:26px;z-index:2;display:flex;gap:10px}
+  .hb{width:46px;height:46px;border-radius:50%;box-shadow:inset -5px -6px 10px rgba(0,0,0,.12),inset 4px 5px 8px rgba(255,255,255,.6),0 8px 14px rgba(0,0,0,.12)}
+  .hb.a{background:radial-gradient(circle at 32% 28%,#fff,var(--sky))}
+  .hb.b{background:radial-gradient(circle at 32% 28%,#fff,var(--lemon));margin-top:22px}
+  .hb.c{background:radial-gradient(circle at 32% 28%,#fff,var(--mint));margin-top:-6px}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{
+    background:var(--white);border-radius:26px;padding:20px;text-align:center;position:relative;overflow:hidden;
+    box-shadow:0 16px 34px rgba(255,46,136,.16),0 4px 0 #ffe1ee;border:3px solid #fff;transition:.2s;
+  }
+  .stat:hover{transform:translateY(-6px)}
+  .stat .cap{font-weight:800;font-size:.74rem;text-transform:uppercase;letter-spacing:1px;color:var(--ink-soft)}
+  .stat .big{font-family:'Baloo 2',cursive;font-weight:800;font-size:2.7rem;line-height:1;margin:6px 0 2px}
+  .stat .sub{font-size:.82rem;font-weight:700;color:var(--ink-soft)}
+  .stat.s1 .big{color:var(--pink-deep)}
+  .stat.s2 .big{color:var(--sky-deep)}
+  .stat.s3 .big{color:var(--grape)}
+  .stat .ring{position:absolute;right:-22px;top:-22px;width:74px;height:74px;border-radius:50%;opacity:.25}
+  .stat.s1 .ring{background:var(--pink)}
+  .stat.s2 .ring{background:var(--sky)}
+  .stat.s3 .ring{background:var(--grape)}
+  /* progress bar inside s1 */
+  .pbar{height:10px;border-radius:10px;background:var(--pink-mist);margin-top:10px;overflow:hidden;box-shadow:inset 0 2px 3px rgba(255,46,136,.18)}
+  .pbar i{display:block;height:100%;width:72%;border-radius:10px;background:linear-gradient(90deg,var(--pink),var(--pink-deep))}
+
+  /* CARD ROWS */
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+
+  .card{
+    background:var(--white);border-radius:var(--radius);padding:24px clamp(18px,3vw,28px);
+    box-shadow:0 18px 40px rgba(75,196,255,.16),0 4px 0 #e2f4ff;border:3px solid #fff;position:relative;
+  }
+  .card h2{font-family:'Baloo 2',cursive;font-weight:700;font-size:1.3rem;display:flex;align-items:center;gap:10px}
+  .tag-emoji{font-size:1.2rem}
+
+  /* exam card */
+  .exam-card{
+    background:linear-gradient(150deg,var(--sky) 0%,var(--sky-deep) 100%);color:#fff;overflow:hidden;
+    box-shadow:0 22px 46px var(--shadow-sky),inset 0 3px 0 rgba(255,255,255,.35);
+  }
+  .exam-card::before{content:"";position:absolute;bottom:-50px;right:-30px;width:160px;height:160px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.45),transparent 60%)}
+  .exam-badge{display:inline-block;font-family:'Baloo 2',cursive;font-weight:800;font-size:.7rem;letter-spacing:1.5px;
+    background:#fff;color:var(--sky-deep);padding:5px 12px;border-radius:20px;margin-bottom:12px}
+  .exam-card h2{color:#fff;font-size:2rem}
+  .exam-sub{font-weight:700;opacity:.95;margin-top:2px;font-size:.95rem}
+  .exam-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative;z-index:2}
+  .chip{background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.4);border-radius:30px;padding:7px 14px;font-weight:800;font-size:.82rem;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+  .chip b{color:var(--lemon)}
+
+  /* topic preview / formula */
+  .lede{color:var(--ink-soft);font-weight:600;margin-top:4px;font-size:.95rem}
+  .formula{
+    margin-top:16px;background:linear-gradient(135deg,var(--pink-mist),var(--sky-mist));
+    border:2.5px dashed var(--pink);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;
+  }
+  .formula .f{
+    background:#fff;border-radius:16px;padding:12px 16px;font-size:1.12rem;font-weight:700;color:var(--ink);
+    box-shadow:0 6px 14px rgba(255,46,136,.12);display:flex;align-items:center;gap:10px;
+    font-family:'Nunito',serif;
+  }
+  .formula .f .lbl{font-family:'Baloo 2',cursive;font-size:.66rem;letter-spacing:1px;text-transform:uppercase;
+    background:var(--pink-deep);color:#fff;padding:3px 9px;border-radius:14px;flex-shrink:0}
+  .formula .f:nth-child(2) .lbl{background:var(--sky-deep)}
+  .formula .f:nth-child(3) .lbl{background:var(--grape)}
+  sub,sup{font-size:.68em}
+
+  /* trap callout */
+  .trap{
+    background:linear-gradient(150deg,#fff7d6,#fff0f6);
+    border:3px solid var(--lemon);border-radius:var(--radius);padding:22px 24px;position:relative;overflow:hidden;
+    box-shadow:0 16px 36px rgba(255,210,61,.28),0 4px 0 #ffe9a8;
+  }
+  .trap::before{content:"🍬";position:absolute;right:-6px;bottom:-12px;font-size:5rem;opacity:.16;transform:rotate(-14deg)}
+  .trap .head{display:flex;align-items:center;gap:10px;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.15rem;color:#b8860b}
+  .trap .head .warn{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--lemon),#ffb347);display:grid;place-items:center;font-size:1.1rem;box-shadow:inset 0 3px 5px rgba(255,255,255,.6)}
+  .trap p{margin-top:10px;font-weight:700;color:var(--ink);font-size:1rem;position:relative;z-index:2}
+  .trap p .hot{color:var(--pink-deep);text-decoration:underline;text-decoration-color:var(--pink);text-decoration-thickness:3px;text-underline-offset:3px}
+
+  /* worked example teaser */
+  .example{
+    background:var(--white);border-radius:var(--radius);padding:24px clamp(18px,3vw,28px);
+    box-shadow:0 18px 40px rgba(138,107,255,.18),0 4px 0 #ece2ff;border:3px solid #fff;
+    display:flex;flex-wrap:wrap;align-items:center;gap:22px;justify-content:space-between;
+  }
+  .example .ex-left{flex:1 1 280px;min-width:240px}
+  .example .ex-kicker{font-family:'Baloo 2',cursive;font-weight:700;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
+    color:#fff;background:linear-gradient(135deg,var(--grape),var(--pink));display:inline-block;padding:5px 13px;border-radius:20px}
+  .example h2{margin-top:10px;font-size:1.45rem}
+  .example p{color:var(--ink-soft);font-weight:600;margin-top:4px}
+  .ex-buttons{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{
+    font-family:'Baloo 2',cursive;font-weight:700;font-size:1rem;border:none;cursor:pointer;text-decoration:none;
+    padding:14px 26px;border-radius:30px;transition:.18s;display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:linear-gradient(140deg,var(--pink),var(--pink-deep));color:#fff;
+    box-shadow:0 10px 22px var(--shadow-pink),inset 0 2px 0 rgba(255,255,255,.4),0 4px 0 #c41e6b}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 28px var(--shadow-pink),inset 0 2px 0 rgba(255,255,255,.4),0 4px 0 #c41e6b}
+  .btn-primary:active{transform:translateY(2px);box-shadow:0 4px 12px var(--shadow-pink),inset 0 2px 0 rgba(255,255,255,.4),0 0 0 #c41e6b}
+  .btn-ghost{background:#fff;color:var(--sky-deep);box-shadow:0 8px 18px var(--shadow-sky),0 4px 0 #cdeeff;border:2.5px solid var(--sky)}
+  .btn-ghost:hover{transform:translateY(-3px);background:var(--sky-mist)}
+
+  /* FOOTER */
+  .foot{
+    margin-top:34px;text-align:center;background:var(--white);border-radius:var(--radius);padding:24px;
+    box-shadow:0 14px 30px rgba(255,46,136,.12);border:3px solid #fff;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .foot .brand{justify-content:center}
+  .foot small{color:var(--ink-soft);font-weight:700;font-size:.82rem}
+  .foot .hearts{font-size:.9rem;letter-spacing:4px}
+
+  /* RESPONSIVE */
+  @media(max-width:980px){
+    .grid{grid-template-columns:1fr}
+    .side{position:static}
+    .nav-list{flex-direction:row;flex-wrap:wrap}
+    .nav-list a{flex:1 1 auto}
+    .row{grid-template-columns:1fr}
+  }
+  @media(max-width:760px){
+    .topnav{display:none}
+    .stats{grid-template-columns:1fr;gap:14px}
+    .hero-bubbles{display:none}
+    .example{justify-content:center;text-align:center}
+    .example .ex-left{flex-basis:100%}
+    .ex-kicker{margin:0 auto}
+  }
+  @media(max-width:760px){
+    .topbar{border-radius:30px}
+    .brand-name{font-size:1.15rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-candy" aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<div class="shell">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="m-mark">M</div>
+      <div>
+        <div class="brand-name">Me Studing Stuff</div>
+        <div class="brand-tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#">Dashboard</a>
+      <a href="#">Notes</a>
+      <a href="#">Formulas</a>
+      <a href="#">Problems</a>
+      <a href="#" class="pill-sky">My Plan 🍭</a>
+    </nav>
+  </header>
+
+  <div class="grid">
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <span class="side-label">FAM-L / FAM-S</span>
+      <ul class="nav-list">
+        <li><a href="#" class="active"><span class="ic c1">📈</span> Survival Models</a></li>
+        <li><a href="#"><span class="ic c2">📋</span> Life Tables</a></li>
+        <li><a href="#"><span class="ic c3">🛡️</span> Life Insurance</a></li>
+        <li><a href="#"><span class="ic c4">💰</span> Life Annuities</a></li>
+        <li><a href="#"><span class="ic c5">🧾</span> Premiums</a></li>
+        <li><a href="#"><span class="ic c6">📂</span> Policy Values</a></li>
+      </ul>
+      <div class="side-divider"></div>
+      <div class="mini-exam">
+        <b>86</b>
+        <small>days to exam day 🎀</small>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-bubbles" aria-hidden="true">
+          <span class="hb a"></span><span class="hb b"></span><span class="hb c"></span>
+        </div>
+        <div class="hero-inner">
+          <div class="greet"><span class="dot"></span> Good evening</div>
+          <h1>Let's get you that <span class="swoop">pass.</span></h1>
+          <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat s1">
+          <div class="ring"></div>
+          <div class="cap">Overall progress</div>
+          <div class="big">72%</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="pbar"><i></i></div>
+        </div>
+        <div class="stat s2">
+          <div class="ring"></div>
+          <div class="cap">Exam countdown</div>
+          <div class="big">86</div>
+          <div class="sub">days to go 🗓️</div>
+        </div>
+        <div class="stat s3">
+          <div class="ring"></div>
+          <div class="cap">Topics solid</div>
+          <div class="big">8</div>
+          <div class="sub">locked in 🔒</div>
+        </div>
+      </section>
+
+      <!-- ROW: EXAM CARD + TOPIC FORMULA -->
+      <section class="row">
+
+        <div class="card exam-card">
+          <span class="exam-badge">EXAM · FAM</span>
+          <h2>Exam FAM</h2>
+          <div class="exam-sub">Fundamentals of Actuarial Mathematics</div>
+          <div class="exam-meta">
+            <span class="chip">SOA</span>
+            <span class="chip"><b>34</b> questions</span>
+            <span class="chip">pass = <b>6/10</b></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="tag-emoji">🛡️</span> Life Insurance Present Values</h2>
+          <p class="lede">The bread &amp; butter EPVs — link the insurance, annuity and their variance in one breath.</p>
+          <div class="formula">
+            <div class="f"><span class="lbl">EPV</span> A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+            <div class="f"><span class="lbl">Var</span> Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></div>
+            <div class="f"><span class="lbl">Annuity</span> ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TRAP CALLOUT -->
+      <section class="trap">
+        <div class="head"><span class="warn">⚠️</span> Common trap</div>
+        <p>Under UDD, multiply <span class="hot">ONLY</span> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+      </section>
+
+      <!-- WORKED EXAMPLE TEASER -->
+      <section class="example">
+        <div class="ex-left">
+          <span class="ex-kicker">Worked example</span>
+          <h2>Example 1 — Whole life EPV &amp; variance</h2>
+          <p>Walk through the full setup, plug the recursions, and nail the variance the slick way.</p>
+        </div>
+        <div class="ex-buttons">
+          <a href="#" class="btn btn-primary">Start studying 🍬</a>
+          <a href="#" class="btn btn-ghost">Resume ↻</a>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="foot">
+        <div class="brand">
+          <div class="m-mark" style="width:42px;height:42px;border-radius:14px;font-size:24px">M</div>
+          <div class="brand-name">Me Studing Stuff</div>
+        </div>
+        <small>Study smarter. Pass exams. · Your sweet little hub for SOA Exam FAM.</small>
+        <div class="hearts">🩷 💙 🩷</div>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+</body>
+</html>

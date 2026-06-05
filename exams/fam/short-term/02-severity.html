@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Severity Models · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-02" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 2</div>
+      <h1>Severity Models</h1>
+      <p class="lede">Severity models describe the size of a single loss. The real exam skill is not memorizing densities but <em>fluently moving between</em> pdf / cdf / survival / hazard, computing moments, and <em>creating new distributions</em> from old ones — then reading their tails.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Klugman, Panjer &amp; Willmot · Loss Models</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 random-variable basics · scale families · tail weight</span>
+        <span class="chip">🔑 transformations · mixing · splicing · LEF</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <p>Severity models describe the <strong>size of an individual loss</strong> (the claim amount), as opposed to frequency models, which describe the <em>number</em> of losses. To get there you first need fluency with the basic descriptors of a random variable (pdf, cdf, survival, hazard, percentiles, modes, moments, conditional distributions, empirical distributions). Then on Exam FAM you are expected to know a small zoo of continuous parametric distributions, to compute their moments, to compare their <strong>tail weight</strong>, and — crucially — to <em>create new distributions</em> from old ones (transforming, scaling for inflation, inverting, exponentiating, mixing, and splicing).</p>
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>By the end of this topic you should be able to:</p>
+        <ol>
+          <li><strong>Move freely between</strong> the four equivalent descriptors of a continuous random variable — pdf $f$, cdf $F$, survival $S$, hazard $h$ (and cumulative hazard $H$) — and recover any one from any other.</li>
+          <li><strong>Compute percentiles and modes</strong> (continuous via $F(\pi_p)=p$ and $f'(x)=0$; discrete via the full percentile definition).</li>
+          <li><strong>Compute moments</strong>: raw moments $\mu_k'=E[X^k]$, central moments $\mu_k$, variance, standard deviation, coefficient of variation, skewness, and kurtosis — and convert central moments to raw moments.</li>
+          <li><strong>Apply conditional-distribution machinery</strong>: conditional pdfs, the laws of total probability, total expectation, and total variance, plus independence.</li>
+          <li><strong>Build empirical distributions</strong> from data: empirical cdf, empirical percentiles, sample mean, and the biased vs. unbiased sample variance.</li>
+          <li><strong>Recognize and use</strong> the standard parametric severity distributions — exponential, gamma, Pareto (two-parameter, single-parameter, inverse), Weibull, lognormal, normal, beta, uniform, and the inverse families — using the parameterizations in the <em>Loss Models</em> exam tables.</li>
+          <li><strong>Use the transformation technique</strong> (cdf method) to find the distribution of $Y=g(X)$, and apply it to build inverse, transformed, scaled, and exponentiated distributions.</li>
+          <li><strong>Compute and interpret</strong> the <strong>hazard rate</strong> $h(x)$ and the <strong>mean excess / mean residual life</strong> $e(d)$, and use their behavior to classify tail weight via the four criteria.</li>
+          <li><strong>Identify scale families and the scale parameter</strong> $\theta$, and apply the correct scaling rule under <strong>inflation</strong> (general, normal, lognormal).</li>
+          <li><strong>Recognize the linear exponential family</strong> and use its mean/variance machinery, and handle <strong>discrete mixtures</strong> (including the Bernoulli shortcut) and <strong>splicing</strong>.</li>
+        </ol>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. What a severity distribution is</h3>
+      <p>A severity random variable $X$ is the dollar amount of a single loss. It is continuous, non-negative, and almost always <strong>right-skewed</strong> with a long right tail — a few enormous claims dominate. The whole game is choosing a distribution whose tail behaves the way the data's tail behaves.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Exam-table orientation (read once, save minutes on exam day)</div>
+        <p>You get the <em>Loss Models</em> exam tables (same as STAM) plus a normal CDF / inverse-CDF calculator. The tables give the <strong>pdf, cdf, raw moments $E[X^k]$, and limited moments $E[X\wedge d]$</strong> for every continuous distribution (except log-$t$), and add VaR/TVaR/mode for several. Appendix A is sorted by <em>number of parameters, descending</em> (A.2 three-param → A.3 two-param → ...); lognormal and single-parameter Pareto live in A.5; beta (finite support) in A.6. Appendix B holds the discrete $(a,b,0)$ and $(a,b,1)$ classes. Unless stated, every continuous distribution has domain $x>0$.</p>
+      </div>
+
+      <h3>2. The four equivalent descriptors (and how they connect)</h3>
+      <p>For a positive continuous $X$ you can describe it by any of:</p>
+      <ul>
+        <li><strong>pdf</strong> $f(x)$ — not a probability ($f(x)\ne P(X=x)$, and $P(X=a)=0$); it is the relative likelihood, and may exceed 1.</li>
+        <li><strong>cdf</strong> $F(x) = P(X \le x)=\int_{-\infty}^x f(t)\,dt$, with $f(x)=F'(x)$,</li>
+        <li><strong>survival function</strong> $S(x) = 1 - F(x) = P(X > x)$, with $f(x)=-S'(x)$,</li>
+        <li><strong>hazard rate</strong> $h(x) = f(x)/S(x) = -\frac{d}{dx}\ln S(x)$, and cumulative hazard $H(x)=\int_{-\infty}^x h(t)\,dt=-\ln S(x)$, so $S(x)=e^{-H(x)}$.</li>
+      </ul>
+      <p>They're interchangeable — given any one you can produce the other three. The survival function is the natural object for tails; the hazard rate is the natural object for "given you've survived to $x$, the instantaneous rate of failure." The cumulative-hazard relationship $S=e^{-H}$ is the cleanest way to rebuild $S$ from a hazard rate.</p>
+
+      <h3>3. Percentiles and modes</h3>
+      <p>The <strong>$100p$-th percentile</strong> $\pi_p$ satisfies $P(X<\pi_p)\le p$ and $P(X\le\pi_p)\ge p$. For a <em>continuous</em> $X$ this collapses to the friendly $F(\pi_p)=p$, i.e. $\pi_p=F^{-1}(p)$. Special names: 25th = first quartile, 50th = median, 75th = third quartile.</p>
+      <p>For a <em>discrete</em> $X$ the cdf is a step function, so you must use the full definition — and two surprises appear: <strong>multiple percentiles can share one value</strong> (a flat run of $p$ all map to the same $x$), and <strong>multiple values can be the same percentile</strong> (a horizontal hit on a jump). Sketch the step cdf and draw the line $F(x)=p$.</p>
+      <p>The <strong>mode</strong> maximizes the pdf/pmf. For continuous $X$, solve $f'(x)=0$ (optionally confirm $f''<0$); watch for the global max sitting at an endpoint of the domain.</p>
+
+      <h3>4. Moments — the full toolkit</h3>
+      <p>$E[g(X)]=\int g(x)f(x)\,dx$. For non-negative $X$ with $g(0)=0$ there is the slick survival-function form $E[g(X)]=\int_0^\infty g'(x)S(x)\,dx$; the special case $E[X]=\int_0^\infty S(x)\,dx$ is used constantly. Beyond the mean you should be able to produce:</p>
+      <ul>
+        <li><strong>Raw moment</strong> $\mu_k'=E[X^k]$ (the 1st is the mean $\mu$); <strong>central moment</strong> $\mu_k=E[(X-\mu)^k]$ (the 1st is always 0).</li>
+        <li><strong>Variance</strong> $\mu_2=\text{Var}(X)=E[X^2]-E[X]^2$; <strong>sd</strong> $\sigma=\sqrt{\text{Var}(X)}$; <strong>coefficient of variation</strong> $\text{CV}=\sigma/\mu$.</li>
+        <li><strong>Skewness</strong> $=\mu_3/\sigma^3$ (positive ⇒ right-skewed / long right tail; the FAM severity world is overwhelmingly positively skewed) and <strong>kurtosis</strong> $=\mu_4/\sigma^4$ (normal $=3$; $>3$ ⇒ more outlier-prone).</li>
+      </ul>
+      <p>The exam-friendly move is to <strong>express central moments in raw moments</strong>: $\mu_3=\mu_3'-3\mu_2'\mu+2\mu^3$ and $\mu_4=\mu_4'-4\mu_3'\mu+6\mu_2'\mu^2-3\mu^4$. CV, skewness, and kurtosis are all <strong>scale-invariant</strong> — multiplying $X$ by a positive constant leaves them unchanged.</p>
+
+      <h3>5. Conditional distributions, independence, and the three laws</h3>
+      <p>Conditioning $X$ on an event or another variable gives a renormalized density $f_{X\mid j\lt X\lt k}(x)=f_X(x)/P(j\lt X\lt k)$. The three laws drive almost every mixture/credibility computation:</p>
+      <div class="formula">
+        <span class="formula-label">Total probability / expectation / variance</span>
+        $$ P(X=x)=E_Y[P(X=x\mid Y)],\qquad E[X]=E_Y\big[E[X\mid Y]\big],$$
+        $$ \text{Var}(X)=E_Y\big[\text{Var}(X\mid Y)\big]+\text{Var}_Y\big(E[X\mid Y]\big).$$
+      </div>
+      <p>If $X,Y$ are <strong>independent</strong>, then $f_{X,Y}=f_Xf_Y$, $E[g(X)h(Y)]=E[g(X)]E[h(Y)]$, $\text{Cov}=0$, and $\text{Var}(aX+bY)=a^2\text{Var}(X)+b^2\text{Var}(Y)$. The classic blunder is assuming $\text{Var}(X)=E_Y[\text{Var}(X\mid Y)]$ — you must add the variance of the conditional mean.</p>
+
+      <h3>6. Empirical distributions</h3>
+      <p>The <strong>empirical distribution</strong> puts mass $1/n$ on each of the $n$ data points. Its cdf is $F_n(x)=\frac{\#\{x_i\le x\}}{n}$ (a step function). The empirical $100p$-th percentile is the $\lceil np\rceil$-th order statistic, $\pi_p=x_{(\lceil np\rceil)}$. Moments come from $E[g(X)]=\frac1n\sum g(x_i)$:</p>
+      <div class="formula">
+        $$\bar x=\frac1n\sum_{i=1}^n x_i,\qquad \underbrace{\widehat{\text{Var}}(X)=\frac1n\sum(x_i-\bar x)^2}_{\text{biased — describes the sample}},\qquad \underbrace{s^2=\frac{1}{n-1}\sum(x_i-\bar x)^2=\tfrac{n}{n-1}\widehat{\text{Var}}(X)}_{\text{unbiased — estimates the population}}.$$
+      </div>
+      <p>Rule of thumb: use the <strong>biased</strong> divisor $n$ when you literally want the variance <em>of the empirical distribution</em>; use the <strong>unbiased</strong> divisor $n-1$ when estimating an unknown population variance (the default when the method is unspecified).</p>
+
+      <h3>7. Transformation technique — find the law of $Y=g(X)$</h3>
+      <p>Not on the syllabus per se, but it is the engine behind every "create a new distribution" result. Three steps: (1) get $F_X$; (2) rewrite $F_Y(y)=P(g(X)\le y)$ in terms of $F_X$ (flip the inequality if $g$ is decreasing — e.g. $Y=X^{-1}$ uses $S_X$); (3) differentiate to get $f_Y$ (never forget the Jacobian). This single method derives the inverse, transformed, scaled, and exponentiated families below.</p>
+
+      <h3>8. Scale families and the scale parameter $\theta$</h3>
+      <p>A distribution is a <strong>scale family</strong> if multiplying $X$ by a positive constant $c$ keeps it in the same family, changing only the scale parameter and leaving every other (shape) parameter fixed. In <em>Loss Models</em> the scale parameter is $\theta$, and:</p>
+      <div class="formula">$$ Y = cX \implies \theta_Y = c\,\theta_X, \quad \text{other (shape) parameters unchanged.}$$</div>
+      <p>This is the single most useful structural fact in the topic, because <strong>uniform inflation</strong> of all losses by factor $(1+r)$ is exactly multiplication by a constant. <strong>Every distribution in the exam tables with a $\theta$ parameter is parameterized so $\theta$ is the scale parameter — except the inverse Gaussian.</strong> The other parameters are <strong>shape</strong> parameters. Lognormal, normal, inverse Gaussian, and log-$t$ are the exceptions to the "just multiply $\theta$" rule (see Formulas → Scaling).</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols are arbitrary — roles are not</div>
+        <p>The exam may hand you a Pareto as $f(x)=\dfrac{\psi\tau^\psi}{(x+\tau)^{\psi+1}}$ (here $\psi$ is shape, $\tau$ is scale) or even with $\theta$ and $\alpha$ swapped. Identify the distribution from the <em>form</em> of the pdf, then assign shape vs. scale by role, not by letter. Our materials always list <em>shape before scale</em>, e.g. Gamma$(2,50)$ means $\alpha=2,\theta=50$.</p>
+      </div>
+
+      <h3>9. Tail weight — the central organizing idea</h3>
+      <p>A <strong>heavier tail</strong> means more probability far out — bigger, more frequent extreme claims, and a greater chance the mean or variance is <em>infinite</em>. From lightest to heaviest, a rough ordering of the common severity models:</p>
+      <div class="formula">$$ \text{Weibull}(\tau>1) \prec \text{gamma}(\alpha>1) \prec \text{exponential} \prec \text{Weibull}(\tau<1),\ \text{lognormal} \prec \text{Pareto},\ \text{Burr}.$$</div>
+      <p>Four practical tools for <em>comparing</em> tail weight (memorize all four):</p>
+      <ol>
+        <li><strong>Existence of moments.</strong> The more positive moments a distribution has, the lighter the tail. Pareto only has moments $E[X^k]$ for $k < \alpha$ — so a Pareto with small $\alpha$ has an <em>infinite</em> mean. Any distribution with all positive moments (gamma, Weibull, lognormal) is lighter-tailed than one missing some.</li>
+        <li><strong>Limiting ratio of survival functions (or densities).</strong> If $\displaystyle \lim_{x\to\infty} \frac{S_1(x)}{S_2(x)} = \infty$, then distribution 1 has the heavier tail. By L'Hôpital this equals $\lim f_1(x)/f_2(x)$.</li>
+        <li><strong>Hazard rate.</strong> A <strong>decreasing</strong> hazard rate $\Rightarrow$ heavy tail; an <strong>increasing</strong> hazard rate $\Rightarrow$ light tail. (Exponential is the boundary: constant hazard = memoryless.)</li>
+        <li><strong>Mean excess function.</strong> An <strong>increasing</strong> mean excess function $e(d)$ $\Rightarrow$ heavy tail; <strong>decreasing</strong> $\Rightarrow$ light tail. (Again exponential is the flat boundary: $e(d) = \theta$, constant.)</li>
+      </ol>
+      <p>These four agree: heavy tail $\Leftrightarrow$ fewer moments $\Leftrightarrow$ $S$-ratio blows up $\Leftrightarrow$ decreasing hazard $\Leftrightarrow$ increasing mean excess.</p>
+
+      <h3>10. Hazard rate (failure rate) and mean excess $e(d)$</h3>
+      <p>Hazard: $h(x)=f(x)/S(x)$. Among policyholders whose loss exceeds $x$, $h(x)\,dx$ is the chance the loss lands in $(x,x+dx)$. For the <strong>exponential</strong> it's the constant $1/\theta$ (memoryless). Mean excess:</p>
+      <div class="formula">$$ e(d) = E[X - d \mid X > d] = \frac{\int_d^\infty S(x)\,dx}{S(d)}=\frac{E[X]-E[X\wedge d]}{S(d)}.$$</div>
+      <p>In insurance, $e(d)$ is the <strong>expected payment per loss that exceeds an ordinary deductible $d$, among losses big enough to pay</strong>; in reliability it is the <strong>mean residual life</strong>. For the exponential, memorylessness gives $e(d)=\theta$ for all $d$. Whether $e(d)$ rises or falls in $d$ is a clean tail-weight diagnostic.</p>
+
+      <h3>11. Creating new distributions — the manufacturing operations</h3>
+      <p>These are the operations the exam loves. Each takes a known distribution and manufactures another.</p>
+      <ul>
+        <li><strong>(a) Multiplication by a constant</strong> $Y = cX$ ($c>0$): scaling. Within a scale family just multiply $\theta$ by $c$. Density transforms as $f_Y(y) = \tfrac{1}{c} f_X(y/c)$. Used for <strong>inflation</strong>.</li>
+        <li><strong>(b) Raising to a power</strong> $Y = X^{1/\tau}$: generates <strong>transformed</strong> ($\tau>0$), <strong>inverse</strong> ($\tau=-1$), and <strong>inverse transformed</strong> ($\tau<0$) families. Example: $X$ exponential, $Y = X^{1/\tau}$ → Weibull.</li>
+        <li><strong>(c) Inversion</strong> $Y=X^{-1}$: a special, heavily-tested power transform. For any table distribution with an inverse counterpart, $X^{-1}$ follows the inverse distribution with the <em>same parameters except $\theta\to\theta^{-1}$</em> (e.g. gamma → inverse gamma, exponential → inverse exponential, Weibull → inverse Weibull, Pareto → inverse Pareto).</li>
+        <li><strong>(d) Exponentiation</strong> $Y = e^{X}$: e.g., $X \sim \text{Normal}(\mu,\sigma^2) \Rightarrow Y = e^X \sim \text{Lognormal}(\mu,\sigma^2)$. The lognormal's $k$-th moment uses the normal MGF: $E[Y^k] = e^{k\mu + k^2\sigma^2/2}$.</li>
+        <li><strong>(e) Shifting</strong> $Y=X+c$: e.g. a two-parameter Pareto shifted right by $\theta$ becomes a single-parameter Pareto.</li>
+        <li><strong>(f) Mixing.</strong> Let a parameter be random. If $X \mid \Lambda$ has cdf $F(x\mid\lambda)$ and $\Lambda$ has density $u(\lambda)$, the <strong>mixture</strong> is $F_X(x) = \int F(x\mid\lambda)\,u(\lambda)\,d\lambda$. Mixing <strong>always produces a heavier (or equal) tail</strong> and increases variance. (An exponential whose mean is gamma/inverse-gamma-mixed yields a Pareto.)</li>
+        <li><strong>(g) Splicing.</strong> Glue distinct densities on disjoint intervals: $f(x)=a_jf_j(x)$ on piece $j$, with each $f_j$ a legitimate density on its sub-interval and weights $a_j\ge0$ summing to 1.</li>
+      </ul>
+
+      <h3>12. The linear exponential family (LEF)</h3>
+      <p>A distribution belongs to the <strong>linear exponential family</strong> if its probability function (discrete or continuous), with support not depending on $\theta$, can be written</p>
+      <div class="formula">$$ f(x;\theta)=\frac{p(x)\,e^{r(\theta)\,x}}{q(\theta)},$$</div>
+      <p>where $\theta$ is the <em>natural</em> parameter. Members: <strong>Poisson, binomial (fixed $m$), gamma, normal, negative binomial (fixed $r$)</strong>. Non-members: <strong>beta, lognormal, inverse gamma, Pareto</strong>. For LEF members the mean and variance follow from $r,q$:</p>
+      <div class="formula">$$ E[X]=\mu(\theta)=\frac{q'(\theta)}{r'(\theta)\,q(\theta)},\qquad \text{Var}(X)=v(\theta)=\frac{\mu'(\theta)}{r'(\theta)}.$$</div>
+
+      <h3>13. Discrete mixtures and the Bernoulli shortcut</h3>
+      <p>A random variable $Y$ is a <strong>discrete ($n$-point) mixture</strong> if $f_Y(y)=\sum_{i=1}^n w_i f_{X_i}(y)$ with $\sum w_i=1$, $0\le w_i\le1$. Then $F_Y=\sum w_iF_{X_i}$, $S_Y=\sum w_iS_{X_i}$, and crucially $E[Y^k]=\sum w_iE[X_i^k]$. A mixture is <strong>not</strong> a linear combination $w_1X_1+w_2X_2$: in a mixture $Y$ <em>is</em> one of the $X_i$ (chosen with probability $w_i$); in a linear combination its value depends on all components at once. Treat mixtures via the conditioning laws of §5.</p>
+      <p>When a quantity takes only two values, the <strong>Bernoulli shortcut</strong> gives its variance without computing moments:</p>
+      <div class="formula">$$ X=\begin{cases}a,&\text{prob }q\\ b,&\text{prob }1-q\end{cases}\ \Longrightarrow\ \text{Var}(X)=(a-b)^2\,q(1-q).$$</div>
+      <p>It is the fast way to get $\text{Var}\big(E[X\mid \cdot]\big)$ in any two-point mixture.</p>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>Throughout, $\theta>0$ is the scale parameter; $\alpha,\tau,a,b>0$ are shape parameters. $\Gamma(\cdot)$ is the gamma function, $\Gamma(\alpha;x)$ the incomplete gamma function, $\Phi$ the standard normal cdf.</p>
+      </div>
+
+      <h3>Exponential$(\theta)$</h3>
+      <div class="formula">
+        $$ f(x) = \frac{1}{\theta}e^{-x/\theta}, \quad S(x) = e^{-x/\theta}, \quad h(x) = \frac{1}{\theta}, \quad e(d) = \theta.$$
+        $$ E[X] = \theta, \quad \text{Var}(X) = \theta^2, \quad E[X^k] = \theta^k\,k! \ (k \text{ integer}).$$
+      </div>
+      <ul>
+        <li>$\theta$: mean loss. <strong>Memoryless</strong> — the only continuous distribution that is (geometric is the discrete one): $X-d\mid X>d\sim\text{Exponential}(\theta)$, so $E[X-d\mid X>d]=\theta$, $\text{Var}=\theta^2$, and $P(X-d\le a\mid X>d)=P(X\le a)$.</li>
+        <li>Sum of $n$ i.i.d. Exponential$(\theta)$ is Gamma$(n,\theta)$.</li>
+      </ul>
+
+      <h3>Gamma$(\alpha,\theta)$</h3>
+      <div class="formula">
+        $$ f(x) = \frac{(x/\theta)^\alpha e^{-x/\theta}}{x\,\Gamma(\alpha)}, \quad F(x)=\Gamma\!\left(\alpha;\tfrac{x}{\theta}\right),\quad E[X]=\alpha\theta, \quad \text{Var}(X)=\alpha\theta^2, \quad E[X^k]=\frac{\theta^k\,\Gamma(\alpha+k)}{\Gamma(\alpha)}.$$
+      </div>
+      <ul>
+        <li>$\alpha$: shape. $\alpha>1$ → increasing hazard (lighter tail); $\alpha<1$ → decreasing hazard (heavier); $\alpha=1$ → exponential. $\Gamma(n)=(n-1)!$ for integer $n$ (one input), distinct from the incomplete gamma $\Gamma(\alpha;x)$ (two inputs).</li>
+        <li><strong>Poisson shortcut for integer $\alpha$:</strong> $\Gamma(\alpha;x)=1-P(N<\alpha)$ where $N\sim\text{Poisson}(\lambda=x)$. (Avoids the messy incomplete-gamma integral.)</li>
+        <li>Sum of independent gammas <em>sharing $\theta$</em>: $\sum_i\text{Gamma}(\alpha_i,\theta)=\text{Gamma}(\sum_i\alpha_i,\theta)$.</li>
+      </ul>
+
+      <h3>Pareto$(\alpha,\theta)$ (two-parameter, <em>Loss Models</em>)</h3>
+      <div class="formula">
+        $$ f(x)=\frac{\alpha\theta^\alpha}{(x+\theta)^{\alpha+1}}, \quad S(x)=\left(\frac{\theta}{x+\theta}\right)^{\alpha}, \quad h(x)=\frac{\alpha}{x+\theta}\ (\text{decreasing}), \quad e(d)=\frac{d+\theta}{\alpha-1}\ (\alpha>1).$$
+        $$ E[X]=\frac{\theta}{\alpha-1}\ (\alpha>1), \quad \text{Var}(X)=E[X]^2\cdot\frac{\alpha}{\alpha-2}=\frac{\alpha\theta^2}{(\alpha-1)^2(\alpha-2)}\ (\alpha>2).$$
+      </div>
+      <ul>
+        <li>Recognizable pdf shape: $f(x)=\dfrac{c}{(x+\theta)^{\alpha+1}}$ (constant over "$x$ plus a constant" to a power). Only moments of order $k<\alpha$ exist → heavy tail; $e(d)$ <strong>increases linearly</strong> → heavy tail. Mean needs $\alpha>1$, variance $\alpha>2$.</li>
+        <li><strong>Special excess property:</strong> $X-d\mid X>d\sim\text{Pareto}(\alpha,\theta+d)$ — only $\theta$ shifts by $d$, $\alpha$ unchanged.</li>
+      </ul>
+
+      <h3>Single-parameter &amp; inverse Pareto</h3>
+      <div class="formula">
+        <span class="formula-label">Single-parameter Pareto$(\alpha,\theta)$, support $x>\theta$</span>
+        $$ f(x)=\frac{\alpha\theta^\alpha}{x^{\alpha+1}},\quad E[X]=\frac{\alpha\theta}{\alpha-1},\quad \text{Var}(X)=\left(\frac{\theta}{\alpha-1}\right)^2\frac{\alpha}{\alpha-2}.$$
+        <span class="formula-label">Inverse Pareto$(\tau,\theta)$</span>
+        $$ f(x)=\frac{\tau\theta x^{\tau-1}}{(x+\theta)^{\tau+1}},\quad x>0.$$
+      </div>
+      <ul>
+        <li>S-P Pareto is a two-param Pareto shifted right by $\theta$ ($X=Y+\theta$): <em>same variance</em>, mean is $\theta$ larger. Its only true parameter is $\alpha$; $\theta$ is the (known) shift. Domain $x>\theta$ is the giveaway.</li>
+        <li>For S-P Pareto with $d>\theta$: $X\mid X>d\sim\text{S-P Pareto}(\alpha,d)$ and $X-d\mid X>d\sim\text{Pareto}(\alpha,d)$.</li>
+        <li>Inverse Pareto $=$ Pareto inverted ($X=Y^{-1}$, $\theta\to\theta^{-1}$); its pdf carries an extra $x^{\tau-1}$ in the numerator vs. a Pareto.</li>
+      </ul>
+
+      <h3>Weibull$(\theta,\tau)$ and inverse families</h3>
+      <div class="formula">
+        $$ F(x)=1-e^{-(x/\theta)^\tau}, \quad S(x)=e^{-(x/\theta)^\tau}, \quad f(x)=\frac{\tau (x/\theta)^\tau}{x}e^{-(x/\theta)^\tau},\quad h(x)=\frac{\tau}{\theta}\left(\frac{x}{\theta}\right)^{\tau-1}, \quad E[X^k]=\theta^k\,\Gamma\!\left(1+\frac{k}{\tau}\right).$$
+      </div>
+      <ul>
+        <li>Weibull is a power-transformed exponential: $Y\sim\text{Exp}(\mu)$, $X=Y^{1/\tau}\Rightarrow X\sim\text{Weibull}(\theta=\mu^{1/\tau},\tau)$. $\tau=1$ → exponential; $\tau>1$ → increasing hazard (light); $\tau<1$ → decreasing hazard (heavy). The pdf differs from gamma's by raising $x/\theta$ to a power in the exponent.</li>
+        <li><strong>Inverse rule (general):</strong> if $X$ is in a table family with an inverse counterpart, $X^{-1}$ follows it with $\theta\to\theta^{-1}$ and other parameters unchanged — gamma→inverse gamma$(\alpha,\theta^{-1})$, exponential→inverse exponential$(\theta^{-1})$, Weibull→inverse Weibull$(\theta^{-1},\tau)$.</li>
+      </ul>
+
+      <h3>Lognormal$(\mu,\sigma^2)$</h3>
+      <div class="formula">
+        $$ f(x)=\frac{1}{x\sigma\sqrt{2\pi}}\exp\!\left[-\frac{(\ln x-\mu)^2}{2\sigma^2}\right], \quad F(x)=\Phi\!\left(\frac{\ln x-\mu}{\sigma}\right),\quad \pi_p=e^{\mu+z_p\sigma}.$$
+        $$ E[X^k]=\exp\!\left(k\mu+\tfrac{1}{2}k^2\sigma^2\right), \quad E[X]=e^{\mu+\sigma^2/2}, \quad \text{Var}(X)=E[X]^2\!\left(e^{\sigma^2}-1\right).$$
+      </div>
+      <ul>
+        <li>$X=e^Y$ with $Y\sim\text{Normal}(\mu,\sigma^2)$; $\mu,\sigma^2$ are the mean/variance of $\ln X$, <em>not</em> of $X$. $e^\mu$ is the scale (median). Probabilities/percentiles via $\Phi$; moments via the exponential formula. Heavier than exponential, lighter than Pareto.</li>
+        <li>Product of independent lognormals is lognormal: parameters add, $\text{LN}(\mu_1+\mu_2,\sigma_1^2+\sigma_2^2)$.</li>
+      </ul>
+
+      <h3>Normal$(\mu,\sigma^2)$, standard normal, sums</h3>
+      <div class="formula">
+        $$ f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-(x-\mu)^2/(2\sigma^2)},\quad P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right),\quad \pi_p=\mu+z_p\sigma,\quad z_p=\Phi^{-1}(p).$$
+      </div>
+      <ul>
+        <li>Parameters <em>are</em> the mean and variance. Standardize $Z=(X-\mu)/\sigma$; by symmetry $\Phi(-z)=1-\Phi(z)$. Sum of independent normals is normal with summed means and summed variances.</li>
+      </ul>
+
+      <h3>Beta$(a,b,\theta)$ and Uniform$(a,b)$</h3>
+      <div class="formula">
+        <span class="formula-label">Beta — finite support $0\lt x<\theta$</span>
+        $$ f(x)=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}\left(\frac{x}{\theta}\right)^a\!\left(1-\frac{x}{\theta}\right)^{b-1}\frac1x,\quad E[X]=\frac{a}{a+b}\theta,\quad \text{Var}(X)=\frac{ab}{(a+b)^2(a+b+1)}\theta^2.$$
+        <span class="formula-label">Uniform$(a,b)$</span>
+        $$ f(x)=\frac{1}{b-a},\quad E[X]=\frac{a+b}{2},\quad \text{Var}(X)=\frac{(b-a)^2}{12},\quad E[X^2]=\frac{a^2+ab+b^2}{3}.$$
+      </div>
+      <ul>
+        <li>Beta is recognized by finite support and purely polynomial terms (no exponentials/logs). Don't drop the trailing $\tfrac1x$. With $\theta=1$: $f(x)=c\,x^{a-1}(1-x)^{b-1}$, $E[X^2]=\dfrac{a(a+1)}{(a+b)(a+b+1)}$.</li>
+        <li>Uniform$(0,\theta)\equiv$ Beta$(a=1,b=1,\theta)$. Excess: $X\mid X>d\sim\text{Uniform}(d,b)$ and $X-d\mid X>d\sim\text{Uniform}(0,b-d)$.</li>
+      </ul>
+
+      <h3>Hazard rate and mean excess — general</h3>
+      <div class="formula">
+        $$ h(x)=\frac{f(x)}{S(x)}=-\frac{d}{dx}\ln S(x), \qquad S(x)=\exp\!\left(-\int_0^x h(t)\,dt\right),\qquad e(d)=\frac{\int_d^\infty S(x)\,dx}{S(d)}=\frac{E[X]-E[X\wedge d]}{S(d)},$$
+      </div>
+      <p>where $E[X\wedge d]=\int_0^d S(x)\,dx$ is the <strong>limited expected value</strong> (mean of $X$ capped at $d$).</p>
+
+      <h3>Tail-weight comparison criteria</h3>
+      <ul>
+        <li><strong>Moments:</strong> distribution with more finite positive moments is lighter-tailed.</li>
+        <li><strong>Survival ratio:</strong> $\displaystyle \lim_{x\to\infty}\frac{S_1(x)}{S_2(x)}=\infty \Rightarrow$ dist. 1 heavier; $=0\Rightarrow$ dist. 1 lighter.</li>
+        <li><strong>Hazard:</strong> $h\downarrow \Rightarrow$ heavy; $h\uparrow \Rightarrow$ light.</li>
+        <li><strong>Mean excess:</strong> $e(d)\uparrow \Rightarrow$ heavy; $e(d)\downarrow \Rightarrow$ light.</li>
+      </ul>
+
+      <h3>Scaling / inflation rules</h3>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Inflate losses by factor $c=(1+r)$</div>
+        <ul>
+          <li><strong>Any table distribution except lognormal, inverse Gaussian, log-$t$:</strong> $\theta\to c\theta$, other parameters unchanged. Density $f_Y(y)=\tfrac1c f_X(y/c)$.</li>
+          <li><strong>Normal:</strong> $\mu\to c\mu$, $\sigma\to c\sigma$ (so variance $\to c^2\sigma^2$).</li>
+          <li><strong>Lognormal:</strong> $\mu\to\mu+\ln c$, $\sigma^2$ unchanged.</li>
+          <li><strong>Everything else:</strong> fall back to the transformation technique.</li>
+        </ul>
+      </div>
+
+      <h3>Manufacturing operations &amp; mixtures</h3>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Build-a-distribution toolbox</div>
+        <ul>
+          <li><strong>Power:</strong> $Y=X^{1/\tau}$, density $f_Y(y)=f_X(y^\tau)\,\tau y^{\tau-1}$.</li>
+          <li><strong>Inversion:</strong> $Y=X^{-1}$ → inverse counterpart with $\theta\to\theta^{-1}$.</li>
+          <li><strong>Exponentiation:</strong> $Y=e^X$, density $f_Y(y)=f_X(\ln y)/y$.</li>
+          <li><strong>Continuous mixture:</strong> $f_X(x)=\int f(x\mid\lambda)u(\lambda)\,d\lambda$; $E[X^k]=E_\Lambda\!\big[E[X^k\mid\Lambda]\big]$.</li>
+          <li><strong>Law of total variance:</strong> $\text{Var}(X)=E[\text{Var}(X\mid\Lambda)]+\text{Var}(E[X\mid\Lambda])$.</li>
+          <li><strong>Discrete mixture:</strong> $f_Y=\sum w_if_{X_i}$, $\sum w_i=1$; $E[Y^k]=\sum w_iE[X_i^k]$.</li>
+          <li><strong>Bernoulli shortcut:</strong> two-value $X$ → $\text{Var}(X)=(a-b)^2q(1-q)$.</li>
+          <li><strong>Splicing:</strong> $f(x)=a_jf_j(x)$ on interval $j$, $\sum_j a_j=1$, each $f_j$ a density on its sub-interval.</li>
+        </ul>
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Inflation in a scale family (Pareto) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses follow a Pareto with $\alpha=3$ and $\theta=2000$. Next year all losses inflate by 5%. Find next year's mean loss and the probability a loss exceeds 5000 next year.</p>
+          <p><strong>Step 1 — Scale the parameter.</strong> Pareto is a scale family, $\theta$ is the scale. Inflation by 5%: $\theta_{\text{new}}=1.05\times 2000=2100$; $\alpha=3$ unchanged.</p>
+          <p><strong>Step 2 — Mean.</strong> $E[X]=\dfrac{\theta}{\alpha-1}=\dfrac{2100}{3-1}=1050.$</p>
+          <p><strong>Step 3 — Tail probability.</strong> $S(5000)=\left(\dfrac{\theta}{x+\theta}\right)^\alpha=\left(\dfrac{2100}{5000+2100}\right)^3=(0.29577)^3=0.025878.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Mean $=\boxed{1050}$; $P(X>5000)=\boxed{0.0259}$ (≈ 2.59%).</div>
+          <div class="callout note" data-icon="📌">
+            <p><em>Sanity check via old parameters:</em> old $E[X]=2000/2=1000$; inflating the mean directly gives $1000\times1.05=1050$. ✓ (Mean inflates by the same factor — true in any scale family.)</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Mean excess and tail comparison <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>(a) An exponential has $\theta=500$. Find $e(1000)$.<br>
+          (b) A Pareto has $\alpha=2.5,\ \theta=600$. Find $e(1000)$.<br>
+          (c) Which has the heavier tail, and is the mean-excess behavior consistent?</p>
+          <p><strong>Part (a).</strong> Exponential is memoryless: $e(d)=\theta=500$ for every $d$. So $e(1000)=500$.</p>
+          <p><strong>Part (b).</strong> Pareto: $e(d)=\dfrac{d+\theta}{\alpha-1}=\dfrac{1000+600}{2.5-1}=\dfrac{1600}{1.5}=1066.67.$</p>
+          <p><strong>Part (c).</strong> For the exponential $e(d)$ is <strong>constant</strong>; for the Pareto $e(d)=\dfrac{d+600}{1.5}$ <strong>increases</strong> without bound in $d$. An increasing mean-excess function signals a heavier tail, so the <strong>Pareto</strong> is heavier. Confirm with moments: the Pareto with $\alpha=2.5$ has finite mean and variance but no moments of order $\ge 2.5$, whereas the exponential has <em>all</em> moments — consistent with the Pareto being heavier-tailed.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$e_{\text{exp}}(1000)=\boxed{500}$; $e_{\text{Par}}(1000)=\boxed{1066.67}$; the <strong>Pareto</strong> has the heavier tail (increasing $e(d)$, fewer moments). ✓ consistent.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Mixing: exponential rate gamma-mixed gives Pareto (and total variance) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The conditional loss is $X \mid \Theta \sim \text{Exponential}(\Theta)$ (mean $\Theta$). The scale $\Theta$ itself is random with an inverse-gamma distribution such that $E[\Theta]=400$ and the mixture is Pareto with $\alpha=3,\ \theta=800$.</p>
+          <p>(a) Verify $E[X]$ using both the mixture and the Pareto.<br>
+          (b) Suppose instead $X\mid\Lambda \sim \text{Exponential}$ with mean $\Lambda$, where $\Lambda$ takes value 200 w.p. 0.6 and 700 w.p. 0.4 (a discrete mixture). Find $E[X]$ and $\text{Var}(X)$.</p>
+          <p><strong>Part (a).</strong> Pareto mean: $E[X]=\dfrac{\theta}{\alpha-1}=\dfrac{800}{3-1}=400$. Via mixing, $E[X]=E_\Theta[E[X\mid\Theta]]=E[\Theta]=400$. They match.</p>
+          <p><strong>Part (b) — discrete mixture, use total expectation/variance.</strong></p>
+          <p>Conditional on $\Lambda=\lambda$: $X$ is exponential with mean $\lambda$, so $E[X\mid\Lambda]=\lambda$ and $\text{Var}(X\mid\Lambda)=\lambda^2$.</p>
+          <p><strong>Mean:</strong> $E[X]=E[\Lambda]=0.6(200)+0.4(700)=400.$</p>
+          <p><strong>Total variance:</strong></p>
+          <ul>
+            <li>$E[\text{Var}(X\mid\Lambda)]=E[\Lambda^2]=0.6(200^2)+0.4(700^2)=24000+196000=220000.$</li>
+            <li>$\text{Var}(E[X\mid\Lambda])=\text{Var}(\Lambda)$. Via the Bernoulli shortcut: $(200-700)^2(0.6)(0.4)=250000(0.24)=60000.$</li>
+            <li>$\text{Var}(X)=220000+60000=280000.$</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) Both give $E[X]=\boxed{400}$. (b) $E[X]=\boxed{400}$, $\text{Var}(X)=\boxed{280000}$ (sd ≈ 529.2).</div>
+          <div class="callout note" data-icon="📌">
+            <p><em>Heavy-tail signature of mixing:</em> a single exponential with mean 400 would have variance $400^2=160000$; mixing inflated it to 280000. Note the Bernoulli shortcut reproduced $\text{Var}(\Lambda)$ instantly — no need for $E[\Lambda^2]-(E[\Lambda])^2$.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Lognormal probability, percentile, and inflation <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses are lognormal with $\mu=7,\ \sigma=1.5$. (a) Find $P(X>3000)$. (b) Find $E[X]$. (c) After 10% inflation, give the new parameters and the new mean. (d) Find the 95th percentile of the <em>original</em> losses.</p>
+          <p><strong>Part (a).</strong> $P(X>3000)=1-\Phi\!\left(\dfrac{\ln 3000-\mu}{\sigma}\right)$. $\ln 3000=8.00637$, $z=\dfrac{8.00637-7}{1.5}=0.6709$, $\Phi(0.6709)\approx0.7488$, so $P(X>3000)=0.2512.$</p>
+          <p><strong>Part (b).</strong> $E[X]=e^{\mu+\sigma^2/2}=e^{7+1.125}=e^{8.125}=3380.0.$</p>
+          <p><strong>Part (c).</strong> Inflation 10%: $\mu\to7+\ln(1.1)=7.09531$; $\sigma=1.5$ unchanged. New mean $=e^{7.09531+1.125}=e^{8.22031}=3718.0=1.1\times3380.$</p>
+          <p><strong>Part (d).</strong> $z_{0.95}=1.64485$, $y_{0.95}=\mu+z_{0.95}\sigma=7+1.64485(1.5)=9.46728$, $\pi_{0.95}=e^{9.46728}=12{,}912.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $\boxed{0.2512}$; (b) $\approx\boxed{3380}$; (c) new $\mu=\boxed{7.0953}$, $\sigma=1.5$, new mean $\approx\boxed{3718}$; (d) $\pi_{0.95}\approx\boxed{12{,}912}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Gamma cdf via the Poisson shortcut <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X\sim\text{Gamma}(\alpha=2,\theta=5)$. Compute $F(20)$.</p>
+          <p>The gamma cdf is $F(20)=\Gamma\!\left(2;\tfrac{20}{5}\right)=\Gamma(2;4)$. Since $\alpha=2$ is a positive integer, use the Poisson shortcut with $N\sim\text{Poisson}(\lambda=4)$:</p>
+          <p>$$F(20)=1-P(N<2)=1-\big[p_N(0)+p_N(1)\big]=1-\big(e^{-4}+4e^{-4}\big)=1-5e^{-4}=0.9084.$$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$F(20)=\boxed{0.9084}$ — no incomplete-gamma integral required.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Pareto excess property — payment above a deductible <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Loss size $X\sim\text{Pareto}(\alpha=3,\theta=500)$. Insurance covers the excess over 200. Find $P(\text{insurer pays} >500 \mid \text{loss} >200)$, i.e. $P(X-200>500\mid X>200)$.</p>
+          <p><strong>Method 1 — special property.</strong> $X-200\mid X>200\sim\text{Pareto}(3,\,500+200)=\text{Pareto}(3,700)$. Then $$P(X-200>500\mid X>200)=\left(\frac{700}{500+700}\right)^3=(0.58333)^3=0.1985.$$</p>
+          <p><strong>Method 2 — direct.</strong> $\dfrac{P(X>700)}{P(X>200)}=\dfrac{(500/1200)^3}{(500/700)^3}=\dfrac{0.0723}{0.3644}=0.1985.$ ✓</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{0.1985}$. Under the Pareto only $\theta$ shifts ($\to\theta+d$); $\alpha$ stays put.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Identify a beta from its pdf, then get a moment <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$f(x)=105\,x^4(1-x)^2,\ 0\lt x<1$. Find $E[X^2]$.</p>
+          <p>Finite support $[0,1]$ and purely polynomial ⇒ <strong>beta with $\theta=1$</strong>, of form $c\,x^{a-1}(1-x)^{b-1}$. Match exponents: $a-1=4\Rightarrow a=5$; $b-1=2\Rightarrow b=3$. So $X\sim\text{Beta}(5,3,1)$.</p>
+          <p>$$E[X^2]=\frac{a(a+1)}{(a+b)(a+b+1)}=\frac{5\cdot6}{8\cdot9}=\frac{30}{72}=\frac{5}{12}.$$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[X^2]=\boxed{5/12}$. Recognizing the family beats grinding the integral $105\int_0^1 x^6(1-x)^2dx$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Three-point mixture of exponentials (mean, sd, probability) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual loss is a mixture of exponentials by risk class: Low (mean 300, $P=0.40$), Medium (mean 540, $P=0.25$), High (mean 800, $P=0.35$). Find (1) $P(X<500)$, (2) $E[X]$, (3) the standard deviation.</p>
+          <p><strong>(1)</strong> $P(X<500)=\sum w_i\big(1-e^{-500/\theta_i}\big)=0.4(1-e^{-500/300})+0.25(1-e^{-500/540})+0.35(1-e^{-500/800})=0.6381.$</p>
+          <p><strong>(2)</strong> $E[X]=\sum w_i\theta_i=0.4(300)+0.25(540)+0.35(800)=535.$</p>
+          <p><strong>(3)</strong> Mix the <em>second</em> moments ($E[X^2\mid i]=2\theta_i^2$ for an exponential): $E[X^2]=0.4(2\cdot300^2)+0.25(2\cdot540^2)+0.35(2\cdot800^2)=665{,}800.$ Then $\text{Var}(X)=665{,}800-535^2=379{,}575$, sd $=616.10.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) $\boxed{0.6381}$, (2) $E[X]=\boxed{535}$, (3) sd $\approx\boxed{616.10}$. Mix moments, never first-moments-squared.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Mixture vs. linear combination — same weights, different variance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X\sim\text{Pareto}(4,240)$ and $Y\sim\text{Pareto}(3,300)$, independent. Find (1) $\text{Var}(Z)$ where $f_Z=0.4f_X+0.6f_Y$, and (2) $\text{Var}(T)$ where $T=0.4X+0.6Y$.</p>
+          <p>Component moments (Pareto): $E[X]=240/3=80$, $\text{Var}(X)=80^2(4/2)=12{,}800$; $E[Y]=300/2=150$, $\text{Var}(Y)=150^2(3/1)=67{,}500$.</p>
+          <p><strong>(1) Mixture.</strong> $E[\text{Var}(Z\mid M)]=0.4(12{,}800)+0.6(67{,}500)=45{,}620.$ Bernoulli shortcut on the conditional means $\{80,150\}$: $\text{Var}(E[Z\mid M])=(80-150)^2(0.4)(0.6)=1{,}176.$ So $\text{Var}(Z)=45{,}620+1{,}176=46{,}796.$</p>
+          <p><strong>(2) Linear combination.</strong> $\text{Var}(T)=0.4^2(12{,}800)+0.6^2(67{,}500)+2(0.4)(0.6)\underbrace{\text{Cov}}_{=0}=2{,}048+24{,}300=26{,}348.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{Var}(Z)=\boxed{46{,}796}$ (mixture) vs. $\text{Var}(T)=\boxed{26{,}348}$ (linear combo). Same weights — different objects, different variance.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Empirical distribution from a small sample <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Sample of size 6: $\{1,4,5,8,8,10\}$. Find (1) $F_6(6)$, (2) the empirical 75th percentile, (3) the unbiased sample variance.</p>
+          <p><strong>(1)</strong> Observations $\le6$: $\{1,4,5\}$ ⇒ $F_6(6)=3/6=0.5.$</p>
+          <p><strong>(2)</strong> $\lceil 6(0.75)\rceil=\lceil4.5\rceil=5$, so $\pi_{0.75}=x_{(5)}=8.$</p>
+          <p><strong>(3)</strong> $\bar x=\frac{1+4+5+8+8+10}{6}=6$. Biased var $=\frac{1+16+25+64+64+100}{6}-6^2=45-36=9$. Unbiased $s^2=\frac{6}{5}(9)=10.8.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) $F_6(6)=\boxed{0.5}$, (2) $\pi_{0.75}=\boxed{8}$, (3) $s^2=\boxed{10.8}$ (biased var $=9$).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> CV, skewness, kurtosis from a density <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$f(x)=x/8,\ 0\le x\le4$. Find the CV, skewness, and kurtosis.</p>
+          <p>Moments: $E[X]=\int_0^4 x\cdot\tfrac{x}{8}dx=\tfrac{8}{3}$, $E[X^2]=8$, $E[X^3]=25.6$, $E[X^4]=85.333$. So $\text{Var}=8-(8/3)^2=8/9$.</p>
+          <p><strong>CV</strong> $=\dfrac{\sqrt{8/9}}{8/3}=0.3536.$</p>
+          <p><strong>Skewness:</strong> $\mu_3=\mu_3'-3\mu_2'\mu+2\mu^3=25.6-3(8)(\tfrac83)+2(\tfrac83)^3=-0.4741$; skew $=\dfrac{-0.4741}{(8/9)^{3/2}}=-0.5657.$</p>
+          <p><strong>Kurtosis:</strong> $\mu_4=\mu_4'-4\mu_3'\mu+6\mu_2'\mu^2-3\mu^4=85.333-4(25.6)(\tfrac83)+6(8)(\tfrac83)^2-3(\tfrac83)^4=1.8963$; kurt $=\dfrac{1.8963}{(8/9)^2}=2.4.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>CV $=\boxed{0.3536}$, skewness $=\boxed{-0.5657}$ (left-skewed), kurtosis $=\boxed{2.4}$ ($<3$, fewer outliers than normal).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Transformation technique — pdf of $Y=X^{-1}$ for an exponential <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X$ has pdf $f_X(x)=\tfrac15 e^{-x/5},\ x>0$ (exponential with $\theta=5$). Let $Y=X^{-1}$. Find the pdf of $Y$ from first principles, then name the distribution.</p>
+          <p><strong>Step 1 — cdf of $X$.</strong> $F_X(x)=\displaystyle\int_0^x \tfrac15 e^{-t/5}\,dt = 1-e^{-x/5}$, so $S_X(x)=e^{-x/5}$.</p>
+          <p><strong>Step 2 — restate the cdf of $Y$ using $F_X$.</strong> Because $g(x)=x^{-1}$ is <em>decreasing</em>, the inequality flips:</p>
+          $$F_Y(y)=\Pr(Y\le y)=\Pr\!\big(X^{-1}\le y\big)=\Pr\!\big(X\ge y^{-1}\big)=S_X\!\big(y^{-1}\big)=e^{-1/(5y)},\quad y>0.$$
+          <p><strong>Step 3 — differentiate (mind the Jacobian).</strong></p>
+          $$f_Y(y)=\frac{d}{dy}\,e^{-(1/5)y^{-1}} = e^{-1/(5y)}\cdot\frac{d}{dy}\!\left(-\tfrac15 y^{-1}\right)=\frac{1}{5y^{2}}\,e^{-1/(5y)},\quad y>0.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$f_Y(y)=\dfrac{1}{5y^{2}}e^{-1/(5y)},\ y>0$ — an <strong>inverse exponential</strong>. Matches the inverse rule: $X\sim\text{Exponential}(\theta)\Rightarrow X^{-1}\sim\text{Inverse Exponential}(\theta^{-1})$, here $\theta^{-1}=1/5$.</div>
+          <div class="callout note" data-icon="📌">
+            <p><em>Increasing-$g$ variant ($Y=e^{X}$).</em> If instead $F_X(x)=x/10$ on $0\le x\le10$ and $Y=e^{X}$, then $g$ is increasing so the inequality does <em>not</em> flip: $F_Y(y)=\Pr(X\le\ln y)=\tfrac{\ln y}{10}$, giving $f_Y(y)=\dfrac{1}{10y}$ on $1\le y\le e^{10}$. The recipe is identical — only the inequality direction (and the Jacobian) change.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Mode of a continuous density via $f'(x)=0$ with the $f''&lt;0$ check <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$f(x)=0.75\big[1-(x-1)^2\big],\ 0&lt;x&lt;2$. Find the mode.</p>
+          <p><strong>Step 1 — first-order condition.</strong> The mode maximizes the pdf, so set $f'(x)=0$:</p>
+          $$f'(x)=\frac{d}{dx}\,0.75\big[1-(x-1)^2\big]=-1.5\,(x-1)=0\;\Rightarrow\;x=1.$$
+          <p><strong>Step 2 — confirm it is a maximum.</strong> Second-derivative test:</p>
+          $$f''(x)=\frac{d}{dx}\big[-1.5(x-1)\big]=-1.5&lt;0,$$
+          <p>which is negative everywhere, so the critical point $x=1$ is a local (here global) <strong>maximum</strong>, not a minimum.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Mode $=\boxed{1}$. The $f''&lt;0$ check is what certifies it as a max — and you should still scan the domain endpoints, since a global maximum can sit at an endpoint where $f'$ never vanishes.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> The hidden $(X\mid q)$ table — law of total expectation over $q$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A claim-size table is given as</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Claim size $x$</th><th>$\Pr(X=x)$</th></tr></thead>
+            <tbody>
+              <tr><td>$50$</td><td>$0.30$</td></tr>
+              <tr><td>$100$</td><td>$0.70-q$</td></tr>
+              <tr><td>$150$</td><td>$q$</td></tr>
+            </tbody>
+          </table></div>
+          <p>where $q$ varies by insured with density $f(q)=\dfrac{q}{0.175},\ 0.1&lt;q&lt;0.6$. Find (a) $E[X]$ and (b) $\Pr(X=100)$.</p>
+          <div class="callout trap" data-icon="⚠️">
+            <div class="callout-title">Spot the trap</div>
+            <p>The table secretly describes $(X\mid q)$, <strong>not</strong> $X$ — the probabilities depend on the random $q$. You cannot read $E[X]$ straight off the table; you must average over $q$ with the <strong>law of total expectation</strong>. (Bayes' Theorem, $\Pr(A\mid B)=\dfrac{\Pr(B\mid A)\Pr(A)}{\Pr(B)}$, is the conditioning identity these total-probability laws are built on.)</p>
+          </div>
+          <p><strong>Sanity check $f(q)$ is a density:</strong> $\displaystyle\int_{0.1}^{0.6}\frac{q}{0.175}\,dq=\frac{1}{0.175}\cdot\frac{0.6^2-0.1^2}{2}=\frac{0.175}{0.175}=1.$ ✓ Also $E[q]=\displaystyle\int_{0.1}^{0.6}\frac{q^2}{0.175}\,dq=\frac{1}{0.175}\cdot\frac{0.6^3-0.1^3}{3}=\frac{0.215}{0.525}=\frac{43}{105}=0.40952.$</p>
+          <p><strong>(a) Condition first, then average.</strong></p>
+          $$E[X\mid q]=50(0.30)+100(0.70-q)+150q=15+70-100q+150q=85+50q.$$
+          $$E[X]=E_q\big[E[X\mid q]\big]=E_q[85+50q]=85+50\,E[q]=85+50\!\left(\tfrac{43}{105}\right)=105.48.$$
+          <p><strong>(b) Same idea for a probability (law of total probability).</strong></p>
+          $$\Pr(X=100)=E_q\big[\Pr(X=100\mid q)\big]=E_q[0.70-q]=0.70-\tfrac{43}{105}=0.2905.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $E[X]=\boxed{105.48}$; (b) $\Pr(X=100)=\boxed{0.2905}$. Reading $E[X]$ as $50(0.3)+100(0.7-q)+150q$ and leaving $q$ in the answer is the classic miss — the table is conditional on $q$.</div>
+          <div class="callout note" data-icon="📌">
+            <p><em>Discrete inequality reminder.</em> For this discrete $X$, keep $S(x)=\Pr(X&gt;x)$ and $F(x)=\Pr(X\le x)$ strict-vs-non-strict apart: e.g. $F(100)=\Pr(X\le100)$ <em>includes</em> the mass at $100$, whereas $S(100)=\Pr(X&gt;100)=q$ <em>excludes</em> it, so $F(x)=\Pr(X&lt;x)+p(x)\ne\Pr(X&lt;x)$. That distinction is harmless for continuous $X$ but decisive here.</p>
+          </div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ol>
+          <li><strong>Inflating shape parameters.</strong> Under inflation only the <strong>scale</strong> $\theta$ changes ($\to(1+r)\theta$). Shape parameters ($\alpha$, $\tau$, $a,b$) <strong>do not move</strong>. Lognormal: $\mu\to\mu+\ln(1+r)$, never $e^\mu$ literally and never $\sigma$. Normal: scale <em>both</em> $\mu$ and $\sigma$.</li>
+          <li><strong>Using a moment that doesn't exist.</strong> Pareto $E[X]$ needs $\alpha>1$, $\text{Var}(X)$ needs $\alpha>2$. If $\alpha\le1$ the mean is infinite — a negative $\theta/(\alpha-1)$ is the tell, not an answer.</li>
+          <li><strong>Confusing the two "Pareto" parameterizations.</strong> Two-parameter: $S=(\theta/(x+\theta))^\alpha$ on $x>0$. Single-parameter: support $x>\theta$, $S=(\theta/x)^\alpha$, mean $\alpha\theta/(\alpha-1)$. Same variance as the two-param, mean larger by $\theta$. Domain is the giveaway.</li>
+          <li><strong>$f(x)$ is not a probability.</strong> A density can exceed 1; $P(X=a)=0$ for continuous $X$. Don't read $f(x)$ as $P(X=x)$ or compare densities as if they were probabilities.</li>
+          <li><strong>Discrete percentiles aren't $F^{-1}(p)$.</strong> The shortcut $F(\pi_p)=p$ only holds for continuous $X$. For discrete (and empirical) data, use the full definition / order statistics; a value can be many percentiles and a percentile can be a whole interval.</li>
+          <li><strong>Central vs. raw moments.</strong> $\text{Var}=E[X^2]-E[X]^2$ uses raw moments; skewness/kurtosis use <em>central</em> moments $\mu_3,\mu_4$. Convert via $\mu_3=\mu_3'-3\mu_2'\mu+2\mu^3$, etc. Don't divide a raw moment by $\sigma^3$.</li>
+          <li><strong>Biased vs. unbiased sample variance.</strong> Divide by $n$ for the variance <em>of the empirical distribution</em>; by $n-1$ when <em>estimating the population</em>. Mixing them up flips an answer choice.</li>
+          <li><strong>Hazard vs. mean-excess direction.</strong> Heavy tail ⇒ hazard <strong>decreasing</strong>, mean excess <strong>increasing</strong> — opposite directions. Attach "increasing/decreasing" to the right function.</li>
+          <li><strong>Forgetting the Jacobian.</strong> For $Y=X^{1/\tau}$, $Y=e^X$, or $Y=X^{-1}$, $f_Y(y)=f_X(g^{-1}(y))\,|dg^{-1}/dy|$. Dropping the derivative factor yields a non-density. For decreasing $g$ (like inversion) work through $S_X$ and flip the inequality.</li>
+          <li><strong>Mixture variance ≠ average of variances.</strong> Always use the law of total variance; the term $\text{Var}(E[X\mid\Lambda])$ is what makes mixtures heavier-tailed. The two-point Bernoulli shortcut $(a-b)^2q(1-q)$ delivers it fast.</li>
+          <li><strong>Mixture ≠ linear combination.</strong> $f_Z=w_1f_{X_1}+w_2f_{X_2}$ (one component is realized) is a different object from $T=w_1X_1+w_2X_2$ (all components at once) — different variances even with identical weights (Example 9).</li>
+          <li><strong>Mixing first moments instead of second.</strong> $E[Z^2]=\sum w_iE[X_i^2]\ne\sum w_iE[X_i]^2$. For exponentials remember $E[X^2]=2\theta^2$.</li>
+          <li><strong>Lognormal moments via $\Phi$ — don't.</strong> Probabilities/percentiles use $\Phi$; <strong>moments</strong> use $E[X^k]=e^{k\mu+k^2\sigma^2/2}$. Keep the two computations separate, and remember $\mu,\sigma^2$ are the moments of $\ln X$, not $X$.</li>
+          <li><strong>Incomplete vs. ordinary gamma.</strong> $\Gamma(\alpha;x)$ (two inputs) is the gamma cdf factor; $\Gamma(\alpha)$ (one input) is the constant $=(\alpha-1)!$ for integer $\alpha$. Use the Poisson shortcut $\Gamma(\alpha;x)=1-P(N<\alpha)$, $N\sim\text{Poisson}(x)$, only for integer $\alpha$.</li>
+          <li><strong>Splicing weights must give a valid density.</strong> Each piece $a_jf_j$ must integrate to $a_j$ over its sub-interval (so $f_j$ is a real density there), and the $a_j$ sum to 1. No renormalizing = invalid.</li>
+          <li><strong>Beta pdf housekeeping.</strong> Don't drop the trailing $\tfrac1x$ in the table form, and remember most exam betas set $\theta=1$ (support $0\lt x<1$).</li>
+        </ol>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Write down how $f$, $S$, $h$, and $H$ relate, and recover $S$ from a hazard rate.</summary>
+        <div class="qa-answer">$f=F'=-S'$; $S=1-F$; $h=f/S=-\frac{d}{dx}\ln S$; $H=\int h=-\ln S$, so $S(x)=e^{-H(x)}=\exp(-\int_0^x h(t)\,dt)$. Given $h$, integrate to $H$, then exponentiate the negative.</div>
+      </details>
+      <details class="qa"><summary>For a continuous $X$ with $f(x)=0.5x$ on $(0,2)$, find the median and 3rd quartile.</summary>
+        <div class="qa-answer">$F(x)=0.25x^2$ on $(0,2)$. Median: $0.25\pi_{0.5}^2=0.5\Rightarrow\pi_{0.5}=\sqrt2$. Third quartile: $0.25\pi_{0.75}^2=0.75\Rightarrow\pi_{0.75}=\sqrt3$.</div>
+      </details>
+      <details class="qa"><summary>Losses are exponential with $\theta=250$. What is $e(800)$, and why doesn't the deductible matter?</summary>
+        <div class="qa-answer">Memoryless: $e(d)=\theta$ for all $d$, so $e(800)=\boxed{250}$. The excess $X-d\mid X>d$ is again Exponential$(\theta)$, independent of $d$.</div>
+      </details>
+      <details class="qa"><summary>A Pareto has $\alpha=1.5,\ \theta=1000$. Does its mean exist? Its variance?</summary>
+        <div class="qa-answer"><strong>Mean exists</strong> ($\alpha>1$): $E[X]=1000/0.5=2000$. <strong>Variance does not</strong> (needs $\alpha>2$; here $1.5$). Pareto has $E[X^k]$ finite only for $k<\alpha$.</div>
+      </details>
+      <details class="qa"><summary>If $X\sim\text{Pareto}(\alpha,\theta)$, what is the distribution of $X-d\mid X>d$? Of $X^{-1}$?</summary>
+        <div class="qa-answer">$X-d\mid X>d\sim\text{Pareto}(\alpha,\theta+d)$ (only $\theta$ shifts). $X^{-1}\sim\text{Inverse Pareto}(\tau=\alpha,\theta^{-1})$ (inverse rule: $\theta\to\theta^{-1}$, other params unchanged).</div>
+      </details>
+      <details class="qa"><summary>$X\sim\text{Gamma}(3,\theta=2)$. Express $F(8)$ using the Poisson shortcut.</summary>
+        <div class="qa-answer">$F(8)=\Gamma(3;8/2)=\Gamma(3;4)=1-P(N<3)$ with $N\sim\text{Poisson}(4)$ $=1-(e^{-4}+4e^{-4}+8e^{-4})=1-13e^{-4}=0.7619.$</div>
+      </details>
+      <details class="qa"><summary>Which of gamma$(\alpha=0.5)$ and gamma$(\alpha=3)$ has the heavier tail, and by which criterion?</summary>
+        <div class="qa-answer"><strong>gamma$(\alpha=0.5)$</strong>. For gamma, $\alpha<1$ ⇒ decreasing hazard (heavy), $\alpha>1$ ⇒ increasing hazard (light). Decreasing hazard ⇒ heavier tail.</div>
+      </details>
+      <details class="qa"><summary>$X$ is lognormal with $\mu=6,\ \sigma=2$. Compute $E[X]$ and $\text{Var}(X)$.</summary>
+        <div class="qa-answer">$E[X]=e^{6+2}=e^8=2980.96$. $\text{Var}(X)=E[X]^2(e^{\sigma^2}-1)=e^{16}(e^4-1)\approx 4.76\times10^{8}$.</div>
+      </details>
+      <details class="qa"><summary>$X$ is lognormal with $\mu=0.4,\ \sigma^2=0.25$. Find the 95th percentile and $P(X\le2)$.</summary>
+        <div class="qa-answer">$z_{0.95}=1.64485$, $y_{0.95}=0.4+1.64485(0.5)=1.22242$, $\pi_{0.95}=e^{1.22242}=3.3954$. $P(X\le2)=\Phi\!\left(\frac{\ln2-0.4}{0.5}\right)=\Phi(0.58629)=0.7212.$</div>
+      </details>
+      <details class="qa"><summary>Identify the family: $f(x)=c\,x^{2}e^{-x/4}$ on $x>0$ vs. $g(x)=c\,x^{2}e^{-(x/4)^3}$. Name both.</summary>
+        <div class="qa-answer">$f$: $x$ to a power times $e^{-x/\theta}$ ⇒ <strong>gamma</strong> ($\alpha-1=2\Rightarrow\alpha=3$, $\theta=4$). $g$: the exponent has $(x/\theta)$ <em>raised to a power</em> ⇒ <strong>Weibull</strong> ($\tau=3$, $\theta=4$). That power in the exponent is the gamma-vs-Weibull tell.</div>
+      </details>
+      <details class="qa"><summary>$X\mid\Lambda$ is exponential with mean $\Lambda$; $\Lambda=100$ w.p. 0.5 and $500$ w.p. 0.5. Find $E[X]$ and $\text{Var}(X)$.</summary>
+        <div class="qa-answer">$E[X]=E[\Lambda]=300$. $E[\text{Var}(X\mid\Lambda)]=E[\Lambda^2]=0.5(100^2)+0.5(500^2)=130000$. Bernoulli shortcut: $\text{Var}(\Lambda)=(100-500)^2(0.5)(0.5)=40000$. Total $\text{Var}(X)=170000$.</div>
+      </details>
+      <details class="qa"><summary>Sample $\{2,3,3,7\}$: give $F_4(3)$, the empirical 50th percentile, and the biased sample variance.</summary>
+        <div class="qa-answer">$F_4(3)=3/4=0.75$ (three obs $\le3$). $\pi_{0.5}=x_{(\lceil4\cdot0.5\rceil)}=x_{(2)}=3$. $\bar x=15/4=3.75$; biased var $=\frac{4+9+9+49}{4}-3.75^2=17.75-14.0625=3.6875.$</div>
+      </details>
+      <details class="qa"><summary>Name a distribution in the linear exponential family and one that is not, and state why LEF matters.</summary>
+        <div class="qa-answer">In LEF: gamma, normal, Poisson, binomial (fixed $m$), negative binomial (fixed $r$). Not: Pareto, lognormal, beta, inverse gamma. It matters because LEF members have tidy mean/variance via $\mu(\theta)=q'/(r'q)$, $v(\theta)=\mu'/r'$, and the family underlies later credibility/GLM theory.</div>
+      </details>
+      <details class="qa"><summary>Why is a mixture $f_Z=0.5f_X+0.5f_Y$ generally heavier-tailed and higher-variance than either component?</summary>
+        <div class="qa-answer">By the law of total variance, $\text{Var}(Z)=E[\text{Var}(Z\mid \text{component})]+\text{Var}(E[Z\mid\text{component}])$. The second term (spread of the conditional means) is added on top of the average component variance, so mixing never reduces variance and fattens the tail.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

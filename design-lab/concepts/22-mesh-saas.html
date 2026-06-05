@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;450;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0b1020;
+    --ink-soft: #3a4256;
+    --muted: #6b7488;
+    --line: #eef0f6;
+    --line-2: #e4e7f1;
+    --bg: #fafbff;
+    --card: #ffffff;
+    --violet: #6c5ce7;
+    --indigo: #4f46e5;
+    --blue: #2d8bff;
+    --cyan: #22d3ee;
+    --pink: #ff5d9e;
+    --peach: #ff9f6b;
+    --green: #10b981;
+    --shadow-sm: 0 1px 2px rgba(16,24,64,.05), 0 1px 1px rgba(16,24,64,.04);
+    --shadow-md: 0 10px 30px -12px rgba(40,46,98,.18), 0 4px 10px -6px rgba(40,46,98,.10);
+    --shadow-lg: 0 30px 60px -24px rgba(40,46,98,.30), 0 10px 24px -12px rgba(40,46,98,.16);
+    --radius: 20px;
+    --radius-sm: 14px;
+    --maxw: 1240px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+
+  /* ---------- ambient mesh background ---------- */
+  .mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(72px);
+    opacity: .62;
+    will-change: transform;
+  }
+  .blob.b1 { width: 540px; height: 540px; top: -160px; left: -120px;
+    background: radial-gradient(circle at 30% 30%, #8a7bff, #5b5bff 60%, transparent 72%); }
+  .blob.b2 { width: 480px; height: 480px; top: -120px; right: -120px;
+    background: radial-gradient(circle at 60% 40%, #5ad7ff, #2d8bff 60%, transparent 72%); opacity:.5; }
+  .blob.b3 { width: 520px; height: 520px; bottom: -200px; left: 22%;
+    background: radial-gradient(circle at 50% 50%, #ff8fc4, #ff5d9e 55%, transparent 72%); opacity:.4; }
+  .blob.b4 { width: 380px; height: 380px; bottom: -120px; right: -60px;
+    background: radial-gradient(circle at 50% 50%, #ffd27a, #ff9f6b 55%, transparent 72%); opacity:.4; }
+  .grain {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(80,70,180,.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(180deg, #000, transparent 60%);
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- top nav ---------- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(14px);
+    background: rgba(250,251,255,.72);
+    border-bottom: 1px solid var(--line);
+  }
+  header.nav::after {
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+    background: linear-gradient(90deg, transparent, rgba(108,92,231,.5), rgba(45,139,255,.5), rgba(34,211,238,.45), transparent);
+    opacity:.8;
+  }
+  .nav-inner {
+    display: flex; align-items: center; gap: 22px;
+    height: 72px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .mmark {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: grid; place-items: center;
+    background: conic-gradient(from 200deg at 50% 50%, var(--violet), var(--blue), var(--cyan), var(--pink), var(--violet));
+    box-shadow: 0 8px 20px -8px rgba(108,92,231,.7), inset 0 0 0 1px rgba(255,255,255,.25);
+    color: #fff; font-family: "Sora"; font-weight: 800; font-size: 22px;
+    position: relative;
+  }
+  .mmark::after { content:""; position:absolute; inset:3px; border-radius:9px; background:rgba(255,255,255,.06); }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand-text b { font-family: "Sora"; font-weight: 700; font-size: 15.5px; letter-spacing: -.2px; }
+  .brand-text span { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+
+  nav.primary { display: flex; align-items: center; gap: 4px; margin-left: 14px; flex-wrap: wrap; }
+  nav.primary a {
+    text-decoration: none; color: var(--ink-soft); font-size: 13.5px; font-weight: 550;
+    padding: 8px 12px; border-radius: 10px; transition: .18s; white-space: nowrap;
+  }
+  nav.primary a:hover { color: var(--ink); background: #fff; box-shadow: var(--shadow-sm); }
+  nav.primary a.active { color: var(--indigo); background: rgba(79,70,229,.08); }
+
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .exam-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: "Space Grotesk"; font-weight: 600; font-size: 12.5px;
+    padding: 8px 14px; border-radius: 999px; color: #fff;
+    background: linear-gradient(120deg, var(--violet), var(--blue));
+    box-shadow: 0 8px 18px -8px rgba(79,70,229,.6);
+  }
+  .exam-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: #c9ffec; box-shadow: 0 0 0 3px rgba(201,255,236,.3); }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, #ffd27a, #ff5d9e);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px;
+    box-shadow: var(--shadow-sm); border: 2px solid #fff;
+  }
+
+  /* ---------- hero / dashboard ---------- */
+  main { padding: 44px 0 60px; }
+  .greeting {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: var(--indigo);
+    background: #fff; padding: 7px 14px; border-radius: 999px;
+    box-shadow: var(--shadow-sm); border: 1px solid var(--line-2);
+  }
+  .greeting .moon { font-size: 14px; }
+
+  .hero-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1.35fr .9fr;
+    gap: 26px;
+    align-items: stretch;
+  }
+
+  h1.headline {
+    font-family: "Sora"; font-weight: 800; letter-spacing: -1.4px;
+    font-size: clamp(38px, 5.4vw, 62px); line-height: 1.02; margin: 18px 0 0;
+    background: linear-gradient(100deg, #14172b 0%, #4f46e5 40%, #6c5ce7 64%, #2d8bff 86%, #22d3ee 100%);
+    background-size: 160% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: hueshift 14s ease-in-out infinite alternate;
+  }
+  .headline .pop {
+    background: linear-gradient(100deg, #6c5ce7, #2d8bff 60%, #22d3ee);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    position: relative;
+  }
+  @keyframes hueshift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+  @media (prefers-reduced-motion: reduce) { h1.headline { animation: none; } }
+  .hero-lede { margin: 20px 0 0; color: var(--ink-soft); font-size: 17.5px; max-width: 540px; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+
+  .btn {
+    appearance: none; border: 0; cursor: pointer; font-family: "Inter";
+    font-weight: 600; font-size: 15px; padding: 14px 24px; border-radius: 14px;
+    display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+    transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+  }
+  .btn-primary {
+    color: #fff;
+    background: linear-gradient(120deg, var(--violet), var(--indigo) 50%, var(--blue));
+    box-shadow: 0 14px 30px -12px rgba(79,70,229,.65), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 22px 40px -14px rgba(79,70,229,.7); }
+  .btn-ghost {
+    color: var(--ink); background: #fff; border: 1px solid var(--line-2);
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-ghost:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .btn .arrow { transition: transform .16s; }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  .hero-left { display: flex; flex-direction: column; }
+
+  /* exam card (right of hero) */
+  .exam-card {
+    position: relative; border-radius: var(--radius); overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 85% 0%, rgba(45,139,255,.55), transparent 55%),
+      radial-gradient(120% 120% at 0% 100%, rgba(255,93,158,.45), transparent 50%),
+      linear-gradient(150deg, #2a2566, #1b1742);
+    color: #fff; padding: 28px; box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column;
+  }
+  @property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+  .exam-card::before {
+    content:""; position:absolute; inset:0; border-radius: inherit; padding:1.5px;
+    background: conic-gradient(from var(--ang), rgba(108,92,231,.95), rgba(45,139,255,.95), rgba(34,211,238,.95), rgba(255,93,158,.95), rgba(108,92,231,.95));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity:.7; pointer-events:none;
+    animation: spin 16s linear infinite;
+  }
+  @keyframes spin { to { --ang: 360deg; } }
+  @media (prefers-reduced-motion: reduce) { .exam-card::before { animation: none; } }
+  .exam-card > * { position: relative; z-index: 1; }
+  .exam-card .ec-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.7); font-weight: 600; }
+  .exam-card h3 { font-family: "Sora"; font-weight: 700; font-size: 30px; margin: 8px 0 4px; letter-spacing: -.6px; }
+  .exam-card .sub { color: rgba(255,255,255,.78); font-size: 14px; }
+  .ec-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+  .ec-chip {
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px; padding: 12px 14px; backdrop-filter: blur(4px);
+  }
+  .ec-chip .k { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.6); }
+  .ec-chip .v { font-family: "Space Grotesk"; font-weight: 700; font-size: 18px; margin-top: 2px; }
+  .ec-foot { margin-top: auto; padding-top: 22px; display: flex; align-items: center; gap: 10px; }
+  .ec-pass {
+    font-family: "Space Grotesk"; font-weight: 700; font-size: 13px;
+    background: linear-gradient(120deg, #10b981, #34d399); color: #04231a;
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .ec-foot span { font-size: 13px; color: rgba(255,255,255,.7); }
+
+  /* ---------- stats ---------- */
+  .stats {
+    margin-top: 26px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+  }
+  .stat::before {
+    content:""; position:absolute; right:-30px; top:-30px; width:120px; height:120px; border-radius:50%;
+    filter: blur(26px); opacity:.5;
+  }
+  .stat.s1::before { background: var(--violet); }
+  .stat.s2::before { background: var(--blue); }
+  .stat.s3::before { background: var(--green); }
+  .stat .label { font-size: 12.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .6px; }
+  .stat .num { font-family: "Sora"; font-weight: 800; font-size: 40px; letter-spacing: -1.5px; margin-top: 6px; line-height: 1; }
+  .stat .num small { font-size: 18px; font-weight: 700; color: var(--muted); -webkit-text-fill-color: var(--muted); }
+  .stat .note { font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+  .progressbar { height: 8px; border-radius: 99px; background: var(--line-2); margin-top: 14px; overflow: hidden; }
+  .progressbar > i { display:block; height:100%; border-radius:99px; background: linear-gradient(90deg, var(--violet), var(--blue)); }
+  .s1 .num { color: var(--indigo); }
+
+  /* ---------- content section ---------- */
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin: 54px 0 18px; gap: 16px; flex-wrap: wrap; }
+  .section-head h2 { font-family: "Sora"; font-weight: 700; font-size: 26px; letter-spacing: -.6px; margin: 0; }
+  .section-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .kicker { font-family:"Space Grotesk"; font-weight:600; font-size:12px; letter-spacing:2px; text-transform:uppercase; color: var(--violet); }
+
+  .content-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 26px; align-items: start; }
+
+  .panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow-md); overflow: hidden;
+  }
+  .panel-pad { padding: 28px; }
+  .topic-head { display:flex; align-items:center; gap:14px; }
+  .topic-ico {
+    width: 46px; height: 46px; border-radius: 13px; display:grid; place-items:center; font-size: 22px;
+    background: linear-gradient(135deg, rgba(108,92,231,.14), rgba(45,139,255,.14));
+    border: 1px solid var(--line-2);
+  }
+  .topic-head h3 { margin: 0; font-family:"Sora"; font-weight: 700; font-size: 21px; letter-spacing:-.4px; }
+  .topic-head .lede { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; }
+
+  /* formula block */
+  .formula-block {
+    margin-top: 22px; border-radius: var(--radius-sm); padding: 4px;
+    background: linear-gradient(120deg, rgba(108,92,231,.5), rgba(45,139,255,.45), rgba(34,211,238,.4));
+  }
+  .formula-inner {
+    background: #0d1130; border-radius: 11px; padding: 22px 22px 18px;
+    display: grid; gap: 14px;
+  }
+  .formula {
+    font-family: "Space Grotesk", monospace; color: #eaf0ff; font-size: 19px; font-weight: 500;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .formula .lbl { font-family:"Inter"; font-size: 11px; letter-spacing:1px; text-transform: uppercase; color: #8b93c7; font-weight: 600; min-width: 96px; }
+  .formula .eq { color: #fff; }
+  .formula b { color: #ffd27a; font-weight: 700; }
+  .formula .hl { color: #7ee3ff; }
+  .formula .pink { color: #ff95c4; }
+  .formula + .formula { border-top: 1px dashed rgba(255,255,255,.08); padding-top: 14px; }
+
+  /* trap callout */
+  .trap {
+    margin-top: 22px; border-radius: var(--radius-sm);
+    border: 1px solid rgba(255,93,158,.35);
+    background: linear-gradient(120deg, rgba(255,93,158,.10), rgba(255,159,107,.10));
+    padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .trap .warn { font-size: 20px; flex: none; }
+  .trap .t-body strong { display:block; font-family:"Sora"; font-weight: 700; font-size: 14px; color: #b3215c; letter-spacing:-.2px; }
+  .trap .t-body p { margin: 4px 0 0; font-size: 14px; color: var(--ink-soft); }
+  .trap .t-body em { font-style: normal; font-weight: 700; color: #d23b75; }
+
+  /* example teaser card (right column) */
+  .ex-card { padding: 28px; }
+  .ex-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:"Space Grotesk"; font-weight:600; font-size:12px; letter-spacing:.5px;
+    color: var(--indigo); background: rgba(79,70,229,.08);
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .ex-card h3 { font-family:"Sora"; font-weight:700; font-size: 22px; letter-spacing:-.5px; margin: 16px 0 8px; }
+  .ex-card p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+  .ex-steps { margin: 20px 0 4px; display:grid; gap:10px; }
+  .ex-step { display:flex; align-items:center; gap:12px; font-size: 13.5px; color: var(--ink-soft); }
+  .ex-step .n {
+    width: 24px; height: 24px; border-radius: 8px; flex:none; display:grid; place-items:center;
+    font-family:"Space Grotesk"; font-weight:700; font-size:12px; color:#fff;
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+  }
+  .ex-step.todo .n { background: var(--line-2); color: var(--muted); }
+  .ex-cta { display:flex; gap:12px; margin-top: 22px; }
+  .ex-cta .btn { flex: 1; justify-content: center; font-size: 14.5px; padding: 13px 18px; }
+
+  .mini-progress { display:flex; align-items:center; gap:10px; margin-top: 18px; font-size:12.5px; color: var(--muted); }
+  .mini-progress .bar { flex:1; height:6px; border-radius:99px; background: var(--line-2); overflow:hidden; }
+  .mini-progress .bar > i { display:block; height:100%; background: linear-gradient(90deg,var(--green),#34d399); }
+
+  /* topic chips strip */
+  .topic-strip { display:flex; flex-wrap:wrap; gap:10px; margin-top: 16px; }
+  .tchip {
+    text-decoration:none; font-size:13px; font-weight:550; color: var(--ink-soft);
+    background:#fff; border:1px solid var(--line-2); border-radius: 999px; padding: 9px 15px;
+    box-shadow: var(--shadow-sm); display:inline-flex; align-items:center; gap:8px; transition:.16s;
+  }
+  .tchip:hover { color: var(--indigo); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .tchip .tdot { width:8px; height:8px; border-radius:50%; }
+
+  /* ---------- footer ---------- */
+  footer {
+    position: relative; z-index: 1; border-top: 1px solid var(--line);
+    margin-top: 64px; background: rgba(255,255,255,.6); backdrop-filter: blur(8px);
+  }
+  .foot-inner { display:flex; align-items:center; justify-content:space-between; padding: 26px 0; gap: 16px; flex-wrap: wrap; }
+  .foot-brand { display:flex; align-items:center; gap:10px; }
+  .foot-brand .mmark { width: 30px; height: 30px; border-radius: 9px; font-size: 16px; }
+  .foot-brand b { font-family:"Sora"; font-weight:700; font-size: 14px; }
+  .foot-brand span { color: var(--muted); font-size: 12.5px; }
+  footer .meta { color: var(--muted); font-size: 12.5px; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .content-grid { grid-template-columns: 1fr; }
+    nav.primary { display: none; }
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 0 18px; }
+    .stats { grid-template-columns: 1fr; }
+    .ec-meta { grid-template-columns: 1fr 1fr; }
+    h1.headline { letter-spacing: -.8px; }
+    .nav-inner { height: 64px; }
+    .exam-pill { display: none; }
+    .ex-cta { flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .blob { animation: drift 22s ease-in-out infinite alternate; }
+    .blob.b2 { animation-duration: 26s; }
+    .blob.b3 { animation-duration: 30s; }
+    .blob.b4 { animation-duration: 24s; }
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.08); }
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ambient mesh -->
+  <div class="mesh" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="blob b4"></div>
+    <div class="grain"></div>
+  </div>
+
+  <!-- top nav -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#">
+        <div class="mmark">M</div>
+        <div class="brand-text">
+          <b>Me Studing Stuff</b>
+          <span>Study smarter. Pass exams.</span>
+        </div>
+      </a>
+      <nav class="primary" aria-label="Topics">
+        <a href="#" class="active">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+      </nav>
+      <div class="nav-right">
+        <span class="exam-pill"><span class="dot"></span> FAM-L / FAM-S</span>
+        <div class="avatar">AM</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- hero -->
+    <section class="hero-grid">
+      <div class="hero-left">
+        <span class="greeting"><span class="moon">&#127769;</span> Good evening</span>
+        <h1 class="headline">Let&rsquo;s get you<br /><span class="pop">that pass.</span></h1>
+        <p class="hero-lede">Your focused hub for SOA Exam FAM &mdash; notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="hero-cta">
+          <a href="#" class="btn btn-primary">Start studying <span class="arrow">&rarr;</span></a>
+          <a href="#" class="btn btn-ghost">Resume <span class="arrow">&#8635;</span></a>
+        </div>
+
+        <div class="topic-strip" aria-label="Topics">
+          <a class="tchip" href="#"><span class="tdot" style="background:var(--violet)"></span>Survival Models</a>
+          <a class="tchip" href="#"><span class="tdot" style="background:var(--blue)"></span>Life Tables</a>
+          <a class="tchip" href="#"><span class="tdot" style="background:var(--cyan)"></span>Life Insurance</a>
+          <a class="tchip" href="#"><span class="tdot" style="background:var(--pink)"></span>Life Annuities</a>
+          <a class="tchip" href="#"><span class="tdot" style="background:var(--peach)"></span>Premiums</a>
+          <a class="tchip" href="#"><span class="tdot" style="background:var(--green)"></span>Policy Values</a>
+        </div>
+      </div>
+
+      <!-- exam FAM card -->
+      <aside class="exam-card">
+        <span class="ec-label">Exam FAM</span>
+        <h3>Fundamentals of Actuarial Mathematics</h3>
+        <p class="sub">The core SOA sitting that gets you onto the path.</p>
+        <div class="ec-meta">
+          <div class="ec-chip"><div class="k">Provider</div><div class="v">SOA</div></div>
+          <div class="ec-chip"><div class="k">Questions</div><div class="v">34</div></div>
+          <div class="ec-chip"><div class="k">Format</div><div class="v">FAM-L / FAM-S</div></div>
+          <div class="ec-chip"><div class="k">Pass mark</div><div class="v">6 / 10</div></div>
+        </div>
+        <div class="ec-foot">
+          <span class="ec-pass">Pass = 6/10</span>
+          <span>34 questions &middot; SOA</span>
+        </div>
+      </aside>
+    </section>
+
+    <!-- stats -->
+    <section class="stats">
+      <div class="stat s1">
+        <div class="label">Overall progress</div>
+        <div class="num">72<small>%</small></div>
+        <div class="note">12 of 17 topics covered</div>
+        <div class="progressbar"><i style="width:72%"></i></div>
+      </div>
+      <div class="stat s2">
+        <div class="label">Exam countdown</div>
+        <div class="num">86<small> days</small></div>
+        <div class="note">Keep the streak &mdash; you&rsquo;re on pace.</div>
+        <div class="progressbar"><i style="width:54%; background:linear-gradient(90deg,var(--blue),var(--cyan))"></i></div>
+      </div>
+      <div class="stat s3">
+        <div class="label">Topics solid</div>
+        <div class="num" style="color:var(--green)">8</div>
+        <div class="note">Marked confident &amp; revision-ready</div>
+        <div class="progressbar"><i style="width:47%; background:linear-gradient(90deg,var(--green),#34d399)"></i></div>
+      </div>
+    </section>
+
+    <!-- content section head -->
+    <div class="section-head">
+      <div>
+        <span class="kicker">Continue where you left off</span>
+        <h2>Life Insurance &middot; today&rsquo;s focus</h2>
+        <p>Present-value benefit functions and their variances.</p>
+      </div>
+      <a href="#" class="btn btn-ghost" style="padding:11px 18px; font-size:14px;">All topics <span class="arrow">&rarr;</span></a>
+    </div>
+
+    <!-- content grid -->
+    <section class="content-grid">
+      <!-- left: topic preview + formulas + trap -->
+      <div class="panel panel-pad">
+        <div class="topic-head">
+          <div class="topic-ico">&#128202;</div>
+          <div>
+            <h3>Life Insurance Present Values</h3>
+            <p class="lede">The EPV of a benefit paid at death &mdash; and how spread out it really is.</p>
+          </div>
+        </div>
+
+        <div class="formula-block">
+          <div class="formula-inner">
+            <div class="formula">
+              <span class="lbl">Whole life</span>
+              <span class="eq"><b>A<sub>x</sub></b> = 1 &minus; <span class="hl">d</span>&middot;&auml;<sub>x</sub></span>
+            </div>
+            <div class="formula">
+              <span class="lbl">Variance</span>
+              <span class="eq">Var(<span class="pink">Z</span>) = <b>&sup2;A<sub>x</sub></b> &minus; (A<sub>x</sub>)&sup2;</span>
+            </div>
+            <div class="formula">
+              <span class="lbl">Annuity</span>
+              <span class="eq">&auml;<sub>x</sub> = (1 &minus; <b>A<sub>x</sub></b>) / <span class="hl">d</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trap">
+          <span class="warn">&#9888;&#65039;</span>
+          <div class="t-body">
+            <strong>Common trap</strong>
+            <p>Under UDD, multiply <em>ONLY</em> the term/death piece by <em>i/&delta;</em> &mdash; the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: worked example teaser -->
+      <div class="panel ex-card">
+        <span class="ex-tag">&#9733; Worked example</span>
+        <h3>Example 1 &mdash; Whole life EPV &amp; variance</h3>
+        <p>Compute A<sub>x</sub>, then build Var(Z) from the second moment &sup2;A<sub>x</sub> step by step.</p>
+
+        <div class="ex-steps">
+          <div class="ex-step"><span class="n">1</span> Set up the present-value random variable Z</div>
+          <div class="ex-step"><span class="n">2</span> Read A<sub>x</sub> and &sup2;A<sub>x</sub> from the table</div>
+          <div class="ex-step todo"><span class="n">3</span> Assemble the variance &amp; sanity-check</div>
+        </div>
+
+        <div class="mini-progress">
+          <span>2 / 3 steps</span>
+          <span class="bar"><i style="width:66%"></i></span>
+          <span>66%</span>
+        </div>
+
+        <div class="ex-cta">
+          <a href="#" class="btn btn-primary">Start studying <span class="arrow">&rarr;</span></a>
+          <a href="#" class="btn btn-ghost">Resume <span class="arrow">&#8635;</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- footer -->
+  <footer>
+    <div class="wrap foot-inner">
+      <div class="foot-brand">
+        <div class="mmark">M</div>
+        <div>
+          <b>Me Studing Stuff</b><br />
+          <span>Study smarter. Pass exams.</span>
+        </div>
+      </div>
+      <div class="meta">&copy; 2026 Me Studing Stuff &middot; A calm hub for SOA Exam FAM</div>
+    </div>
+  </footer>
+
+</body>
+</html>

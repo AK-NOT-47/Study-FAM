@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coverage Modifications · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-05" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 5</div>
+      <h1>Coverage Modifications</h1>
+      <p class="lede">Deductibles, limits, coinsurance, and inflation all reshape one ground-up loss $X$ — and almost every answer is a difference of limited expected values $E[X \wedge u]$. Master one Ultimate Formula and the whole topic collapses into looking up $E[X\wedge\cdot]$ from the exam table.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models · KPW</span>
+        <span class="chip">⏱️ ~3.5 hrs</span>
+        <span class="chip">🔑 $Y^L$ vs $Y^P$ · LEV · LER · ILF</span>
+        <span class="chip">🔑 franchise · $e(d)$ · max covered loss</span>
+        <span class="chip">🔑 Ultimate Formula · inflation</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After mastering this topic you should be able to:</p>
+        <ul>
+          <li>Define and compute the <strong>per-loss random variable</strong> $Y^L$ and the <strong>per-payment random variable</strong> $Y^P$, and explain how they differ.</li>
+          <li>Calculate the effect of a <strong>policy limit</strong> $u$, an <strong>ordinary deductible</strong> $d$, a <strong>coinsurance factor</strong> $\alpha$, and <strong>inflation</strong> $(1+r)$ on both the severity distribution and aggregate losses.</li>
+          <li>Compute <strong>expected cost per loss</strong> and <strong>expected cost per payment</strong>, and the higher moments / variance of each.</li>
+          <li>Compute and interpret the <strong>Loss Elimination Ratio (LER)</strong> and the <strong>Increased Limit Factor (ILF)</strong>.</li>
+          <li>Work with the <strong>limited expected value</strong> $E[X \wedge u]$ and use it as the building block for almost every coverage-modification computation, including in <em>discrete / empirical</em> form.</li>
+          <li>Handle a <strong>franchise deductible</strong> via the <strong>mean excess loss</strong> $e(d)$, and contrast it with an ordinary deductible.</li>
+          <li>Recognize the other deductible flavours — <strong>fixed-percentage</strong>, <strong>disappearing</strong>, <strong>per-calendar-year</strong>, and <strong>elimination periods</strong> — and find the effective deductible for each.</li>
+          <li>Apply <strong>coinsurance before vs. after</strong> the deductible, computing the maximum covered loss $m = \frac{u}{\alpha}+d$.</li>
+          <li>Combine deductible, limit, coinsurance, and inflation <strong>in the correct order</strong> using the <strong>Ultimate Formula</strong> to find expected payments, variances, and moments.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>The ground-up loss $X$</h3>
+      <p>Everything starts with the <strong>ground-up loss</strong> $X$ — the full economic loss to the policyholder before any policy provisions are applied ($X \ge 0$ always; negative losses make no sense). The insurer rarely pays $X$ in full; the policy <em>modifies</em> coverage through deductibles, limits, and coinsurance. Throughout, <strong>"payment" means the <em>insurer's</em> payment</strong> unless stated otherwise — an actuary always sits on the insurer's side of the table.</p>
+
+      <h3>Policy limit $u$ — the limited loss variable</h3>
+      <p>The <strong>policy limit</strong> $u$ is the maximum the insurer will pay for a single loss. The insurer pays whichever is smaller, the loss or the limit:</p>
+      <div class="formula">$$ X \wedge u = \min(X,u) = \begin{cases} X & X < u \\ u & X \ge u \end{cases} $$</div>
+      <p>$(X\wedge u)$ is the <strong>limited loss variable</strong>; its mean $E[X\wedge u]$ is the <strong>limited expected value (LEV)</strong> — the single most reused quantity in this entire topic.</p>
+
+      <h3>The ground-up loss split: $(X\wedge d) + (X-d)_+ = X$</h3>
+      <p>An ordinary deductible $d$ and a policy limit $d$ partition the loss: the policyholder eats $X\wedge d$, the insurer pays the rest, and they sum to the full loss.</p>
+      <div class="formula">$$ (X \wedge d) + (X-d)_+ = X \;\Longrightarrow\; E[X\wedge d] + E[(X-d)_+] = E[X]. $$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">A deductible is a limit, flipped</div>
+        <p>What the insurer pays under a <strong>deductible $d$</strong> is exactly what the <em>policyholder</em> pays under a <strong>limit $d$</strong>, and vice versa. That symmetry is why $E[(X-d)_+] = E[X]-E[X\wedge d]$ — and why nearly every answer reduces to looking up LEVs from the exam table.</p>
+      </div>
+
+      <h3>Ordinary deductible $d$</h3>
+      <p>With an <strong>ordinary deductible</strong> $d$ (the default — if a problem just says "deductible," it means this), the insurer pays nothing on the first $d$ and the excess above $d$:</p>
+      <ul>
+        <li>If $X \le d$: payment is $0$.</li>
+        <li>If $X > d$: payment is $X - d$.</li>
+      </ul>
+      <p>There are two natural ways to record payments, and <strong>keeping them straight is the single most important idea in this topic.</strong></p>
+
+      <h3>Per-loss vs. per-payment: the central distinction</h3>
+      <ul>
+        <li><strong>Per-loss variable $Y^L$</strong>: defined for <em>every</em> loss event, including those that produce a payment of $0$. So $Y^L = 0$ whenever $X \le d$. This is a <strong>mixed</strong> random variable (a point mass at 0 plus a continuous piece).</li>
+      </ul>
+      <div class="formula">$$ Y^L = (X-d)_+ = \begin{cases} 0 & X \le d \\ X - d & X > d \end{cases} $$</div>
+      <ul>
+        <li><strong>Per-payment variable $Y^P$</strong>: defined <em>only</em> when a payment actually occurs, i.e. conditional on $X > d$. It is $Y^L$ conditioned on $Y^L > 0$:</li>
+      </ul>
+      <div class="formula">$$ Y^P = X - d \mid X > d $$</div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Why insurers care about "per payment"</div>
+        <p>Losses below the deductible are usually <strong>never reported</strong> — the policyholder gets nothing, so why bother filing? The insurer therefore lacks data on small losses and is often forced to work with the <em>payment-per-payment</em> view. Note too: $Y^L$ is general notation for "payment per loss" and is <strong>not always</strong> $(X-d)_+$ — with a limit, $Y^L = X\wedge u$; with both, $Y^L = (X\wedge m)-(X\wedge d)$. And with <em>no</em> deductible, $Y^P = Y^L$ (every loss is paid).</p>
+      </div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Intuition — and the link between the two</div>
+        <p>$Y^L$ answers "averaged over all losses, how much do we pay?" $Y^P$ answers "given that we wrote a check, how big was it?" Because $Y^P$ excludes the zero payments, its mean is always <strong>at least as large</strong> as the mean of $Y^L$. The link is the survival probability $S_X(d) = P(X > d)$:</p>
+        $$ E[Y^P] = \frac{E[Y^L]}{S_X(d)} \ge E[Y^L]. $$
+        <p>This is just conditional expectation: $E[Y^L] = E[Y^P]\cdot P(\text{payment}) + 0 \cdot P(\text{no payment})$. The relationship holds for <strong>every moment</strong>: $E[(Y^P)^k] = E[(Y^L)^k]/S_X(d)$ — divide by $S_X(d) \le 1$ to get the larger per-payment value.</p>
+      </div>
+
+      <h3>Expected cost per loss vs. expected cost per payment</h3>
+      <ul>
+        <li><strong>Expected cost per loss</strong> $= E[Y^L]$ — the right quantity for <strong>aggregate</strong> / <strong>pure premium</strong> calculations, because you can multiply it by the expected <em>number of losses</em>.</li>
+        <li><strong>Expected cost per payment</strong> $= E[Y^P]$ — the right quantity when you only observe (or only care about) the claims that generate a payment, e.g. when the frequency is the number of <em>payments</em>.</li>
+      </ul>
+
+      <h3>The excess loss variable and the mean excess loss $e(d)$</h3>
+      <p>The conditional variable $(X-d \mid X>d)$ has its own name — the <strong>excess loss variable</strong> (contrast with the <em>limited</em> loss variable $X\wedge d$). Its mean is the <strong>mean excess loss</strong> (a.k.a. mean residual life) function:</p>
+      <div class="formula">$$ e(d) = E[X-d \mid X>d] = \frac{E[(X-d)_+]}{S_X(d)} = E[Y^P_{\text{ordinary}}]. $$</div>
+      <p>So <strong>$e(d)$ is just the expected cost per payment under an ordinary deductible.</strong> Several distributions have beautiful closed-form excess-loss behaviour, which lets you skip the integral entirely:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Loss $X$</th><th>Mean $E[X]$</th><th>Excess loss $X-d\mid X>d$</th><th>Mean excess $e(d)$</th></tr></thead>
+        <tbody>
+          <tr><td>Exponential$(\theta)$</td><td>$\theta$</td><td>Exponential$(\theta)$ (memoryless)</td><td>$\theta$</td></tr>
+          <tr><td>Uniform$(a,b)$</td><td>$\frac{a+b}{2}$</td><td>Uniform$(0,\,b-d)$</td><td>$\frac{b-d}{2}$</td></tr>
+          <tr><td>Pareto$(\alpha,\theta)$</td><td>$\frac{\theta}{\alpha-1}$</td><td>Pareto$(\alpha,\,\theta+d)$</td><td>$\frac{\theta+d}{\alpha-1}$</td></tr>
+          <tr><td>S-P Pareto$(\alpha,\theta)$</td><td>$\frac{\alpha\theta}{\alpha-1}$</td><td>Pareto$(\alpha,\,d)$</td><td>$\frac{d}{\alpha-1}$</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Limited expected value $E[X \wedge u]$ — your master tool</h3>
+      <p>The mean of the limited loss variable is</p>
+      <div class="formula">$$ E[X \wedge u] = \int_0^u x\,f_X(x)\,dx + u\,S_X(u) = \int_0^u S_X(x)\,dx \quad\text{(for } X \ge 0\text{)}. $$</div>
+      <p>Almost every coverage-modification expectation can be written as a difference of LEVs. The key identity:</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The identity that powers the whole topic</div>
+        $$ E[(X-d)_+] = E[X] - E[X \wedge d]. $$
+        <p>So the <strong>expected cost per loss with deductible $d$</strong> equals $E[X] - E[X\wedge d]$. With a policy limit too (see below), everything becomes $E[X\wedge \cdot] - E[X\wedge \cdot]$. This first-moment shortcut is recommended because the exam table gives $E[X]$ and $E[X\wedge u]$ for almost every distribution.</p>
+      </div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The shortcut fails for higher moments</div>
+        <p>$E[(X-d)_+]=E[X]-E[X\wedge d]$ is a <strong>first-moment-only</strong> trick. For the second moment, $E[(X-d)_+^2] \ne E[X^2]-E[(X\wedge d)^2]$ — the algebra leaves a cross term. When you need a variance, go back to <strong>first principles</strong> $E[(X-d)_+^k]=\int_d^\infty (x-d)^k f(x)\,dx = \int_d^\infty k(x-d)^{k-1}S(x)\,dx$.</p>
+      </div>
+
+      <h3>Increased Limit Factor (ILF)</h3>
+      <p>The <strong>increased limit factor</strong> measures how much more the insurer expects to pay if the policy limit is raised from $b$ to $u$. An ILF of $1.10$ means "expect to pay 10% more."</p>
+      <div class="formula"><span class="formula-label">ILF</span>$$ \mathrm{ILF} = \frac{E[X\wedge u]}{E[X\wedge b]}, \qquad b = \text{original limit},\ u = \text{increased limit}. $$</div>
+
+      <h3>Policy limit vs. maximum covered loss $m$</h3>
+      <p>A common point of confusion. Let $m$ be the <strong>maximum covered loss</strong> — the smallest ground-up loss at which the insurer hits the policy limit (above $m$, extra loss buys no extra payment). With deductible $d$, policy limit $u$, and coinsurance $\alpha$:</p>
+      <div class="formula"><span class="formula-label">Maximum covered loss</span>$$ m = \frac{u}{\alpha} + d. $$</div>
+      <ul>
+        <li>Limit only: $m = u$.</li>
+        <li>Limit + deductible (no coinsurance): $m = u + d$.</li>
+        <li>Limit + deductible + coinsurance: $m = \dfrac{u}{\alpha} + d$.</li>
+      </ul>
+      <p>In the formulas, the upper LEV is taken at the <strong>maximum covered loss $m$</strong>, <em>not</em> the policy limit. Many students mis-plug here.</p>
+
+      <h3>Coinsurance $\alpha$ — and "before vs. after" the deductible</h3>
+      <p>A <strong>coinsurance factor</strong> $\alpha$ ($0 < \alpha \le 1$) is the proportion of the (modified) loss the insurer pays; the policyholder pays $(1-\alpha)X$. It multiplies the whole payment. With <em>only</em> coinsurance, $E[\alpha X] = \alpha E[X]$.</p>
+      <p>When coinsurance accompanies a deductible, there are two conventions:</p>
+      <ul>
+        <li><strong>After the deductible (default):</strong> the policyholder pays the first $d$, then shares the excess. $Y^L = \alpha(X-d)_+$ and $E[Y^L]=\alpha\big(E[X]-E[X\wedge d]\big)$.</li>
+        <li><strong>Before the deductible (rare, must be stated):</strong> only the coinsured portion $\alpha X$ counts toward the deductible, so the deductible is met when $\alpha X = d$, i.e. at the loss $d^\ast = d/\alpha$. Just replace $d$ by $d^\ast = d/\alpha$ and solve exactly as the "after" case.</li>
+      </ul>
+      <div class="formula"><span class="formula-label">Coinsurance before deductible</span>$$ d^\ast = \frac{d}{\alpha}, \qquad E[Y^L] = \alpha\big(E[X] - E[X\wedge d^\ast]\big). $$</div>
+
+      <h3>Inflation $(1+r)$</h3>
+      <p>Inflation by rate $r$ scales the <strong>ground-up loss before any provisions</strong>: losses become $(1+r)X$. Because deductibles and limits are fixed dollar amounts, inflation does <strong>not</strong> scale them — it effectively makes the (fixed) deductible and limit "smaller" relative to losses. The standard identity:</p>
+      <div class="formula">$$ E\big[(1+r)X \wedge u\big] = (1+r)\,E\!\left[X \wedge \frac{u}{1+r}\right]. $$</div>
+      <p>The threshold gets divided by $(1+r)$ inside the LEV; the factor $(1+r)$ comes outside. Equivalently, if $X$ belongs to a <strong>scale family</strong> (e.g. Pareto, exponential, single-parameter Pareto), inflate by scaling the scale parameter: $\theta^\ast=(1+r)\theta$.</p>
+
+      <h3>Loss Elimination Ratio (LER)</h3>
+      <p>The <strong>LER</strong> measures the fraction of expected ground-up loss that is <em>eliminated</em> (no longer paid by the insurer) by introducing a deductible $d$:</p>
+      <div class="formula">$$ \mathrm{LER}(d) = \frac{E[X \wedge d]}{E[X]} = \frac{E[X] - E[(X-d)_+]}{E[X]}. $$</div>
+      <p>It ranges from $0$ (no deductible) to $1$ (deductible so large nothing is ever paid). A <strong>generalized LER</strong> handles any modification (limit, coinsurance, franchise): if $E[Y]$ is the expected insurer payment under the modification, then</p>
+      <div class="formula"><span class="formula-label">Generalized LER</span>$$ \mathrm{LER} = \frac{E[X] - E[Y]}{E[X]}. $$</div>
+
+      <h3>Franchise deductible</h3>
+      <p>A <strong>franchise deductible</strong> $d$ (a "cliff disappearing deductible") pays <strong>nothing</strong> if $X \le d$, but pays the <strong>full loss $X$</strong> (not $X-d$) once $X > d$:</p>
+      <div class="formula">$$ Y^L_{\text{franchise}} = \begin{cases} 0 & X \le d \\ X & X > d \end{cases} $$</div>
+      <p>Compared to the ordinary deductible, the franchise pays an <em>extra</em> $d$ on every payment. Hence (per payment, this is just $e(d)+d$):</p>
+      <div class="formula">$$ E[Y^L_{\text{fr}}] = E[(X-d)_+] + d\,S_X(d), \qquad E[Y^P_{\text{fr}}] = \frac{E[(X-d)_+]}{S_X(d)} + d = e(d)+d. $$</div>
+
+      <h3>Other deductible flavours (qualitative — know the effective deductible)</h3>
+      <p>The exam math centres on ordinary and franchise deductibles, but the syllabus also defines several others. For each, the trick is to find the <strong>effective deductible</strong> $D$, then the insurer pays $X - D$.</p>
+      <ul>
+        <li><strong>Fixed-dollar (ordinary):</strong> $D=d$ regardless of loss size; pay $\max(0,X-d)$.</li>
+        <li><strong>Fixed-percentage</strong> ($100\delta\%$ of loss, floor $d$): effective deductible $D=\max(d,\delta X)$. Payment $=0$ for $X\le d$; $X-d$ for $d\lt X\le d/\delta$; $(1-\delta)X$ for $X>d/\delta$.</li>
+        <li><strong>Disappearing</strong> (shrinks linearly from $d$ to $0$ as loss runs from $a$ to $b$, with $d\le a\lt b$): $D = d\cdot\frac{b-X}{b-a}$ on $a\lt X\le b$; $D=d$ below $a$; $D=0$ above $b$. Solve for $D$ by linear interpolation.</li>
+        <li><strong>Fixed-dollar per calendar year</strong> (health): a per-person amount and a per-family amount; coverage starts once <em>either</em> is met.</li>
+        <li><strong>Elimination period</strong> (disability): no benefit during a waiting period; if the disability lasts past the <em>retroactive qualification period</em> the benefit is paid back to day one — if that equals the elimination period, the policy effectively has a <strong>franchise deductible</strong>.</li>
+      </ul>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Why deductibles exist (a favourite qualitative MCQ)</div>
+        <p>Deductibles eliminate small-claim handling expense, lower average large-claim payments (cheaper premiums), and make policyholders more careful (less moral hazard); higher deductibles let buyers trade coverage for lower premium. Downsides: policyholders dislike unpaid claims, marketing gets complicated, and insureds may <em>inflate</em> claims to recover the deductible.</p>
+      </div>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols used throughout</div>
+        <ul>
+          <li>$X$ = ground-up loss ($X \ge 0$); $f_X, F_X, S_X = 1-F_X$ are its pdf, cdf, survival function.</li>
+          <li>$d$ = ordinary deductible; $u$ = policy limit; $m$ = maximum covered loss; $\alpha$ = coinsurance; $r$ = inflation rate.</li>
+          <li>$Y^L$ = per-loss payment; $Y^P$ = per-payment payment; $e(d)$ = mean excess loss.</li>
+          <li>$X \wedge u = \min(X,u)$; $(X-d)_+ = \max(X-d,0)$.</li>
+          <li>Set $d=0$ (no deductible), $u=\infty$ (no limit), $\alpha=1$ (no coinsurance), $r=0$ (no inflation). Note $E[X\wedge\infty]=E[X]$ and $E[X\wedge 0]=0$.</li>
+        </ul>
+      </div>
+
+      <h3>Limited expected value (and discrete form)</h3>
+      <div class="formula">
+        $$ E[X \wedge u] = \int_0^u x\,f_X(x)\,dx + u\,S_X(u) = \int_0^u S_X(x)\,dx. $$
+        $$ E[(X \wedge u)^k] = \int_0^u x^k f_X(x)\,dx + u^k S_X(u) = \int_0^u k\,x^{k-1}S_X(x)\,dx. $$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — discrete / empirical losses</div>
+        <p>If $X$ is discrete, swap integrals for sums: $E[(X\wedge u)^k]=\sum_{x\le u} x^k p(x) + u^k S(u)$. For an empirical sample of $n$ losses, $E[X\wedge u]=\frac1n\sum_{i=1}^n (x_i\wedge u)$ — just cap every observation at $u$ and average.</p>
+      </div>
+
+      <h3>Deductible only (ordinary)</h3>
+      <div class="formula">
+        $$ \boxed{E[Y^L] = E[(X-d)_+] = E[X] - E[X\wedge d]} $$
+        $$ \boxed{E[Y^P] = e(d) = \frac{E[X]-E[X\wedge d]}{S_X(d)}} $$
+      </div>
+
+      <h3>Deductible + limit (no coinsurance, no inflation)</h3>
+      <p>Payment per loss $= (X\wedge m) - (X \wedge d)$ with $m = u+d$. Therefore:</p>
+      <div class="formula">
+        $$ E[Y^L] = E[X\wedge m] - E[X\wedge d], \qquad E[Y^P] = \frac{E[X\wedge m] - E[X\wedge d]}{S_X(d)}. $$
+      </div>
+
+      <h3>The Ultimate Formula — deductible, limit, coinsurance, inflation</h3>
+      <p>Apply provisions in this <strong>order</strong>: (1) inflate the loss, (2) deductible, (3) limit/censor at $m$, (4) coinsurance. The expected cost <strong>per loss</strong> is</p>
+      <div class="formula"><span class="formula-label">Ultimate Formula (per loss)</span>
+        $$ \boxed{\,E[Y^L] = \alpha(1+r)\left[\,E\!\left[X \wedge \tfrac{m}{1+r}\right] - E\!\left[X \wedge \tfrac{d}{1+r}\right]\right]\,}, \qquad m = \frac{u}{\alpha}+d. $$
+      </div>
+      <p>and the expected cost <strong>per payment</strong> divides by the probability that a payment occurs, $S_X\!\left(\tfrac{d}{1+r}\right)$:</p>
+      <div class="formula"><span class="formula-label">Ultimate Formula (per payment)</span>
+        $$ \boxed{\,E[Y^P] = \frac{\alpha(1+r)\left[\,E\!\left[X \wedge \tfrac{m}{1+r}\right] - E\!\left[X \wedge \tfrac{d}{1+r}\right]\right]}{S_X\!\left(\tfrac{d}{1+r}\right)}\,} $$
+      </div>
+      <p>Here $d/(1+r)$ and $m/(1+r)$ are the deductible and maximum covered loss expressed in <em>pre-inflation</em> loss units.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Two exceptions to the Ultimate Formula</div>
+        <ul>
+          <li><strong>Franchise deductible:</strong> the maximum covered loss drops to $m=u/\alpha$ (not $+d$, since the full loss is paid), and you must add back $\alpha\cdot d\cdot S_X\!\big(\tfrac{d}{1+r}\big)$.</li>
+          <li><strong>Coinsurance before the deductible:</strong> replace $d$ with $d/\alpha$ everywhere.</li>
+        </ul>
+      </div>
+
+      <h3>Second moment and variance (per loss, with $d, u, \alpha, r$)</h3>
+      <p>Let $\tilde d = d/(1+r)$, $\tilde m = m/(1+r)$. Then</p>
+      <div class="formula">
+        $$ E[(Y^L)^2] = \alpha^2 (1+r)^2 \Big( E[(X\wedge \tilde m)^2] - E[(X\wedge \tilde d)^2] - 2\tilde d\big(E[X\wedge \tilde m]-E[X\wedge \tilde d]\big)\Big). $$
+        $$ \mathrm{Var}(Y^L) = E[(Y^L)^2] - \big(E[Y^L]\big)^2. $$
+      </div>
+      <p>For the <strong>per-payment</strong> moments, divide each per-loss moment by $S_X(\tilde d)$ before taking the variance:</p>
+      <div class="formula">
+        $$ E[(Y^P)^k] = \frac{E[(Y^L)^k]}{S_X(\tilde d)}, \qquad \mathrm{Var}(Y^P) = E[(Y^P)^2] - \big(E[Y^P]\big)^2. $$
+      </div>
+
+      <h3>LER, ILF, and franchise</h3>
+      <div class="formula">
+        $$ \mathrm{LER}(d) = \frac{E[X\wedge d]}{E[X]}, \qquad \mathrm{ILF} = \frac{E[X\wedge u]}{E[X\wedge b]}. $$
+        $$ E[Y^L_{\text{fr}}] = E[(X-d)_+] + d\,S_X(d), \qquad E[Y^P_{\text{fr}}] = e(d) + d. $$
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Per-loss vs. per-payment with an exponential severity <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses $X$ are exponential with mean $\theta = 1000$, so $S_X(x)=e^{-x/1000}$. A policy has an ordinary deductible $d = 500$. Find (a) the expected cost per loss, (b) the expected cost per payment.</p>
+          <p><strong>Step 1 — LEV of an exponential.</strong> For $X\sim$ Exponential($\theta$),</p>
+          $$ E[X\wedge d] = \theta\left(1 - e^{-d/\theta}\right). $$
+          <p>With $\theta=1000,\ d=500$: $E[X\wedge 500] = 1000(1-e^{-0.5}) = 1000(1-0.606531) = 393.469.$</p>
+          <p><strong>Step 2 — Expected cost per loss.</strong></p>
+          $$ E[Y^L] = E[X]-E[X\wedge d] = 1000 - 393.469 = 606.531. $$
+          <p>(Sanity check: for an exponential, the memoryless property gives $E[(X-d)_+] = \theta e^{-d/\theta} = 1000 e^{-0.5} = 606.531.$ ✓)</p>
+          <p><strong>Step 3 — Expected cost per payment.</strong> Divide by $S_X(500)=e^{-0.5}=0.606531$:</p>
+          $$ E[Y^P] = e(500) = \frac{606.531}{0.606531} = 1000. $$
+          <p>(Memoryless property: the conditional excess of an exponential is again Exponential($\theta$), mean $1000$. ✓)</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[Y^L] = \mathbf{606.53}$, $E[Y^P] = \mathbf{1000}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Policy limit and the Increased Limit Factor (Pareto) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Medical claim sizes follow Pareto$(\alpha=5,\ \theta=1000)$. The exam-table LEV is $E[X\wedge u]=\frac{\theta}{\alpha-1}\left[1-\left(\frac{\theta}{u+\theta}\right)^{\alpha-1}\right]$.<br>(a) Find the expected payment under a policy limit of $500$. (b) The insurer considers raising the limit from $500$ to $800$; find the increased limit factor.</p>
+          <p><strong>Step 1 — (a) LEV at 500.</strong></p>
+          $$ E[X\wedge 500] = \frac{1000}{4}\left[1-\left(\frac{1000}{1500}\right)^{4}\right] = 250\big(1-0.197531\big) = 200.62. $$
+          <p><strong>Step 2 — LEV at 800.</strong></p>
+          $$ E[X\wedge 800] = 250\left[1-\left(\frac{1000}{1800}\right)^{4}\right] = 250\big(1-0.095260\big) = 226.19. $$
+          <p><strong>Step 3 — (b) ILF.</strong></p>
+          $$ \mathrm{ILF} = \frac{E[X\wedge 800]}{E[X\wedge 500]} = \frac{226.19}{200.62} = 1.1274. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $E[X\wedge 500] = \mathbf{200.62}$. (b) $\mathrm{ILF}=\mathbf{1.1274}$ — the insurer expects to pay about 12.74% more per claim.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Deductible + limit + coinsurance, exponential severity <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses are exponential with mean $1000$. Each claim has an ordinary deductible of $200$; the policy reimburses $80\%$ of the excess; and the payment is capped at $2000$. Find the expected payment per loss. (No inflation.)</p>
+          <p><strong>Step 1 — Maximum covered loss.</strong> With $u=2000,\ d=200,\ \alpha=0.8$,</p>
+          $$ m = \frac{u}{\alpha}+d = \frac{2000}{0.8}+200 = 2700. $$
+          <p><strong>Step 2 — LEVs</strong> ($E[X\wedge u]=\theta(1-e^{-u/\theta})$):</p>
+          $$ E[X\wedge 2700] = 1000(1-e^{-2.7}) = 932.79, \qquad E[X\wedge 200] = 1000(1-e^{-0.2}) = 181.27. $$
+          <p><strong>Step 3 — Ultimate Formula (no inflation).</strong></p>
+          $$ E[Y^L] = \alpha\big(E[X\wedge m]-E[X\wedge d]\big) = 0.8(932.79 - 181.27) = 601.22. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Expected payment per loss $= \mathbf{601.22}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Full combination: deductible, limit, coinsurance, inflation (uniform) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Ground-up losses $X$ are uniform on $[0, 10000]$. Next year a policy has deductible $d = 1000$, maximum covered loss $m = 8000$, coinsurance $\alpha = 0.80$ (so policy limit $u=\alpha(m-d)=5600$), and losses inflate by $r = 0.05$. Find the expected cost <strong>per loss</strong>.</p>
+          <p><strong>Step 1 — Pre-inflation thresholds.</strong></p>
+          $$ \tilde d = \frac{1000}{1.05} = 952.381, \qquad \tilde m = \frac{8000}{1.05} = 7619.048. $$
+          <p><strong>Step 2 — LEV of a uniform $(0,b)$.</strong> For $X\sim U(0,b)$ with $b=10000$,</p>
+          $$ E[X\wedge t] = t - \frac{t^2}{2b}, \quad 0\le t \le b. $$
+          $$ E[X\wedge \tilde m] = 7619.048 - \frac{7619.048^2}{20000} = 7619.048 - 2902.494 = 4716.554. $$
+          $$ E[X\wedge \tilde d] = 952.381 - \frac{952.381^2}{20000} = 952.381 - 45.351 = 907.030. $$
+          <p><strong>Step 3 — Ultimate Formula.</strong></p>
+          $$ E[Y^L] = \alpha(1+r)\big(E[X\wedge\tilde m] - E[X\wedge \tilde d]\big) = 0.80(1.05)(4716.554 - 907.030) = 0.84 \times 3809.524 = 3200.00. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Expected cost per loss $= \mathbf{3200.00}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Loss Elimination Ratio and a franchise deductible comparison (Pareto) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses $X$ follow a Pareto distribution with $\alpha = 3$, $\theta = 2000$ (so $S_X(x) = \left(\frac{2000}{x+2000}\right)^3$). A deductible $d = 1000$ is introduced.<br>(a) Find the LER. (b) Find the expected cost per <strong>payment</strong> under an <em>ordinary</em> deductible. (c) Find the expected cost per <strong>payment</strong> under a <em>franchise</em> deductible.</p>
+          <p><strong>Step 1 — Pareto moments.</strong> Mean: $E[X] = \dfrac{\theta}{\alpha-1} = \dfrac{2000}{2} = 1000.$ Limited expected value:</p>
+          $$ E[X\wedge d] = \frac{\theta}{\alpha-1}\left[1 - \left(\frac{\theta}{d+\theta}\right)^{\alpha-1}\right]. $$
+          $$ \frac{\theta}{d+\theta} = \frac{2000}{3000} = 0.66667, \quad (0.66667)^{2} = 0.44444, \quad E[X\wedge 1000] = 1000(1 - 0.44444) = 555.556. $$
+          <p><strong>Step 2 — (a) LER.</strong> $\mathrm{LER}(1000) = \dfrac{555.556}{1000} = \mathbf{0.5556}$ (about 55.6% of expected loss eliminated).</p>
+          <p><strong>Step 3 — (b) Ordinary, per payment.</strong> $E[(X-d)_+] = 1000 - 555.556 = 444.444$; $S_X(1000) = (0.66667)^3 = 0.296296$. Or use the excess-loss shortcut $e(d)=\frac{\theta+d}{\alpha-1}=\frac{3000}{2}=1500$:</p>
+          $$ E[Y^P_{\text{ord}}] = e(1000) = \frac{444.444}{0.296296} = 1500.00. $$
+          <p><strong>Step 4 — (c) Franchise, per payment.</strong> Franchise adds $d=1000$:</p>
+          $$ E[Y^P_{\text{fr}}] = e(d) + d = 1500.00 + 1000 = 2500.00. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answers</div>(a) $\mathbf{0.5556}$ · (b) ordinary $\mathbf{1500.00}$ · (c) franchise $\mathbf{2500.00}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Variance of $Y^P$ from first principles (uniform, deductible + limit) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses have survival function $S(x) = 1-\frac{x}{200}$ on $0\le x\le 200$ (so $X\sim U(0,200)$). A policy has deductible $20$ and maximum covered loss $100$ (policy limit $u=m-d=80$). Find $\mathrm{Var}[Y^P]$.</p>
+          <p><strong>Step 1 — payment-per-loss variable.</strong></p>
+          $$ Y^L = \begin{cases} 0 & X\le 20 \\ X-20 & 20\lt X<100 \\ 80 & X\ge 100 \end{cases} $$
+          <p><strong>Step 2 — first two moments of $Y^L$</strong> (first principles, $f(x)=1/200$, $S(100)=0.5$):</p>
+          $$ E[Y^L] = \int_{20}^{100}(x-20)\tfrac{1}{200}\,dx + 80\,S(100) = \frac{(x-20)^2}{400}\Big|_{20}^{100} + 80(0.5) = 16 + 40 = 56. $$
+          $$ E[(Y^L)^2] = \int_{20}^{100}(x-20)^2\tfrac{1}{200}\,dx + 80^2 S(100) = \frac{(x-20)^3}{600}\Big|_{20}^{100} + 6400(0.5) = 853.333 + 3200 = 4053.333. $$
+          <p><strong>Step 3 — convert to per payment</strong> using $S(d)=S(20)=1-\frac{20}{200}=0.9$:</p>
+          $$ E[Y^P] = \frac{56}{0.9} = 62.2222, \qquad E[(Y^P)^2] = \frac{4053.333}{0.9} = 4503.7037. $$
+          <p><strong>Step 4 — variance.</strong></p>
+          $$ \mathrm{Var}[Y^P] = 4503.7037 - (62.2222)^2 = 632.10. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\mathrm{Var}[Y^P] = \mathbf{632.10}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> A bonus question: define the payment variable, then it's just LEVs <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An agent earns a bonus equal to $15\%$ of the amount by which the year's total incurred losses fall below $500$; nothing if losses reach $500$. Total losses $X\sim$ Pareto$(\alpha=3,\ \theta=400)$. Find the expected bonus.</p>
+          <p><strong>Step 1 — define the bonus variable.</strong> This is a deductible "from above" — a $(d-X)_+$ structure:</p>
+          $$ B = 0.15(500-X)_+ = \begin{cases} 0.15(500-X) & X<500 \\ 0 & X\ge 500 \end{cases}. $$
+          <p><strong>Step 2 — rewrite via LEV.</strong> Since $(500-X)_+ = 500 - (X\wedge 500)$,</p>
+          $$ E[B] = 0.15\big(500 - E[X\wedge 500]\big). $$
+          <p><strong>Step 3 — Pareto LEV.</strong></p>
+          $$ E[X\wedge 500] = \frac{400}{3-1}\left[1-\left(\frac{400}{500+400}\right)^{2}\right] = 200\big(1-0.197531\big) = 160.49. $$
+          $$ E[B] = 0.15(500 - 160.49) = 50.93. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Expected bonus $= \mathbf{50.93}$. (Any "bonus" payoff reduces to defining the variable, then computing $E[X\wedge\cdot]$.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Disappearing deductible — find the effective deductible <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A policy has a linearly disappearing deductible. Observed claims give: $200\to$ pays $0$; $750\to 600$; $900\to 800$; $1300\to 1300$. Find the payment for a claim of $1000$.</p>
+          <p><strong>Step 1 — back out effective deductibles</strong> ($D = X - \text{payment}$): $750\to D=150$; $900\to D=100$; $1300\to D=0$.</p>
+          <p><strong>Step 2 — find the upper bound $b$</strong> where $D$ hits $0$, using the slope between the two interior points:</p>
+          $$ \frac{900-750}{100-150} = -3 = \frac{b-900}{0-100} \;\Rightarrow\; b - 900 = 300 \;\Rightarrow\; b = 1200. $$
+          <p>Since $1000 < 1200$, the claim is still in the disappearing range.</p>
+          <p><strong>Step 3 — interpolate $D$ at $X=1000$.</strong></p>
+          $$ \frac{D-100}{1000-900} = -3 \;\Rightarrow\; D - 100 = -33.333 \;\Rightarrow\; D = 66.667. $$
+          <p><strong>Step 4 — payment.</strong> $Y = 1000 - 66.667 = 933.33$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Payment $= \mathbf{933.33}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Replace a policy limit with an equivalent coinsurance $c$ (Gamma LEV via the Poisson shortcut) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses $X\sim$ Gamma$(\alpha=2,\ \theta=100)$. The current policy has a <strong>policy limit of $250$</strong>. The insurer wants to drop the limit and instead pay a fixed proportion $c$ of <em>every</em> loss (coinsurance, no limit), keeping the expected cost unchanged. Find $c$.</p>
+          <p><strong>Step 1 — equate the two expected costs.</strong> Limit-only is $E[X\wedge 250]$; coinsurance-only is $c\,E[X]$. Setting them equal,</p>
+          $$ c\,E[X] = E[X\wedge 250] \;\Longrightarrow\; c = \frac{E[X\wedge 250]}{E[X]}. $$
+          <p><strong>Step 2 — the easy piece.</strong> For Gamma$(\alpha,\theta)$, $E[X]=\alpha\theta = 2(100) = 200.$</p>
+          <p><strong>Step 3 — the Gamma LEV.</strong> The exam-table formula (with $k=1$) is</p>
+          $$ E[X\wedge u] = \alpha\theta\,\Gamma(\alpha+1;\,u/\theta) + u\big[1-\Gamma(\alpha;\,u/\theta)\big]. $$
+          $$ E[X\wedge 250] = 2(100)\,\Gamma(3;\,2.5) + 250\big[1-\Gamma(2;\,2.5)\big], \qquad \frac{u}{\theta}=\frac{250}{100}=2.5. $$
+          <p><strong>Step 4 — evaluate the incomplete gammas with the Poisson shortcut.</strong> For integer first argument $k$, $\Gamma(k;\lambda) = 1 - \Pr(N\lt k)$ where $N\sim$ Poisson$(\lambda)$. Here $\lambda = 2.5$:</p>
+          $$ \Gamma(3;2.5) = 1-\Pr(N\lt 3) = 1-e^{-2.5}\!\left(1+2.5+\tfrac{2.5^2}{2}\right) = 1-e^{-2.5}(6.625) = 0.4562. $$
+          $$ \Gamma(2;2.5) = 1-\Pr(N\lt 2) = 1-e^{-2.5}\!\left(1+2.5\right) = 1-e^{-2.5}(3.5) = 0.7127. $$
+          <p><strong>Step 5 — assemble the LEV and solve.</strong></p>
+          $$ E[X\wedge 250] = 200(0.4562) + 250(1-0.7127) = 91.24 + 71.82 \approx 163. $$
+          $$ c = \frac{163}{200} \approx 0.815. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$c \approx \mathbf{81.5\%}$. A coinsurance of about $0.815$ on every loss costs the insurer the same as the original $250$ limit.</div>
+          <div class="callout note" data-icon="🧾"><div class="callout-title">Don't memorize, recognize</div><p>The Poisson shortcut $\Gamma(k;\lambda)=1-\Pr(N\lt k)$ only works when the first argument is a <strong>positive integer</strong> — which it is whenever $\alpha$ (or $\alpha+1$) is a whole number, the usual exam case. Otherwise integrate the Gamma pdf by parts. And note $\Gamma(\alpha;u/\theta)$ here is the <em>cdf</em>-style incomplete gamma the exam table uses, so $1-\Gamma(\alpha;u/\theta)$ is the survival weight on the limit $u$.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Equate two options under inflation — deflate the argument <em>before</em> the table lookup <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>This year's losses follow a distribution tabulated only at the points below. A policy has an ordinary deductible of $600$. Losses next year are $20\%$ higher ($r=0.2$). The insurer will add <em>either</em> a policy limit of $3{,}000$ <em>or</em> a coinsurance $\alpha$. Find the $\alpha$ that makes the two options cost the same expected payment per loss next year.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>$F(x)$</th><th>$E[X\wedge x]$</th></tr></thead>
+            <tbody>
+              <tr><td>$500$</td><td>$0.44$</td><td>$375$</td></tr>
+              <tr><td>$600$</td><td>$0.49$</td><td>$429$</td></tr>
+              <tr><td>$1{,}800$</td><td>$0.79$</td><td>$818$</td></tr>
+              <tr><td>$2{,}415$</td><td>$0.85$</td><td>$925$</td></tr>
+              <tr><td>$3{,}000$</td><td>$0.89$</td><td>$1{,}000$</td></tr>
+              <tr><td>$4{,}350$</td><td>$0.93$</td><td>$1{,}115$</td></tr>
+              <tr><td>$\infty$</td><td>$1.00$</td><td>$1{,}500$</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 1 — Ultimate Formula with inflation.</strong> $E[Y^L]=\alpha(1+r)\big(E[X\wedge \tfrac{m}{1+r}]-E[X\wedge \tfrac{d}{1+r}]\big)$. The table is in <em>this year's</em> units, so we must <strong>deflate every argument by $1.2$ before looking it up</strong>.</p>
+          <p><strong>Step 2 — Option A (policy limit $3{,}000$).</strong> Here $u=3000,\ d=600,\ \alpha=1$, so $m=u+d=3{,}600$. Deflate:</p>
+          $$ \frac{m}{1.2}=\frac{3600}{1.2}=3000, \qquad \frac{d}{1.2}=\frac{600}{1.2}=500. $$
+          <p>Now the arguments land exactly on table rows — that is the point of deflating first:</p>
+          $$ E[Y^L_A] = 1.2\big(E[X\wedge 3000]-E[X\wedge 500]\big) = 1.2(1000-375) = 1.2(625) = 750. $$
+          <p><strong>Step 3 — Option B (coinsurance $\alpha$, no limit).</strong> Here $u=\infty$ so $m=\infty$; $d=600,\ \alpha=\alpha$. Deflate: $\tfrac{m}{1.2}=\infty$ (use $E[X\wedge\infty]=E[X]=1500$) and $\tfrac{d}{1.2}=500$:</p>
+          $$ E[Y^L_B] = \alpha(1.2)\big(E[X]-E[X\wedge 500]\big) = \alpha(1.2)(1500-375) = 1{,}350\,\alpha. $$
+          <p><strong>Step 4 — equate and solve.</strong></p>
+          $$ 750 = 1{,}350\,\alpha \;\Longrightarrow\; \alpha = \frac{750}{1350} = 0.5556. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\alpha \approx \mathbf{0.5556}$.</div>
+          <div class="callout trap" data-icon="⚠️"><div class="callout-title">Deflate the argument, never the table value</div><p>The exam's whole trap here is that $E[X\wedge 3600/1.2]=E[X\wedge 3000]$ — you divide the <em>threshold</em> by $(1+r)$ <strong>before</strong> the lookup, and the lone $(1+r)$ stays outside. If you had blindly read $E[X\wedge 3600]$ (not even a table row) or scaled a table value by $1.2$ inside the bracket, you'd be wrong. Deflate first, look up second.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> LEV by integrating $S(x)$ — a non-table mixed-exponential severity <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Auto claim amounts follow a distribution that is <em>not</em> on the exam table, with CDF</p>
+          $$ F(x) = 1 - 0.6\,e^{-0.01x} - 0.4\,e^{-0.002x}, \qquad x \ge 0. $$
+          <p>(a two-point mixture of exponentials with means $100$ and $500$). The policy has a limit of $200$. Find the expected payment per claim, $E[X\wedge 200]$.</p>
+          <p><strong>Step 1 — write the survival function.</strong> Since $S=1-F$,</p>
+          $$ S(x) = 0.6\,e^{-0.01x} + 0.4\,e^{-0.002x}. $$
+          <p><strong>Step 2 — use the survival-function LEV</strong> (cleaner than $\int x f\,dx + uS(u)$ because there's no table entry to borrow):</p>
+          $$ E[X\wedge 200] = \int_0^{200} S(x)\,dx = \int_0^{200}\big(0.6\,e^{-0.01x} + 0.4\,e^{-0.002x}\big)\,dx. $$
+          <p><strong>Step 3 — integrate term by term</strong> ($\int_0^u e^{-cx}\,dx = \tfrac{1}{c}(1-e^{-cu})$, or carry the antiderivative $-\tfrac{1}{c}e^{-cx}$):</p>
+          $$ \int_0^{200} S(x)\,dx = \left[-\frac{0.6}{0.01}e^{-0.01x} - \frac{0.4}{0.002}e^{-0.002x}\right]_0^{200} = \Big[-60\,e^{-0.01x} - 200\,e^{-0.002x}\Big]_0^{200}. $$
+          <p><strong>Step 4 — evaluate at the endpoints</strong> ($e^{-2}=0.135335,\ e^{-0.4}=0.670320$):</p>
+          $$ = \big(-60\,e^{-2} - 200\,e^{-0.4}\big) - \big(-60 - 200\big) = (-8.120 - 134.064) + 260 = 117.82. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[X\wedge 200] = \mathbf{117.82}$.</div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">When to reach for $\int_0^u S(x)\,dx$</div><p>Whenever the distribution is off-table (a mixture, a spliced model, a bare survival function), the survival-function form turns the LEV into one easy integral — no need to find $f(x)$, no separate $u\,S(u)$ tail term to add. For sums/mixtures of exponentials it is almost always the fastest route.</p></div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ol>
+          <li><strong>Confusing maximum covered loss $m$ with the policy limit.</strong> The upper LEV is taken at $m = \frac{u}{\alpha}+d$, <strong>not</strong> at $u$. If given the policy limit, build $m$ first ($m=u+d$ when $\alpha=1$; $m=u$ when there's no deductible). "Many students make this mistake" — don't be one.</li>
+          <li><strong>Dividing by the wrong survival probability.</strong> $E[Y^P] = E[Y^L]/S_X(d)$. With inflation the divisor is $S_X\big(\tfrac{d}{1+r}\big)$ — evaluated at the <em>deflated</em> deductible. Also remember $E[Y^P]=\int_d^\infty (x-d)\frac{f(x)}{S(d)}dx$ uses the <em>conditional</em> pdf; $\int_d^\infty(x-d)f(x)\,dx$ is $E[Y^L]$, not $E[Y^P]$.</li>
+          <li><strong>Applying provisions in the wrong order.</strong> Inflate, then deductible, then limit, then coinsurance. $\alpha$ and $(1+r)$ multiply <em>outside</em> the bracketed LEV difference; $d$ and $m$ get <em>divided</em> by $(1+r)$ inside.</li>
+          <li><strong>Scaling the deductible/limit by inflation.</strong> Deductibles and limits are fixed contract dollars — only $X$ inflates. The $(1+r)$ moves outward and the thresholds get divided.</li>
+          <li><strong>Using $E[Y^P]$ where $E[Y^L]$ belongs in aggregate calculations.</strong> Aggregate loss = (frequency of <em>losses</em>) × severity uses $E[Y^L]$. Use $E[Y^P]$ only when frequency counts <em>payments</em>.</li>
+          <li><strong>First-moment shortcut on higher moments.</strong> $E[(X-d)_+^2] \ne E[X^2]-E[(X\wedge d)^2]$ (a cross term survives). For variances use first principles or the $-2\tilde d(\cdots)$ cross term in $E[(Y^L)^2]$.</li>
+          <li><strong>Variance shortcuts that don't exist.</strong> $\mathrm{Var}(Y^P) \ne \mathrm{Var}(Y^L)/S_X(d)$. Compute $E[(Y^P)^2] = E[(Y^L)^2]/S_X(d)$ first, then subtract $(E[Y^P])^2$. Coinsurance contributes $\alpha^2$ to second moments, not $\alpha$.</li>
+          <li><strong>Franchise deductible: forgetting the extra $d$.</strong> Per payment it is exactly $d$ more than ordinary ($e(d)+d$); per loss it is $E[(X-d)_+] + d\,S_X(d)$. And in the Ultimate Formula its $m=u/\alpha$ (no $+d$).</li>
+          <li><strong>Coinsurance before vs. after the deductible.</strong> "After" is the default. If the question says coinsurance applies <em>before</em>, replace $d$ by $d^\ast=d/\alpha$ — the deductible isn't met until $\alpha X = d$.</li>
+          <li><strong>Forgetting the exam-table excess-loss shortcuts.</strong> For Exponential/Pareto, $e(d)$ has a closed form (memoryless $\theta$; Pareto $\frac{\theta+d}{\alpha-1}$) — far faster than integrating, and it <em>is</em> the per-payment ordinary mean.</li>
+        </ol>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Write down two expressions for the expected payment when a policy limit $u$ applies.</summary>
+        <div class="qa-answer">$E[X\wedge u] = \int_0^u x f(x)\,dx + u\,S(u) = \int_0^u S(x)\,dx.$ The second (survival-function) form is usually the faster integral.</div>
+      </details>
+      <details class="qa"><summary>What is an increased limit factor, and how is it calculated? If $E[X\wedge 500]=200.62$ and $E[X\wedge 800]=226.19$, find the ILF.</summary>
+        <div class="qa-answer">The ILF is the ratio of expected payments at the new vs. old limit: $\mathrm{ILF}=\frac{E[X\wedge u]}{E[X\wedge b]}$. Here $\mathrm{ILF}=226.19/200.62=\mathbf{1.1274}$ — about 12.74% more expected payment.</div>
+      </details>
+      <details class="qa"><summary>State the relationship between $E[Y^L]$ and $E[Y^P]$ for an ordinary deductible $d$, and explain why $E[Y^P]$ is always at least as large.</summary>
+        <div class="qa-answer">$E[Y^P] = E[Y^L]/S_X(d)$. Since $0 < S_X(d) \le 1$, dividing by it can only increase (or keep equal) the value. Intuitively, $Y^P$ excludes the zero-payment losses ($X\le d$), so averaging only over actual payments raises the mean.</div>
+      </details>
+      <details class="qa"><summary>Five losses are $2,3,7,9,14$ with an ordinary deductible of $5$. Find the average payment per loss and per payment.</summary>
+        <div class="qa-answer">Payments: $0,0,2,4,9$ (total $15$). Per loss $=15/5=\mathbf{3}$. Per payment divides by the $3$ losses that actually pay: $15/3=\mathbf{5}$. Per payment $\ge$ per loss, always.</div>
+      </details>
+      <details class="qa"><summary>Define the mean excess loss $e(d)$ and connect it to the per-payment mean. For Pareto$(\alpha=2.5,\theta=100)$ with a <em>franchise</em> deductible of $50$, find the expected payment per payment.</summary>
+        <div class="qa-answer">$e(d)=E[X-d\mid X>d]=\frac{E[(X-d)_+]}{S(d)}=E[Y^P_{\text{ordinary}}]$. For Pareto, $e(d)=\frac{\theta+d}{\alpha-1}=\frac{100+50}{1.5}=100$. Franchise adds $d$: $E[Y^P_{\text{fr}}]=e(d)+d=100+50=\mathbf{150}$.</div>
+      </details>
+      <details class="qa"><summary>A policy has deductible 500 and maximum covered loss 5000. What is the policy limit (largest possible payment, ignoring coinsurance)?</summary>
+        <div class="qa-answer">With $\alpha=1$, $m=u+d$, so policy limit $u = m - d = 5000 - 500 = \mathbf{4500}$.</div>
+      </details>
+      <details class="qa"><summary>Losses are exponential with mean 2000. Compute the LER for a deductible of 1000.</summary>
+        <div class="qa-answer">$E[X\wedge 1000] = 2000(1-e^{-0.5}) = 786.939.$ $\mathrm{LER} = 786.939/2000 = \mathbf{0.3935}.$</div>
+      </details>
+      <details class="qa"><summary>With deductible $d$, limit $u$, coinsurance $\alpha$, and inflation $r$, write the expected cost per loss (the Ultimate Formula) and the maximum covered loss.</summary>
+        <div class="qa-answer">$E[Y^L] = \alpha(1+r)\Big(E\big[X\wedge \tfrac{m}{1+r}\big] - E\big[X\wedge \tfrac{d}{1+r}\big]\Big)$ with $m=\frac{u}{\alpha}+d$.</div>
+      </details>
+      <details class="qa"><summary>A question says coinsurance $\alpha=0.5$ is applied <em>before</em> a deductible of $d=300$. How do you adjust, and why?</summary>
+        <div class="qa-answer">Use $d^\ast = d/\alpha = 300/0.5 = 600$ in place of $d$, then solve as the standard "after" case. Only the coinsured portion $\alpha X$ counts toward the deductible, so the deductible is met when $\alpha X = d$, i.e. at loss $X = d/\alpha$.</div>
+      </details>
+      <details class="qa"><summary>An elimination period equals the retroactive qualification period in a disability policy. What familiar coverage modification does the policy effectively have?</summary>
+        <div class="qa-answer">A <strong>franchise deductible</strong>: pay nothing during the waiting period, but once the disability lasts past it, benefits are paid retroactively to day one — the full amount, just like a franchise pays the full loss once $X>d$.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

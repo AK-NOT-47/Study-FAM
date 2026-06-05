@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Space+Mono:wght@400;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15131b;
+    --paper:#f4ead6;
+    --cream:#fffaf0;
+    --hot:#ff2e6e;
+    --tang:#ff8a1e;
+    --sun:#ffd23f;
+    --lime:#a8e000;
+    --mint:#2ee6a8;
+    --sky:#36c5ff;
+    --grape:#8a4dff;
+    --shadow:rgba(21,19,27,.9);
+    --stick: drop-shadow(0 4px 0 rgba(21,19,27,.18));
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Bricolage Grotesque",system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,46,110,.10), transparent 30%),
+      radial-gradient(circle at 88% 14%, rgba(54,197,255,.12), transparent 30%),
+      radial-gradient(circle at 70% 92%, rgba(168,224,0,.12), transparent 32%),
+      repeating-linear-gradient(45deg, #efe2c9 0 22px, #f2e6cf 22px 44px);
+    background-attachment:fixed;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* dotted scatter texture overlay */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(rgba(21,19,27,.07) 1.4px, transparent 1.6px);
+    background-size:26px 26px;
+    mix-blend-mode:multiply;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ============ THE "LAPTOP LID" SHELL ============ */
+  .lid{
+    position:relative;z-index:1;
+    max-width:1280px;margin:26px auto;padding:26px;
+  }
+  .lid-plate{
+    position:relative;
+    background:
+      linear-gradient(150deg,#23202c,#393347 60%,#23202c);
+    border:5px solid var(--ink);
+    border-radius:34px;
+    box-shadow:
+      0 2px 0 #000,
+      0 28px 0 -8px rgba(21,19,27,.35),
+      0 40px 80px rgba(21,19,27,.4),
+      inset 0 0 0 3px rgba(255,255,255,.05);
+    padding:34px 30px 40px;
+    overflow:hidden;
+  }
+  /* brushed-metal sheen */
+  .lid-plate::before{
+    content:"";position:absolute;inset:0;border-radius:30px;pointer-events:none;
+    background:
+      repeating-linear-gradient(105deg, rgba(255,255,255,.025) 0 2px, transparent 2px 5px),
+      radial-gradient(120% 60% at 30% -10%, rgba(255,255,255,.10), transparent 50%);
+  }
+  /* embossed apple-ish glow logo on lid */
+  .lid-glow{
+    position:absolute;top:18px;right:34px;z-index:2;
+    width:46px;height:46px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--mint), #0c8f63);
+    box-shadow:0 0 24px rgba(46,230,168,.7), inset 0 0 8px rgba(0,0,0,.4);
+    display:grid;place-items:center;color:#06301f;
+    font-family:"Archivo Black";font-size:24px;
+    border:3px solid #0c8f63;
+  }
+
+  /* ============ STICKER PRIMITIVES ============ */
+  .sticker{
+    position:relative;
+    background:var(--cream);
+    border:3px solid var(--ink);
+    padding:14px 16px;
+    /* the classic white die-cut border via outline+shadow */
+    box-shadow:0 0 0 6px var(--cream), 6px 8px 0 rgba(21,19,27,.85), 6px 8px 0 6px var(--cream);
+    border-radius:14px;
+  }
+  .peel{ position:relative; }
+  /* curled corner peel */
+  .peel::after{
+    content:"";position:absolute;right:-2px;bottom:-2px;width:34px;height:34px;
+    background:linear-gradient(135deg, rgba(255,255,255,.9), #cdbf9f);
+    border-bottom-right-radius:14px;
+    box-shadow:-3px -3px 6px rgba(0,0,0,.25);
+    clip-path:polygon(100% 0, 100% 100%, 0 100%);
+    transform:rotate(.5deg);
+  }
+
+  /* ============ NAV — laptop-lid sticker strip ============ */
+  .navwrap{position:relative;z-index:3;display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:30px}
+  .brand{
+    display:flex;align-items:center;gap:14px;
+    transform:rotate(-3deg);
+  }
+  .brand .m{
+    width:64px;height:64px;display:grid;place-items:center;
+    background:conic-gradient(from 20deg, var(--hot), var(--tang), var(--sun), var(--lime), var(--mint), var(--sky), var(--grape), var(--hot));
+    border:4px solid var(--ink);border-radius:18px;
+    font-family:"Archivo Black";font-size:38px;color:var(--cream);
+    text-shadow:2px 2px 0 var(--ink);
+    box-shadow:0 0 0 5px var(--cream), 5px 6px 0 var(--ink), 5px 6px 0 5px var(--cream);
+    transform:rotate(2deg);
+  }
+  .brand-txt strong{
+    display:block;font-family:"Archivo Black";font-size:21px;line-height:.95;color:var(--cream);
+    text-shadow:2px 2px 0 var(--ink);letter-spacing:-.5px;
+  }
+  .brand-txt span{
+    display:inline-block;margin-top:6px;font-family:"Space Mono";font-size:11px;font-weight:700;
+    background:var(--sun);color:var(--ink);padding:2px 8px;border:2px solid var(--ink);border-radius:20px;
+    transform:rotate(-2deg);
+  }
+  nav{margin-left:auto;display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:flex-end}
+  .pill{
+    font-family:"Bricolage Grotesque";font-weight:800;font-size:13px;
+    padding:8px 13px;border:2.5px solid var(--ink);border-radius:30px;
+    background:var(--cream);color:var(--ink);white-space:nowrap;
+    box-shadow:2px 3px 0 var(--ink);
+    transition:transform .12s ease, box-shadow .12s ease;cursor:pointer;
+  }
+  .pill:hover{transform:translate(-1px,-2px) rotate(-1.5deg);box-shadow:3px 5px 0 var(--ink)}
+  .pill.c1{background:var(--hot);color:#fff} .pill.c1:hover{transform:translate(-1px,-2px) rotate(2deg)}
+  .pill.c2{background:var(--sky)} .pill.c3{background:var(--lime)}
+  .pill.c4{background:var(--tang);color:#fff} .pill.c5{background:var(--mint)}
+  .pill.c6{background:var(--grape);color:#fff}
+  .section-flag{
+    font-family:"Archivo Black";font-size:12px;letter-spacing:1px;
+    background:var(--ink);color:var(--sun);padding:9px 14px;border-radius:30px;
+    border:2.5px solid var(--sun);transform:rotate(2deg);
+    box-shadow:2px 3px 0 rgba(0,0,0,.5);
+  }
+
+  /* ============ MAIN GRID ============ */
+  .grid{
+    position:relative;z-index:2;
+    display:grid;
+    grid-template-columns:1.55fr 1fr;
+    gap:26px;
+  }
+  .col{display:flex;flex-direction:column;gap:26px}
+
+  /* ----- HERO sticker ----- */
+  .hero{
+    background:linear-gradient(160deg,var(--cream),#fff6e6);
+    transform:rotate(-1deg);
+    padding:30px 30px 34px;
+  }
+  .greet{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:"Caveat";font-size:30px;color:var(--hot);
+    background:#fff;border:3px dashed var(--hot);border-radius:40px;padding:2px 18px;
+    transform:rotate(-2deg);
+  }
+  .greet::before{content:"\1F319";font-size:22px}
+  h1.headline{
+    font-family:"Archivo Black";font-size:clamp(38px,6vw,72px);line-height:.92;
+    margin:18px 0 0;letter-spacing:-1.5px;
+    color:var(--ink);
+    text-shadow:3px 3px 0 var(--sun), 6px 6px 0 var(--hot);
+  }
+  h1.headline em{font-style:normal;color:var(--hot);text-shadow:3px 3px 0 var(--ink)}
+  .lede{
+    margin:22px 0 0;font-size:17px;line-height:1.5;max-width:54ch;font-weight:600;
+    color:#332e3d;
+  }
+  .lede b{background:var(--lime);padding:0 4px;border-radius:4px;box-decoration-break:clone}
+
+  /* hero CTA buttons */
+  .cta-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:28px}
+  .btn{
+    font-family:"Archivo Black";font-size:16px;letter-spacing:.5px;
+    padding:16px 26px;border:3.5px solid var(--ink);border-radius:16px;cursor:pointer;
+    box-shadow:4px 5px 0 var(--ink);transition:transform .12s,box-shadow .12s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn:hover{transform:translate(-2px,-3px);box-shadow:6px 8px 0 var(--ink)}
+  .btn:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
+  .btn.primary{background:var(--hot);color:#fff}
+  .btn.ghost{background:var(--sun);color:var(--ink)}
+
+  /* ----- STATS row ----- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{padding:18px 16px 20px;text-align:center}
+  .stat:nth-child(1){background:var(--sun);transform:rotate(-2.5deg)}
+  .stat:nth-child(2){background:var(--sky);transform:rotate(1.5deg)}
+  .stat:nth-child(3){background:var(--mint);transform:rotate(-1deg)}
+  .stat .num{font-family:"Archivo Black";font-size:clamp(30px,4vw,46px);line-height:1;text-shadow:2px 2px 0 rgba(255,255,255,.7)}
+  .stat .lbl{font-family:"Space Mono";font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-top:8px;display:block}
+  .stat .sub{font-size:13px;font-weight:700;margin-top:4px;opacity:.85}
+  /* tiny progress ring under 72% */
+  .barback{height:9px;border-radius:6px;background:rgba(21,19,27,.18);border:2px solid var(--ink);margin-top:10px;overflow:hidden}
+  .barfill{height:100%;width:72%;background:repeating-linear-gradient(45deg,var(--hot) 0 8px,#ff5c8d 8px 16px)}
+
+  /* ----- TOPIC PREVIEW + FORMULA ----- */
+  .topic{background:var(--cream);transform:rotate(.8deg);padding:24px 26px 26px}
+  .topic h2{font-family:"Archivo Black";font-size:26px;margin:0 0 6px;letter-spacing:-.5px}
+  .topic .tag{display:inline-block;font-family:"Space Mono";font-weight:700;font-size:11px;background:var(--grape);color:#fff;padding:3px 10px;border:2px solid var(--ink);border-radius:20px;margin-bottom:12px;transform:rotate(-2deg)}
+  .topic p{margin:0 0 16px;font-weight:600;color:#332e3d}
+  .formula{
+    background:var(--ink);color:var(--cream);
+    border-radius:14px;padding:18px 16px;
+    font-family:"Space Mono";font-size:15px;line-height:1.9;
+    border:3px solid var(--ink);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.08), 5px 6px 0 var(--lime);
+    position:relative;overflow:hidden;
+  }
+  .formula::before{
+    content:"f(x)";position:absolute;top:6px;right:12px;font-size:11px;color:var(--lime);opacity:.7;
+  }
+  .formula .f{display:block;padding:5px 4px;border-bottom:1px dashed rgba(255,255,255,.15)}
+  .formula .f:last-child{border-bottom:0}
+  .formula .v{color:var(--sun)} .formula .op{color:var(--mint)} .formula .hi{color:var(--sky)}
+
+  /* ----- EXAM CARD ----- */
+  .exam{
+    background:linear-gradient(150deg,var(--hot),#ff5c8d);color:#fff;
+    transform:rotate(-1.6deg);padding:24px 24px 26px;
+  }
+  .exam .badge{
+    font-family:"Archivo Black";font-size:13px;letter-spacing:1px;
+    background:var(--ink);color:var(--sun);display:inline-block;padding:6px 12px;border-radius:8px;transform:rotate(2deg);
+  }
+  .exam h3{font-family:"Archivo Black";font-size:38px;margin:14px 0 4px;text-shadow:3px 3px 0 rgba(21,19,27,.5);line-height:.9}
+  .exam .sub{font-weight:700;font-size:14px;opacity:.95}
+  .exam .specs{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .exam .chip{font-family:"Space Mono";font-weight:700;font-size:12px;background:#fff;color:var(--ink);padding:6px 11px;border:2.5px solid var(--ink);border-radius:20px;box-shadow:2px 3px 0 var(--ink)}
+  .exam .chip.pass{background:var(--lime)}
+
+  /* ----- TRAP callout ----- */
+  .trap{
+    background:var(--sun);transform:rotate(1.3deg);padding:22px 22px 24px;
+    border-style:solid;
+  }
+  .trap .hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .trap .siren{
+    font-family:"Archivo Black";font-size:14px;letter-spacing:1px;
+    background:var(--ink);color:var(--sun);padding:6px 12px;border-radius:8px;transform:rotate(-2deg);
+  }
+  .trap .bolt{font-size:30px;transform:rotate(8deg)}
+  .trap p{margin:0;font-weight:800;font-size:16.5px;line-height:1.45;color:var(--ink)}
+  .trap p code{background:var(--ink);color:var(--mint);font-family:"Space Mono";padding:1px 6px;border-radius:5px;font-size:14px}
+
+  /* ----- WORKED EXAMPLE teaser ----- */
+  .worked{background:var(--cream);transform:rotate(-.7deg);padding:22px 24px 24px}
+  .worked .kick{font-family:"Space Mono";font-weight:700;font-size:11px;color:var(--hot);text-transform:uppercase;letter-spacing:1px}
+  .worked h4{font-family:"Archivo Black";font-size:22px;margin:6px 0 10px;letter-spacing:-.5px}
+  .worked .stub{
+    font-family:"Space Mono";font-size:13px;background:#fff;border:2px dashed var(--ink);
+    border-radius:10px;padding:12px 14px;color:#3a3445;line-height:1.6;
+  }
+  .worked .stub .blur{filter:blur(2.5px);opacity:.6;user-select:none}
+
+  /* scattered free stickers (decor) */
+  .decor{position:absolute;z-index:4;pointer-events:none;font-family:"Archivo Black"}
+  .d-star{top:8px;left:-14px;font-size:13px;background:var(--sky);color:var(--ink);padding:10px 12px;border:3px solid var(--ink);border-radius:50%;box-shadow:0 0 0 5px var(--cream),3px 4px 0 var(--ink);transform:rotate(-12deg)}
+  .d-soa{top:auto;bottom:-18px;right:30px;font-size:12px;letter-spacing:1px;background:var(--lime);color:var(--ink);padding:8px 13px;border:3px solid var(--ink);border-radius:10px;box-shadow:0 0 0 5px var(--cream),3px 4px 0 var(--ink);transform:rotate(7deg)}
+  .d-heart{font-size:26px;top:-16px;right:-8px;transform:rotate(14deg);filter:var(--stick)}
+  .d-tape{
+    position:absolute;width:96px;height:28px;background:rgba(255,255,255,.45);
+    border-left:2px dashed rgba(0,0,0,.15);border-right:2px dashed rgba(0,0,0,.15);
+    z-index:5;backdrop-filter:saturate(.8);
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    position:relative;z-index:2;max-width:1280px;margin:8px auto 50px;padding:0 26px;
+    display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:center;
+  }
+  .foot-badge{
+    display:flex;align-items:center;gap:12px;
+    background:var(--cream);border:3px solid var(--ink);border-radius:40px;
+    padding:10px 22px;box-shadow:4px 5px 0 var(--ink);transform:rotate(-1.5deg);
+  }
+  .foot-badge .fm{
+    width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+    background:conic-gradient(from 0deg,var(--hot),var(--sun),var(--mint),var(--grape),var(--hot));
+    border:3px solid var(--ink);font-family:"Archivo Black";color:#fff;font-size:22px;text-shadow:1px 1px 0 var(--ink)
+  }
+  .foot-badge b{font-family:"Archivo Black";font-size:16px}
+  .foot-badge span{font-family:"Caveat";font-size:20px;color:var(--hot)}
+  .foot-note{font-family:"Space Mono";font-size:11px;color:#4a4357}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:900px){
+    .grid{grid-template-columns:1fr}
+    nav{margin-left:0;justify-content:flex-start}
+  }
+  @media (max-width:700px){
+    .lid{padding:14px;margin:12px auto}
+    .lid-plate{padding:24px 16px 30px;border-radius:26px}
+    .stats{grid-template-columns:1fr}
+    .navwrap{gap:12px}
+    .brand{order:1}
+    .lid-glow{display:none}
+    h1.headline{text-shadow:2px 2px 0 var(--sun),4px 4px 0 var(--hot)}
+  }
+</style>
+</head>
+<body>
+
+<div class="lid">
+  <div class="lid-plate">
+    <div class="lid-glow">M</div>
+
+    <!-- ===== NAV / LID STICKER STRIP ===== -->
+    <header class="navwrap">
+      <div class="brand">
+        <div class="m">M</div>
+        <div class="brand-txt">
+          <strong>Me Studing&nbsp;Stuff</strong>
+          <span>Study smarter. Pass exams.</span>
+        </div>
+      </div>
+      <nav aria-label="Topics">
+        <span class="section-flag">FAM-L / FAM-S</span>
+        <a class="pill c1" href="#">Survival Models</a>
+        <a class="pill c2" href="#">Life Tables</a>
+        <a class="pill c3" href="#">Life Insurance</a>
+        <a class="pill c4" href="#">Life Annuities</a>
+        <a class="pill c5" href="#">Premiums</a>
+        <a class="pill c6" href="#">Policy Values</a>
+      </nav>
+    </header>
+
+    <!-- ===== MAIN GRID ===== -->
+    <div class="grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="col">
+
+        <!-- HERO -->
+        <section class="sticker peel hero">
+          <span class="decor d-star">A+</span>
+          <span class="greet">Good evening</span>
+          <h1 class="headline">Let's get you<br>that <em>pass.</em></h1>
+          <p class="lede">Your focused hub for SOA Exam FAM — <b>notes, formulas, worked problems</b> and a plan, all in one calm place.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#">▶ Start studying</a>
+            <a class="btn ghost" href="#">↻ Resume</a>
+          </div>
+          <span class="decor d-soa">SOA · FAM</span>
+        </section>
+
+        <!-- STATS -->
+        <section class="stats" aria-label="Your progress">
+          <div class="sticker stat">
+            <span class="num">72%</span>
+            <span class="lbl">Overall progress</span>
+            <span class="sub">12 of 17 topics</span>
+            <div class="barback"><div class="barfill"></div></div>
+          </div>
+          <div class="sticker stat">
+            <span class="num">86</span>
+            <span class="lbl">Exam countdown</span>
+            <span class="sub">days to go</span>
+          </div>
+          <div class="sticker stat">
+            <span class="num">8</span>
+            <span class="lbl">Topics solid</span>
+            <span class="sub">locked &amp; loaded</span>
+          </div>
+        </section>
+
+        <!-- TOPIC PREVIEW + FORMULA -->
+        <section class="sticker peel topic">
+          <span class="tag">Topic preview · Life Insurance</span>
+          <h2>Life Insurance Present Values</h2>
+          <p>The EPV of a benefit, the variance of its present-value random variable, and how the annuity ties back in.</p>
+          <div class="formula" aria-label="Key formulas">
+            <span class="f"><span class="v">A_x</span> <span class="op">=</span> 1 <span class="op">−</span> d·<span class="hi">ä_x</span></span>
+            <span class="f"><span class="v">Var(Z)</span> <span class="op">=</span> ²A_x <span class="op">−</span> (A_x)²</span>
+            <span class="f"><span class="hi">ä_x</span> <span class="op">=</span> (1 <span class="op">−</span> A_x) / d</span>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col">
+
+        <!-- EXAM CARD -->
+        <section class="sticker peel exam">
+          <span class="decor d-heart">📌</span>
+          <span class="badge">EXAM FAM</span>
+          <h3>FAM</h3>
+          <div class="sub">Fundamentals of Actuarial Mathematics</div>
+          <div class="specs">
+            <span class="chip">SOA</span>
+            <span class="chip">34 questions</span>
+            <span class="chip pass">pass = 6/10</span>
+          </div>
+        </section>
+
+        <!-- TRAP -->
+        <section class="sticker trap">
+          <div class="hdr">
+            <span class="siren">COMMON TRAP</span>
+            <span class="bolt">⚡</span>
+          </div>
+          <p>Under UDD, multiply <code>ONLY</code> the term/death piece by <code>i/δ</code> — the pure endowment is never rescaled.</p>
+        </section>
+
+        <!-- WORKED EXAMPLE -->
+        <section class="sticker peel worked">
+          <span class="kick">Worked example · teaser</span>
+          <h4>Example 1 — Whole life EPV &amp; variance</h4>
+          <div class="stub">
+            Given μ and δ constant, find A̅_x, then ²A̅_x, then assemble<br>
+            <span class="blur">Var(Z̄) = ²A̅_x − (A̅_x)² = … solve for the second-moment force …</span>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot-badge">
+    <div class="fm">M</div>
+    <div>
+      <b>Me Studing Stuff</b><br>
+      <span>Study smarter. Pass exams.</span>
+    </div>
+  </div>
+  <div class="foot-note">© 2026 · A calm, sticker-bombed hub for SOA Exam FAM · made with caffeine &amp; mortality tables</div>
+</footer>
+
+</body>
+</html>

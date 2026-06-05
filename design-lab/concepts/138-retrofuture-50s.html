@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — World of Tomorrow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@500;700;900&family=Oswald:wght@300;400;500;600;700&family=Saira+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1b2a;
+    --void:#071019;
+    --chrome-1:#f4f8fb;
+    --chrome-2:#c3d0db;
+    --chrome-3:#8ea3b5;
+    --steel:#5d7185;
+    --atomic:#ff5a36;       /* ray-gun orange-red */
+    --atomic-deep:#d83417;
+    --turq:#19c3c8;         /* atomic turquoise */
+    --turq-deep:#0a8b91;
+    --butter:#ffd34e;       /* sputnik gold */
+    --cream:#f5e9d4;
+    --rocket:#e8edf2;
+    --shadow:rgba(7,16,25,.45);
+    --panel:#11283a;
+    --panel-2:#0c1f2e;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Saira Condensed','Oswald',sans-serif;
+    background:
+      radial-gradient(1200px 700px at 78% -10%, rgba(25,195,200,.18), transparent 60%),
+      radial-gradient(900px 600px at 8% 110%, rgba(255,90,54,.16), transparent 55%),
+      linear-gradient(160deg,#0a1722 0%, #0d1f2e 45%, #071019 100%);
+    color:var(--rocket);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* Atomic starburst background field */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, rgba(255,211,78,.7), transparent),
+      radial-gradient(1.5px 1.5px at 70% 18%, rgba(255,255,255,.5), transparent),
+      radial-gradient(2px 2px at 85% 60%, rgba(25,195,200,.6), transparent),
+      radial-gradient(1.5px 1.5px at 35% 80%, rgba(255,255,255,.4), transparent),
+      radial-gradient(2px 2px at 55% 50%, rgba(255,90,54,.5), transparent),
+      radial-gradient(1.5px 1.5px at 12% 65%, rgba(255,255,255,.4), transparent),
+      radial-gradient(1.5px 1.5px at 92% 35%, rgba(255,211,78,.5), transparent);
+    opacity:.8;
+  }
+  /* Concentric atom-orbit ring, top right */
+  body::after{
+    content:"";
+    position:fixed; top:-180px; right:-180px; width:560px; height:560px;
+    border-radius:50%; z-index:0; pointer-events:none;
+    border:2px solid rgba(25,195,200,.16);
+    box-shadow:
+      0 0 0 40px rgba(25,195,200,.05),
+      inset 0 0 0 60px rgba(255,90,54,.04),
+      inset 0 0 0 120px rgba(25,195,200,.05);
+  }
+
+  .wrap{position:relative; z-index:2; max-width:1340px; margin:0 auto; padding:24px clamp(16px,3vw,40px) 60px}
+
+  /* ============ TOP BAR ============ */
+  .topbar{
+    display:flex; align-items:center; gap:20px;
+    background:linear-gradient(180deg,#fdfefe, #cdd9e3 45%, #9fb2c2 55%, #e6edf2 100%);
+    border-radius:60px;
+    padding:10px 14px 10px 12px;
+    box-shadow:0 12px 30px var(--shadow), inset 0 2px 0 rgba(255,255,255,.9), inset 0 -3px 6px rgba(0,0,0,.15);
+    border:1px solid rgba(255,255,255,.6);
+    position:relative;
+  }
+  .topbar::after{
+    content:""; position:absolute; left:14px; right:14px; top:6px; height:34%;
+    background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,0));
+    border-radius:40px; pointer-events:none;
+  }
+
+  .logo{display:flex; align-items:center; gap:14px; padding-left:6px; position:relative; z-index:1}
+  .mmark{
+    width:58px; height:58px; flex:0 0 auto; border-radius:50%;
+    background:
+      radial-gradient(circle at 32% 28%, #fff, #ffd34e 35%, #ff5a36 70%, #b3260f 100%);
+    display:grid; place-items:center;
+    box-shadow:0 6px 14px rgba(216,52,23,.5), inset 0 2px 4px rgba(255,255,255,.8), inset 0 -4px 8px rgba(0,0,0,.25);
+    border:2px solid #fff;
+    position:relative;
+  }
+  .mmark::before{
+    content:""; position:absolute; inset:-9px; border-radius:50%;
+    border:1.5px dashed rgba(13,27,42,.35);
+    animation:spin 24s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .mmark span{
+    font-family:'Monoton',cursive; font-size:30px; line-height:1; color:var(--void);
+    text-shadow:0 1px 0 rgba(255,255,255,.5); margin-top:-2px;
+  }
+  .brandtext{line-height:1}
+  .brandtext b{
+    font-family:'Orbitron',sans-serif; font-weight:900; font-size:22px; letter-spacing:1px;
+    color:var(--ink); display:block; text-transform:uppercase;
+  }
+  .brandtext small{
+    font-family:'Saira Condensed'; font-weight:600; letter-spacing:3px; font-size:11px;
+    color:var(--atomic-deep); text-transform:uppercase;
+  }
+
+  /* top nav pills */
+  .topnav{display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; position:relative; z-index:1}
+  .topnav a{
+    text-decoration:none; font-family:'Oswald',sans-serif; font-weight:500;
+    text-transform:uppercase; letter-spacing:1px; font-size:13px;
+    color:var(--ink); padding:9px 15px; border-radius:30px;
+    transition:.18s; white-space:nowrap;
+    background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0));
+    border:1px solid transparent;
+  }
+  .topnav a:hover{
+    background:linear-gradient(180deg,var(--turq),var(--turq-deep));
+    color:#04181a; border-color:#fff;
+    box-shadow:0 4px 10px rgba(10,139,145,.5);
+  }
+  .topnav a.live{
+    background:linear-gradient(180deg,var(--atomic),var(--atomic-deep));
+    color:#fff; box-shadow:0 4px 10px rgba(216,52,23,.55); border-color:#fff;
+  }
+
+  /* ============ MAIN GRID ============ */
+  .grid{display:grid; grid-template-columns:268px 1fr; gap:26px; margin-top:26px; align-items:start}
+
+  /* ---- Sidebar control panel ---- */
+  .console{
+    background:linear-gradient(180deg,#15324a,#0b2030);
+    border-radius:26px; padding:22px 20px 26px;
+    border:1px solid rgba(25,195,200,.3);
+    box-shadow:0 18px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
+    position:sticky; top:18px;
+  }
+  .console .panel-head{
+    font-family:'Orbitron'; font-weight:700; font-size:12px; letter-spacing:2px;
+    color:var(--turq); text-transform:uppercase; margin-bottom:4px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .blink{width:9px;height:9px;border-radius:50%;background:var(--atomic);box-shadow:0 0 8px var(--atomic);animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .console h3{
+    font-family:'Saira Condensed'; font-weight:700; color:var(--cream);
+    text-transform:uppercase; letter-spacing:1px; font-size:15px; margin:18px 0 8px;
+  }
+  .seclabel{
+    margin-top:6px; padding:7px 12px; border-radius:10px;
+    background:linear-gradient(90deg,rgba(255,90,54,.22),transparent);
+    border-left:3px solid var(--atomic);
+    font-family:'Orbitron'; font-weight:700; font-size:11px; letter-spacing:2px;
+    color:#ffcaba; text-transform:uppercase;
+  }
+  .navlist{list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:6px}
+  .navlist a{
+    display:flex; align-items:center; gap:11px; text-decoration:none;
+    color:#cfe1ec; font-size:16px; font-weight:500; letter-spacing:.3px;
+    padding:10px 12px; border-radius:12px; transition:.16s;
+    border:1px solid rgba(255,255,255,.05);
+    background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);
+  }
+  .navlist a .dot{
+    width:22px;height:22px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+    background:radial-gradient(circle at 35% 30%,#fff,#8ea3b5 60%,#3f5566);
+    font-size:11px; color:var(--void); box-shadow:inset 0 -2px 3px rgba(0,0,0,.3);
+  }
+  .navlist a:hover{
+    color:#fff; transform:translateX(4px);
+    border-color:rgba(25,195,200,.5);
+    background:linear-gradient(90deg,rgba(25,195,200,.2),rgba(25,195,200,.02));
+  }
+  .navlist a.done .dot{background:radial-gradient(circle at 35% 30%,#d6fff0,#19c3c8 55%,#0a8b91)}
+  .navlist a.done{border-color:rgba(25,195,200,.35)}
+
+  .console .gauge{
+    margin-top:20px; background:rgba(0,0,0,.28); border-radius:16px; padding:14px;
+    border:1px solid rgba(25,195,200,.2);
+  }
+  .gauge .lbl{font-family:'Orbitron';font-size:10px;letter-spacing:1.5px;color:var(--turq);text-transform:uppercase}
+  .gauge .big{font-family:'Orbitron';font-weight:900;font-size:34px;color:var(--butter);line-height:1.1;text-shadow:0 0 14px rgba(255,211,78,.4)}
+  .meter{height:12px;border-radius:8px;background:#06141d;margin-top:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 2px 4px rgba(0,0,0,.6)}
+  .meter span{display:block;height:100%;width:72%;border-radius:8px;background:linear-gradient(90deg,var(--turq),var(--butter),var(--atomic));box-shadow:0 0 12px rgba(255,90,54,.6)}
+
+  /* ---- Main column ---- */
+  .main{display:flex; flex-direction:column; gap:26px}
+
+  /* HERO */
+  .hero{
+    position:relative; overflow:hidden;
+    background:linear-gradient(135deg,#0e2740 0%, #143a52 55%, #0a2030 100%);
+    border-radius:30px; padding:34px clamp(22px,3vw,44px) 34px;
+    border:1px solid rgba(25,195,200,.28);
+    box-shadow:0 22px 50px var(--shadow);
+  }
+  /* sunburst rays behind hero */
+  .hero::before{
+    content:""; position:absolute; top:50%; left:78%; width:900px; height:900px;
+    transform:translate(-50%,-50%);
+    background:repeating-conic-gradient(from 0deg, rgba(255,211,78,.10) 0deg 7deg, transparent 7deg 14deg);
+    border-radius:50%; pointer-events:none; opacity:.7;
+    animation:spin 90s linear infinite;
+  }
+  .hero-inner{position:relative; z-index:2; display:grid; grid-template-columns:1.5fr .9fr; gap:30px; align-items:center}
+
+  .greet{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:'Orbitron'; font-weight:700; font-size:12px; letter-spacing:3px;
+    color:#04181a; text-transform:uppercase;
+    background:linear-gradient(180deg,var(--butter),#e9b21f);
+    padding:7px 16px; border-radius:30px;
+    box-shadow:0 5px 12px rgba(233,178,31,.45), inset 0 1px 0 rgba(255,255,255,.7);
+  }
+  .hero h1{
+    font-family:'Orbitron',sans-serif; font-weight:900;
+    font-size:clamp(40px,6vw,68px); line-height:.96; margin:18px 0 14px;
+    text-transform:uppercase; letter-spacing:-1px;
+    background:linear-gradient(180deg,#ffffff 30%, #bcd6e2 75%, #7f94a5 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    text-shadow:0 4px 18px rgba(0,0,0,.4);
+    filter:drop-shadow(0 2px 0 rgba(25,195,200,.4));
+  }
+  .hero p.lede{
+    font-size:19px; line-height:1.5; color:#bcd2df; max-width:42ch; font-weight:400;
+  }
+  .hero p.lede b{color:var(--turq); font-weight:600}
+
+  .cta-row{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap}
+  .btn{
+    font-family:'Orbitron'; font-weight:700; text-transform:uppercase; letter-spacing:1.5px;
+    font-size:14px; padding:15px 26px; border-radius:40px; border:none; cursor:pointer;
+    text-decoration:none; display:inline-flex; align-items:center; gap:10px; transition:.18s;
+    position:relative;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,#ff7a59,var(--atomic) 45%,var(--atomic-deep));
+    color:#fff; box-shadow:0 10px 22px rgba(216,52,23,.5), inset 0 2px 0 rgba(255,255,255,.45);
+  }
+  .btn-primary:hover{transform:translateY(-3px); box-shadow:0 16px 30px rgba(216,52,23,.6), inset 0 2px 0 rgba(255,255,255,.45)}
+  .btn-ghost{
+    background:linear-gradient(180deg,#e9f1f6,#b9cad6);
+    color:var(--ink); box-shadow:0 8px 18px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.8);
+  }
+  .btn-ghost:hover{transform:translateY(-3px)}
+
+  /* Rocket illustration (CSS/SVG) */
+  .rocketcard{position:relative; display:grid; place-items:center}
+  .rocket-svg{width:100%; max-width:240px; filter:drop-shadow(0 18px 30px rgba(0,0,0,.5))}
+  .orbit-tag{
+    position:absolute; bottom:6px; left:50%; transform:translateX(-50%);
+    font-family:'Orbitron'; font-size:10px; letter-spacing:2px; color:var(--turq);
+    text-transform:uppercase; background:rgba(6,20,29,.7); padding:5px 12px; border-radius:20px;
+    border:1px solid rgba(25,195,200,.4); white-space:nowrap;
+  }
+
+  /* STATS */
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  .stat{
+    position:relative; border-radius:22px; padding:22px 22px 20px; overflow:hidden;
+    background:linear-gradient(180deg,#f4f8fb,#c6d3dd 60%,#a7bac8);
+    box-shadow:0 16px 34px var(--shadow), inset 0 2px 0 rgba(255,255,255,.9), inset 0 -4px 8px rgba(0,0,0,.15);
+    border:1px solid rgba(255,255,255,.6);
+  }
+  .stat::after{
+    content:""; position:absolute; top:-30px; right:-30px; width:90px; height:90px; border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, rgba(255,255,255,.9), transparent 65%);
+  }
+  .stat .cap{
+    font-family:'Orbitron'; font-weight:700; font-size:11px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--atomic-deep); position:relative; z-index:1;
+  }
+  .stat .num{
+    font-family:'Orbitron'; font-weight:900; font-size:48px; line-height:1; color:var(--ink);
+    margin:8px 0 4px; position:relative; z-index:1;
+  }
+  .stat .sub{font-family:'Saira Condensed'; font-weight:600; color:var(--steel); font-size:15px; letter-spacing:.5px; position:relative; z-index:1}
+  .stat.turq{background:linear-gradient(180deg,#d6fbfb,#7fdcdf 60%,#3aacb1)}
+  .stat.turq .cap{color:var(--turq-deep)} .stat.turq .num{color:#053b3d} .stat.turq .sub{color:#0a6266}
+  .stat.gold{background:linear-gradient(180deg,#fff2cc,#ffd968 60%,#e8b62f)}
+  .stat.gold .cap{color:#8a5b00} .stat.gold .num{color:#3a2700} .stat.gold .sub{color:#7a5200}
+
+  /* CONTENT ROW */
+  .content-row{display:grid; grid-template-columns:1fr 1fr; gap:22px}
+
+  .card{
+    background:linear-gradient(180deg,#13314a,#0b2030);
+    border-radius:24px; padding:24px; border:1px solid rgba(25,195,200,.22);
+    box-shadow:0 16px 36px var(--shadow);
+    position:relative; overflow:hidden;
+  }
+  .card .kicker{
+    font-family:'Orbitron'; font-weight:700; font-size:11px; letter-spacing:2px;
+    color:var(--turq); text-transform:uppercase; display:flex; align-items:center; gap:8px; margin-bottom:6px;
+  }
+  .card h2{
+    font-family:'Saira Condensed'; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+    font-size:25px; color:var(--cream); margin-bottom:6px;
+  }
+  .card p.line{color:#aec5d3; font-size:16px; line-height:1.45; font-weight:400}
+
+  /* Exam FAM badge card */
+  .exam-card{display:flex; gap:18px; align-items:center}
+  .exam-emblem{
+    width:96px;height:96px;flex:0 0 auto;border-radius:18px;display:grid;place-items:center;
+    background:
+      repeating-conic-gradient(from 45deg,#ff5a36 0deg 90deg,#d83417 90deg 180deg);
+    box-shadow:0 8px 18px rgba(216,52,23,.5), inset 0 0 0 4px rgba(255,255,255,.85);
+    position:relative;
+  }
+  .exam-emblem b{font-family:'Orbitron'; font-weight:900; font-size:30px; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,.4); z-index:1}
+  .exam-meta{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px}
+  .chip{
+    font-family:'Oswald'; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:500;
+    color:#dff0f6; padding:6px 12px; border-radius:20px;
+    background:rgba(25,195,200,.14); border:1px solid rgba(25,195,200,.4);
+  }
+  .chip.pass{background:rgba(255,211,78,.16); border-color:rgba(255,211,78,.5); color:#ffe69a}
+
+  /* Formula console */
+  .formula-card{grid-column:1 / -1}
+  .formula-card .kicker{color:var(--butter)}
+  .screen{
+    margin-top:14px; border-radius:16px; padding:20px 22px;
+    background:
+      linear-gradient(180deg,rgba(25,195,200,.06),transparent),
+      repeating-linear-gradient(0deg,rgba(25,195,200,.05) 0 2px, transparent 2px 4px),
+      #04141c;
+    border:1px solid rgba(25,195,200,.35);
+    box-shadow:inset 0 0 30px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4);
+    position:relative;
+  }
+  .screen::before{
+    content:"FORMULA TERMINAL // FAM-L"; position:absolute; top:-10px; left:18px;
+    font-family:'Orbitron'; font-size:9px; letter-spacing:2px; color:#053b3d;
+    background:var(--turq); padding:3px 10px; border-radius:6px;
+  }
+  .fmla{
+    display:flex; flex-wrap:wrap; gap:14px 0; align-items:center; justify-content:center;
+    font-family:'Orbitron'; font-weight:500; color:#9ff5f8; font-size:clamp(15px,2vw,21px);
+    text-shadow:0 0 10px rgba(25,195,200,.6); line-height:1.6;
+  }
+  .fmla .eq{padding:6px 14px}
+  .fmla .eq b{color:var(--butter); font-weight:700}
+  .fmla .sep{color:var(--atomic); font-size:24px; padding:0 6px; text-shadow:0 0 10px rgba(255,90,54,.7)}
+  .sup{font-size:.7em; vertical-align:super}
+  .sub{font-size:.7em; vertical-align:sub}
+
+  /* Trap callout */
+  .trap{
+    background:linear-gradient(135deg,#3a1006,#5a1808 60%,#2a0a04);
+    border:1px solid rgba(255,90,54,.5);
+    border-radius:22px; padding:22px 24px; position:relative; overflow:hidden;
+    box-shadow:0 16px 34px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,90,54,.12);
+  }
+  .trap::before{
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(45deg, rgba(255,211,78,.12) 0 14px, transparent 14px 28px);
+    opacity:.5; pointer-events:none;
+  }
+  .trap .kicker{color:var(--butter); position:relative; z-index:1}
+  .trap p{position:relative; z-index:1; color:#ffe2d6; font-size:17px; line-height:1.5; font-weight:500; margin-top:6px}
+  .trap p u{text-decoration-color:var(--butter); text-underline-offset:3px}
+
+  /* Worked example teaser */
+  .worked{display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+  .worked .num-badge{
+    width:64px;height:64px;flex:0 0 auto;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff,#19c3c8 55%,#0a8b91);
+    display:grid; place-items:center; font-family:'Orbitron'; font-weight:900; font-size:24px; color:#04181a;
+    box-shadow:0 6px 14px rgba(10,139,145,.5), inset 0 -3px 6px rgba(0,0,0,.25);
+  }
+  .worked .wbody{flex:1 1 240px}
+  .worked .wbody h2{margin-bottom:2px}
+  .worked .wcta{display:flex; gap:12px; flex-wrap:wrap}
+
+  /* FOOTER */
+  footer{
+    margin-top:36px; text-align:center; padding:26px 0 6px;
+    border-top:1px solid rgba(25,195,200,.18);
+  }
+  .foot-logo{display:inline-flex; align-items:center; gap:12px; margin-bottom:8px}
+  .foot-logo .mmark{width:42px;height:42px}
+  .foot-logo .mmark span{font-size:22px}
+  .foot-logo b{font-family:'Orbitron'; font-weight:900; letter-spacing:1px; font-size:18px; color:var(--cream); text-transform:uppercase}
+  footer small{display:block; color:var(--steel); font-size:13px; letter-spacing:1.5px; text-transform:uppercase; font-family:'Oswald'}
+  footer .star{color:var(--butter)}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:1040px){
+    .grid{grid-template-columns:1fr}
+    .console{position:relative; top:0}
+    .hero-inner{grid-template-columns:1fr}
+    .rocketcard{order:-1}
+    .rocket-svg{max-width:180px}
+  }
+  @media (max-width:760px){
+    .topnav{display:none}
+    .stats{grid-template-columns:1fr}
+    .content-row{grid-template-columns:1fr}
+    .exam-card{flex-direction:column; text-align:center}
+    .fmla{flex-direction:column}
+    .fmla .sep{transform:rotate(90deg)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="mmark"><span>M</span></div>
+      <div class="brandtext">
+        <b>Me Studing Stuff</b>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#" class="live">Dashboard</a>
+      <a href="#">Notes</a>
+      <a href="#">Formulas</a>
+      <a href="#">Problems</a>
+      <a href="#">Plan</a>
+      <a href="#">FAM-L / FAM-S</a>
+    </nav>
+  </header>
+
+  <!-- ===== MAIN GRID ===== -->
+  <div class="grid">
+
+    <!-- SIDEBAR CONSOLE -->
+    <aside class="console">
+      <div class="panel-head"><span class="blink"></span> Mission Control</div>
+      <div class="seclabel">FAM-L / FAM-S</div>
+
+      <h3>Syllabus Reactor</h3>
+      <ul class="navlist">
+        <li><a class="done" href="#"><span class="dot">✓</span> Survival Models</a></li>
+        <li><a class="done" href="#"><span class="dot">✓</span> Life Tables</a></li>
+        <li><a href="#"><span class="dot">☄</span> Life Insurance</a></li>
+        <li><a href="#"><span class="dot">☄</span> Life Annuities</a></li>
+        <li><a href="#"><span class="dot">☄</span> Premiums</a></li>
+        <li><a href="#"><span class="dot">☄</span> Policy Values</a></li>
+      </ul>
+
+      <div class="gauge">
+        <div class="lbl">Reactor Charge</div>
+        <div class="big">72%</div>
+        <div class="meter"><span></span></div>
+        <div class="lbl" style="margin-top:8px;color:#9fb2c2">12 / 17 topics fueled</div>
+      </div>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <main class="main">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="greet">☀ Good evening, Cadet</span>
+            <h1>Let's get you<br>that pass.</h1>
+            <p class="lede">Your focused hub for <b>SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+            <div class="cta-row">
+              <a href="#" class="btn btn-primary">🚀 Start studying</a>
+              <a href="#" class="btn btn-ghost">⏯ Resume</a>
+            </div>
+          </div>
+
+          <div class="rocketcard">
+            <!-- Atomic chrome rocket -->
+            <svg class="rocket-svg" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg" aria-label="Retro rocket">
+              <defs>
+                <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#7f94a5"/>
+                  <stop offset=".22" stop-color="#f4f8fb"/>
+                  <stop offset=".45" stop-color="#c3d0db"/>
+                  <stop offset=".6" stop-color="#ffffff"/>
+                  <stop offset=".8" stop-color="#9fb2c2"/>
+                  <stop offset="1" stop-color="#5d7185"/>
+                </linearGradient>
+                <linearGradient id="fin" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#ff7a59"/>
+                  <stop offset="1" stop-color="#d83417"/>
+                </linearGradient>
+                <radialGradient id="glass" cx=".4" cy=".35" r=".7">
+                  <stop offset="0" stop-color="#d6fbfb"/>
+                  <stop offset=".5" stop-color="#19c3c8"/>
+                  <stop offset="1" stop-color="#0a5b5f"/>
+                </radialGradient>
+                <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#ffd34e"/>
+                  <stop offset=".5" stop-color="#ff7a59"/>
+                  <stop offset="1" stop-color="#d83417" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- flame -->
+              <path d="M100 300 C82 268 86 250 100 232 C114 250 118 268 100 300 Z" fill="url(#flame)"/>
+              <path d="M100 286 C92 270 94 260 100 248 C106 260 108 270 100 286 Z" fill="#fff" opacity=".8"/>
+              <!-- fins -->
+              <path d="M62 196 C40 214 30 236 36 256 L62 240 Z" fill="url(#fin)"/>
+              <path d="M138 196 C160 214 170 236 164 256 L138 240 Z" fill="url(#fin)"/>
+              <!-- body -->
+              <path d="M100 8 C140 50 152 118 152 188 C152 224 132 248 100 248 C68 248 48 224 48 188 C48 118 60 50 100 8 Z" fill="url(#chrome)" stroke="#fff" stroke-width="2"/>
+              <!-- nose cap -->
+              <path d="M100 8 C118 30 128 56 132 86 L68 86 C72 56 82 30 100 8 Z" fill="#ff5a36" stroke="#fff" stroke-width="2"/>
+              <!-- window -->
+              <circle cx="100" cy="138" r="30" fill="#0b2030" stroke="#fff" stroke-width="5"/>
+              <circle cx="100" cy="138" r="23" fill="url(#glass)"/>
+              <circle cx="92" cy="130" r="7" fill="#fff" opacity=".7"/>
+              <!-- rivet line -->
+              <line x1="100" y1="92" x2="100" y2="108" stroke="#7f94a5" stroke-width="3"/>
+              <circle cx="100" cy="196" r="4" fill="#5d7185"/>
+              <circle cx="78" cy="206" r="3" fill="#5d7185"/>
+              <circle cx="122" cy="206" r="3" fill="#5d7185"/>
+              <!-- nose tip -->
+              <circle cx="100" cy="6" r="6" fill="#ffd34e" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <div class="orbit-tag">◉ T-minus 86 days to launch</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat">
+          <div class="cap">Overall Progress</div>
+          <div class="num">72%</div>
+          <div class="sub">12 of 17 topics</div>
+        </div>
+        <div class="stat turq">
+          <div class="cap">Exam Countdown</div>
+          <div class="num">86</div>
+          <div class="sub">days to go</div>
+        </div>
+        <div class="stat gold">
+          <div class="cap">Topics Solid</div>
+          <div class="num">8</div>
+          <div class="sub">locked &amp; fueled</div>
+        </div>
+      </section>
+
+      <!-- CONTENT ROW: Exam card + topic preview -->
+      <section class="content-row">
+        <!-- Exam FAM card -->
+        <div class="card exam-card">
+          <div class="exam-emblem"><b>FAM</b></div>
+          <div>
+            <div class="kicker">◈ Your Mission</div>
+            <h2>Exam FAM</h2>
+            <p class="line">Fundamentals of Actuarial Mathematics</p>
+            <div class="exam-meta">
+              <span class="chip">SOA</span>
+              <span class="chip">34 questions</span>
+              <span class="chip pass">★ Pass = 6/10</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Topic preview -->
+        <div class="card">
+          <div class="kicker">☄ Topic Preview</div>
+          <h2>Life Insurance Present Values</h2>
+          <p class="line">Tie the EPV of a benefit to the annuity it mirrors — one relationship powers the whole module.</p>
+          <div class="exam-meta">
+            <span class="chip">Whole life</span>
+            <span class="chip">EPV</span>
+            <span class="chip">Variance</span>
+          </div>
+        </div>
+
+        <!-- Formula terminal (full width) -->
+        <div class="card formula-card">
+          <div class="kicker">⚛ Formula Terminal</div>
+          <h2>Core Identities</h2>
+          <div class="screen">
+            <div class="fmla">
+              <span class="eq">A<span class="sub">x</span> = 1 − <b>d</b>·ä<span class="sub">x</span></span>
+              <span class="sep">·</span>
+              <span class="eq">Var(Z) = <sup class="sup">2</sup>A<span class="sub">x</span> − (A<span class="sub">x</span>)<sup class="sup">2</sup></span>
+              <span class="sep">·</span>
+              <span class="eq">ä<span class="sub">x</span> = (1 − A<span class="sub">x</span>) / <b>d</b></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRAP CALLOUT -->
+      <section class="trap">
+        <div class="kicker">⚠ Common Trap — UDD Adjustment</div>
+        <p>Under UDD, multiply <u>ONLY</u> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+      </section>
+
+      <!-- WORKED EXAMPLE -->
+      <section class="card worked">
+        <div class="num-badge">1</div>
+        <div class="wbody">
+          <div class="kicker">▶ Worked Example</div>
+          <h2>Example 1 — Whole life EPV &amp; variance</h2>
+          <p class="line">Walk the full computation: build A<sub>x</sub>, recover ä<sub>x</sub>, then square up the variance.</p>
+        </div>
+        <div class="wcta">
+          <a href="#" class="btn btn-primary">🚀 Start studying</a>
+          <a href="#" class="btn btn-ghost">⏯ Resume</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="foot-logo">
+      <div class="mmark"><span>M</span></div>
+      <b>Me Studing Stuff</b>
+    </div>
+    <small><span class="star">★</span> Study smarter. Pass exams. <span class="star">★</span> World of Tomorrow Edition · SOA Exam FAM</small>
+  </footer>
+
+</div>
+</body>
+</html>

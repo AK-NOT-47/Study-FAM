@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#05060a;
+    --bg-2:#080a12;
+    --panel:rgba(20,23,38,0.55);
+    --panel-solid:#101426;
+    --stroke:rgba(140,160,255,0.12);
+    --stroke-2:rgba(160,180,255,0.22);
+    --txt:#eef0fb;
+    --txt-2:#a7adc9;
+    --muted:#737a9e;
+    --violet:#7b5cff;
+    --magenta:#ff4fb8;
+    --cyan:#28e0d4;
+    --amber:#ffb648;
+    --glow-a:#6d4bff;
+    --glow-b:#ff3d9a;
+    --glow-c:#1fd1c4;
+    --radius:22px;
+    --radius-sm:14px;
+    --maxw:1320px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--txt);
+    font-family:'Sora',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  /* ====== AMBIENT GLOW FIELD ====== */
+  .glowfield{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;mix-blend-mode:screen;animation:drift 22s ease-in-out infinite alternate}
+  .blob.b1{width:620px;height:620px;background:radial-gradient(circle at 30% 30%,#7b5cff,transparent 70%);top:-160px;left:-120px}
+  .blob.b2{width:560px;height:560px;background:radial-gradient(circle at 60% 40%,#ff3d9a,transparent 70%);top:-80px;right:-140px;animation-delay:-6s}
+  .blob.b3{width:680px;height:680px;background:radial-gradient(circle at 50% 50%,#1fd1c4,transparent 72%);bottom:-260px;left:38%;animation-delay:-11s;opacity:.4}
+  .blob.b4{width:420px;height:420px;background:radial-gradient(circle at 50% 50%,#ffb648,transparent 70%);bottom:-160px;right:6%;opacity:.28;animation-delay:-3s}
+  @keyframes drift{
+    0%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(40px,30px) scale(1.08)}
+    100%{transform:translate(-30px,20px) scale(.96)}
+  }
+  /* fine grain noise overlay */
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  /* ====== LAYOUT SHELL ====== */
+  .shell{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto;padding:26px clamp(16px,3vw,40px) 60px;
+    display:grid;grid-template-columns:264px 1fr;gap:30px}
+
+  /* ====== SIDEBAR ====== */
+  .side{position:sticky;top:26px;align-self:start;height:fit-content}
+  .brand{display:flex;align-items:center;gap:13px;margin-bottom:28px}
+  .mark{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;position:relative;
+    background:linear-gradient(140deg,#7b5cff,#ff3d9a 55%,#1fd1c4);
+    box-shadow:0 0 0 1px rgba(255,255,255,.08),0 10px 30px -8px rgba(123,92,255,.7)}
+  .mark span{font-family:'Space Grotesk';font-weight:700;font-size:24px;color:#0a0b12;line-height:1}
+  .brand-tx b{font-family:'Space Grotesk';font-weight:700;font-size:17px;letter-spacing:.2px;display:block}
+  .brand-tx small{color:var(--muted);font-size:11.5px;letter-spacing:.3px}
+
+  .nav-card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);
+    backdrop-filter:blur(18px);padding:18px 16px;box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+  .nav-label{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+    padding:6px 10px 12px;display:flex;align-items:center;gap:8px}
+  .nav-label .pill{margin-left:auto;font-size:9.5px;letter-spacing:.12em;color:#cdd2f0;
+    background:linear-gradient(120deg,rgba(123,92,255,.3),rgba(255,61,154,.3));
+    border:1px solid var(--stroke-2);padding:3px 8px;border-radius:30px}
+  nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;color:var(--txt-2);
+    text-decoration:none;font-size:14px;font-weight:500;position:relative;transition:.22s;margin-bottom:2px}
+  nav a .ic{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:13px;flex:none;
+    background:rgba(255,255,255,.04);border:1px solid var(--stroke);transition:.22s}
+  nav a .dot{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--cyan);
+    box-shadow:0 0 8px var(--cyan);opacity:.0;transition:.22s}
+  nav a:hover{color:#fff;background:rgba(255,255,255,.035);transform:translateX(3px)}
+  nav a:hover .ic{border-color:var(--stroke-2)}
+  nav a.active{color:#fff;background:linear-gradient(100deg,rgba(123,92,255,.20),rgba(255,61,154,.10));
+    border:1px solid var(--stroke-2)}
+  nav a.active .ic{background:linear-gradient(140deg,#7b5cff,#ff3d9a);border-color:transparent;color:#0a0b12}
+  nav a.active .dot{opacity:1}
+  .nav-div{height:1px;background:var(--stroke);margin:12px 4px}
+
+  .side-foot{margin-top:18px;padding:14px 16px;border-radius:var(--radius-sm);
+    border:1px solid var(--stroke);background:var(--panel);backdrop-filter:blur(14px)}
+  .side-foot .row{display:flex;align-items:center;gap:11px}
+  .av{width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center;font-weight:600;
+    background:linear-gradient(140deg,#1fd1c4,#7b5cff);color:#06070d}
+  .side-foot b{font-size:13px;display:block}
+  .side-foot small{font-size:11px;color:var(--muted)}
+
+  /* ====== MAIN ====== */
+  .main{min-width:0;display:flex;flex-direction:column;gap:26px}
+
+  /* topbar */
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .crumb{font-size:12px;color:var(--muted);letter-spacing:.04em}
+  .crumb b{color:var(--txt-2);font-weight:500}
+  .search{margin-left:auto;display:flex;align-items:center;gap:10px;flex:1;max-width:340px;min-width:180px;
+    background:var(--panel);border:1px solid var(--stroke);border-radius:30px;padding:9px 16px;backdrop-filter:blur(14px)}
+  .search input{background:none;border:0;color:var(--txt);font-family:inherit;font-size:13px;width:100%;outline:none}
+  .search input::placeholder{color:var(--muted)}
+  .iconbtn{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;cursor:pointer;
+    background:var(--panel);border:1px solid var(--stroke);backdrop-filter:blur(14px);font-size:16px;transition:.2s}
+  .iconbtn:hover{border-color:var(--stroke-2);transform:translateY(-2px)}
+
+  /* ====== HERO ====== */
+  .hero{position:relative;border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--stroke-2);
+    background:
+      radial-gradient(900px 360px at 88% -20%,rgba(255,61,154,.30),transparent 60%),
+      radial-gradient(700px 420px at 0% 120%,rgba(31,209,196,.22),transparent 60%),
+      linear-gradient(135deg,rgba(123,92,255,.18),rgba(10,12,22,.4));
+    padding:clamp(26px,3.2vw,42px);
+    box-shadow:0 40px 90px -40px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06)}
+  .hero::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(transparent,transparent 92%,rgba(255,255,255,.04));}
+  .hero-grid{position:absolute;inset:0;opacity:.4;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:42px 42px;mask:radial-gradient(600px 300px at 70% 0%,#000,transparent 75%)}
+  .hero-inner{position:relative;display:grid;grid-template-columns:1.35fr .9fr;gap:34px;align-items:center}
+
+  .greet{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:#d9defb;background:rgba(255,255,255,.05);border:1px solid var(--stroke-2);
+    padding:7px 14px;border-radius:30px;margin-bottom:20px}
+  .greet .moon{filter:drop-shadow(0 0 6px var(--violet))}
+  h1.head{font-family:'Sora';font-weight:800;letter-spacing:-.02em;line-height:1.02;
+    font-size:clamp(34px,5vw,58px);margin-bottom:16px}
+  h1.head .glow{background:linear-gradient(100deg,#a78bff 10%,#ff5fb0 50%,#3ee7da 95%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(255,95,176,.35))}
+  .lede{color:var(--txt-2);font-size:clamp(14px,1.3vw,16.5px);max-width:54ch}
+  .cta-row{display:flex;gap:13px;flex-wrap:wrap;margin-top:26px}
+  .btn{font-family:'Space Grotesk';font-weight:600;font-size:14.5px;border:0;cursor:pointer;
+    padding:14px 24px;border-radius:14px;display:inline-flex;align-items:center;gap:10px;text-decoration:none;transition:.22s}
+  .btn-primary{color:#08090f;background:linear-gradient(120deg,#7b5cff,#ff3d9a 60%,#ffb648);
+    box-shadow:0 14px 34px -10px rgba(255,61,154,.6),0 0 0 1px rgba(255,255,255,.08) inset}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 20px 44px -10px rgba(255,61,154,.7)}
+  .btn-ghost{color:var(--txt);background:rgba(255,255,255,.05);border:1px solid var(--stroke-2);backdrop-filter:blur(10px)}
+  .btn-ghost:hover{transform:translateY(-3px);border-color:#fff3;background:rgba(255,255,255,.09)}
+
+  /* exam card inside hero */
+  .examcard{position:relative;border-radius:var(--radius-sm);padding:22px;
+    background:linear-gradient(160deg,rgba(8,10,20,.85),rgba(20,16,40,.7));
+    border:1px solid var(--stroke-2);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+  .examcard .tag{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
+  .examcard h3{font-family:'Space Grotesk';font-size:25px;font-weight:700;margin:8px 0 4px}
+  .examcard .sub{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+  .ring-wrap{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+  .ring{width:104px;height:104px;flex:none;border-radius:50%;display:grid;place-items:center;position:relative;
+    background:conic-gradient(#ff3d9a 0% 72%, rgba(255,255,255,.07) 72% 100%);
+    filter:drop-shadow(0 0 14px rgba(255,61,154,.4))}
+  .ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#0a0c16}
+  .ring b{position:relative;font-family:'Space Grotesk';font-size:27px;font-weight:700}
+  .ring small{position:relative;display:block;font-size:9.5px;color:var(--muted);letter-spacing:.14em;text-align:center;margin-top:1px}
+  .exam-meta{display:flex;flex-direction:column;gap:8px;font-size:13px}
+  .exam-meta div{display:flex;justify-content:space-between;gap:12px;color:var(--txt-2)}
+  .exam-meta div b{color:#fff;font-weight:600}
+  .pass-badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#bff7ef;
+    background:rgba(31,209,196,.12);border:1px solid rgba(31,209,196,.35);padding:6px 12px;border-radius:30px}
+
+  /* ====== STATS ====== */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{position:relative;border-radius:var(--radius-sm);padding:20px 22px;overflow:hidden;
+    background:var(--panel);border:1px solid var(--stroke);backdrop-filter:blur(16px);
+    box-shadow:0 24px 50px -28px rgba(0,0,0,.8)}
+  .stat::before{content:"";position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;
+    filter:blur(40px);opacity:.5}
+  .stat.s1::before{background:#7b5cff}
+  .stat.s2::before{background:#ff3d9a}
+  .stat.s3::before{background:#1fd1c4}
+  .stat .lab{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .stat .val{font-family:'Space Grotesk';font-weight:700;font-size:42px;line-height:1.1;margin:6px 0 2px;letter-spacing:-.01em}
+  .stat .val span{font-size:18px;color:var(--txt-2);font-weight:500}
+  .stat .note{font-size:12.5px;color:var(--txt-2)}
+  .bar{height:7px;border-radius:30px;background:rgba(255,255,255,.07);margin-top:14px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:30px;background:linear-gradient(90deg,#7b5cff,#ff3d9a);
+    box-shadow:0 0 12px rgba(255,61,154,.5)}
+  .ticks{display:flex;gap:5px;margin-top:14px}
+  .ticks i{flex:1;height:7px;border-radius:3px;background:rgba(255,255,255,.08)}
+  .ticks i.on{background:linear-gradient(90deg,#1fd1c4,#7b5cff);box-shadow:0 0 8px rgba(31,209,196,.5)}
+
+  /* ====== CONTENT GRID ====== */
+  .cgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px}
+  .card{position:relative;border-radius:var(--radius);padding:26px;overflow:hidden;
+    background:var(--panel);border:1px solid var(--stroke);backdrop-filter:blur(16px);
+    box-shadow:0 30px 60px -34px rgba(0,0,0,.85)}
+  .card .kicker{display:flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+  .card .kicker .ix{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;
+    background:linear-gradient(140deg,#7b5cff,#ff3d9a);color:#08090f;font-size:12px}
+  .card h2{font-family:'Sora';font-weight:700;font-size:23px;letter-spacing:-.01em;margin-bottom:6px}
+  .card .lede2{font-size:14px;color:var(--txt-2);margin-bottom:20px}
+
+  /* formula block */
+  .formula{border-radius:var(--radius-sm);border:1px solid var(--stroke-2);overflow:hidden;
+    background:linear-gradient(160deg,rgba(6,8,16,.9),rgba(16,12,30,.7))}
+  .formula .fhead{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--stroke);
+    font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;color:var(--muted)}
+  .formula .fdot{width:9px;height:9px;border-radius:50%}
+  .fd1{background:#ff5f6e}.fd2{background:#ffb648}.fd3{background:#1fd1c4}
+  .formula .fbody{display:flex;flex-direction:column}
+  .frow{display:flex;align-items:center;gap:16px;padding:15px 18px;font-family:'JetBrains Mono';font-size:15.5px;
+    border-top:1px solid rgba(255,255,255,.04)}
+  .frow:first-child{border-top:0}
+  .frow .fnum{width:26px;height:26px;flex:none;border-radius:8px;display:grid;place-items:center;font-size:11px;
+    color:#cdd2f0;background:rgba(255,255,255,.05);border:1px solid var(--stroke)}
+  .frow code{color:#eaf0ff}
+  .frow code .v{color:#a78bff}
+  .frow code .o{color:#ff5fb0}
+  .frow code .c{color:#3ee7da}
+
+  /* trap callout */
+  .trap{margin-top:20px;border-radius:var(--radius-sm);padding:18px 20px;display:flex;gap:15px;
+    background:linear-gradient(120deg,rgba(255,182,72,.12),rgba(255,61,154,.06));
+    border:1px solid rgba(255,182,72,.30)}
+  .trap .ti{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;font-size:18px;
+    background:rgba(255,182,72,.16);border:1px solid rgba(255,182,72,.4)}
+  .trap b{display:block;font-family:'Space Grotesk';font-size:13.5px;color:#ffd79a;letter-spacing:.02em;margin-bottom:3px}
+  .trap p{font-size:13.5px;color:#f1e4cf;line-height:1.5}
+  .trap em{color:#fff;font-style:normal;font-weight:600}
+
+  /* worked example side card */
+  .ex-card{display:flex;flex-direction:column;gap:0;justify-content:space-between}
+  .ex-tag{align-self:flex-start;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--magenta);
+    background:rgba(255,61,154,.10);border:1px solid rgba(255,61,154,.3);padding:5px 11px;border-radius:30px;margin-bottom:16px}
+  .ex-card h3{font-family:'Space Grotesk';font-weight:700;font-size:22px;line-height:1.15;margin-bottom:8px}
+  .ex-card .exlede{font-size:13.5px;color:var(--txt-2);margin-bottom:18px}
+  .ex-steps{display:flex;flex-direction:column;gap:11px;margin-bottom:22px}
+  .ex-step{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;
+    background:rgba(255,255,255,.03);border:1px solid var(--stroke);font-size:13px;color:var(--txt-2)}
+  .ex-step .n{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;
+    color:#08090f;background:linear-gradient(140deg,#1fd1c4,#7b5cff)}
+  .ex-step.faint{opacity:.55}
+  .ex-step.faint .n{background:rgba(255,255,255,.1);color:var(--txt-2)}
+  .ex-card .cta-row{margin-top:auto}
+  .ex-card .btn{flex:1;justify-content:center}
+
+  /* mini formula chips inside example */
+  .chip-mono{font-family:'JetBrains Mono';font-size:12px;color:#cdd2f0;background:rgba(123,92,255,.12);
+    border:1px solid var(--stroke-2);padding:2px 8px;border-radius:7px}
+
+  /* ====== FOOTER ====== */
+  footer{position:relative;z-index:2;max-width:var(--maxw);margin:10px auto 0;padding:30px clamp(16px,3vw,40px) 40px;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--stroke)}
+  footer .fmark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(140deg,#7b5cff,#ff3d9a);color:#08090f;font-family:'Space Grotesk';font-weight:700}
+  footer b{font-family:'Space Grotesk';font-size:15px}
+  footer small{color:var(--muted);font-size:12px}
+  footer .fr{margin-left:auto;display:flex;gap:20px}
+  footer .fr a{color:var(--txt-2);text-decoration:none;font-size:13px;transition:.2s}
+  footer .fr a:hover{color:#fff}
+
+  /* ====== RESPONSIVE ====== */
+  @media(max-width:1040px){
+    .shell{grid-template-columns:1fr}
+    .side{position:static;display:grid;grid-template-columns:1fr;gap:16px}
+    .nav-card nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+    .nav-div{grid-column:1/-1}
+    .hero-inner{grid-template-columns:1fr}
+    .cgrid{grid-template-columns:1fr}
+  }
+  @media(max-width:720px){
+    .stats{grid-template-columns:1fr}
+    .nav-card nav{grid-template-columns:1fr}
+    .topbar .search{order:3;max-width:none;flex-basis:100%}
+    .frow{font-size:13.5px;gap:12px;flex-wrap:wrap}
+    .ex-card .cta-row{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div class="glowfield">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+</div>
+<div class="grain"></div>
+
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark"><span>M</span></div>
+      <div class="brand-tx">
+        <b>Me Studing Stuff</b>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+
+    <div class="nav-card">
+      <div class="nav-label">FAM-L / FAM-S <span class="pill">Long-term</span></div>
+      <nav>
+        <a href="#" class="active"><span class="ic">📉</span> Survival Models <span class="dot"></span></a>
+        <a href="#"><span class="ic">📋</span> Life Tables <span class="dot"></span></a>
+        <a href="#"><span class="ic">🛡️</span> Life Insurance <span class="dot"></span></a>
+        <a href="#"><span class="ic">💸</span> Life Annuities <span class="dot"></span></a>
+        <a href="#"><span class="ic">🧮</span> Premiums <span class="dot"></span></a>
+        <a href="#"><span class="ic">📦</span> Policy Values <span class="dot"></span></a>
+        <div class="nav-div"></div>
+        <a href="#"><span class="ic">📐</span> Formula Sheet <span class="dot"></span></a>
+        <a href="#"><span class="ic">📝</span> Worked Problems <span class="dot"></span></a>
+      </nav>
+    </div>
+
+    <div class="side-foot">
+      <div class="row">
+        <div class="av">F</div>
+        <div>
+          <b>FAM Candidate</b>
+          <small>Spring sitting · on track</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <div class="topbar">
+      <div class="crumb">Dashboard <b>/ FAM-L</b> <b>/ Life Insurance</b></div>
+      <label class="search">
+        <span>🔍</span>
+        <input type="text" placeholder="Search formulas, topics, problems…" />
+      </label>
+      <div class="iconbtn" title="Notifications">🔔</div>
+      <div class="iconbtn" title="Theme">🌙</div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-inner">
+        <div>
+          <span class="greet"><span class="moon">🌙</span> Good evening</span>
+          <h1 class="head">Let's get you <span class="glow">that pass.</span></h1>
+          <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          <div class="cta-row">
+            <a href="#example" class="btn btn-primary">Start studying →</a>
+            <a href="#example" class="btn btn-ghost">⤺ Resume</a>
+          </div>
+        </div>
+
+        <!-- EXAM CARD -->
+        <div class="examcard">
+          <div class="tag">Exam FAM</div>
+          <h3>Fundamentals of Actuarial Mathematics</h3>
+          <div class="sub">SOA · 34 questions · pass = 6/10</div>
+          <div class="ring-wrap">
+            <div class="ring"><div><b>72%</b><small>READY</small></div></div>
+            <div class="exam-meta">
+              <div><span>Provider</span><b>SOA</b></div>
+              <div><span>Questions</span><b>34</b></div>
+              <div><span>Pass line</span><b>6 / 10</b></div>
+            </div>
+          </div>
+          <span class="pass-badge">✓ You're trending above the pass line</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat s1">
+        <div class="lab">📈 Overall progress</div>
+        <div class="val">72<span>%</span></div>
+        <div class="note">12 of 17 topics covered</div>
+        <div class="bar"><i style="width:72%"></i></div>
+      </div>
+      <div class="stat s2">
+        <div class="lab">⏳ Exam countdown</div>
+        <div class="val">86<span> days</span></div>
+        <div class="note">Keep the daily streak alive</div>
+        <div class="bar"><i style="width:46%"></i></div>
+      </div>
+      <div class="stat s3">
+        <div class="lab">✅ Topics solid</div>
+        <div class="val">8<span>/17</span></div>
+        <div class="note">Lock in 9 more to be exam-ready</div>
+        <div class="ticks">
+          <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+          <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT GRID -->
+    <section class="cgrid">
+
+      <!-- TOPIC PREVIEW + FORMULA -->
+      <div class="card">
+        <div class="kicker"><span class="ix">🛡️</span> Topic preview · Life Insurance</div>
+        <h2>Life Insurance Present Values</h2>
+        <p class="lede2">The EPV of a benefit, its variance, and how the annuity-insurance identity ties them together.</p>
+
+        <div class="formula">
+          <div class="fhead">
+            <span class="fdot fd1"></span><span class="fdot fd2"></span><span class="fdot fd3"></span>
+            &nbsp; key_identities.fam
+          </div>
+          <div class="fbody">
+            <div class="frow">
+              <span class="fnum">01</span>
+              <code><span class="v">A_x</span> = 1 <span class="o">−</span> d<span class="o">·</span><span class="c">ä_x</span></code>
+            </div>
+            <div class="frow">
+              <span class="fnum">02</span>
+              <code><span class="v">Var(Z)</span> = <span class="c">²A_x</span> <span class="o">−</span> (<span class="v">A_x</span>)²</code>
+            </div>
+            <div class="frow">
+              <span class="fnum">03</span>
+              <code><span class="c">ä_x</span> = (1 <span class="o">−</span> <span class="v">A_x</span>) / d</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRAP -->
+        <div class="trap">
+          <div class="ti">⚠️</div>
+          <div>
+            <b>Common trap</b>
+            <p>Under UDD, multiply <em>ONLY</em> the term/death piece by <em>i/δ</em> — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKED EXAMPLE -->
+      <div class="card ex-card" id="example">
+        <div>
+          <span class="ex-tag">Worked example · teaser</span>
+          <h3>Example 1 — Whole life EPV &amp; variance</h3>
+          <p class="exlede">Compute the expected present value and variance of a whole life insurance using the <span class="chip-mono">A_x</span> identities above, then sanity-check against the annuity form.</p>
+          <div class="ex-steps">
+            <div class="ex-step"><span class="n">1</span> Set up Z and find <span class="chip-mono">A_x</span> from the life table</div>
+            <div class="ex-step"><span class="n">2</span> Get <span class="chip-mono">²A_x</span>, then <span class="chip-mono">Var(Z)</span></div>
+            <div class="ex-step faint"><span class="n">3</span> Cross-check via <span class="chip-mono">ä_x = (1 − A_x)/d</span></div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary">Start studying</a>
+          <a href="#" class="btn btn-ghost">Resume</a>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fmark">M</div>
+  <div>
+    <b>Me Studing Stuff</b><br>
+    <small>Study smarter. Pass exams. · SOA Exam FAM hub</small>
+  </div>
+  <div class="fr">
+    <a href="#">Topics</a>
+    <a href="#">Formula sheet</a>
+    <a href="#">Worked problems</a>
+    <a href="#">Plan</a>
+  </div>
+</footer>
+
+</body>
+</html>

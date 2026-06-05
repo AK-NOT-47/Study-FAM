@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Stained Glass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lead:#0e0b14;            /* leaded came, near-black */
+    --lead2:#1c1726;
+    --glow:#fff3c4;            /* cathedral light */
+    --ruby:#c41e3a;
+    --ruby-d:#7a0f24;
+    --cobalt:#1f4ea8;
+    --cobalt-d:#10295e;
+    --sapphire:#2563d4;
+    --emerald:#0f8a5f;
+    --emerald-d:#0a4f3a;
+    --amber:#e7a325;
+    --amber-d:#9a6a12;
+    --violet:#6d3aa8;
+    --violet-d:#3d1f63;
+    --rose:#d6447e;
+    --teal:#1aa3a3;
+    --gold:#e9c46a;
+    --ink:#f4ecd8;            /* parchment text */
+    --came:3px;
+    --cameC:#05030a;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:'Spectral',serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 800px at 80% -10%, rgba(231,163,37,.22), transparent 55%),
+      radial-gradient(900px 700px at 10% 110%, rgba(37,99,212,.20), transparent 55%),
+      linear-gradient(160deg,#080611,#120d1c 50%,#08060f);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ====== Leaded glass utility: the "came" framing ====== */
+  .pane{
+    position:relative;
+    border:var(--came) solid var(--cameC);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.12),
+      inset 0 14px 30px rgba(255,255,255,.18),
+      inset 0 -22px 40px rgba(0,0,0,.45),
+      0 10px 30px rgba(0,0,0,.5);
+  }
+  /* glossy specular streak on every jewel pane */
+  .pane::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(125deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.05) 18%, transparent 38%);
+    mix-blend-mode:screen;
+  }
+
+  /* jewel fills, each a translucent gradient */
+  .jewel-ruby{background:
+      radial-gradient(120% 140% at 30% 10%, rgba(255,255,255,.45), transparent 40%),
+      linear-gradient(160deg,var(--ruby),var(--ruby-d));}
+  .jewel-cobalt{background:
+      radial-gradient(120% 140% at 30% 10%, rgba(255,255,255,.4), transparent 42%),
+      linear-gradient(160deg,var(--sapphire),var(--cobalt-d));}
+  .jewel-emerald{background:
+      radial-gradient(120% 140% at 30% 10%, rgba(255,255,255,.4), transparent 42%),
+      linear-gradient(160deg,var(--emerald),var(--emerald-d));}
+  .jewel-amber{background:
+      radial-gradient(120% 140% at 30% 10%, rgba(255,255,255,.5), transparent 44%),
+      linear-gradient(160deg,var(--amber),var(--amber-d));}
+  .jewel-violet{background:
+      radial-gradient(120% 140% at 30% 10%, rgba(255,255,255,.42), transparent 42%),
+      linear-gradient(160deg,var(--violet),var(--violet-d));}
+  .jewel-night{background:
+      radial-gradient(120% 140% at 35% 8%, rgba(255,255,255,.22), transparent 46%),
+      linear-gradient(165deg,#241a3a,#0c0818);}
+
+  /* ====== App frame ====== */
+  .leadframe{
+    max-width:1320px;margin:0 auto;padding:26px clamp(14px,3vw,40px) 60px;
+  }
+
+  /* ====== Top arcade / header ====== */
+  header.arch{
+    position:relative;
+    display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+    padding:18px 22px;
+    border:var(--came) solid var(--cameC);
+    border-radius:14px 14px 80px 80px/14px 14px 36px 36px;
+    background:
+      radial-gradient(700px 240px at 50% -40%, rgba(255,243,196,.35), transparent 60%),
+      linear-gradient(180deg,#181125,#0c0816);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 12px 34px rgba(0,0,0,.55);
+  }
+  .brand{display:flex;align-items:center;gap:16px;margin-right:auto}
+  .rose-mark{
+    width:62px;height:62px;flex:0 0 auto;position:relative;
+    border-radius:50%;
+    border:3px solid var(--cameC);
+    background:conic-gradient(from -90deg,
+      var(--ruby) 0 60deg, var(--amber) 60deg 120deg, var(--emerald) 120deg 180deg,
+      var(--cobalt) 180deg 240deg, var(--violet) 240deg 300deg, var(--rose) 300deg 360deg);
+    box-shadow:inset 0 0 0 5px #0c0816, inset 0 0 14px rgba(0,0,0,.6), 0 0 26px rgba(231,163,37,.4);
+    display:grid;place-items:center;
+  }
+  .rose-mark::before{ /* lead spokes */
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    background:
+      conic-gradient(from 0deg, transparent 0 calc(60deg - 2deg), var(--cameC) calc(60deg - 2deg) 60deg) ,
+      conic-gradient(from 0deg, transparent 0 calc(120deg - 2deg), var(--cameC) calc(120deg - 2deg) 120deg);
+    -webkit-mask:radial-gradient(circle, transparent 0 30%, #000 31%);
+            mask:radial-gradient(circle, transparent 0 30%, #000 31%);
+    mix-blend-mode:multiply;
+  }
+  .rose-mark span{
+    position:relative;z-index:2;
+    font-family:'Cinzel',serif;font-weight:800;font-size:1.5rem;color:#fff;
+    text-shadow:0 1px 0 #000,0 0 12px rgba(0,0,0,.7);
+  }
+  .brand h1{
+    font-family:'Cinzel',serif;font-weight:700;letter-spacing:.5px;
+    font-size:1.18rem;line-height:1.1;
+    background:linear-gradient(180deg,#fff7da,#e7a325);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .brand small{display:block;font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:1rem;color:#c9b78a;letter-spacing:.3px}
+
+  /* nav as a row of jewel tiles */
+  nav.glass-nav{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+  .seclabel{
+    font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;
+    color:#0c0816;background:linear-gradient(180deg,var(--gold),#b9913f);
+    padding:7px 12px;border:2px solid var(--cameC);border-radius:6px;
+    margin-right:10px;box-shadow:0 0 14px rgba(233,196,106,.45);
+    text-transform:uppercase;font-weight:700;white-space:nowrap;
+  }
+  nav.glass-nav a{
+    position:relative;text-decoration:none;
+    font-family:'Cinzel',serif;font-weight:500;font-size:.74rem;letter-spacing:.08em;
+    color:var(--ink);
+    padding:9px 13px;margin:3px;border:2px solid var(--cameC);border-radius:7px;
+    background:linear-gradient(170deg,rgba(255,255,255,.1),rgba(0,0,0,.32));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+    transition:transform .18s ease, box-shadow .25s ease, color .2s ease;
+    white-space:nowrap;
+  }
+  nav.glass-nav a::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:5px 0 0 5px}
+  nav.glass-nav a:nth-child(2)::before{background:var(--ruby)}
+  nav.glass-nav a:nth-child(3)::before{background:var(--amber)}
+  nav.glass-nav a:nth-child(4)::before{background:var(--emerald)}
+  nav.glass-nav a:nth-child(5)::before{background:var(--cobalt)}
+  nav.glass-nav a:nth-child(6)::before{background:var(--violet)}
+  nav.glass-nav a:nth-child(7)::before{background:var(--rose)}
+  nav.glass-nav a:hover{transform:translateY(-2px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 0 18px rgba(255,243,196,.5);
+    color:#fff8df}
+
+  /* ====== Hero mosaic grid ====== */
+  .mosaic{
+    margin-top:26px;
+    display:grid;gap:12px;
+    grid-template-columns:1.55fr 1fr 1fr;
+    grid-template-areas:
+      "hero hero stats"
+      "hero hero exam"
+      "topic topic exam";
+  }
+  .tile{border-radius:10px;padding:26px 28px;overflow:hidden}
+  .tile h2,.tile h3{font-family:'Cinzel',serif;font-weight:700}
+
+  /* HERO */
+  .hero{grid-area:hero;display:flex;flex-direction:column;justify-content:center;min-height:330px}
+  .hero .greet{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.5rem;
+    color:#ffe9a8;letter-spacing:.5px;margin-bottom:4px;text-shadow:0 0 18px rgba(231,163,37,.5)}
+  .hero h2{
+    font-size:clamp(2.3rem,4.4vw,3.5rem);line-height:1.02;font-weight:800;
+    letter-spacing:.5px;margin:6px 0 16px;
+    color:#fff;
+    text-shadow:0 2px 0 #2a0b14, 0 0 30px rgba(196,30,58,.45);
+  }
+  .hero h2 .em{
+    background:linear-gradient(180deg,#fff7da 0%,#ffd86b 45%,#e7a325 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:none;
+  }
+  .hero p{max-width:46ch;font-size:1.12rem;color:#f0e6cf;}
+  .hero .cta{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+  .btn{
+    font-family:'Cinzel',serif;font-weight:700;font-size:.82rem;letter-spacing:.12em;
+    text-decoration:none;text-transform:uppercase;
+    padding:14px 24px;border:3px solid var(--cameC);border-radius:9px;cursor:pointer;
+    color:#0c0816;transition:transform .16s ease, box-shadow .25s ease;
+  }
+  .btn:hover{transform:translateY(-3px)}
+  .btn-primary{background:
+      radial-gradient(120% 140% at 30% 0%, #fff 0%, transparent 40%),
+      linear-gradient(170deg,var(--gold),#c08a23);
+    box-shadow:0 0 26px rgba(233,196,106,.6),inset 0 1px 0 rgba(255,255,255,.6)}
+  .btn-ghost{color:var(--ink);background:linear-gradient(170deg,rgba(255,255,255,.08),rgba(0,0,0,.3));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+  .btn-ghost:hover{box-shadow:0 0 22px rgba(37,99,212,.55),inset 0 1px 0 rgba(255,255,255,.25)}
+
+  /* STATS */
+  .stats{grid-area:stats;display:flex;flex-direction:column;gap:12px}
+  .stat{flex:1;border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;min-height:96px}
+  .stat .k{font-family:'Cinzel',serif;font-weight:800;font-size:2.3rem;line-height:1;color:#fff;
+    text-shadow:0 2px 6px rgba(0,0,0,.5)}
+  .stat .lbl{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;
+    color:#0c0816;font-weight:700;margin-top:8px;opacity:.85}
+  .stat .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:#0c0816;opacity:.8}
+  .progress-arc{display:flex;align-items:center;gap:16px}
+  .dial{
+    --p:72;
+    width:78px;height:78px;flex:0 0 auto;border-radius:50%;position:relative;
+    background:
+      radial-gradient(circle at 50% 50%, #0c0816 0 46%, transparent 47%),
+      conic-gradient(var(--glow) 0 calc(var(--p)*1%), rgba(12,8,22,.55) 0);
+    border:3px solid var(--cameC);
+    box-shadow:0 0 18px rgba(255,243,196,.5);
+  }
+  .dial b{position:absolute;inset:0;display:grid;place-items:center;
+    font-family:'Cinzel',serif;font-weight:800;font-size:1.1rem;color:var(--glow)}
+
+  /* EXAM CARD */
+  .exam{grid-area:exam;display:flex;flex-direction:column;border-radius:10px;justify-content:space-between}
+  .exam .crown{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;
+    color:#ffe9a8;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .exam h3{font-size:2rem;color:#fff;line-height:1;text-shadow:0 2px 0 #10295e,0 0 26px rgba(37,99,212,.5)}
+  .exam .full{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:#dfe8ff;margin:10px 0 18px}
+  .exam ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .exam li{display:flex;justify-content:space-between;align-items:center;
+    font-size:.95rem;color:#eaf0ff;padding-bottom:8px;
+    border-bottom:1px dashed rgba(255,255,255,.18)}
+  .exam li:last-child{border-bottom:none}
+  .exam li span:first-child{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#aebfe8}
+  .exam li b{font-family:'Cinzel',serif;color:#fff}
+  .pill{align-self:flex-start;margin-top:14px;font-family:'Cinzel',serif;font-weight:700;font-size:.7rem;
+    letter-spacing:.14em;padding:8px 14px;border:2px solid var(--cameC);border-radius:20px;
+    color:#0c0816;background:linear-gradient(180deg,var(--gold),#bb8c2e);text-transform:uppercase}
+
+  /* TOPIC PREVIEW (wide bottom) */
+  .topic{grid-area:topic;border-radius:10px;display:flex;flex-direction:column;gap:14px}
+  .topic .head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .topic h3{font-size:1.7rem;color:#fff;text-shadow:0 2px 0 #0a4f3a,0 0 22px rgba(15,138,95,.45)}
+  .topic .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.18rem;color:#e8ffef;flex:1;min-width:200px}
+  .tag{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
+    color:#0c0816;background:linear-gradient(180deg,#9fe7c6,#3aa07a);padding:5px 10px;border:2px solid var(--cameC);border-radius:6px}
+
+  /* FORMULA leaded panel */
+  .formula{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+    border:var(--came) solid var(--cameC);border-radius:9px;overflow:hidden;
+    background:#0a0712;
+  }
+  .formula .cell{
+    padding:20px 18px;text-align:center;position:relative;
+    border-right:var(--came) solid var(--cameC);
+    display:flex;flex-direction:column;gap:8px;justify-content:center;
+  }
+  .formula .cell:last-child{border-right:none}
+  .formula .cell.c1{background:linear-gradient(160deg,rgba(196,30,58,.55),rgba(122,15,36,.7))}
+  .formula .cell.c2{background:linear-gradient(160deg,rgba(37,99,212,.55),rgba(16,41,94,.7))}
+  .formula .cell.c3{background:linear-gradient(160deg,rgba(109,58,168,.55),rgba(61,31,99,.72))}
+  .formula .cell::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(120deg,rgba(255,255,255,.3),transparent 40%);mix-blend-mode:screen}
+  .formula .label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+  .formula .eq{font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:#fff;
+    text-shadow:0 1px 4px rgba(0,0,0,.6);font-weight:600;position:relative;z-index:2}
+  .formula .eq i{font-style:italic}
+  .sup{font-size:.7em;vertical-align:super}
+  .sub{font-size:.72em;vertical-align:sub}
+
+  /* trap + example row */
+  .lower{margin-top:12px;display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
+  .trap{border-radius:10px;padding:24px 26px;position:relative}
+  .trap .bang{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+    color:#2a0b14;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .trap .bang .glyph{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;
+    background:#2a0b14;color:var(--gold);font-weight:800;border:2px solid #fff3c4}
+  .trap p{font-family:'Spectral',serif;font-size:1.12rem;color:#fff;line-height:1.5;font-weight:500;
+    text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .trap em{font-style:italic;color:#fff3c4;font-weight:600}
+
+  .example{border-radius:10px;padding:24px 26px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+  .example .crown{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#ffe9a8}
+  .example h4{font-family:'Cinzel',serif;font-weight:700;font-size:1.3rem;color:#fff;line-height:1.15;
+    text-shadow:0 0 20px rgba(231,163,37,.4)}
+  .example p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:#f0e6cf}
+  .example .mini-cta{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .mini{font-family:'Cinzel',serif;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;padding:10px 16px;border:2px solid var(--cameC);border-radius:8px;color:#0c0816;transition:transform .15s}
+  .mini:hover{transform:translateY(-2px)}
+  .mini.go{background:linear-gradient(170deg,var(--gold),#c08a23);box-shadow:0 0 16px rgba(233,196,106,.5)}
+  .mini.res{background:linear-gradient(170deg,#9fe7c6,#2f8a66);color:#04201a}
+
+  /* ====== Footer ====== */
+  footer{
+    margin-top:30px;text-align:center;padding:26px;
+    border-top:var(--came) solid var(--cameC);
+    display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+  }
+  footer .fmark{width:34px;height:34px;border-radius:50%;
+    background:conic-gradient(from -90deg,var(--ruby),var(--amber),var(--emerald),var(--cobalt),var(--violet),var(--rose),var(--ruby));
+    border:2px solid var(--cameC);display:grid;place-items:center;
+    font-family:'Cinzel',serif;font-weight:800;color:#fff;font-size:.85rem}
+  footer span{font-family:'Cinzel',serif;letter-spacing:.12em;color:#c9b78a;font-size:.82rem}
+  footer em{font-family:'Cormorant Garamond',serif;font-style:italic;color:#8f7f5e}
+
+  /* light shimmer animation */
+  @keyframes shimmer{0%,100%{opacity:.5}50%{opacity:1}}
+  .rose-mark,.dial{animation:shimmer 6s ease-in-out infinite}
+
+  /* ====== Responsive ====== */
+  @media(max-width:980px){
+    .mosaic{grid-template-columns:1fr 1fr;
+      grid-template-areas:"hero hero" "stats exam" "topic topic";}
+    .stats{flex-direction:row}
+  }
+  @media(max-width:700px){
+    .mosaic{grid-template-columns:1fr;
+      grid-template-areas:"hero" "stats" "exam" "topic";}
+    .stats{flex-direction:column}
+    .formula{grid-template-columns:1fr}
+    .formula .cell{border-right:none;border-bottom:var(--came) solid var(--cameC)}
+    .formula .cell:last-child{border-bottom:none}
+    .lower{grid-template-columns:1fr}
+    nav.glass-nav{width:100%}
+    .brand{margin-right:0}
+  }
+</style>
+</head>
+<body>
+<div class="leadframe">
+
+  <!-- HEADER / ARCADE -->
+  <header class="arch">
+    <div class="brand">
+      <div class="rose-mark"><span>M</span></div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+    <nav class="glass-nav">
+      <span class="seclabel">FAM-L / FAM-S</span>
+      <a href="#">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </nav>
+  </header>
+
+  <!-- HERO MOSAIC -->
+  <section class="mosaic">
+
+    <!-- HERO -->
+    <div class="tile hero pane jewel-night">
+      <p class="greet">Good evening</p>
+      <h2>Let's get you <span class="em">that pass.</span></h2>
+      <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#">Start studying</a>
+        <a class="btn btn-ghost" href="#">Resume</a>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat pane jewel-amber progress-arc">
+        <div class="dial" style="--p:72"><b>72%</b></div>
+        <div>
+          <div class="lbl">Overall progress</div>
+          <div class="sub">12 of 17 topics</div>
+        </div>
+      </div>
+      <div class="stat pane jewel-ruby">
+        <div class="k">86</div>
+        <div class="lbl">Days — exam countdown</div>
+      </div>
+      <div class="stat pane jewel-emerald">
+        <div class="k">8</div>
+        <div class="lbl">Topics solid</div>
+      </div>
+    </div>
+
+    <!-- EXAM CARD -->
+    <div class="tile exam pane jewel-cobalt">
+      <div>
+        <div class="crown">✦ Your exam</div>
+        <h3>Exam FAM</h3>
+        <div class="full">Fundamentals of Actuarial Mathematics</div>
+        <ul>
+          <li><span>Body</span><b>SOA</b></li>
+          <li><span>Questions</span><b>34</b></li>
+          <li><span>Pass mark</span><b>6 / 10</b></li>
+        </ul>
+      </div>
+      <div class="pill">FAM-L · FAM-S</div>
+    </div>
+
+    <!-- TOPIC PREVIEW -->
+    <div class="tile topic pane jewel-emerald">
+      <div class="head">
+        <h3>Life Insurance Present Values</h3>
+        <span class="tag">Topic preview</span>
+        <p class="lede">The EPV machinery behind whole life, term and endowment benefits — and how variance falls right out of it.</p>
+      </div>
+      <div class="formula">
+        <div class="cell c1">
+          <div class="label">Whole life EPV</div>
+          <div class="eq"><i>A</i><span class="sub">x</span> = 1 − <i>d</i>·ä<span class="sub">x</span></div>
+        </div>
+        <div class="cell c2">
+          <div class="label">Variance of Z</div>
+          <div class="eq">Var(<i>Z</i>) = <sup class="sup">2</sup><i>A</i><span class="sub">x</span> − (<i>A</i><span class="sub">x</span>)<sup class="sup">2</sup></div>
+        </div>
+        <div class="cell c3">
+          <div class="label">Annuity link</div>
+          <div class="eq">ä<span class="sub">x</span> = (1 − <i>A</i><span class="sub">x</span>) / <i>d</i></div>
+        </div>
+      </div>
+
+      <!-- TRAP + EXAMPLE -->
+      <div class="lower">
+        <div class="trap pane jewel-amber">
+          <div class="bang"><span class="glyph">!</span> Common trap</div>
+          <p>Under UDD, multiply <em>ONLY</em> the term / death piece by <em>i/δ</em> — the pure endowment is never rescaled.</p>
+        </div>
+        <div class="example pane jewel-violet">
+          <div class="crown">✎ Worked example</div>
+          <h4>Example 1 — Whole life EPV &amp; variance</h4>
+          <p>Walk the full derivation from first principles to numbers.</p>
+          <div class="mini-cta">
+            <a class="mini go" href="#">Start studying</a>
+            <a class="mini res" href="#">Resume</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="fmark">M</div>
+    <span>Me Studing Stuff</span>
+    <em>— Study smarter. Pass exams.</em>
+  </footer>
+
+</div>
+</body>
+</html>

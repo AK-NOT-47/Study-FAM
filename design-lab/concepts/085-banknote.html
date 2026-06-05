@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e3b2e;          /* official ink green */
+    --ink-2:#16513e;
+    --ink-3:#1f6b50;
+    --ink-soft:#2f7a5e;
+    --paper:#eef2e6;        /* banknote paper */
+    --paper-2:#e4ead7;
+    --cream:#f6f7ee;
+    --gold:#9a7b2e;
+    --gold-2:#caa84e;
+    --rose:#7a3b3b;         /* security red ink */
+    --line:rgba(14,59,46,.22);
+    --line-2:rgba(14,59,46,.10);
+    --serif:"Playfair Display", Georgia, serif;
+    --cur:"Cormorant Garamond", Georgia, serif;
+    --body:"Spectral", Georgia, serif;
+    --mono:"JetBrains Mono", monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--body);
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 50% -10%, #f7f9ee, #e9eedd 60%, #dfe6d0 100%);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+
+  /* ====== GUILLOCHÉ BACKGROUND TEXTURE ====== */
+  .note-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+    opacity:.5;
+  }
+  .note-bg svg{position:absolute; }
+  .gl-tl{top:-160px; left:-160px}
+  .gl-br{bottom:-180px; right:-180px}
+  .micro-band{
+    position:fixed; left:0; right:0; height:14px; z-index:1; pointer-events:none;
+    font-family:var(--mono); font-size:7px; letter-spacing:.32em; color:rgba(14,59,46,.20);
+    white-space:nowrap; overflow:hidden; text-transform:uppercase;
+    user-select:none;
+  }
+  .micro-top{top:0}
+  .micro-bot{bottom:0}
+
+  /* ====== SHELL ====== */
+  .sheet{
+    position:relative; z-index:2;
+    max-width:1240px; margin:0 auto; padding:22px 26px 60px;
+  }
+
+  /* engraved frame around whole note */
+  .frame{
+    position:relative;
+    border:2px solid var(--ink);
+    border-radius:4px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 220px),
+      var(--paper);
+    box-shadow:
+      0 0 0 1px var(--paper) inset,
+      0 0 0 4px var(--ink) inset,
+      0 0 0 6px var(--paper) inset,
+      0 30px 80px -30px rgba(14,59,46,.45);
+    padding:0;
+    overflow:hidden;
+  }
+  .frame::before{
+    /* inner guilloché rule line */
+    content:""; position:absolute; inset:14px; border:1px solid var(--line);
+    border-radius:2px; pointer-events:none;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(14,59,46,.025) 0 2px, transparent 2px 7px);
+  }
+
+  /* corner denomination seals */
+  .corner{
+    position:absolute; width:74px; height:74px; z-index:5;
+    display:grid; place-items:center;
+    pointer-events:none;
+  }
+  .corner .seal{
+    width:60px; height:60px; border-radius:50%;
+    border:1.5px solid var(--ink);
+    display:grid; place-items:center;
+    font-family:var(--serif); font-weight:900; font-size:24px; color:var(--ink);
+    background:
+      repeating-radial-gradient(circle at 50% 50%, transparent 0 3px, rgba(14,59,46,.10) 3px 4px);
+    box-shadow:0 0 0 3px var(--paper), 0 0 0 4px var(--line);
+  }
+  .c-tl{top:22px; left:22px}
+  .c-tr{top:22px; right:22px}
+  .c-bl{bottom:22px; left:22px}
+  .c-br{bottom:22px; right:22px}
+
+  /* ====== HEADER / NAV ====== */
+  header.banknote-head{
+    position:relative;
+    padding:30px 40px 22px;
+    border-bottom:1px solid var(--line);
+    background:
+      repeating-linear-gradient(90deg, rgba(14,59,46,.05) 0 1px, transparent 1px 6px);
+  }
+  .head-top{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap:24px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:16px}
+  .m-mark{
+    width:64px; height:64px; flex:0 0 auto;
+    border:2px solid var(--ink); border-radius:50%;
+    display:grid; place-items:center; position:relative;
+    background:
+      repeating-radial-gradient(circle at 50% 50%, transparent 0 2.4px, rgba(14,59,46,.13) 2.4px 3.4px);
+    box-shadow:0 0 0 3px var(--paper), 0 0 0 4.5px var(--line);
+  }
+  .m-mark span{
+    font-family:var(--serif); font-weight:900; font-size:34px; color:var(--ink);
+    line-height:1; text-shadow:1px 1px 0 rgba(255,255,255,.5);
+  }
+  .brand-txt h1{
+    margin:0; font-family:var(--cur); font-weight:600; font-size:30px;
+    letter-spacing:.02em; color:var(--ink); line-height:1;
+  }
+  .brand-txt .tag{
+    margin-top:4px; font-family:var(--mono); font-size:9.5px; letter-spacing:.34em;
+    text-transform:uppercase; color:var(--ink-soft);
+  }
+  .head-meta{text-align:right; font-family:var(--mono); font-size:9.5px;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft); line-height:1.9}
+  .head-meta .serial{color:var(--rose); letter-spacing:.3em; font-weight:700}
+
+  /* primary nav */
+  nav.topics{
+    margin-top:24px;
+    display:flex; align-items:center; gap:0; flex-wrap:wrap;
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    padding:0;
+  }
+  nav.topics .section-label{
+    font-family:var(--mono); font-size:9px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--cream); background:var(--ink); padding:9px 14px; align-self:stretch;
+    display:flex; align-items:center; gap:8px;
+  }
+  nav.topics .section-label::before{content:"❖"; color:var(--gold-2); font-size:11px}
+  nav.topics ul{
+    list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; flex:1;
+  }
+  nav.topics li a{
+    display:block; text-decoration:none; color:var(--ink);
+    font-family:var(--cur); font-size:18px; font-weight:600; letter-spacing:.01em;
+    padding:9px 18px; position:relative;
+    border-right:1px solid var(--line-2);
+    transition:.2s;
+  }
+  nav.topics li a small{
+    display:block; font-family:var(--mono); font-size:7.5px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--ink-soft); margin-top:1px;
+  }
+  nav.topics li a:hover{background:var(--ink); color:var(--cream)}
+  nav.topics li a:hover small{color:var(--gold-2)}
+
+  /* ====== MAIN GRID ====== */
+  .body-wrap{padding:34px 40px 40px}
+  .grid{
+    display:grid; grid-template-columns:1.55fr 1fr; gap:30px;
+    align-items:start;
+  }
+
+  /* hero */
+  .hero .greet{
+    font-family:var(--mono); font-size:10px; letter-spacing:.4em; text-transform:uppercase;
+    color:var(--rose); display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .hero .greet::after{content:""; flex:1; height:1px;
+    background:repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px)}
+  .hero h2{
+    margin:0; font-family:var(--serif); font-weight:900; font-size:clamp(40px,6.4vw,68px);
+    line-height:.96; color:var(--ink); letter-spacing:-.01em;
+    text-shadow:1px 1px 0 rgba(255,255,255,.45);
+  }
+  .hero h2 em{
+    font-style:italic; font-family:var(--cur); font-weight:600;
+    color:var(--ink-3); position:relative;
+  }
+  .hero p.lede{
+    margin:20px 0 0; font-size:18px; line-height:1.62; color:var(--ink-2);
+    max-width:46ch; font-weight:400;
+  }
+  .hero p.lede .fa{color:var(--rose); font-style:italic; font-family:var(--cur); font-weight:600}
+
+  /* stat ribbon */
+  .stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:30px;
+    border:1.5px solid var(--ink); border-radius:3px; overflow:hidden;
+    background:var(--cream);
+    box-shadow:0 0 0 3px var(--paper), 0 14px 30px -20px rgba(14,59,46,.5);
+  }
+  .stat{
+    padding:18px 16px; text-align:center; position:relative;
+    background:
+      repeating-radial-gradient(circle at 50% 130%, transparent 0 9px, rgba(14,59,46,.045) 9px 10px);
+  }
+  .stat + .stat{border-left:1px solid var(--line)}
+  .stat .num{
+    font-family:var(--serif); font-weight:900; font-size:42px; line-height:1; color:var(--ink);
+    letter-spacing:-.02em;
+  }
+  .stat .num .sm{font-size:20px; color:var(--ink-3)}
+  .stat .lab{
+    margin-top:8px; font-family:var(--mono); font-size:8px; letter-spacing:.24em;
+    text-transform:uppercase; color:var(--ink-soft);
+  }
+  .stat .sub{margin-top:2px; font-family:var(--cur); font-size:14px; color:var(--rose); font-style:italic}
+  /* progress micro bar */
+  .stat .bar{
+    margin:9px auto 0; width:78%; height:5px; border:1px solid var(--ink); border-radius:3px;
+    background:repeating-linear-gradient(90deg, rgba(14,59,46,.12) 0 2px, transparent 2px 4px);
+    overflow:hidden; position:relative;
+  }
+  .stat .bar > i{
+    position:absolute; left:0; top:0; bottom:0; width:72%; display:block;
+    background:repeating-linear-gradient(45deg, var(--ink) 0 3px, var(--ink-3) 3px 6px);
+  }
+
+  /* exam FAM card */
+  .exam-card{
+    margin-top:30px; border:1.5px solid var(--ink); border-radius:3px; overflow:hidden;
+    background:linear-gradient(180deg, var(--ink), var(--ink-2));
+    color:var(--cream); position:relative;
+    box-shadow:0 0 0 3px var(--paper), 0 18px 36px -22px rgba(14,59,46,.7);
+  }
+  .exam-card::before{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background:
+      repeating-radial-gradient(circle at 88% 50%, transparent 0 7px, rgba(202,168,78,.10) 7px 8px),
+      repeating-linear-gradient(115deg, rgba(255,255,255,.03) 0 2px, transparent 2px 9px);
+  }
+  .exam-card .ec-in{position:relative; z-index:2; padding:22px 26px; display:flex;
+    align-items:center; gap:22px; flex-wrap:wrap; justify-content:space-between}
+  .exam-card .ec-left{display:flex; align-items:center; gap:18px}
+  .exam-card .vignette{
+    width:58px; height:58px; flex:0 0 auto; border:1.5px solid var(--gold-2); border-radius:50%;
+    display:grid; place-items:center; font-size:24px;
+    background:repeating-radial-gradient(circle at 50% 50%, transparent 0 2.6px, rgba(202,168,78,.18) 2.6px 3.6px);
+  }
+  .exam-card h3{margin:0; font-family:var(--cur); font-weight:600; font-size:26px; letter-spacing:.01em}
+  .exam-card .ec-sub{font-family:var(--mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gold-2); margin-top:5px}
+  .exam-card .specs{display:flex; gap:16px; flex-wrap:wrap; font-family:var(--mono); font-size:10px;
+    letter-spacing:.06em; color:rgba(246,247,238,.85)}
+  .exam-card .specs b{color:var(--gold-2); font-weight:700}
+
+  /* ====== RIGHT COLUMN (topic preview) ====== */
+  .panel{
+    border:1.5px solid var(--ink); border-radius:3px; background:var(--cream); overflow:hidden;
+    box-shadow:0 0 0 3px var(--paper), 0 16px 34px -24px rgba(14,59,46,.55);
+  }
+  .panel + .panel{margin-top:26px}
+  .panel-head{
+    padding:14px 20px; border-bottom:1px solid var(--line);
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    background:
+      repeating-linear-gradient(90deg, rgba(14,59,46,.05) 0 1px, transparent 1px 7px);
+  }
+  .panel-head .kicker{font-family:var(--mono); font-size:8px; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--rose)}
+  .panel-head h4{margin:4px 0 0; font-family:var(--serif); font-weight:700; font-size:23px; color:var(--ink); line-height:1.05}
+  .panel-head .denom{font-family:var(--cur); font-weight:600; font-size:30px; color:var(--ink-3); opacity:.5; line-height:1}
+  .panel-body{padding:18px 20px 22px}
+  .panel-body .lede{font-family:var(--cur); font-style:italic; font-size:17px; color:var(--ink-2); margin:0 0 16px}
+
+  /* FORMULA BLOCK */
+  .formulas{
+    border:1px solid var(--ink); border-radius:3px; overflow:hidden;
+    background:#fbfcf4;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(14,59,46,.04) 0 23px, transparent 23px 24px);
+  }
+  .formulas .f-cap{
+    font-family:var(--mono); font-size:7.5px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--ink-soft); padding:7px 14px; border-bottom:1px solid var(--line);
+    background:var(--paper-2);
+  }
+  .formula{
+    padding:13px 16px; font-family:var(--mono); font-size:14px; color:var(--ink);
+    display:flex; align-items:center; gap:12px;
+    letter-spacing:.01em;
+  }
+  .formula + .formula{border-top:1px solid var(--line-2)}
+  .formula .tag{font-family:var(--cur); font-style:italic; font-size:13px; color:var(--rose);
+    flex:0 0 auto; min-width:96px}
+  .formula code{background:none; color:var(--ink); font-weight:500; white-space:nowrap; overflow-x:auto}
+  .formula code .op{color:var(--gold)}
+  .formula code .var{color:var(--ink-3); font-weight:700}
+
+  /* common trap callout */
+  .trap{
+    margin-top:20px; border:1.5px solid var(--rose); border-radius:3px; position:relative;
+    background:
+      repeating-linear-gradient(135deg, rgba(122,59,59,.05) 0 6px, transparent 6px 14px),
+      #fbf3f0;
+    padding:16px 18px 16px 52px;
+  }
+  .trap::before{
+    content:"⚠"; position:absolute; left:14px; top:14px; font-size:22px; color:var(--rose);
+  }
+  .trap .t-lab{font-family:var(--mono); font-size:8px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--rose); font-weight:700; margin-bottom:4px}
+  .trap p{margin:0; font-size:15px; line-height:1.55; color:#5a2c2c}
+  .trap p b{color:var(--rose)}
+
+  /* worked example teaser */
+  .example{
+    margin-top:0; padding:18px 20px 20px; border-top:1px dashed var(--line);
+  }
+  .example .ex-kicker{font-family:var(--mono); font-size:8px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink-soft)}
+  .example h5{margin:5px 0 4px; font-family:var(--serif); font-weight:700; font-size:20px; color:var(--ink)}
+  .example .ex-note{font-family:var(--cur); font-style:italic; font-size:15px; color:var(--ink-2); margin:0 0 16px}
+  .btns{display:flex; gap:12px; flex-wrap:wrap}
+  .btn{
+    text-decoration:none; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+    padding:13px 22px; border-radius:3px; border:1.5px solid var(--ink); position:relative;
+    transition:.18s; font-weight:700; display:inline-flex; align-items:center; gap:9px;
+  }
+  .btn-primary{background:var(--ink); color:var(--cream);
+    box-shadow:0 0 0 2px var(--paper), 0 0 0 3px var(--line), 0 8px 16px -8px rgba(14,59,46,.7)}
+  .btn-primary::before{content:"❖"; color:var(--gold-2)}
+  .btn-primary:hover{background:var(--ink-3); transform:translateY(-1px)}
+  .btn-ghost{background:transparent; color:var(--ink)}
+  .btn-ghost::before{content:"↺"; color:var(--rose); font-weight:700}
+  .btn-ghost:hover{background:var(--paper-2)}
+
+  /* mini progress / topic checklist in side */
+  .ledger{padding:6px 20px 18px}
+  .ledger .lrow{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 0; border-bottom:1px solid var(--line-2);
+    font-family:var(--cur); font-size:17px; color:var(--ink-2);
+  }
+  .ledger .lrow:last-child{border-bottom:none}
+  .ledger .lrow .nm{display:flex; align-items:center; gap:9px}
+  .ledger .lrow .dot{width:9px; height:9px; border-radius:50%; border:1px solid var(--ink); flex:0 0 auto}
+  .ledger .lrow.done .dot{background:repeating-conic-gradient(var(--ink) 0 25%, var(--ink-3) 0 50%)}
+  .ledger .lrow.done .nm{color:var(--ink)}
+  .ledger .lrow .st{font-family:var(--mono); font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft)}
+  .ledger .lrow.done .st{color:var(--ink-3)}
+
+  /* ====== FOOTER ====== */
+  footer.note-foot{
+    margin-top:0; padding:22px 40px; border-top:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    background:
+      repeating-linear-gradient(90deg, rgba(14,59,46,.05) 0 1px, transparent 1px 6px);
+    font-family:var(--mono); font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  footer.note-foot .f-brand{display:flex; align-items:center; gap:11px;
+    font-family:var(--cur); font-size:18px; letter-spacing:.02em; text-transform:none; color:var(--ink)}
+  footer.note-foot .f-brand .fm{
+    width:32px; height:32px; border:1.5px solid var(--ink); border-radius:50%;
+    display:grid; place-items:center; font-family:var(--serif); font-weight:900; font-size:16px; color:var(--ink);
+    background:repeating-radial-gradient(circle at 50% 50%, transparent 0 1.8px, rgba(14,59,46,.13) 1.8px 2.6px);
+  }
+  footer.note-foot .f-brand small{font-family:var(--mono); font-size:7.5px; letter-spacing:.26em;
+    text-transform:uppercase; color:var(--ink-soft); display:block; margin-top:2px}
+  footer.note-foot .f-serial{color:var(--rose); letter-spacing:.3em; font-weight:700}
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width:920px){
+    .grid{grid-template-columns:1fr}
+    .hero h2{font-size:clamp(36px,9vw,56px)}
+  }
+  @media (max-width:700px){
+    .sheet{padding:12px 10px 40px}
+    header.banknote-head{padding:24px 20px 18px}
+    .body-wrap{padding:24px 20px 30px}
+    .head-meta{text-align:left}
+    .stats{grid-template-columns:1fr; }
+    .stat + .stat{border-left:none; border-top:1px solid var(--line)}
+    .corner{display:none}
+    .exam-card .ec-in{padding:18px}
+    nav.topics li a{font-size:16px; padding:8px 14px}
+    .formula{flex-direction:column; align-items:flex-start; gap:5px}
+    .formula .tag{min-width:0}
+    footer.note-foot{padding:18px 20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- guilloché texture -->
+<div class="note-bg" aria-hidden="true">
+  <svg class="gl-tl" width="520" height="520" viewBox="0 0 520 520">
+    <g fill="none" stroke="#0e3b2e" stroke-width="0.6">
+      <circle cx="260" cy="260" r="40"/><circle cx="260" cy="260" r="70"/>
+      <circle cx="260" cy="260" r="100"/><circle cx="260" cy="260" r="130"/>
+      <circle cx="260" cy="260" r="160"/><circle cx="260" cy="260" r="190"/>
+      <circle cx="260" cy="260" r="220"/><circle cx="260" cy="260" r="250"/>
+      <ellipse cx="260" cy="260" rx="250" ry="120"/>
+      <ellipse cx="260" cy="260" rx="120" ry="250"/>
+      <ellipse cx="260" cy="260" rx="220" ry="200" transform="rotate(30 260 260)"/>
+      <ellipse cx="260" cy="260" rx="220" ry="200" transform="rotate(-30 260 260)"/>
+      <ellipse cx="260" cy="260" rx="220" ry="200" transform="rotate(60 260 260)"/>
+      <ellipse cx="260" cy="260" rx="220" ry="200" transform="rotate(-60 260 260)"/>
+    </g>
+  </svg>
+  <svg class="gl-br" width="560" height="560" viewBox="0 0 560 560">
+    <g fill="none" stroke="#0e3b2e" stroke-width="0.6">
+      <circle cx="280" cy="280" r="45"/><circle cx="280" cy="280" r="80"/>
+      <circle cx="280" cy="280" r="115"/><circle cx="280" cy="280" r="150"/>
+      <circle cx="280" cy="280" r="185"/><circle cx="280" cy="280" r="220"/>
+      <circle cx="280" cy="280" r="255"/>
+      <ellipse cx="280" cy="280" rx="255" ry="130"/>
+      <ellipse cx="280" cy="280" rx="130" ry="255"/>
+      <ellipse cx="280" cy="280" rx="230" ry="210" transform="rotate(22 280 280)"/>
+      <ellipse cx="280" cy="280" rx="230" ry="210" transform="rotate(-22 280 280)"/>
+      <ellipse cx="280" cy="280" rx="230" ry="210" transform="rotate(67 280 280)"/>
+      <ellipse cx="280" cy="280" rx="230" ry="210" transform="rotate(-67 280 280)"/>
+    </g>
+  </svg>
+</div>
+
+<!-- microprinting security bands -->
+<div class="micro-band micro-top" aria-hidden="true">ME&nbsp;STUDING&nbsp;STUFF · STUDY&nbsp;SMARTER · PASS&nbsp;EXAMS · SOA&nbsp;EXAM&nbsp;FAM · ME&nbsp;STUDING&nbsp;STUFF · STUDY&nbsp;SMARTER · PASS&nbsp;EXAMS · SOA&nbsp;EXAM&nbsp;FAM · ME&nbsp;STUDING&nbsp;STUFF · STUDY&nbsp;SMARTER · PASS&nbsp;EXAMS · SOA&nbsp;EXAM&nbsp;FAM · ME&nbsp;STUDING&nbsp;STUFF · STUDY&nbsp;SMARTER · PASS&nbsp;EXAMS</div>
+<div class="micro-band micro-bot" aria-hidden="true">FUNDAMENTALS&nbsp;OF&nbsp;ACTUARIAL&nbsp;MATHEMATICS · LEGAL&nbsp;TENDER&nbsp;FOR&nbsp;A&nbsp;PASSING&nbsp;SCORE · FUNDAMENTALS&nbsp;OF&nbsp;ACTUARIAL&nbsp;MATHEMATICS · LEGAL&nbsp;TENDER&nbsp;FOR&nbsp;A&nbsp;PASSING&nbsp;SCORE · FUNDAMENTALS&nbsp;OF&nbsp;ACTUARIAL&nbsp;MATHEMATICS · LEGAL&nbsp;TENDER&nbsp;FOR&nbsp;A&nbsp;PASSING&nbsp;SCORE</div>
+
+<div class="sheet">
+  <div class="frame">
+
+    <!-- corner seals -->
+    <div class="corner c-tl"><div class="seal">M</div></div>
+    <div class="corner c-tr"><div class="seal">M</div></div>
+    <div class="corner c-bl"><div class="seal">M</div></div>
+    <div class="corner c-br"><div class="seal">M</div></div>
+
+    <!-- HEADER -->
+    <header class="banknote-head">
+      <div class="head-top">
+        <div class="brand">
+          <div class="m-mark"><span>M</span></div>
+          <div class="brand-txt">
+            <h1>Me Studing Stuff</h1>
+            <div class="tag">Study smarter. Pass exams.</div>
+          </div>
+        </div>
+        <div class="head-meta">
+          The Actuarial Reserve Note<br>
+          Series 2026 · Bureau of Study<br>
+          <span class="serial">№ FAM-072-1700</span>
+        </div>
+      </div>
+
+      <!-- PRIMARY NAV -->
+      <nav class="topics" aria-label="Topics">
+        <div class="section-label">FAM-L / FAM-S</div>
+        <ul>
+          <li><a href="#">Survival Models<small>Ch. 01</small></a></li>
+          <li><a href="#">Life Tables<small>Ch. 02</small></a></li>
+          <li><a href="#">Life Insurance<small>Ch. 03</small></a></li>
+          <li><a href="#">Life Annuities<small>Ch. 04</small></a></li>
+          <li><a href="#">Premiums<small>Ch. 05</small></a></li>
+          <li><a href="#">Policy Values<small>Ch. 06</small></a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- BODY -->
+    <div class="body-wrap">
+      <div class="grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-left">
+          <section class="hero">
+            <div class="greet">Good evening</div>
+            <h2>Let's get you that <em>pass.</em></h2>
+            <p class="lede">Your focused hub for <span class="fa">SOA Exam FAM</span> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          </section>
+
+          <!-- STATS -->
+          <section class="stats" aria-label="Progress statistics">
+            <div class="stat">
+              <div class="num">72<span class="sm">%</span></div>
+              <div class="bar"><i></i></div>
+              <div class="lab">Overall progress</div>
+              <div class="sub">12 of 17 topics</div>
+            </div>
+            <div class="stat">
+              <div class="num">86</div>
+              <div class="lab">Exam countdown</div>
+              <div class="sub">days remaining</div>
+            </div>
+            <div class="stat">
+              <div class="num">8</div>
+              <div class="lab">Topics solid</div>
+              <div class="sub">mastered &amp; banked</div>
+            </div>
+          </section>
+
+          <!-- EXAM FAM CARD -->
+          <section class="exam-card">
+            <div class="ec-in">
+              <div class="ec-left">
+                <div class="vignette">📜</div>
+                <div>
+                  <h3>Exam FAM</h3>
+                  <div class="ec-sub">Fundamentals of Actuarial Mathematics · SOA</div>
+                </div>
+              </div>
+              <div class="specs">
+                <span><b>34</b> questions</span>
+                <span>pass = <b>6 / 10</b></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- LEDGER / topic status -->
+          <section class="panel" style="margin-top:30px">
+            <div class="panel-head">
+              <div>
+                <div class="kicker">Account of study · running balance</div>
+                <h4>Topic Ledger</h4>
+              </div>
+              <div class="denom">17</div>
+            </div>
+            <div class="ledger">
+              <div class="lrow done"><span class="nm"><span class="dot"></span>Survival Models</span><span class="st">Solid</span></div>
+              <div class="lrow done"><span class="nm"><span class="dot"></span>Life Tables</span><span class="st">Solid</span></div>
+              <div class="lrow done"><span class="nm"><span class="dot"></span>Life Insurance</span><span class="st">In review</span></div>
+              <div class="lrow"><span class="nm"><span class="dot"></span>Life Annuities</span><span class="st">Started</span></div>
+              <div class="lrow"><span class="nm"><span class="dot"></span>Premiums</span><span class="st">Queued</span></div>
+              <div class="lrow"><span class="nm"><span class="dot"></span>Policy Values</span><span class="st">Queued</span></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-right">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="kicker">Topic preview · Life Insurance</div>
+                <h4>Life Insurance Present Values</h4>
+              </div>
+              <div class="denom">A<sub>x</sub></div>
+            </div>
+            <div class="panel-body">
+              <p class="lede">The expected present value of a benefit — the price of a promise, discounted back to today.</p>
+
+              <!-- FORMULA BLOCK -->
+              <div class="formulas">
+                <div class="f-cap">Engraved formulas · whole life</div>
+                <div class="formula">
+                  <span class="tag">EPV</span>
+                  <code><span class="var">A_x</span> = 1 <span class="op">−</span> d<span class="op">·</span>ä_x</code>
+                </div>
+                <div class="formula">
+                  <span class="tag">Variance</span>
+                  <code><span class="var">Var(Z)</span> = ²A_x <span class="op">−</span> (A_x)²</code>
+                </div>
+                <div class="formula">
+                  <span class="tag">Annuity</span>
+                  <code><span class="var">ä_x</span> = (1 <span class="op">−</span> A_x) <span class="op">/</span> d</code>
+                </div>
+              </div>
+
+              <!-- COMMON TRAP -->
+              <div class="trap">
+                <div class="t-lab">Common trap</div>
+                <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+              </div>
+            </div>
+
+            <!-- WORKED EXAMPLE TEASER -->
+            <div class="example">
+              <div class="ex-kicker">Worked example · banked specimen</div>
+              <h5>Example 1 — Whole life EPV &amp; variance</h5>
+              <p class="ex-note">Walk through the EPV and the variance of <em>Z</em> for a whole life policy, step by step.</p>
+              <div class="btns">
+                <a href="#" class="btn btn-primary">Start studying</a>
+                <a href="#" class="btn btn-ghost">Resume</a>
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="note-foot">
+      <div class="f-brand">
+        <span class="fm">M</span>
+        <span>Me Studing Stuff
+          <small>Study smarter. Pass exams.</small>
+        </span>
+      </div>
+      <div>© 2026 · This note is legal tender for one passing score</div>
+      <div class="f-serial">№ FAM-072-1700</div>
+    </footer>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introduction to Credibility · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-07" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 7</div>
+      <h1>Introduction to Credibility</h1>
+      <p class="lede">How much should next year's premium trust <em>this</em> policyholder's own experience versus the manual rate? Credibility is the weight $Z$ that answers it.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models · Ch. 16–17</span>
+        <span class="chip">⏱️ ~3.5 hrs</span>
+        <span class="chip">🔑 full credibility · $n_e$ vs $n_c$ · square-root rule · Bühlmann · EPV/VHM</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>By the end of this topic, the SOA expects you to be able to:</p>
+        <ul>
+          <li><strong>Limited fluctuation (classical) credibility</strong>
+            <ul>
+              <li>State the full-credibility condition $\Pr(|\bar S - \mu_S| \le k\mu_S) \ge p$ and identify the <strong>basis</strong> (aggregate / frequency / severity), the tolerance $k$, and the probability $p$ from exam wording.</li>
+              <li>Compute the full credibility standard as a <strong>number of exposures $n_e$</strong> and as an <strong>expected number of claims $n_c$</strong> for claim <strong>frequency</strong>, claim <strong>severity</strong>, and <strong>aggregate losses / pure premium</strong>, and convert between them with $n_c = n_e\,\mu_N$.</li>
+              <li>Apply the standard normal "within $\pm 100k\%$ of the true mean with probability $p$" requirement to derive $n_c = \left(z_{(1+p)/2}/k\right)^2\!\left(\sigma_N^2/\mu_N + \mathrm{CV}_X^2\right)$.</li>
+              <li>Determine the <strong>partial credibility factor</strong> $Z$ using the <strong>square-root rule</strong> (in either exposures or claims) and form the credibility-weighted estimate $P_C = Z\bar{X} + (1-Z)M$.</li>
+            </ul>
+          </li>
+          <li><strong>Greatest-accuracy (Bühlmann / Bayesian) credibility</strong>
+            <ul>
+              <li>Define and compute the <strong>hypothetical mean</strong> $\mu(\Theta)$ and <strong>process variance</strong> $v(\Theta)$.</li>
+              <li>Compute the <strong>expected hypothetical mean</strong> $\mu = E[\mu(\Theta)]$, the <strong>expected process variance</strong> $v = \text{EPV} = E[v(\Theta)]$, and the <strong>variance of hypothetical means</strong> $a = \text{VHM} = \text{Var}[\mu(\Theta)]$.</li>
+              <li>Compute the <strong>Bühlmann credibility factor</strong> $Z = \dfrac{n}{n+k}$ where $k = v/a$, and the credibility premium $Z\bar{X} + (1-Z)\mu$.</li>
+              <li>Apply <strong>Bühlmann–Straub</strong> credibility when exposures differ by year/policyholder.</li>
+              <li>Recognize that the Bühlmann estimate is the <strong>best linear approximation</strong> to the Bayesian (posterior mean) estimate.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>What problem does credibility solve?</h3>
+      <p>You observe a policyholder (or class) for a while and get a sample mean $\bar{X}$ of their losses. You also have a <strong>manual rate</strong> $M$ — a prior/collective estimate from a big book of business. How much should next year's premium rely on <strong>this policyholder's own experience</strong> versus the <strong>manual rate</strong>?</p>
+      <p>The answer is a weighted average:</p>
+      <div class="formula">$$\text{Credibility premium} = Z\bar{X} + (1-Z)M, \qquad 0 \le Z \le 1.$$</div>
+      <p>$Z$ is the <strong>credibility factor</strong>. More data → larger $Z$ → trust the policyholder's own experience more.</p>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">A motivating scenario (and three properties of $Z$)</div>
+        <p>All-Care Insurance prices new car insurance in Iowa. Its <strong>internal</strong> data says each insured averages a claim of $100$/year; <strong>industry-wide</strong> data says $200$/year. The internal data fits All-Care's book better but has a small sample; the industry data is huge but generic. With $Z = 0.3$ credibility on the internal data,</p>
+        $$\text{Estimate} = 0.3(100) + 0.7(200) = 170.$$
+        <p>Letting $n$ be the number of observations, $Z$ always obeys:</p>
+        <ul>
+          <li>$0 \le Z \le 1$ — worst case discard the data ($Z=0$); best case rely on it entirely ($Z=1$).</li>
+          <li>$\dfrac{dZ}{dn} > 0$ — more data always raises $Z$.</li>
+          <li>$\dfrac{d}{dn}\!\left(\dfrac{Z}{n}\right) < 0$ — $Z$ rises faster when the sample is small. Adding $500$ observations to a sample of $250$ matters far more than adding $500$ to a sample of $1{,}000{,}000$.</li>
+        </ul>
+      </div>
+
+      <p>There are two philosophies for choosing $Z$:</p>
+      <ol>
+        <li><strong>Limited fluctuation (classical) credibility</strong> — "How much data do I need before the observed mean is <em>stable enough</em> (small random fluctuation) to be fully trusted?" Heuristic, based on the normal approximation.</li>
+        <li><strong>Greatest accuracy (Bühlmann) credibility</strong> — "What $Z$ <em>minimizes squared error</em>?" Rigorous, derived from variance components. This is the one that connects to Bayesian estimation.</li>
+      </ol>
+
+      <h3>Limited Fluctuation (Classical) Credibility — the full-credibility condition</h3>
+      <p>The observations earn <strong>full credibility</strong> ($Z=1$) once the sample is large enough that the sample mean $\bar S$ is reliably close to the true mean $\mu_S$. "Close" is made precise: for a small tolerance $k$ and a large probability $p$, we require the sample mean to land within $100k\%$ of the true mean at least $100p\%$ of the time:</p>
+      <div class="formula">$$\Pr\!\left(|\bar S - \mu_S| \le k\mu_S\right) \ge p, \qquad z_{(1+p)/2} = \Phi^{-1}\!\left(\frac{1+p}{2}\right).$$</div>
+      <div class="callout note" data-icon="📌">
+        <div class="callout-title">Don't confuse $k$ and $p$</div>
+        <ul>
+          <li>$k$ — the permitted fluctuation of $\bar S$ from $\mu_S$; usually <strong>small</strong> (e.g. 0.05).</li>
+          <li>$p$ — the minimum probability the bound holds; usually <strong>large</strong> (e.g. 0.90).</li>
+        </ul>
+      </div>
+      <p>Applying the Central Limit Theorem to $\bar S$ and solving the inequality gives the minimum sample size. That size can be reported in two units — and keeping them straight is the heart of every classical credibility problem.</p>
+
+      <h3>Two units for the standard: exposures $n_e$ vs. expected claims $n_c$</h3>
+      <ul>
+        <li><strong>Exposure</strong> $=$ one data point. One exposure could be "one insured for one year." Two exposures could be two insureds for one year <em>or</em> one insured for two years. The number of exposures for full credibility is $n_e$.</li>
+        <li><strong>Expected number of claims</strong> $n_c$ restates the same standard in claim units. If every exposure produces $\mu_N$ claims on average, then $n_c = n_e\,\mu_N$.</li>
+      </ul>
+      <div class="formula">
+        <span class="formula-label">Master formula — exposures for full credibility of aggregate claims</span>
+        $$n_e = \left(\frac{z_{(1+p)/2}}{k}\right)^{\!2}\mathrm{CV}_S^2$$
+        <span class="formula-label">Master formula — expected claims for full credibility</span>
+        $$n_c = \left(\frac{z_{(1+p)/2}}{k}\right)^{\!2}\!\left(\frac{\sigma_N^2}{\mu_N} + \mathrm{CV}_X^2\right), \qquad n_c = n_e\,\mu_N.$$
+      </div>
+      <p>Here $z_{(1+p)/2} = \Phi^{-1}\!\big(\tfrac{1+p}{2}\big)$ is the two-sided normal quantile; $S$ is aggregate loss per exposure, $N$ is frequency per exposure, $X$ is severity, and $\mathrm{CV}$ is the coefficient of variation. The two master formulas plus the conversion $n_c = n_e\mu_N$ are all you must memorize — everything else (frequency-only, severity-only, exposure forms) is a special case.</p>
+
+      <h3>Choosing the basis: aggregate vs. frequency vs. severity</h3>
+      <p>The standard can be set on aggregate losses, on frequency alone, or on severity alone. You modify the <strong>expected-claims</strong> master formula by switching components on or off:</p>
+      <ul>
+        <li><strong>Aggregate / pure premium:</strong> keep both terms, $\dfrac{\sigma_N^2}{\mu_N} + \mathrm{CV}_X^2$. Based on $\Pr(|\bar S - \mu_S| \le k\mu_S) \ge p$.</li>
+        <li><strong>Frequency only:</strong> set the severity term to $0$ → $\dfrac{\sigma_N^2}{\mu_N}$. Based on $\Pr(|\bar N - \mu_N| \le k\mu_N) \ge p$.</li>
+        <li><strong>Severity only:</strong> set the frequency term to $0$ → $\mathrm{CV}_X^2$. Based on $\Pr(|\bar X - \mu_X| \le k\mu_X) \ge p$ with frequency held fixed.</li>
+      </ul>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Strategy for any full-credibility question</div>
+        <ol>
+          <li>Identify the <strong>basis</strong> (aggregate, frequency, or severity), and read off $k$ and $p$.</li>
+          <li>Compute $n_c$ from the master $n_c$ formula, switching off whichever term the basis excludes.</li>
+          <li>Need exposures? Divide: $n_e = n_c/\mu_N$. (For an aggregate basis you may instead use the $n_e$ master formula directly.)</li>
+        </ol>
+      </div>
+      <p><strong>"Pure premium" = aggregate claims per exposure</strong>, so a pure-premium standard is just the aggregate standard.</p>
+
+      <h3>Partial Credibility — the square-root rule</h3>
+      <p>If the experience falls short of full credibility, we assign $Z < 1$ and blend with the <strong>manual premium</strong> $M$ to form the <strong>credibility premium</strong> $P_C$:</p>
+      <div class="formula">$$P_C = Z\bar{X} + (1-Z)M = M + Z(\bar X - M).$$</div>
+      <p>Classical credibility sets $Z$ by the <strong>square-root rule</strong>, available in two consistent unit-pairs:</p>
+      <div class="formula">$$Z = \sqrt{\frac{n}{n_e}} = \sqrt{\frac{n'}{n_c}} \quad(\text{capped at } 1),$$</div>
+      <p>where $n$ is the actual exposures, $n_e$ the exposure standard, $n'$ the actual claims, and $n_c$ the claim standard. Use whichever pair matches the data you are given — <strong>numerator and denominator must share units</strong>.</p>
+      <div class="callout note" data-icon="📌">
+        <div class="callout-title">Coach's Remarks — $\bar X$, $M$, and $n'$</div>
+        <ul>
+          <li>$\bar X$ is the average of the observations; $M$ must be <strong>given</strong> by the problem (it is set "manually," ignoring the experience).</li>
+          <li>$\bar X$ and $M$ must be <strong>comparable quantities</strong>. If $M$ is an annual aggregate per insured, then $\bar X$ must be the average <em>annual aggregate</em> too — not total claims divided by the number of claims. (E.g. one year of data with $12{,}000$ total losses gives $\bar X = 12{,}000/1 = 12{,}000$, not $12{,}000/200$.)</li>
+          <li>Technically $n' = n\,\mu_N$, but $\mu_N$ is often unknown, so the <strong>observed</strong> claim count is used for $n'$.</li>
+        </ul>
+      </div>
+
+      <h3>Greatest Accuracy (Bühlmann) Credibility — intuition</h3>
+      <p>Each policyholder has a hidden <strong>risk parameter</strong> $\Theta$ (their true riskiness). Given $\Theta = \theta$:</p>
+      <ul>
+        <li><strong>Hypothetical mean:</strong> $\mu(\theta) = E[X \mid \Theta = \theta]$ — the long-run mean for <em>that</em> policyholder.</li>
+        <li><strong>Process variance:</strong> $v(\theta) = \text{Var}[X \mid \Theta = \theta]$ — the year-to-year randomness <em>within</em> that policyholder.</li>
+      </ul>
+      <p>Across the population, $\Theta$ is random, giving three structural quantities:</p>
+      <ul>
+        <li>$\mu = E[\mu(\Theta)]$ — the <strong>collective/overall mean</strong> (this is what $M$ becomes in Bühlmann).</li>
+        <li>$v = \text{EPV} = E[v(\Theta)]$ — <strong>Expected Process Variance</strong>: average within-risk noise.</li>
+        <li>$a = \text{VHM} = \text{Var}[\mu(\Theta)]$ — <strong>Variance of Hypothetical Means</strong>: how much policyholders <em>differ</em> from each other.</li>
+      </ul>
+      <p>The credibility factor is</p>
+      <div class="formula">$$Z = \frac{n}{n+k}, \qquad k = \frac{v}{a} = \frac{\text{EPV}}{\text{VHM}}.$$</div>
+      <div class="callout note" data-icon="📌">
+        <div class="callout-title">Intuition for $k = v/a$</div>
+        <ul>
+          <li>Large EPV (noisy individual data) → large $k$ → small $Z$ → trust the data less.</li>
+          <li>Large VHM (policyholders are very different) → small $k$ → large $Z$ → an individual's own data is very informative.</li>
+        </ul>
+      </div>
+      <p>The Bühlmann estimate $Z\bar{X} + (1-Z)\mu$ is the <strong>least-squares linear approximation to the Bayesian posterior mean</strong> $E[\mu(\Theta)\mid \mathbf{X}]$. For some conjugate models (Poisson–gamma, Bernoulli–beta, Normal–Normal) the Bühlmann and exact Bayesian estimates coincide.</p>
+
+      <h3>Bühlmann–Straub</h3>
+      <p>When each year (or policyholder) has a different <strong>exposure</strong> $m_i$ (e.g., number of policies, payroll units), use Bühlmann–Straub. Replace counts with total exposure $m = \sum m_i$:</p>
+      <div class="formula">$$Z = \frac{m}{m+k}, \qquad \bar{X} = \frac{\sum_i m_i X_i}{\sum_i m_i},$$</div>
+      <p>where $X_i$ is the loss <strong>per unit of exposure</strong> in cell $i$. The estimate is still $Z\bar{X} + (1-Z)\mu$.</p>
+
+      <h2>Formulas</h2>
+
+      <h3>Limited fluctuation credibility — master formulas</h3>
+      <div class="formula">
+        <span class="formula-label">Full-credibility condition</span>
+        $$\Pr\!\left(|\bar S - \mu_S| \le k\mu_S\right) \ge p, \qquad z_{(1+p)/2} = \Phi^{-1}\!\left(\frac{1+p}{2}\right).$$
+        <span class="formula-label">Exposures (aggregate claims)</span>
+        $$n_e = \left(\frac{z_{(1+p)/2}}{k}\right)^{\!2}\mathrm{CV}_S^2$$
+        <span class="formula-label">Expected claims (aggregate / pure premium)</span>
+        $$n_c = \left(\frac{z_{(1+p)/2}}{k}\right)^{\!2}\!\left(\frac{\sigma_N^2}{\mu_N} + \mathrm{CV}_X^2\right)$$
+        <span class="formula-label">Conversion between the two units</span>
+        $$n_c = n_e\,\mu_N \;\Longleftrightarrow\; n_e = \frac{n_c}{\mu_N}.$$
+      </div>
+
+      <h3>The full table of variations</h3>
+      <p>Don't memorize this table — derive each cell from the masters above by zeroing a term or applying $n_c = n_e\mu_N$.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Full credibility for…</th><th>$n_c$ (expected claims)</th><th>$n_e$ (exposures)</th></tr></thead>
+        <tbody>
+          <tr><td>Aggregate claims</td><td>$\left(\dfrac{z_{(1+p)/2}}{k}\right)^{2}\!\left(\dfrac{\sigma_N^2}{\mu_N} + \mathrm{CV}_X^2\right)$</td><td>$\left(\dfrac{z_{(1+p)/2}}{k}\right)^{2}\mathrm{CV}_S^2$</td></tr>
+          <tr><td>Claim frequency</td><td>$\left(\dfrac{z_{(1+p)/2}}{k}\right)^{2}\dfrac{\sigma_N^2}{\mu_N}$</td><td>$\left(\dfrac{z_{(1+p)/2}}{k}\right)^{2}\mathrm{CV}_N^2$</td></tr>
+          <tr><td>Claim severity</td><td>$\left(\dfrac{z_{(1+p)/2}}{k}\right)^{2}\mathrm{CV}_X^2$</td><td>$\left(\dfrac{z_{(1+p)/2}}{k}\right)^{2}\mathrm{CV}_X^2\,\dfrac{1}{\mu_N}$</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Poisson shortcut</div>
+        <p>If frequency is <strong>Poisson</strong>, then $\sigma_N^2 = \mu_N$, so $\dfrac{\sigma_N^2}{\mu_N} = 1$. The aggregate claim standard collapses to the familiar</p>
+        $$n_c = \left(\frac{z_{(1+p)/2}}{k}\right)^{\!2}\!\left(1 + \mathrm{CV}_X^2\right),$$
+        <p>and the pure frequency standard becomes $n_c = \big(z_{(1+p)/2}/k\big)^2$.</p>
+      </div>
+
+      <h3>Partial credibility</h3>
+      <div class="formula">
+        <span class="formula-label">Square-root rule (two equivalent forms)</span>
+        $$Z = \min\!\left(\sqrt{\frac{n}{n_e}},\,1\right) = \min\!\left(\sqrt{\frac{n'}{n_c}},\,1\right)$$
+      </div>
+      <ul>
+        <li>$n$ = actual exposures, $n_e$ = exposure standard; <strong>or</strong> $n'$ = actual claims, $n_c$ = claim standard.</li>
+        <li>Numerator and denominator must be in the <strong>same units</strong>.</li>
+      </ul>
+      <div class="formula">
+        <span class="formula-label">Credibility-weighted estimate (credibility premium)</span>
+        $$P_C = Z\bar{X} + (1-Z)\,M = M + Z(\bar X - M)$$
+      </div>
+      <ul>
+        <li>$\bar{X}$ = observed mean (frequency, severity, or pure premium) — must match the units of $M$.</li>
+        <li>$M$ = manual / prior rate, supplied by the problem.</li>
+      </ul>
+
+      <h3>Bühlmann credibility</h3>
+      <div class="formula">
+        <span class="formula-label">Conditional moments (per risk)</span>
+        $$\mu(\theta) = E[X\mid \Theta=\theta], \qquad v(\theta) = \text{Var}[X\mid \Theta=\theta].$$
+        <span class="formula-label">Structural parameters</span>
+        $$\mu = E[\mu(\Theta)] \quad(\text{overall mean})$$
+        $$v = \text{EPV} = E[v(\Theta)]$$
+        $$a = \text{VHM} = \text{Var}[\mu(\Theta)] = E\!\big[\mu(\Theta)^2\big] - \mu^2$$
+        <span class="formula-label">Total variance check (law of total variance)</span>
+        $$\text{Var}(X) = E[v(\Theta)] + \text{Var}[\mu(\Theta)] = v + a.$$
+        <span class="formula-label">Credibility factor and premium</span>
+        $$k = \frac{v}{a} = \frac{\text{EPV}}{\text{VHM}}, \qquad Z = \frac{n}{n+k},$$
+        $$P_C = Z\bar{X} + (1-Z)\mu,$$
+      </div>
+      <ul>
+        <li>$n$ = number of observations (years/exposures) for the policyholder.</li>
+        <li>$\bar{X}$ = average of the policyholder's $n$ observations.</li>
+        <li>$\mu$ = collective mean (the credibility complement).</li>
+      </ul>
+
+      <h3>Bühlmann–Straub credibility</h3>
+      <p>For cells $i=1,\dots,n$ with exposures $m_i$ and per-exposure loss $X_i$:</p>
+      <div class="formula">
+        $$m = \sum_{i} m_i, \qquad \bar{X} = \frac{\sum_i m_i X_i}{m}, \qquad Z = \frac{m}{m+k}, \qquad k=\frac{v}{a},$$
+        $$P_C = Z\bar{X} + (1-Z)\mu.$$
+      </div>
+      <p>Here $v(\theta)$ and $a$ refer to the process variance and VHM <strong>per unit of exposure</strong>.</p>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Exposures for full credibility (aggregate, $\mathrm{CV}_S$ given) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual total claims per policyholder follow a gamma distribution with <strong>mean 4</strong> and <strong>variance 9</strong>. The standard is for aggregate claims to be within <strong>5%</strong> of the mean <strong>95%</strong> of the time. Find the number of <strong>exposures</strong> for full credibility.</p>
+          <p><strong>Solution.</strong> Read off the basis (aggregate), $k = 0.05$, $p = 0.95$.</p>
+          $$z_{(1+0.95)/2} = z_{0.975} = 1.95996, \qquad \mathrm{CV}_S = \frac{\sigma_S}{\mu_S} = \frac{\sqrt{9}}{4} = 0.75.$$
+          <p>Apply the $n_e$ master formula:</p>
+          $$n_e = \left(\frac{1.95996}{0.05}\right)^{\!2}(0.75)^2 = 864.32.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\approx \mathbf{864.32}$ exposures. (E.g. 865 insureds for 1 year, or 173 insureds for 5 years.) Graphically: with 864.32 exposures, the average claim lands in $[3.8,\,4.2]$ with 95% probability.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Converting exposures to expected claims ($n_c = n_e\mu_N$) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Same gamma severity model as Example 1 ($n_e = 864.32$), and now the annual claim frequency per policyholder has <strong>mean $\mu_N = 5$</strong>. Find the <strong>expected number of claims</strong> for full credibility.</p>
+          <p><strong>Solution.</strong> Each exposure averages 5 claims, so</p>
+          $$n_c = n_e\,\mu_N = 864.32 \times 5 = 4{,}321.62.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\approx \mathbf{4{,}321.62}$ expected claims. Note $\mu_N$ (claims per exposure) is <em>not</em> the same as $n_c$ (claims for the whole standard) — keep them distinct.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Expected claims with a discrete frequency (compound moments) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Weekly claim counts $N$ follow $P(0)=0.3,\,P(1)=0.25,\,P(2)=0.35,\,P(3)=0.1$; each claim has size exactly $10$. Standard: aggregate within <strong>6%</strong> of the mean <strong>95%</strong> of the time. Find the exposures for full credibility.</p>
+          <p><strong>Solution.</strong> Since severity is constant, work the aggregate $S = 10N$ directly.</p>
+          $$E[N] = 0(0.3)+1(0.25)+2(0.35)+3(0.1) = 1.25,$$
+          $$E[N^2] = 0+0.25+1.40+0.90 = 2.55,\quad \mathrm{Var}[N] = 2.55 - 1.25^2 = 0.9875.$$
+          $$E[S] = 10(1.25) = 12.5, \qquad \mathrm{Var}[S] = 10^2(0.9875) = 98.75.$$
+          $$\mathrm{CV}_S = \frac{\sqrt{98.75}}{12.5} = 0.795, \qquad z_{0.975} = 1.95996,\ k = 0.06.$$
+          $$n_e = \left(\frac{1.95996}{0.06}\right)^{\!2}(0.795)^2 = 674.39.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\approx \mathbf{674.4}$ exposures.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Frequency-only vs. aggregate standard (Poisson) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Claims per year are <strong>Poisson</strong>; severity has mean 100 and variance 600, independent of frequency. Find the expected claims for full credibility if (1) <strong>frequency</strong> is within 2% with 95% probability; (2) <strong>aggregate</strong> claims within 8% with 99% probability.</p>
+          <p><strong>(1) Frequency only.</strong> Poisson ⇒ $\sigma_N^2/\mu_N = 1$; severity term off ($\mathrm{CV}_X^2 = 0$). $z_{0.975}=1.95996$, $k=0.02$.</p>
+          $$n_c = \left(\frac{1.95996}{0.02}\right)^{\!2}(1 + 0) = 9{,}604.$$
+          <p><strong>(2) Aggregate.</strong> $\mathrm{CV}_X^2 = 600/100^2 = 0.06$, $z_{0.995}=2.57583$, $k=0.08$.</p>
+          $$n_c = \left(\frac{2.57583}{0.08}\right)^{\!2}(1 + 0.06) = 1{,}099.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) $\mathbf{9{,}604}$ claims; (2) $\approx \mathbf{1{,}099}$ claims.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Lognormal severity — $n_c$ then $n_e$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual counts: $P(0)=0.3,\,P(1)=0.4,\,P(2)=0.1,\,P(3)=0.2$. Severity is lognormal with $\mu=5,\ \sigma^2=2$. Independent. Standard: aggregate within <strong>5%</strong> of the mean <strong>90%</strong> of the time. Find $n_c$ and $n_e$.</p>
+          <p><strong>Frequency:</strong> $E[N] = 0.4 + 0.2 + 0.6 = 1.2$, $E[N^2] = 0.4 + 0.4 + 1.8 = 2.6$, $\mathrm{Var}[N] = 2.6 - 1.2^2 = 1.16$.</p>
+          <p><strong>Severity</strong> (lognormal $\mu=5,\sigma^2=2$):</p>
+          $$E[X] = e^{5 + 0.5(2)} = 403.43,\quad E[X^2] = e^{2(5)+2(2)} = 1{,}202{,}604.28,$$
+          $$\mathrm{Var}[X] = 1{,}202{,}604.28 - 403.43^2 = 1{,}039{,}849.49.$$
+          <p>$z_{0.95} = 1.64485$, $k = 0.05$. Apply the $n_c$ master formula:</p>
+          $$n_c = \left(\frac{1.64485}{0.05}\right)^{\!2}\!\left(\frac{1.16}{1.2} + \frac{1{,}039{,}849.49}{403.43^2}\right) = 7{,}960.46.$$
+          <p>Convert to exposures: $n_e = n_c/\mu_N = 7{,}960.46 / 1.2 = 6{,}633.71$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$n_c \approx \mathbf{7{,}960.5}$ claims, $n_e \approx \mathbf{6{,}633.7}$ exposures.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Solving backward for the tolerance $k$ (negative binomial frequency) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Counts are negative binomial $r=t,\ \beta=5$; severity is gamma $\alpha=4$, unknown $\theta$; independent. Given that <strong>1,691</strong> expected claims achieve full credibility for aggregate claims within $100k\%$ with 90% probability, find $k$.</p>
+          <p><strong>Frequency:</strong> $\mu_N = r\beta = 5t$, $\sigma_N^2 = r\beta(1+\beta) = 5t(6) = 30t$, so $\dfrac{\sigma_N^2}{\mu_N} = \dfrac{30t}{5t} = 6$.</p>
+          <p><strong>Severity:</strong> $\mathrm{CV}_X^2 = \dfrac{\alpha\theta^2}{(\alpha\theta)^2} = \dfrac{1}{\alpha} = \dfrac{1}{4} = 0.25$ ($\theta$ cancels).</p>
+          $$1{,}691 = \left(\frac{1.64485}{k}\right)^{\!2}(6 + 0.25) \;\Rightarrow\; \left(\frac{1.64485}{k}\right)^{\!2} = 270.56.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$k = \dfrac{1.64485}{\sqrt{270.56}} = \mathbf{0.1}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Solving backward for severity $\mathrm{CV}$ (binomial frequency) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Counts per insured are binomial $(m,\,q=0.2)$; severity is independent with $\mathrm{CV}_X = \lambda$. Given <strong>3,000</strong> claims are needed for full credibility, find $\lambda$ when the standard is (1) <strong>severity</strong> within 5% with 95%; (2) <strong>pure premium</strong> within 5% with 95%.</p>
+          <p>$z_{0.975} = 1.95996$, $k = 0.05$, so $(z/k)^2 = 1{,}536.6$.</p>
+          <p><strong>(1) Severity only</strong> (frequency term off):</p>
+          $$3{,}000 = 1{,}536.6\,\lambda^2 \;\Rightarrow\; \lambda = \sqrt{3{,}000/1{,}536.6} = 1.397.$$
+          <p><strong>(2) Pure premium</strong> (= aggregate; binomial $\sigma_N^2/\mu_N = \dfrac{mq(1-q)}{mq} = 1-q = 0.8$):</p>
+          $$3{,}000 = 1{,}536.6\,(0.8 + \lambda^2) \;\Rightarrow\; 0.8 + \lambda^2 = 1.952 \;\Rightarrow\; \lambda = \sqrt{1.152} = 1.073.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) $\lambda \approx \mathbf{1.397}$; (2) $\lambda \approx \mathbf{1.073}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Revising $Z$ when the standard changes <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Standard: claim <strong>frequency</strong> within 3% of the true value <strong>90%</strong> of the time. A group of 800 insureds has $Z = 0.80$. The standard is then tightened to <strong>99%</strong>. Find the revised $Z$.</p>
+          <p><strong>Step 1 — back out the original $n_e$</strong> from the square-root rule:</p>
+          $$0.80 = \sqrt{\frac{800}{n_e}} \;\Rightarrow\; n_e = \frac{800}{0.64} = 1{,}250.$$
+          <p><strong>Step 2 — the standard scales with $(z/k)^2$.</strong> Only $z$ changes ($k$ and the distribution stay fixed), so</p>
+          $$\text{revised } n_e = 1{,}250 \times \frac{z_{0.995}^2}{z_{0.95}^2} = 1{,}250 \times \frac{2.57583^2}{1.64485^2} = 3{,}065.43.$$
+          <p><strong>Step 3 — re-apply the square-root rule</strong> with 800 insureds:</p>
+          $$\text{revised } Z = \sqrt{\frac{800}{3{,}065.43}} = 0.5109.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Revised $Z \approx \mathbf{0.511}$. Shortcut: $Z_{\text{new}} = Z_{\text{old}}\cdot z_{\text{old}}/z_{\text{new}} = 0.80(1.64485/2.57583) = 0.511$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Full classical credibility premium (Poisson, inverse Gaussian) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Frequency is <strong>Poisson</strong>; severity is inverse Gaussian $\mu=4,\ \theta=8$; independent. Standard: aggregate within <strong>10%</strong> of the mean <strong>90%</strong> of the time. Manual aggregate premium $M = 10{,}000$. Last year: 200 claims, total losses $12{,}000$. Find $P_C$.</p>
+          <p><strong>Standard in claims</strong> (data is in claims, so use $n_c$). Poisson ⇒ $\sigma_N^2/\mu_N = 1$. For inverse Gaussian, $E[X]=\mu=4$, $\mathrm{Var}[X]=\mu^3/\theta = 4^3/8 = 8$, so $\mathrm{CV}_X^2 = 8/4^2 = 0.5$. $z_{0.95}=1.64485$, $k=0.1$.</p>
+          $$n_c = \left(\frac{1.64485}{0.1}\right)^{\!2}(1 + 0.5) = 405.83.$$
+          <p><strong>Partial credibility</strong> from 200 observed claims:</p>
+          $$Z = \sqrt{\frac{200}{405.83}} = 0.702.$$
+          <p><strong>Credibility premium.</strong> $M$ is the annual aggregate, so $\bar X$ is the annual aggregate too: $\bar X = 12{,}000/1 = 12{,}000$ (one year of data).</p>
+          $$P_C = 0.702(12{,}000) + 0.298(10{,}000) = 11{,}404.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$Z \approx 0.702$, $P_C \approx \boxed{\mathbf{11{,}404}}$. Trap: $\bar X \ne 12{,}000/200$ — that would be average severity, not the aggregate that matches $M$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Bühlmann credibility from a conditional model <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A risk parameter $\Theta$ takes values with the following distribution. Given $\Theta=\theta$, annual claims $X$ have mean $\mu(\theta)=\theta$ and variance $v(\theta)=\theta$ (Poisson-type). The prior on $\Theta$ is:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$\theta$</th><th>$P(\Theta=\theta)$</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>0.5</td></tr>
+              <tr><td>3</td><td>0.3</td></tr>
+              <tr><td>5</td><td>0.2</td></tr>
+            </tbody>
+          </table></div>
+          <p>A policyholder is observed for <strong>n = 4</strong> years with mean $\bar{X} = 2.5$. Find the Bühlmann credibility premium.</p>
+          <p><strong>Solution.</strong></p>
+          <p>Overall mean:</p>
+          $$\mu = E[\mu(\Theta)] = 1(0.5)+3(0.3)+5(0.2) = 0.5+0.9+1.0 = 2.4.$$
+          <p>EPV (here $v(\theta)=\theta$, so $E[v(\Theta)]=E[\Theta]$):</p>
+          $$v = E[v(\Theta)] = 2.4.$$
+          <p>VHM: $E[\mu(\Theta)^2] = 1^2(0.5)+3^2(0.3)+5^2(0.2)=0.5+2.7+5.0=8.2.$</p>
+          $$a = \text{VHM} = E[\mu(\Theta)^2]-\mu^2 = 8.2 - 2.4^2 = 8.2 - 5.76 = 2.44.$$
+          <p>Credibility:</p>
+          $$k = \frac{v}{a} = \frac{2.4}{2.44} = 0.98361, \qquad Z = \frac{n}{n+k} = \frac{4}{4+0.98361} = \frac{4}{4.98361}=0.80263.$$
+          <p>Premium:</p>
+          $$P_C = Z\bar{X}+(1-Z)\mu = 0.80263(2.5)+0.19737(2.4) = 2.00658 + 0.47369 = 2.48027.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$k \approx 0.984$, $Z \approx 0.803$, credibility premium $\approx \boxed{\mathbf{2.480}}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Bühlmann–Straub with varying exposures <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A class of business has structural parameters $\mu = 0.20$ (losses per exposure), $\text{EPV} = v = 0.60$, $\text{VHM} = a = 0.0025$. Observed data:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Year</th><th>Exposures $m_i$</th><th>Losses</th><th>Loss per exposure $X_i$</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>100</td><td>24</td><td>0.24</td></tr>
+              <tr><td>2</td><td>150</td><td>27</td><td>0.18</td></tr>
+              <tr><td>3</td><td>250</td><td>60</td><td>0.24</td></tr>
+            </tbody>
+          </table></div>
+          <p>Find the Bühlmann–Straub credibility estimate of the loss per exposure.</p>
+          <p><strong>Solution.</strong></p>
+          <p>Total exposure: $m = 100+150+250 = 500.$</p>
+          <p>Exposure-weighted mean (= total losses / total exposures):</p>
+          $$\bar{X} = \frac{24+27+60}{500} = \frac{111}{500} = 0.222.$$
+          $$k = \frac{v}{a} = \frac{0.60}{0.0025} = 240, \qquad Z = \frac{m}{m+k} = \frac{500}{500+240} = \frac{500}{740} = 0.67568.$$
+          $$P_C = Z\bar{X} + (1-Z)\mu = 0.67568(0.222) + 0.32432(0.20).$$
+          $$P_C = 0.150000 + 0.064865 = 0.214865.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$Z \approx 0.676$; estimated loss per exposure $\approx \boxed{\mathbf{0.2149}}$ per unit (so $\approx 0.2149 \times 500 = 107.4$ total expected losses).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Deriving $\mathrm{CV}_S$ from compound moments end-to-end (Poisson × Gamma) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual claim frequency is <strong>Poisson(5)</strong>; individual claim severity is <strong>Gamma$(\alpha=3,\theta=10)$</strong>; frequency and severity are independent. The full-credibility standard is for the aggregate loss to be within <strong>3%</strong> of its mean with probability <strong>90%</strong>. Find the number of <strong>exposures</strong> $n_e$.</p>
+          <p><strong>Why this example.</strong> Earlier problems handed you $\mathrm{CV}_S$ or a constant severity. Here neither moment of $S$ is given — you must build $\mu_S$ and $\sigma_S^2$ from the frequency and severity moments using the <strong>compound (collective-risk) formulas</strong>:</p>
+          <div class="formula">
+            $$\mu_S = \mu_N\,\mu_X, \qquad \sigma_S^2 = \mu_N\,\sigma_X^2 + \sigma_N^2\,\mu_X^2.$$
+          </div>
+          <p><strong>Step 1 — frequency moments (Poisson).</strong> For Poisson$(\lambda=5)$, $\mu_N = \sigma_N^2 = 5$.</p>
+          <p><strong>Step 2 — severity moments (Gamma).</strong> For Gamma$(\alpha=3,\theta=10)$, $\mu_X = \alpha\theta = 30$ and $\sigma_X^2 = \alpha\theta^2 = 3(10^2) = 300$.</p>
+          <p><strong>Step 3 — aggregate moments.</strong> Plug into the compound formulas:</p>
+          $$\mu_S = \mu_N\mu_X = 5(30) = 150,$$
+          $$\sigma_S^2 = \mu_N\sigma_X^2 + \sigma_N^2\mu_X^2 = 5(300) + 5(30^2) = 1{,}500 + 4{,}500 = 6{,}000.$$
+          <p><strong>Step 4 — coefficient of variation of $S$.</strong></p>
+          $$\mathrm{CV}_S = \frac{\sigma_S}{\mu_S} = \frac{\sqrt{6{,}000}}{150} = \frac{77.4597}{150} = 0.5164.$$
+          <p><strong>Step 5 — apply the $n_e$ master formula.</strong> Basis is aggregate, $k = 0.03$, $p = 0.90 \Rightarrow z_{0.95} = 1.64485$:</p>
+          $$n_e = \left(\frac{z_{(1+p)/2}}{k}\right)^{\!2}\mathrm{CV}_S^2 = \left(\frac{1.64485}{0.03}\right)^{\!2}(0.5164)^2 = 3{,}006.14 \times 0.26667 = 801.64.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$n_e \approx \mathbf{801.6}$ exposures. The whole problem is just "moments of $S$ → $\mathrm{CV}_S$ → master formula." Once you can build $\mu_S$ and $\sigma_S^2$ from $\mu_N,\sigma_N^2,\mu_X,\sigma_X^2$, no aggregate full-credibility question can surprise you.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>$n_e$ vs. $n_c$ units.</strong> Exposures and expected claims are different standards linked by $n_c = n_e\,\mu_N$. Match the unit of the standard to the unit of the data: claims observed → compare to $n_c$; exposures observed → compare to $n_e$. Mixing them is the single most common error here.</li>
+          <li><strong>$z_{(1+p)/2}$, not $z_p$.</strong> The condition is two-sided: $\Phi(z) = (1+p)/2$. For $p=0.90$ use $z = 1.645$ (the 0.95 quantile), <strong>not</strong> 1.282; for $p=0.95$ use $1.960$; for $p=0.99$ use $2.576$.</li>
+          <li><strong>Don't confuse $k$ and $p$.</strong> $k$ is the small tolerance (e.g. 0.05); $p$ is the large probability (e.g. 0.90). Re-read the wording — "within 5% … 90% of the time" means $k=0.05,\ p=0.90$.</li>
+          <li><strong>Read the basis.</strong> Aggregate keeps both terms $\sigma_N^2/\mu_N + \mathrm{CV}_X^2$; <em>frequency only</em> drops $\mathrm{CV}_X^2$; <em>severity only</em> drops $\sigma_N^2/\mu_N$. "Pure premium" = aggregate per exposure, so use the aggregate formula.</li>
+          <li><strong>Poisson is an assumption, not a default.</strong> $\sigma_N^2/\mu_N = 1$ <em>only</em> if frequency is Poisson. For binomial it is $1-q$; for negative binomial it is $1+\beta$. Compute $\sigma_N^2/\mu_N$ from the actual distribution.</li>
+          <li><strong>Severity uses $\mathrm{CV}^2$, not variance.</strong> The severity multiplier is $\sigma_X^2/\mu_X^2 = \mathrm{CV}_X^2$ (dimensionless), not $\sigma_X^2$.</li>
+          <li><strong>$\bar X$ and $M$ must be comparable.</strong> If $M$ is an annual aggregate per insured, $\bar X$ is the average annual aggregate — total losses over the number of <em>exposures</em>, not over the number of <em>claims</em>.</li>
+          <li><strong>Confusing EPV and VHM.</strong> EPV $= E[\text{Var}(X\mid\Theta)]$ (average <em>within</em>-risk variance); VHM $= \text{Var}[E(X\mid\Theta)]$ (variance <em>between</em> risks). $k = \text{EPV}/\text{VHM}$. Swapping them inverts $Z$.</li>
+          <li><strong>VHM via the shortcut.</strong> $a = E[\mu(\Theta)^2] - \mu^2$. The first term is $E[\mu(\Theta)^2]$, <strong>not</strong> $E[\mu(\Theta)]^2$.</li>
+          <li><strong>Bühlmann–Straub weighting.</strong> $\bar X$ is the <strong>exposure-weighted</strong> average and $Z = m/(m+k)$ uses total exposure $m$, not the number of cells.</li>
+          <li><strong>Credibility complement.</strong> Classical uses the <strong>manual rate $M$</strong>; Bühlmann uses the <strong>collective mean $\mu$</strong>. Don't mix them.</li>
+          <li><strong>Bühlmann never reaches full trust.</strong> $Z\in(0,1)$ always for finite $n$ — it never equals 1 (unlike classical, which caps at 1).</li>
+        </ul>
+      </div>
+
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Decode the SOA wording → basis, $k$, $p$</div>
+        <p>Real FAM-S problems hide the three inputs inside deliberately bland sentences. Every classical-credibility prompt is one phrase that pins down the <strong>basis</strong> (which terms of the master formula survive), the tolerance <strong>$k$</strong> (the "within $X\%$"), and the probability <strong>$p$</strong> (the "$Y\%$ of the time" / "probability $Y$"). Train your eye on the actual SOA phrasings:</p>
+        <div class="table-scroll"><table>
+          <thead><tr><th>SOA wording (sample problems)</th><th>Basis</th><th>$k$</th><th>$p$</th></tr></thead>
+          <tbody>
+            <tr><td>"The observed <strong>pure premium</strong> should be within <strong>2%</strong> of the expected pure premium <strong>90%</strong> of the time." <span class="text-mute">(Q1)</span></td><td>Aggregate (pure premium = aggregate per exposure → keep both terms)</td><td>$0.02$</td><td>$0.90$</td></tr>
+            <tr><td>"The full credibility standard is for <strong>aggregate losses</strong> to be within <strong>5%</strong> of the expected with <strong>probability 0.90</strong>." <span class="text-mute">(Q8)</span></td><td>Aggregate (keep both terms)</td><td>$0.05$</td><td>$0.90$</td></tr>
+            <tr><td>"The full credibility standard is to be within <strong>5%</strong> of the expected <strong>aggregate losses</strong> <strong>90%</strong> of the time." <span class="text-mute">(Q12)</span></td><td>Aggregate (keep both terms)</td><td>$0.05$</td><td>$0.90$</td></tr>
+          </tbody>
+        </table></div>
+        <p>Reading rules: <strong>"pure premium" and "aggregate losses" both mean the aggregate basis</strong> (keep $\sigma_N^2/\mu_N + \mathrm{CV}_X^2$); only the words "claim frequency / number of claims" force the frequency basis (drop $\mathrm{CV}_X^2$), and only "claim size / severity" forces the severity basis (drop $\sigma_N^2/\mu_N$). The "within $k$" number is always $k$ — never halve it; the two-sided split into $\tfrac{1+p}{2}$ happens inside $z_{(1+p)/2}$, not in $k$. The "$\%$ of the time" or "probability" number is $p$ — feed it through $z_{(1+p)/2}=\Phi^{-1}(\tfrac{1+p}{2})$, so $p=0.90\Rightarrow z=1.645$.</p>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Why do we even need credibility theory? State the motivation in one sentence.</summary>
+        <div class="qa-answer">Individual experience targets the specific risk but has a small, noisy sample; the broad group has a large sample but is too generic. Credibility blends them — $Z\bar X + (1-Z)M$ — so we get a stable yet relevant estimate of the future outcome.</div>
+      </details>
+      <details class="qa"><summary>Write the three properties of the credibility factor $Z$.</summary>
+        <div class="qa-answer">(1) $0 \le Z \le 1$; (2) $dZ/dn > 0$ (more data raises $Z$); (3) $\dfrac{d}{dn}(Z/n) < 0$ ($Z$ rises faster when the sample is small).</div>
+      </details>
+      <details class="qa"><summary>For $p = 0.95$ and $k = 0.10$, what is the expected-claims standard for <em>frequency</em> under Poisson counts?</summary>
+        <div class="qa-answer">$z_{0.975} = 1.96$, severity term off, Poisson ⇒ $\sigma_N^2/\mu_N = 1$. $n_c = (1.96/0.10)^2(1) = 19.6^2 = 384.16 \approx \mathbf{384}$ claims.</div>
+      </details>
+      <details class="qa"><summary>Severity has mean 500 and standard deviation 1,500. By what factor is the <em>severity</em> standard larger than the base $(z/k)^2$?</summary>
+        <div class="qa-answer">$\mathrm{CV}_X^2 = (1500/500)^2 = 3^2 = \mathbf{9}$. The severity standard is $9\times$ the base.</div>
+      </details>
+      <details class="qa"><summary>How do you convert between the exposure standard $n_e$ and the expected-claims standard $n_c$?</summary>
+        <div class="qa-answer">Multiply or divide by the mean frequency per exposure $\mu_N$: $\;n_c = n_e\,\mu_N \Leftrightarrow n_e = n_c/\mu_N$.</div>
+      </details>
+      <details class="qa"><summary>A risk needs 3,000 expected claims for full credibility but only 750 are observed. What is $Z$?</summary>
+        <div class="qa-answer">$Z = \sqrt{750/3000} = \sqrt{0.25} = \mathbf{0.5}.$</div>
+      </details>
+      <details class="qa"><summary>$n_e = 80{,}000$ exposures are needed for full credibility. What is $Z$ for (a) 60,000 exposures, (b) 120,000 exposures?</summary>
+        <div class="qa-answer">(a) $Z = \sqrt{60{,}000/80{,}000} = \mathbf{0.866}$. (b) $120{,}000 > 80{,}000$, so full credibility: $Z = \mathbf{1}$.</div>
+      </details>
+      <details class="qa"><summary>Frequency is Poisson; the aggregate standard uses 90% probability and 5% tolerance, with $\mathrm{CV}_X^2 = 1$. Find $n_c$.</summary>
+        <div class="qa-answer">$z_{0.95} = 1.64485$. $n_c = (1.64485/0.05)^2(1 + 1) = 1082.4 \times 2 = \mathbf{2{,}164.8}$ claims.</div>
+      </details>
+      <details class="qa"><summary>Given EPV $= 8$, VHM $= 2$, and $n = 5$ observations, find $k$ and the Bühlmann $Z$.</summary>
+        <div class="qa-answer">$k = \text{EPV}/\text{VHM} = 8/2 = 4.$ $Z = 5/(5+4) = 5/9 \approx \mathbf{0.556}.$</div>
+      </details>
+      <details class="qa"><summary>In Bühlmann–Straub, total exposure is $m = 800$, $k = 200$, exposure-weighted mean $\bar{X} = 0.15$, collective mean $\mu = 0.10$. Find the estimate.</summary>
+        <div class="qa-answer">$Z = 800/(800+200) = 0.8.$ $P_C = 0.8(0.15) + 0.2(0.10) = 0.12 + 0.02 = \mathbf{0.14}.$</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

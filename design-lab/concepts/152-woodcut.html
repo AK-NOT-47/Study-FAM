@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Woodcut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Cardo:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1410;
+    --ink2:#2c2218;
+    --paper:#e9ddc4;
+    --paper2:#ddcfb0;
+    --paper3:#f2e9d6;
+    --rust:#a8341f;
+    --rust2:#7c2414;
+    --moss:#3c4a2a;
+    --gold:#c08a2e;
+    --line:#1a1410;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Cardo',Georgia,serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    /* carved-paper grain via layered radial/linear gradients */
+    background-image:
+      radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0, rgba(26,20,16,.035) 100%),
+      repeating-linear-gradient(91deg, rgba(26,20,16,.05) 0 1px, rgba(26,20,16,0) 1px 4px),
+      repeating-linear-gradient(2deg, rgba(124,36,20,.04) 0 1px, rgba(26,20,16,0) 1px 5px),
+      radial-gradient(circle at 20% 10%, rgba(192,138,46,.10), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(60,74,42,.10), transparent 45%);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ---- carved frame & rough edge helpers ---- */
+  .carved{
+    border:3px solid var(--ink);
+    box-shadow:6px 6px 0 var(--ink);
+    background:var(--paper3);
+    position:relative;
+  }
+  .rough{
+    clip-path:polygon(
+      0% 3px, 2% 1px, 6% 4px, 12% 0%, 20% 3px, 30% 1px, 42% 4px, 55% 0%, 68% 3px, 80% 1px, 92% 4px, 100% 0%,
+      calc(100% - 3px) 6%, calc(100% - 1px) 16%, calc(100% - 4px) 28%, 100% 42%, calc(100% - 3px) 56%, calc(100% - 1px) 70%, calc(100% - 4px) 84%, 100% 96%,
+      96% calc(100% - 3px), 86% calc(100% - 1px), 74% calc(100% - 4px), 60% 100%, 46% calc(100% - 3px), 33% calc(100% - 1px), 20% calc(100% - 4px), 8% 100%, 0% 96%,
+      4px calc(100% - 6%), 1px 84%, 4px 70%, 0% 56%, 3px 42%, 1px 28%, 4px 14%
+    );
+  }
+
+  /* ---- top banner / masthead ---- */
+  header.masthead{
+    background:var(--ink);
+    color:var(--paper3);
+    border-bottom:5px solid var(--ink);
+    position:relative;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(233,221,196,.05) 0 2px, transparent 2px 9px),
+      repeating-linear-gradient(-45deg, rgba(233,221,196,.04) 0 2px, transparent 2px 11px);
+  }
+  .masthead-inner{
+    max-width:1280px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;padding:.55rem 1.6rem;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:.85rem}
+  .mmark{
+    width:54px;height:54px;flex:none;
+    border:3px solid var(--paper3);
+    background:var(--rust);
+    display:grid;place-items:center;
+    box-shadow:0 0 0 3px var(--ink), 4px 4px 0 var(--rust2);
+    transform:rotate(-3deg);
+  }
+  .mmark span{
+    font-family:'Rye',serif;font-size:1.9rem;color:var(--paper3);
+    line-height:1;text-shadow:1px 1px 0 var(--rust2);
+  }
+  .brand-txt h1{
+    font-family:'Rye',serif;font-weight:400;font-size:1.35rem;letter-spacing:.5px;
+    color:var(--paper3);line-height:1;
+  }
+  .brand-txt p{
+    font-style:italic;font-size:.85rem;color:var(--gold);letter-spacing:.5px;margin-top:3px;
+  }
+  .masthead-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--paper2);
+    border:2px solid var(--gold);padding:.45rem .8rem;
+    box-shadow:3px 3px 0 var(--rust2);
+  }
+
+  /* ---- main grid ---- */
+  .wrap{max-width:1280px;margin:0 auto;padding:1.6rem;display:flex;gap:1.6rem;align-items:flex-start}
+  @media (max-width:980px){.wrap{flex-direction:column}}
+
+  /* ---- sidebar nav ---- */
+  nav.side{
+    flex:0 0 268px;width:268px;position:sticky;top:1.2rem;
+  }
+  @media (max-width:980px){nav.side{position:static;width:100%;flex:none}}
+  .nav-card{padding:1.1rem 1.1rem 1.3rem}
+  .nav-section{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--rust2);
+    display:flex;align-items:center;gap:.6rem;margin:1.1rem 0 .55rem;
+  }
+  .nav-section:first-child{margin-top:0}
+  .nav-section::after{content:"";flex:1;height:3px;background:
+    repeating-linear-gradient(90deg,var(--ink) 0 5px,transparent 5px 9px);}
+  nav.side ul{list-style:none}
+  nav.side li a{
+    display:flex;align-items:center;gap:.7rem;
+    padding:.5rem .55rem;font-size:1.05rem;font-weight:700;
+    border-bottom:2px dotted rgba(26,20,16,.3);
+    transition:.12s;position:relative;
+  }
+  nav.side li a .glyph{
+    font-family:'Rye',serif;font-size:.95rem;color:var(--rust);width:1.4rem;text-align:center;flex:none;
+  }
+  nav.side li a:hover{background:var(--ink);color:var(--paper3);padding-left:1rem}
+  nav.side li a:hover .glyph{color:var(--gold)}
+  nav.side li a.active{
+    background:var(--rust);color:var(--paper3);
+    box-shadow:4px 4px 0 var(--ink);
+  }
+  nav.side li a.active .glyph{color:var(--paper3)}
+
+  .exam-fam{
+    margin-top:1.3rem;background:var(--ink);color:var(--paper3);
+    border:3px solid var(--ink);box-shadow:6px 6px 0 var(--rust2);
+    padding:1rem 1rem 1.15rem;position:relative;
+    background-image:repeating-linear-gradient(60deg, rgba(233,221,196,.045) 0 1px, transparent 1px 7px);
+  }
+  .exam-fam .ribbon{
+    font-family:'Rye',serif;font-size:1.4rem;color:var(--gold);line-height:1;
+    text-shadow:2px 2px 0 #000;
+  }
+  .exam-fam .sub{font-style:italic;color:var(--paper2);font-size:.9rem;margin:.2rem 0 .7rem}
+  .fam-meta{display:flex;flex-wrap:wrap;gap:.4rem}
+  .fam-meta span{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.05em;
+    border:2px solid var(--gold);color:var(--paper3);padding:.25rem .45rem;
+  }
+  .fam-meta span.pass{background:var(--rust);border-color:var(--rust)}
+
+  /* ---- main column ---- */
+  main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1.6rem}
+
+  /* hero */
+  .hero{padding:1.7rem 1.9rem 1.9rem;position:relative;overflow:hidden}
+  .hero::before{
+    /* carved sunburst behind headline */
+    content:"";position:absolute;top:-120px;right:-120px;width:420px;height:420px;
+    background:repeating-conic-gradient(from 0deg at 50% 50%, var(--rust) 0deg 6deg, transparent 6deg 12deg);
+    opacity:.12;border-radius:50%;pointer-events:none;
+    -webkit-mask:radial-gradient(circle, #000 30%, transparent 70%);
+            mask:radial-gradient(circle, #000 30%, transparent 70%);
+  }
+  .greet{
+    font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--moss);display:flex;align-items:center;gap:.6rem;
+  }
+  .greet::before{content:"☾";font-size:1.1rem;color:var(--gold)}
+  .hero h2{
+    font-family:'Rye',serif;font-weight:400;font-size:clamp(2.3rem,5.4vw,3.9rem);
+    line-height:.98;margin:.55rem 0 .2rem;color:var(--ink);
+    text-shadow:3px 3px 0 var(--paper2), 5px 5px 0 rgba(26,20,16,.18);
+    position:relative;
+  }
+  .hero h2 em{color:var(--rust);font-style:normal}
+  .hero .lede{
+    font-size:1.12rem;max-width:46ch;margin-top:.7rem;color:var(--ink2);
+    border-left:4px solid var(--rust);padding-left:.9rem;font-style:italic;
+  }
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.5rem}
+  @media (max-width:620px){.stats{grid-template-columns:1fr}}
+  .stat{
+    background:var(--paper);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
+    padding:1rem 1.05rem;position:relative;
+  }
+  .stat .label{
+    font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--rust2);
+  }
+  .stat .big{font-family:'Rye',serif;font-size:2.5rem;line-height:.9;margin:.35rem 0 .1rem}
+  .stat .small{font-size:.85rem;font-style:italic;color:var(--ink2)}
+  .stat.s2 .big{color:var(--rust)}
+  .stat.s3 .big{color:var(--moss)}
+  /* carved progress bar */
+  .bar{
+    height:14px;margin-top:.6rem;border:2px solid var(--ink);background:var(--paper2);
+    background-image:repeating-linear-gradient(45deg,rgba(26,20,16,.12) 0 3px,transparent 3px 7px);
+    position:relative;overflow:hidden;
+  }
+  .bar i{
+    display:block;height:100%;width:72%;background:var(--rust);
+    background-image:repeating-linear-gradient(90deg,var(--rust2) 0 2px,var(--rust) 2px 7px);
+    box-shadow:inset 0 0 0 1px var(--ink);
+  }
+
+  /* topic preview + formula */
+  .panel{padding:1.4rem 1.6rem 1.6rem}
+  .panel-head{
+    display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;
+    border-bottom:3px solid var(--ink);padding-bottom:.7rem;margin-bottom:1rem;
+    position:relative;
+  }
+  .panel-head .kicker{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--rust2);background:var(--paper2);
+    border:2px solid var(--ink);padding:.2rem .5rem;
+  }
+  .panel-head h3{font-family:'Rye',serif;font-weight:400;font-size:1.7rem;line-height:1}
+  .panel .lede2{font-style:italic;font-size:1.05rem;color:var(--ink2);margin-bottom:1rem}
+
+  .formula{
+    background:var(--ink);color:var(--paper3);
+    border:3px solid var(--ink);box-shadow:6px 6px 0 var(--gold);
+    padding:1.1rem 1.2rem;margin:.4rem 0 1.1rem;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(233,221,196,.05) 0 1px, transparent 1px 9px);
+  }
+  .formula .ft{
+    font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:.7rem;
+  }
+  .formula .row{
+    display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.2rem;
+    font-family:'IBM Plex Mono',monospace;font-size:1.12rem;letter-spacing:.02em;
+  }
+  .formula .eq{white-space:nowrap;color:var(--paper3)}
+  .formula .eq b{color:var(--gold);font-weight:600}
+  .formula .sep{color:var(--rust);font-size:1.3rem;line-height:1}
+
+  /* common trap */
+  .trap{
+    border:3px solid var(--rust2);box-shadow:6px 6px 0 var(--rust2);
+    background:
+      repeating-linear-gradient(135deg, rgba(168,52,31,.10) 0 10px, rgba(168,52,31,.02) 10px 20px),
+      var(--paper3);
+    padding:1.1rem 1.3rem;display:flex;gap:1rem;align-items:flex-start;
+  }
+  .trap .skull{
+    font-family:'Rye',serif;font-size:2.2rem;color:var(--rust);line-height:.9;flex:none;
+    text-shadow:2px 2px 0 var(--paper2);transform:rotate(-4deg);
+  }
+  .trap .tlab{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--rust2);
+  }
+  .trap p{font-size:1.05rem;margin-top:.25rem;color:var(--ink)}
+  .trap p strong{background:var(--rust);color:var(--paper3);padding:0 .25rem}
+
+  /* worked example teaser */
+  .example{
+    display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap;
+    padding:1.3rem 1.5rem;background:var(--moss);color:var(--paper3);
+    border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);
+    background-image:repeating-linear-gradient(-30deg, rgba(233,221,196,.05) 0 1px, transparent 1px 8px);
+  }
+  .example .num{
+    font-family:'Rye',serif;font-size:3rem;color:var(--gold);line-height:.8;
+    text-shadow:3px 3px 0 #000;flex:none;
+  }
+  .example .ex-body{flex:1;min-width:220px}
+  .example .ex-k{
+    font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--gold);
+  }
+  .example .ex-body h4{font-family:'Cardo',serif;font-style:italic;font-size:1.4rem;font-weight:700;margin-top:.2rem}
+  .example .ex-body p{font-size:.95rem;color:var(--paper2);margin-top:.3rem;font-style:italic}
+  .btns{display:flex;gap:.9rem;flex-wrap:wrap}
+  .btn{
+    font-family:'Rye',serif;font-size:1.05rem;letter-spacing:.5px;
+    padding:.7rem 1.3rem;border:3px solid var(--ink);cursor:pointer;
+    display:inline-flex;align-items:center;gap:.55rem;transition:.12s;
+    box-shadow:4px 4px 0 var(--ink);background:var(--paper3);color:var(--ink);
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+  .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+  .btn.primary{background:var(--rust);color:var(--paper3);box-shadow:4px 4px 0 #000}
+  .btn.primary:hover{box-shadow:6px 6px 0 #000}
+
+  /* footer */
+  footer{
+    background:var(--ink);color:var(--paper2);margin-top:.4rem;
+    border-top:5px solid var(--ink);
+    background-image:repeating-linear-gradient(45deg, rgba(233,221,196,.04) 0 2px, transparent 2px 10px);
+  }
+  .foot-inner{
+    max-width:1280px;margin:0 auto;padding:1.4rem 1.6rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  }
+  .foot-brand{display:flex;align-items:center;gap:.7rem}
+  .foot-brand .fm{
+    width:38px;height:38px;border:2px solid var(--gold);background:var(--rust);
+    display:grid;place-items:center;transform:rotate(-3deg);
+  }
+  .foot-brand .fm span{font-family:'Rye',serif;color:var(--paper3);font-size:1.3rem;line-height:1}
+  .foot-brand b{font-family:'Rye',serif;font-weight:400;color:var(--paper3);font-size:1.05rem}
+  .foot-brand i{font-style:italic;color:var(--gold);font-size:.82rem;display:block}
+  .foot-cut{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper2);text-align:right;
+  }
+
+  .sectionlabel{
+    font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--rust2);text-align:center;
+    margin:-.4rem 0 -.6rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <div class="mmark"><span>M</span></div>
+      <div class="brand-txt">
+        <h1>Me Studing Stuff</h1>
+        <p>Study smarter. Pass exams.</p>
+      </div>
+    </div>
+    <div class="masthead-tag">Carved &middot; Folk Press &middot; Est. FAM</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ================= SIDEBAR NAV ================= -->
+  <nav class="side">
+    <div class="nav-card carved">
+      <div class="nav-section">FAM-L / FAM-S</div>
+      <ul>
+        <li><a href="#" class="active"><span class="glyph">✦</span> Survival Models</a></li>
+        <li><a href="#"><span class="glyph">✦</span> Life Tables</a></li>
+        <li><a href="#"><span class="glyph">✦</span> Life Insurance</a></li>
+        <li><a href="#"><span class="glyph">✦</span> Life Annuities</a></li>
+        <li><a href="#"><span class="glyph">✦</span> Premiums</a></li>
+        <li><a href="#"><span class="glyph">✦</span> Policy Values</a></li>
+      </ul>
+      <div class="nav-section">The Workbench</div>
+      <ul>
+        <li><a href="#"><span class="glyph">❧</span> Notes &amp; Formulas</a></li>
+        <li><a href="#"><span class="glyph">❧</span> Worked Problems</a></li>
+        <li><a href="#"><span class="glyph">❧</span> Your Study Plan</a></li>
+      </ul>
+    </div>
+
+    <!-- EXAM FAM CARD -->
+    <div class="exam-fam">
+      <div class="ribbon">Exam FAM</div>
+      <div class="sub">Fundamentals of Actuarial Mathematics</div>
+      <div class="fam-meta">
+        <span>SOA</span>
+        <span>34 QUESTIONS</span>
+        <span class="pass">PASS = 6/10</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN ================= -->
+  <main>
+
+    <!-- HERO / DASHBOARD -->
+    <section class="hero carved">
+      <div class="greet">Good evening</div>
+      <h2>Let's get you<br>that <em>pass.</em></h2>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat s1">
+          <div class="label">Overall progress</div>
+          <div class="big">72%</div>
+          <div class="small">12 of 17 topics</div>
+          <div class="bar"><i></i></div>
+        </div>
+        <div class="stat s2">
+          <div class="label">Exam countdown</div>
+          <div class="big">86</div>
+          <div class="small">days remaining</div>
+        </div>
+        <div class="stat s3">
+          <div class="label">Topics solid</div>
+          <div class="big">8</div>
+          <div class="small">locked &amp; carved in</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sectionlabel">⸻ &nbsp; from the block &nbsp; ⸻</div>
+
+    <!-- TOPIC PREVIEW + FORMULA -->
+    <section class="panel carved">
+      <div class="panel-head">
+        <span class="kicker">Topic Preview</span>
+        <h3>Life Insurance Present Values</h3>
+      </div>
+      <p class="lede2">The expected present value of a benefit paid on death — the cornerstone every later topic is carved upon.</p>
+
+      <div class="formula">
+        <div class="ft">⌁ Cut into the block — memorize these three ⌁</div>
+        <div class="row">
+          <span class="eq"><b>A_x</b> = 1 − d·ä_x</span>
+          <span class="sep">✦</span>
+          <span class="eq"><b>Var(Z)</b> = ²A_x − (A_x)²</span>
+          <span class="sep">✦</span>
+          <span class="eq"><b>ä_x</b> = (1 − A_x) / d</span>
+        </div>
+      </div>
+
+      <!-- COMMON TRAP -->
+      <div class="trap">
+        <div class="skull">☠</div>
+        <div>
+          <div class="tlab">Common Trap</div>
+          <p>Under UDD, multiply <strong>ONLY</strong> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKED EXAMPLE TEASER -->
+    <section class="example">
+      <div class="num">1</div>
+      <div class="ex-body">
+        <div class="ex-k">Worked Example</div>
+        <h4>Example 1 — Whole life EPV &amp; variance</h4>
+        <p>Walk the full carve: set up Z, take the EPV, then square it down to Var(Z) step by step.</p>
+      </div>
+      <div class="btns">
+        <a href="#" class="btn primary">▸ Start studying</a>
+        <a href="#" class="btn">↻ Resume</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <div class="fm"><span>M</span></div>
+      <div>
+        <b>Me Studing Stuff</b>
+        <i>Study smarter. Pass exams.</i>
+      </div>
+    </div>
+    <div class="foot-cut">Hand-cut for SOA Exam FAM · One calm place · © FAM Press</div>
+  </div>
+</footer>
+
+</body>
+</html>

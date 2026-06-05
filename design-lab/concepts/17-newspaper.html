@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — The FAM Broadsheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1714;
+    --ink-soft:#3a3530;
+    --paper:#f4efe4;
+    --paper-2:#ece5d4;
+    --rule:#1a1714;
+    --accent:#7a1f12;
+    --faint:#b8ad96;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Spectral',Georgia,serif;
+    line-height:1.5;
+    /* newsprint texture */
+    background-image:
+      radial-gradient(rgba(26,23,20,.018) 1px, transparent 1px),
+      radial-gradient(rgba(26,23,20,.014) 1px, transparent 1px);
+    background-size:3px 3px, 5px 5px;
+    background-position:0 0, 2px 2px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .sheet{
+    max-width:1180px;
+    margin:0 auto;
+    padding:26px 30px 60px;
+  }
+
+  /* ===== TOP MATTER ===== */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    font-family:'Old Standard TT',serif;
+    font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    padding-bottom:6px;border-bottom:1px solid var(--ink);
+  }
+  .topbar .edn{font-weight:700;}
+  .topbar .price{font-style:italic;letter-spacing:.05em;text-transform:none;font-size:.8rem;}
+
+  /* ===== MASTHEAD ===== */
+  .masthead{
+    text-align:center;
+    border-bottom:3px double var(--ink);
+    border-top:3px double var(--ink);
+    margin-top:4px;
+    padding:14px 0 16px;
+    position:relative;
+  }
+  .masthead .kicker-top{
+    font-family:'Old Standard TT',serif;
+    font-style:italic;font-size:.82rem;letter-spacing:.06em;
+    margin-bottom:2px;
+  }
+  .masthead h1{
+    font-family:'Playfair Display',serif;
+    font-weight:900;
+    font-size:clamp(2.6rem,8.5vw,6.4rem);
+    line-height:.92;
+    letter-spacing:-.01em;
+    text-transform:uppercase;
+  }
+  .masthead .year-stamp{
+    position:absolute;left:0;bottom:14px;
+    font-family:'Old Standard TT',serif;font-style:italic;
+    font-size:.72rem;letter-spacing:.04em;color:var(--ink-soft);
+    max-width:120px;text-align:left;line-height:1.3;
+  }
+  .masthead .price-stamp{
+    position:absolute;right:0;bottom:14px;
+    font-family:'Old Standard TT',serif;
+    font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+    max-width:120px;text-align:right;line-height:1.3;
+  }
+  @media (max-width:860px){
+    .masthead .year-stamp,.masthead .price-stamp{display:none;}
+  }
+  .masthead .sub-rule{
+    display:flex;align-items:center;justify-content:center;gap:18px;
+    margin-top:10px;
+    font-family:'Old Standard TT',serif;
+    font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;
+  }
+  .masthead .sub-rule::before,
+  .masthead .sub-rule::after{
+    content:"";height:1px;flex:1;max-width:160px;background:var(--ink);
+  }
+  /* M mark logo */
+  .mmark{
+    display:inline-grid;place-items:center;
+    width:30px;height:30px;border:2px solid var(--ink);
+    font-family:'Playfair Display',serif;font-weight:900;font-size:1.1rem;
+    line-height:1;vertical-align:-6px;margin-right:.35em;
+  }
+
+  /* ===== NAV BAR ===== */
+  nav.sections{
+    display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0;
+    border-bottom:1px solid var(--ink);
+    padding:9px 0;
+    font-family:'Old Standard TT',serif;
+    text-transform:uppercase;letter-spacing:.1em;font-size:.74rem;
+  }
+  nav.sections a{
+    color:var(--ink);text-decoration:none;padding:2px 14px;
+    border-right:1px solid var(--faint);white-space:nowrap;
+    transition:color .15s;
+  }
+  nav.sections a:first-child{padding-left:0;}
+  nav.sections a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px;}
+  nav.sections a:last-child{border-right:none;}
+  nav.sections .exam-tag{
+    background:var(--ink);color:var(--paper);
+    padding:3px 12px;font-weight:700;letter-spacing:.12em;
+    border-right:none;
+  }
+  nav.sections .exam-tag:hover{background:var(--accent);color:var(--paper);text-decoration:none;}
+
+  /* ===== DATELINE ===== */
+  .dateline-strip{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Old Standard TT',serif;
+    font-style:italic;font-size:.78rem;
+    padding:7px 2px;border-bottom:3px double var(--ink);
+    color:var(--ink-soft);
+  }
+  .dateline-strip .weather::before{content:"✦ ";}
+
+  /* ===== HERO / LEAD STORY ===== */
+  .lead{
+    display:grid;
+    grid-template-columns:1.55fr 1fr;
+    gap:0;
+    border-bottom:1px solid var(--ink);
+  }
+  .lead .main-col{
+    padding:24px 30px 26px 0;
+    border-right:1px solid var(--ink);
+  }
+  .greeting{
+    font-family:'Old Standard TT',serif;
+    text-transform:uppercase;letter-spacing:.26em;font-size:.74rem;
+    color:var(--accent);font-weight:700;margin-bottom:8px;
+  }
+  .greeting::after{content:" — Evening Edition";color:var(--ink-soft);font-weight:400;letter-spacing:.1em;}
+  .headline{
+    font-family:'Playfair Display',serif;
+    font-weight:900;font-size:clamp(2.4rem,6vw,4.4rem);
+    line-height:.95;letter-spacing:-.015em;margin-bottom:14px;
+  }
+  .headline em{font-style:italic;color:var(--accent);}
+  .lead-deck{
+    font-size:1.18rem;font-style:italic;color:var(--ink-soft);
+    line-height:1.45;max-width:34ch;
+    border-left:none;
+    padding-bottom:16px;margin-bottom:16px;
+    border-bottom:1px solid var(--faint);
+  }
+  /* columns under deck */
+  .lead-body{
+    column-count:2;column-gap:26px;column-rule:1px solid var(--faint);
+    font-size:.97rem;text-align:justify;hyphens:auto;
+  }
+  .lead-body p{margin-bottom:.8em;}
+  .lead-body p:first-child::first-letter{
+    font-family:'Playfair Display',serif;
+    font-weight:900;float:left;font-size:3.4rem;line-height:.72;
+    padding:6px 8px 0 0;color:var(--accent);
+  }
+  .cta-row{
+    margin-top:18px;display:flex;gap:14px;flex-wrap:wrap;
+    column-span:all;padding-top:16px;border-top:3px double var(--ink);
+  }
+  .btn{
+    font-family:'Old Standard TT',serif;
+    text-transform:uppercase;letter-spacing:.16em;font-size:.78rem;
+    padding:12px 26px;text-decoration:none;cursor:pointer;
+    border:1.5px solid var(--ink);transition:all .15s;
+  }
+  .btn.primary{background:var(--ink);color:var(--paper);}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);}
+  .btn.ghost{background:transparent;color:var(--ink);}
+  .btn.ghost:hover{background:var(--paper-2);}
+
+  /* ===== SIDEBAR (stats + exam card) ===== */
+  .rail{padding:24px 0 26px 30px;}
+  .rail-kicker{
+    font-family:'Old Standard TT',serif;
+    text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;
+    text-align:center;border-bottom:1px solid var(--ink);
+    padding-bottom:6px;margin-bottom:14px;font-weight:700;
+  }
+  .stat{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:10px;padding:12px 0;border-bottom:1px solid var(--faint);
+  }
+  .stat:last-of-type{border-bottom:1px solid var(--ink);}
+  .stat .num{
+    font-family:'Playfair Display',serif;font-weight:900;
+    font-size:2.4rem;line-height:.9;
+  }
+  .stat .num .unit{font-size:1rem;font-weight:400;font-style:italic;}
+  .stat .lbl{
+    font-family:'Old Standard TT',serif;font-size:.72rem;
+    text-transform:uppercase;letter-spacing:.1em;text-align:right;
+    color:var(--ink-soft);max-width:13ch;
+  }
+  .stat .lbl small{display:block;font-style:italic;text-transform:none;letter-spacing:0;color:var(--faint);}
+  /* progress meter */
+  .meter{height:8px;border:1px solid var(--ink);margin:2px 0 14px;background:var(--paper-2);}
+  .meter>span{display:block;height:100%;width:72%;
+    background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 7px);}
+
+  .exam-card{
+    margin-top:20px;border:2px solid var(--ink);
+    padding:16px 18px;background:var(--paper-2);
+    box-shadow:5px 5px 0 var(--ink);
+    position:relative;
+  }
+  .exam-card .tag{
+    font-family:'Old Standard TT',serif;font-size:.66rem;
+    text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:700;
+  }
+  .exam-card h3{
+    font-family:'Playfair Display',serif;font-weight:900;
+    font-size:1.9rem;line-height:1;margin:4px 0 6px;
+  }
+  .exam-card .meta{font-style:italic;font-size:.9rem;color:var(--ink-soft);line-height:1.4;}
+  .exam-card .specs{
+    display:flex;gap:0;margin-top:12px;border-top:1px solid var(--ink);padding-top:10px;
+    font-family:'Old Standard TT',serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;
+  }
+  .exam-card .specs div{flex:1;text-align:center;border-right:1px solid var(--faint);}
+  .exam-card .specs div:last-child{border-right:none;}
+  .exam-card .specs strong{display:block;font-size:1.2rem;font-family:'Playfair Display',serif;}
+  .exam-card .seal{
+    position:absolute;right:-10px;top:-10px;
+    width:54px;height:54px;border:2px solid var(--accent);border-radius:50%;
+    display:grid;place-items:center;background:var(--paper);
+    transform:rotate(-12deg);
+    font-family:'Old Standard TT',serif;font-size:.5rem;line-height:1.05;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--accent);font-weight:700;
+    text-align:center;box-shadow:2px 2px 0 var(--ink);
+  }
+
+  /* ===== SECTION DIVIDER ===== */
+  .feature-band{
+    display:grid;grid-template-columns:1.55fr 1fr;gap:0;
+  }
+  .feature-band .left{border-right:1px solid var(--ink);padding:22px 30px 26px 0;}
+  .feature-band .right{padding:22px 0 26px 30px;}
+
+  .story-kicker{
+    font-family:'Old Standard TT',serif;
+    text-transform:uppercase;letter-spacing:.2em;font-size:.72rem;
+    color:var(--accent);font-weight:700;margin-bottom:6px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .story-kicker::after{content:"";flex:1;height:1px;background:var(--faint);}
+  .story-title{
+    font-family:'Playfair Display',serif;font-weight:700;
+    font-size:2rem;line-height:1.04;margin-bottom:6px;
+  }
+  .story-lede{font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-bottom:16px;}
+
+  /* FORMULA block */
+  .formula-block{
+    border-top:3px double var(--ink);border-bottom:3px double var(--ink);
+    padding:18px 16px;margin:6px 0 4px;text-align:center;
+    background:
+      linear-gradient(var(--paper),var(--paper)) padding-box;
+  }
+  .formula-block .fl-label{
+    font-family:'Old Standard TT',serif;font-size:.66rem;text-transform:uppercase;
+    letter-spacing:.24em;color:var(--ink-soft);margin-bottom:14px;
+  }
+  .formula{
+    font-family:'Old Standard TT','Times New Roman',serif;
+    font-size:1.5rem;margin:10px 0;display:block;
+  }
+  .formula i{font-style:italic;}
+  .formula sup{font-size:.62em;}
+  .formula .op{color:var(--accent);font-style:italic;}
+  .formula-rule{width:60px;height:1px;background:var(--faint);margin:12px auto;}
+
+  /* TRAP callout */
+  .trap{
+    margin-top:8px;border:2px solid var(--accent);background:var(--paper-2);
+    padding:14px 16px;position:relative;
+  }
+  .trap .t-head{
+    font-family:'Old Standard TT',serif;font-weight:700;
+    text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;
+    color:var(--accent);margin-bottom:6px;
+  }
+  .trap .t-head::before{content:"⚠ ";}
+  .trap p{font-size:.95rem;line-height:1.5;}
+  .trap p b{font-variant:small-caps;letter-spacing:.03em;}
+
+  /* worked example teaser */
+  .example{
+    border:1px solid var(--ink);padding:0;margin-bottom:0;
+  }
+  .example .ex-bar{
+    background:var(--ink);color:var(--paper);
+    font-family:'Old Standard TT',serif;font-size:.72rem;
+    text-transform:uppercase;letter-spacing:.18em;padding:6px 12px;
+  }
+  .example .ex-body{padding:16px 18px;}
+  .example h4{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:1.35rem;
+    line-height:1.05;margin-bottom:8px;
+  }
+  .example p{font-size:.93rem;color:var(--ink-soft);font-style:italic;line-height:1.5;text-align:justify;}
+  .example .qline{
+    font-family:'Old Standard TT',serif;font-style:normal;font-size:.74rem;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink);
+    margin-top:12px;padding-top:10px;border-top:1px solid var(--faint);
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    margin-top:40px;border-top:3px double var(--ink);padding-top:16px;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+    font-family:'Old Standard TT',serif;font-size:.74rem;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);
+  }
+  footer .f-brand{
+    font-family:'Playfair Display',serif;font-weight:900;
+    text-transform:none;letter-spacing:0;font-size:1.3rem;color:var(--ink);
+  }
+  footer .f-brand .mmark{width:24px;height:24px;font-size:.95rem;vertical-align:-4px;margin-right:.3em;}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:860px){
+    .lead, .feature-band{grid-template-columns:1fr;}
+    .lead .main-col{border-right:none;border-bottom:3px double var(--ink);padding:22px 0 24px;}
+    .rail{padding:22px 0 24px;}
+    .feature-band .left{border-right:none;border-bottom:3px double var(--ink);padding:20px 0 24px;}
+    .feature-band .right{padding:22px 0 24px;}
+    .lead-body{column-count:1;}
+    .formula{font-size:1.25rem;}
+  }
+  @media (max-width:560px){
+    .sheet{padding:18px 18px 44px;}
+    nav.sections a{padding:2px 8px;border-right:none;}
+    .topbar{font-size:.6rem;}
+    .stat .num{font-size:2rem;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- TOP MATTER -->
+  <div class="topbar">
+    <span class="edn">Vol. MMXXVI · No. 17</span>
+    <span class="price">Established for the Diligent Candidate</span>
+    <span>Newsprint Edition</span>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker-top">The Independent Journal of Actuarial Preparation</div>
+    <span class="year-stamp">Founded MMXXVI &middot; In the service of the diligent</span>
+    <span class="price-stamp">Price:<br>One Late Night</span>
+    <h1><span class="mmark">M</span>Me Studing Stuff</h1>
+    <div class="sub-rule">Study smarter. Pass exams.</div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="sections">
+    <a href="#">Survival Models</a>
+    <a href="#">Life Tables</a>
+    <a href="#">Life Insurance</a>
+    <a href="#">Life Annuities</a>
+    <a href="#">Premiums</a>
+    <a href="#">Policy Values</a>
+    <a href="#" class="exam-tag">FAM-L / FAM-S</a>
+  </nav>
+
+  <!-- DATELINE -->
+  <div class="dateline-strip">
+    <span>Friday, June 5, 2026 · Bahrain Bureau</span>
+    <span class="weather">Outlook: Focused, with a high chance of passing</span>
+  </div>
+
+  <!-- LEAD STORY / HERO -->
+  <section class="lead">
+    <div class="main-col">
+      <div class="greeting">Good evening</div>
+      <h1 class="headline">Let's get you<br>that <em>pass.</em></h1>
+      <p class="lead-deck">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="lead-body">
+        <p>The path to the Fundamentals of Actuarial Mathematics is best walked one column at a time. This edition gathers your survival models, life tables and annuity theory under a single masthead — no scattered notes, no panic, just an orderly progression toward the examination hall.</p>
+        <p>Tonight's brief covers present-value relationships, the variance of the present-value random variable, and a recurring trap under the uniform distribution of deaths. Begin where you left off, or open a fresh page — the desk is set and the ink is dry.</p>
+        <div class="cta-row">
+          <a href="#" class="btn primary">Start studying</a>
+          <a href="#" class="btn ghost">Resume</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAIL -->
+    <aside class="rail">
+      <div class="rail-kicker">By the Numbers</div>
+      <div class="meter"><span></span></div>
+      <div class="stat">
+        <span class="num">72<span class="unit">%</span></span>
+        <span class="lbl">Overall progress<small>12 of 17 topics</small></span>
+      </div>
+      <div class="stat">
+        <span class="num">86<span class="unit"> days</span></span>
+        <span class="lbl">Exam countdown<small>to sitting</small></span>
+      </div>
+      <div class="stat">
+        <span class="num">8</span>
+        <span class="lbl">Topics solid<small>mastered &amp; reviewed</small></span>
+      </div>
+
+      <div class="exam-card">
+        <div class="seal">SOA<br>Sitting<br>2026</div>
+        <div class="tag">★ Examination Notice ★</div>
+        <h3>Exam FAM</h3>
+        <p class="meta">Fundamentals of Actuarial Mathematics · Society of Actuaries</p>
+        <div class="specs">
+          <div><strong>34</strong>questions</div>
+          <div><strong>3.5h</strong>seated</div>
+          <div><strong>6/10</strong>to pass</div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- FEATURE BAND -->
+  <section class="feature-band">
+    <div class="left">
+      <div class="story-kicker">Topic Preview · Life Insurance</div>
+      <h2 class="story-title">Life Insurance Present Values</h2>
+      <p class="story-lede">Relating the whole-life assurance to the annuity-due, and pinning down its variance.</p>
+
+      <div class="formula-block">
+        <div class="fl-label">— The Working Relations —</div>
+        <span class="formula"><i>A<sub>x</sub></i> <span class="op">=</span> 1 <span class="op">−</span> <i>d</i>·<i>ä<sub>x</sub></i></span>
+        <div class="formula-rule"></div>
+        <span class="formula">Var(<i>Z</i>) <span class="op">=</span> <sup>2</sup><i>A<sub>x</sub></i> <span class="op">−</span> (<i>A<sub>x</sub></i>)<sup>2</sup></span>
+        <div class="formula-rule"></div>
+        <span class="formula"><i>ä<sub>x</sub></i> <span class="op">=</span> (1 <span class="op">−</span> <i>A<sub>x</sub></i>) / <i>d</i></span>
+      </div>
+
+      <div class="trap">
+        <div class="t-head">Common Trap</div>
+        <p>Under UDD, multiply <b>only</b> the term / death piece by <i>i/δ</i> — the pure endowment is never rescaled.</p>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="story-kicker">Worked Example</div>
+      <div class="example">
+        <div class="ex-bar">Example 1 · From the Practice Desk</div>
+        <div class="ex-body">
+          <h4>Whole life EPV &amp; variance</h4>
+          <p>Compute the expected present value of a whole-life assurance on (x), then derive the variance of its present-value random variable Z using the second-moment relation above.</p>
+          <div class="qline">Difficulty: Moderate · ≈ 9 min · Section FAM-L</div>
+        </div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="#" class="btn primary" style="flex:1;text-align:center;">Start studying</a>
+        <a href="#" class="btn ghost" style="flex:1;text-align:center;">Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="f-brand"><span class="mmark">M</span>Me Studing Stuff</span>
+    <span>Study smarter. Pass exams.</span>
+    <span>© MMXXVI · Printed for one diligent reader</span>
+  </footer>
+
+</div>
+</body>
+</html>

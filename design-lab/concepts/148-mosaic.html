@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Byzantine palette */
+    --gold:        #d4a017;
+    --gold-bright: #f4c842;
+    --gold-deep:   #9c7414;
+    --lapis:       #1b3a8f;
+    --lapis-deep:  #11245c;
+    --teal:        #157a78;
+    --teal-deep:   #0d4d4c;
+    --porphyry:    #6e1b3c;
+    --porphyry-br: #9c2b54;
+    --emerald:     #1f6b4f;
+    --crimson:     #8c1c28;
+    --terra:       #b4612e;
+    --ink:         #1a1410;
+    --ink-2:       #2b2118;
+    --grout:       #0c0907;     /* dark mortar between tiles */
+    --cream:       #f3ead3;
+    --cream-2:     #e6d8b6;
+    --parchment:   #1f1812;
+    --tessera-edge: rgba(255,235,180,.10);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    background:var(--grout);
+    line-height:1.5;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ============ MOSAIC GROUT BACKGROUND ============ */
+  /* The whole page sits on a dark grout grid speckled with gold tesserae */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(27,58,143,.35), transparent 42%),
+      radial-gradient(circle at 82% 30%, rgba(110,27,60,.32), transparent 40%),
+      radial-gradient(circle at 60% 88%, rgba(21,122,120,.30), transparent 45%),
+      linear-gradient(150deg,#0d0a07,#16100b 55%,#0a0705);
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    /* the grout grid: thin dark lines forming square tesserae */
+    background-image:
+      linear-gradient(rgba(8,6,4,.55) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(8,6,4,.55) 1.5px, transparent 1.5px);
+    background-size:26px 26px;
+    background-position:center;
+    opacity:.5;
+    pointer-events:none;
+    mask-image:radial-gradient(circle at 50% 40%, #000 60%, transparent 100%);
+  }
+
+  /* ============ TESSERA MOTIF ============ */
+  /* reusable little chip with beveled, irregular feel */
+  .tess{
+    display:inline-block;
+    width:14px;height:14px;
+    border-radius:2px;
+    box-shadow:
+      inset 0 0 0 1px var(--tessera-edge),
+      inset 1px 1px 2px rgba(255,255,255,.18),
+      inset -1px -1px 2px rgba(0,0,0,.4);
+  }
+
+  /* gilded card surface = field of tiny tiles */
+  .mosaic-surface{
+    position:relative;
+    background-color:var(--ink-2);
+    background-image:
+      linear-gradient(rgba(10,7,4,.6) 1.2px, transparent 1.2px),
+      linear-gradient(90deg, rgba(10,7,4,.6) 1.2px, transparent 1.2px);
+    background-size:13px 13px;
+  }
+  .mosaic-surface::before{
+    content:"";
+    position:absolute;inset:0;
+    /* scattered colored tesserae using repeating dots */
+    background-image:
+      radial-gradient(circle, rgba(212,160,23,.16) 35%, transparent 38%),
+      radial-gradient(circle, rgba(27,58,143,.14) 35%, transparent 38%),
+      radial-gradient(circle, rgba(21,122,120,.13) 35%, transparent 38%);
+    background-size:39px 39px, 52px 52px, 65px 65px;
+    background-position:0 0, 13px 26px, 26px 13px;
+    pointer-events:none;
+    mix-blend-mode:screen;
+  }
+
+  /* ============ LAYOUT SHELL ============ */
+  .frame{
+    max-width:1340px;
+    margin:0 auto;
+    padding:18px;
+  }
+  /* gold double border = mosaic border band */
+  .gilt-band{
+    border:3px solid var(--gold-deep);
+    outline:2px solid var(--grout);
+    outline-offset:3px;
+    position:relative;
+    background:
+      repeating-linear-gradient(45deg,
+        var(--gold) 0 7px,
+        var(--gold-deep) 7px 14px);
+    padding:3px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 24px 60px rgba(0,0,0,.6);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:268px 1fr;
+    gap:3px;
+    background:var(--grout);
+  }
+
+  /* ============ SIDEBAR / NAV ============ */
+  aside{
+    background:
+      linear-gradient(180deg, var(--lapis-deep), #0c1633 60%, #0a1126);
+    position:relative;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+  }
+  aside::after{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(6,10,28,.7) 1.2px, transparent 1.2px),
+      linear-gradient(90deg, rgba(6,10,28,.7) 1.2px, transparent 1.2px);
+    background-size:14px 14px;
+    pointer-events:none;opacity:.7;
+  }
+  .brand{
+    position:relative;z-index:1;
+    padding:26px 22px 22px;
+    border-bottom:2px solid var(--gold-deep);
+    background:linear-gradient(135deg, rgba(212,160,23,.16), transparent);
+  }
+  .logo-row{display:flex;align-items:center;gap:14px}
+  /* the M mark made of tesserae in an arched medallion */
+  .medallion{
+    width:62px;height:62px;flex:none;
+    border-radius:50%;
+    background:
+      conic-gradient(from 0deg,
+        var(--gold-bright), var(--gold-deep), var(--gold-bright),
+        var(--gold-deep), var(--gold-bright));
+    display:grid;place-items:center;
+    box-shadow:
+      0 0 0 3px var(--grout),
+      0 0 0 5px var(--gold-deep),
+      inset 0 0 12px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .medallion span{
+    font-family:'Cinzel',serif;
+    font-weight:800;
+    font-size:32px;
+    color:var(--lapis-deep);
+    text-shadow:0 1px 0 var(--gold-bright);
+    line-height:1;
+  }
+  .brand h1{
+    font-family:'Cinzel',serif;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:.06em;
+    color:var(--gold-bright);
+    line-height:1.15;
+    text-shadow:0 1px 2px rgba(0,0,0,.6);
+  }
+  .brand .tag{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:14.5px;
+    color:var(--cream-2);
+    margin-top:3px;
+    letter-spacing:.02em;
+  }
+
+  nav{position:relative;z-index:1;padding:18px 14px 10px;flex:1}
+  .nav-label{
+    font-family:'Cinzel',serif;
+    font-size:11px;
+    letter-spacing:.22em;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin:14px 8px 10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::after{content:"";flex:1;height:1px;
+    background:linear-gradient(90deg,var(--gold-deep),transparent)}
+
+  .nav-section-pill{
+    display:inline-block;
+    margin:2px 8px 12px;
+    padding:5px 13px;
+    font-family:'Cinzel',serif;
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:.16em;
+    color:var(--grout);
+    background:
+      repeating-linear-gradient(45deg,var(--gold-bright) 0 6px,var(--gold) 6px 12px);
+    border-radius:3px;
+    box-shadow:0 0 0 2px var(--gold-deep), inset 0 0 6px rgba(0,0,0,.3);
+  }
+
+  .nav-item{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 12px;
+    margin:3px 4px;
+    border-radius:5px;
+    color:var(--cream);
+    text-decoration:none;
+    font-weight:500;
+    font-size:14.5px;
+    position:relative;
+    border:1px solid transparent;
+    transition:all .18s ease;
+  }
+  .nav-item .chip{
+    width:13px;height:13px;border-radius:2px;flex:none;
+    box-shadow:inset 1px 1px 1.5px rgba(255,255,255,.3),
+               inset -1px -1px 1.5px rgba(0,0,0,.45);
+  }
+  .nav-item:hover{
+    background:rgba(212,160,23,.12);
+    border-color:var(--gold-deep);
+    transform:translateX(3px);
+  }
+  .nav-item.active{
+    background:linear-gradient(90deg, rgba(212,160,23,.26), rgba(212,160,23,.06));
+    border-color:var(--gold);
+    box-shadow:inset 0 0 0 1px rgba(244,200,66,.3);
+  }
+  .nav-item.active::before{
+    content:"";position:absolute;left:-4px;top:6px;bottom:6px;width:4px;
+    background:var(--gold-bright);border-radius:3px;
+  }
+  .nav-item small{margin-left:auto;font-size:11px;color:var(--gold);font-family:'JetBrains Mono',monospace}
+
+  .aside-foot{
+    position:relative;z-index:1;
+    padding:16px 20px;
+    border-top:1px solid rgba(212,160,23,.3);
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    color:var(--cream-2);
+    font-size:14px;
+  }
+
+  /* ============ MAIN ============ */
+  main{
+    background:var(--parchment);
+    position:relative;
+    padding:0;
+    background-image:
+      linear-gradient(rgba(10,7,4,.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10,7,4,.4) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .main-inner{padding:30px 34px 36px;position:relative;z-index:1}
+
+  /* top ribbon: greeting + countdown */
+  .ribbon{
+    display:flex;justify-content:space-between;align-items:center;gap:18px;
+    flex-wrap:wrap;
+    padding-bottom:20px;
+    border-bottom:2px solid var(--gold-deep);
+    margin-bottom:26px;
+    position:relative;
+  }
+  .ribbon::after{
+    content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;
+    background:repeating-linear-gradient(90deg,var(--gold) 0 8px,transparent 8px 16px);
+  }
+  .greet{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:19px;
+    color:var(--gold-bright);
+    letter-spacing:.02em;
+  }
+  .greet b{font-style:normal;font-weight:600}
+  .ribbon-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .ribbon-chip{
+    display:flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--cream);
+    padding:7px 13px;
+    border-radius:4px;
+    background:rgba(0,0,0,.35);
+    border:1px solid var(--gold-deep);
+  }
+  .ribbon-chip b{color:var(--gold-bright)}
+
+  /* HERO */
+  .hero{margin-bottom:30px}
+  .hero h2{
+    font-family:'Cinzel',serif;
+    font-weight:800;
+    font-size:clamp(34px,5vw,58px);
+    line-height:1.02;
+    color:var(--cream);
+    letter-spacing:.005em;
+    text-shadow:0 2px 0 var(--gold-deep), 0 3px 14px rgba(0,0,0,.6);
+    margin-bottom:16px;
+  }
+  .hero h2 .gild{
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero p.lede{
+    font-family:'Cormorant Garamond',serif;
+    font-size:21px;
+    color:var(--cream-2);
+    max-width:680px;
+    line-height:1.45;
+  }
+
+  /* STATS — three tessellated medallions */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:3px;
+    background:var(--grout);
+    border:3px solid var(--gold-deep);
+    margin-bottom:30px;
+  }
+  .stat{
+    padding:22px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat .tess-corner{position:absolute;inset:0;opacity:.5}
+  .stat .num{
+    font-family:'Cinzel',serif;
+    font-weight:800;
+    font-size:clamp(30px,4vw,46px);
+    line-height:1;
+    color:var(--gold-bright);
+    text-shadow:0 2px 5px rgba(0,0,0,.5);
+    position:relative;z-index:1;
+  }
+  .stat .lbl{
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--cream-2);margin-top:8px;position:relative;z-index:1;
+    font-weight:600;
+  }
+  .stat .sub{font-size:12px;color:var(--cream);opacity:.7;margin-top:3px;position:relative;z-index:1;
+    font-family:'JetBrains Mono',monospace}
+  /* progress meter built from tile segments */
+  .meter{
+    display:flex;gap:2px;margin-top:12px;position:relative;z-index:1;
+  }
+  .meter i{flex:1;height:9px;border-radius:1px;background:rgba(255,255,255,.12);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+  .meter i.on{background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.4)}
+
+  /* CONTENT GRID */
+  .content-grid{
+    display:grid;
+    grid-template-columns:1.55fr 1fr;
+    gap:24px;
+  }
+  .card{
+    border:3px solid var(--gold-deep);
+    position:relative;
+    box-shadow:0 14px 34px rgba(0,0,0,.45);
+  }
+  .card-head{
+    padding:14px 20px;
+    background:
+      repeating-linear-gradient(45deg,var(--lapis) 0 9px,var(--lapis-deep) 9px 18px);
+    border-bottom:3px solid var(--gold-deep);
+    display:flex;align-items:center;gap:12px;
+  }
+  .card-head h3{
+    font-family:'Cinzel',serif;font-size:16px;font-weight:700;
+    color:var(--gold-bright);letter-spacing:.05em;
+    text-shadow:0 1px 2px rgba(0,0,0,.6);
+  }
+  .card-head .eyebrow{margin-left:auto;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--cream-2);font-weight:600}
+  .card-body{padding:22px 22px 24px;position:relative;z-index:1}
+
+  /* EXAM card */
+  .exam-card .card-body{display:flex;flex-direction:column;gap:14px}
+  .exam-title{
+    font-family:'Cinzel',serif;font-size:26px;font-weight:800;
+    color:var(--cream);text-shadow:0 2px 0 var(--gold-deep);
+  }
+  .exam-sub{font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:17px;color:var(--cream-2)}
+  .exam-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .fact{
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    padding:6px 11px;border-radius:3px;color:var(--cream);
+    background:rgba(0,0,0,.4);
+    border:1px solid var(--gold-deep);
+    display:flex;align-items:center;gap:7px;
+  }
+  .fact b{color:var(--gold-bright)}
+  .fact .d{width:9px;height:9px;border-radius:2px}
+
+  /* TOPIC PREVIEW + FORMULA */
+  .lede-line{
+    font-family:'Cormorant Garamond',serif;font-size:18px;
+    color:var(--cream-2);margin-bottom:16px;line-height:1.4;
+  }
+  .formula{
+    background:
+      linear-gradient(180deg,#0c0907,#140d08);
+    border:2px solid var(--gold-deep);
+    border-radius:4px;
+    padding:0;
+    overflow:hidden;
+    margin-bottom:8px;
+  }
+  .formula .frow{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 18px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:15px;
+    color:var(--cream);
+    border-bottom:1px solid rgba(212,160,23,.22);
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .frow .k{
+    width:30px;height:30px;flex:none;border-radius:3px;
+    display:grid;place-items:center;
+    font-family:'Cinzel',serif;font-weight:700;font-size:14px;
+    color:var(--grout);
+  }
+  .formula .frow .eq{font-size:16px}
+  .formula .frow .eq .hl{color:var(--gold-bright)}
+  .formula .frow sup{font-size:.7em}
+
+  /* TRAP callout */
+  .trap{
+    margin-top:18px;
+    border:2px solid var(--crimson);
+    border-radius:4px;
+    background:
+      repeating-linear-gradient(135deg, rgba(140,28,40,.22) 0 12px, rgba(20,8,6,.4) 12px 24px);
+    padding:16px 18px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .trap .icon{
+    width:36px;height:36px;flex:none;border-radius:50%;
+    background:
+      conic-gradient(from 0deg,var(--crimson),var(--porphyry),var(--crimson));
+    display:grid;place-items:center;font-size:18px;
+    box-shadow:0 0 0 2px var(--grout),0 0 0 4px var(--crimson);
+  }
+  .trap .tx h4{
+    font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;
+    text-transform:uppercase;color:#f0a3ad;margin-bottom:5px;
+  }
+  .trap .tx p{font-size:14.5px;color:var(--cream);line-height:1.5}
+  .trap .tx p i{color:var(--gold-bright);font-style:italic;font-weight:600}
+
+  /* WORKED EXAMPLE teaser */
+  .worked{
+    margin-top:20px;
+    border:2px dashed var(--gold-deep);
+    border-radius:4px;
+    padding:16px 18px;
+    background:rgba(0,0,0,.28);
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .worked .badge{
+    font-family:'Cinzel',serif;font-weight:700;font-size:12px;
+    letter-spacing:.1em;color:var(--grout);
+    background:linear-gradient(180deg,var(--teal),var(--teal-deep));
+    color:var(--cream);
+    padding:6px 12px;border-radius:3px;
+    border:1px solid var(--gold-deep);
+  }
+  .worked .wt{flex:1;min-width:200px}
+  .worked .wt h4{font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:20px;color:var(--cream)}
+  .worked .wt p{font-size:13px;color:var(--cream-2);opacity:.85}
+
+  /* BUTTONS */
+  .btn-row{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap}
+  .btn{
+    font-family:'Cinzel',serif;font-weight:700;font-size:14px;
+    letter-spacing:.06em;
+    padding:13px 26px;
+    border-radius:5px;
+    text-decoration:none;
+    border:2px solid var(--grout);
+    display:inline-flex;align-items:center;gap:10px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    position:relative;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn-gold{
+    color:var(--grout);
+    background:
+      repeating-linear-gradient(45deg,var(--gold-bright) 0 7px,var(--gold) 7px 14px);
+    box-shadow:0 0 0 2px var(--gold-deep), 0 8px 18px rgba(0,0,0,.5);
+  }
+  .btn-gold:hover{filter:brightness(1.08);box-shadow:0 0 0 2px var(--gold-deep),0 12px 24px rgba(0,0,0,.55)}
+  .btn-lapis{
+    color:var(--cream);
+    background:
+      repeating-linear-gradient(45deg,var(--lapis) 0 7px,var(--lapis-deep) 7px 14px);
+    box-shadow:0 0 0 2px var(--gold-deep), 0 8px 18px rgba(0,0,0,.5);
+  }
+  .btn .tdot{width:9px;height:9px;border-radius:2px;background:currentColor;opacity:.8}
+
+  /* small section title with tesserae rule */
+  .section-rule{
+    display:flex;align-items:center;gap:6px;margin:30px 0 14px;
+  }
+  .section-rule .chips{display:flex;gap:3px}
+  .section-rule .chips i{width:10px;height:10px;border-radius:2px}
+  .section-rule h3{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--gold);white-space:nowrap}
+  .section-rule .line{flex:1;height:2px;
+    background:repeating-linear-gradient(90deg,var(--gold-deep) 0 6px,transparent 6px 12px)}
+
+  /* FOOTER */
+  footer{
+    margin-top:3px;
+    background:linear-gradient(180deg,#0c1633,var(--lapis-deep));
+    border-top:3px solid var(--gold-deep);
+    padding:22px 30px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    position:relative;
+  }
+  footer::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:repeating-linear-gradient(45deg,var(--gold) 0 8px,var(--gold-deep) 8px 16px);
+  }
+  footer .f-brand{display:flex;align-items:center;gap:12px}
+  footer .f-mark{
+    width:38px;height:38px;border-radius:50%;
+    background:conic-gradient(from 0deg,var(--gold-bright),var(--gold-deep),var(--gold-bright));
+    display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;
+    color:var(--lapis-deep);font-size:19px;
+    box-shadow:0 0 0 2px var(--grout),0 0 0 3px var(--gold-deep);
+  }
+  footer .f-brand b{font-family:'Cinzel',serif;color:var(--gold-bright);letter-spacing:.05em}
+  footer .f-brand span{font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:var(--cream-2);font-size:14px;display:block}
+  footer .f-tess{display:flex;gap:3px}
+  footer .f-tess i{width:12px;height:12px;border-radius:2px}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:920px){
+    .grid{grid-template-columns:1fr}
+    aside{flex-direction:column}
+    nav{display:grid;grid-template-columns:1fr 1fr;align-items:start;column-gap:8px}
+    .nav-label{grid-column:1/-1}
+    .nav-section-pill{grid-column:1/-1}
+    .content-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:700px){
+    .frame{padding:8px}
+    .main-inner{padding:20px 16px 26px}
+    .stats{grid-template-columns:1fr}
+    nav{grid-template-columns:1fr}
+    .hero h2{font-size:34px}
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="gilt-band">
+    <div class="grid">
+
+      <!-- ===================== SIDEBAR ===================== -->
+      <aside>
+        <div class="brand">
+          <div class="logo-row">
+            <div class="medallion"><span>M</span></div>
+            <div>
+              <h1>Me Studing<br>Stuff</h1>
+              <div class="tag">Study smarter. Pass exams.</div>
+            </div>
+          </div>
+        </div>
+
+        <nav>
+          <div class="nav-section-pill">FAM-L / FAM-S</div>
+
+          <div class="nav-label">Core Topics</div>
+
+          <a class="nav-item active" href="#">
+            <span class="chip" style="background:var(--lapis)"></span>
+            Survival Models <small>01</small>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--teal)"></span>
+            Life Tables <small>02</small>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--gold)"></span>
+            Life Insurance <small>03</small>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--porphyry)"></span>
+            Life Annuities <small>04</small>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--emerald)"></span>
+            Premiums <small>05</small>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--terra)"></span>
+            Policy Values <small>06</small>
+          </a>
+
+          <div class="nav-label">Practice</div>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--crimson)"></span>
+            Worked Problems
+          </a>
+          <a class="nav-item" href="#">
+            <span class="chip" style="background:var(--gold-bright)"></span>
+            Formula Vault
+          </a>
+        </nav>
+
+        <div class="aside-foot">
+          “Tessera by tessera, the whole pattern.”
+        </div>
+      </aside>
+
+      <!-- ===================== MAIN ===================== -->
+      <main class="mosaic-surface">
+        <div class="main-inner">
+
+          <!-- top ribbon -->
+          <div class="ribbon">
+            <div class="greet">Good evening, <b>scholar</b> — your tiles await.</div>
+            <div class="ribbon-right">
+              <div class="ribbon-chip"><span class="tess" style="width:9px;height:9px;background:var(--porphyry-br)"></span> Exam in <b>86&nbsp;days</b></div>
+              <div class="ribbon-chip"><span class="tess" style="width:9px;height:9px;background:var(--emerald)"></span> <b>72%</b> complete</div>
+            </div>
+          </div>
+
+          <!-- hero -->
+          <div class="hero">
+            <h2>Let's get you<br>that <span class="gild">pass.</span></h2>
+            <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          </div>
+
+          <!-- stats -->
+          <div class="stats mosaic-surface">
+            <div class="stat">
+              <div class="num">72%</div>
+              <div class="lbl">Overall Progress</div>
+              <div class="sub">12 of 17 topics</div>
+              <div class="meter">
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="num">86</div>
+              <div class="lbl">Exam Countdown</div>
+              <div class="sub">days remaining</div>
+              <div class="meter">
+                <i class="on"></i><i class="on"></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="num">8</div>
+              <div class="lbl">Topics Solid</div>
+              <div class="sub">mastered &amp; reviewed</div>
+              <div class="meter">
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+                <i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- content grid -->
+          <div class="content-grid">
+
+            <!-- LEFT: topic preview / formula / trap / worked -->
+            <section class="card">
+              <div class="card-head">
+                <span class="tess" style="background:var(--gold)"></span>
+                <h3>Life Insurance Present Values</h3>
+                <span class="eyebrow">Topic 03</span>
+              </div>
+              <div class="card-body mosaic-surface">
+                <p class="lede-line">The expected present value of a benefit paid at death — and the variance you’ll be tested on.</p>
+
+                <div class="formula">
+                  <div class="frow">
+                    <span class="k" style="background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep))">A</span>
+                    <span class="eq">A<sub>x</sub> <span class="hl">=</span> 1 − d·ä<sub>x</sub></span>
+                  </div>
+                  <div class="frow">
+                    <span class="k" style="background:linear-gradient(180deg,var(--teal),var(--teal-deep));color:var(--cream)">V</span>
+                    <span class="eq">Var(Z) <span class="hl">=</span> ²A<sub>x</sub> − (A<sub>x</sub>)²</span>
+                  </div>
+                  <div class="frow">
+                    <span class="k" style="background:linear-gradient(180deg,var(--porphyry-br),var(--porphyry));color:var(--cream)">ä</span>
+                    <span class="eq">ä<sub>x</sub> <span class="hl">=</span> (1 − A<sub>x</sub>) / d</span>
+                  </div>
+                </div>
+
+                <!-- trap -->
+                <div class="trap">
+                  <div class="icon">⚠</div>
+                  <div class="tx">
+                    <h4>Common Trap</h4>
+                    <p>Under UDD, multiply <i>only</i> the term/death piece by <i>i/δ</i> — the pure endowment is never rescaled.</p>
+                  </div>
+                </div>
+
+                <!-- worked example -->
+                <div class="worked">
+                  <span class="badge">Example 1</span>
+                  <div class="wt">
+                    <h4>Whole life EPV &amp; variance</h4>
+                    <p>Walk through A<sub>x</sub>, then ²A<sub>x</sub> to nail Var(Z).</p>
+                  </div>
+                </div>
+
+                <div class="btn-row">
+                  <a class="btn btn-gold" href="#"><span class="tdot"></span>Start studying</a>
+                  <a class="btn btn-lapis" href="#"><span class="tdot"></span>Resume</a>
+                </div>
+              </div>
+            </section>
+
+            <!-- RIGHT: exam card -->
+            <section class="card exam-card">
+              <div class="card-head">
+                <span class="tess" style="background:var(--porphyry-br)"></span>
+                <h3>Exam FAM</h3>
+                <span class="eyebrow">Your Target</span>
+              </div>
+              <div class="card-body mosaic-surface">
+                <div class="exam-title">FAM</div>
+                <div class="exam-sub">Fundamentals of Actuarial Mathematics</div>
+
+                <div class="exam-facts">
+                  <span class="fact"><span class="d" style="background:var(--lapis)"></span>SOA</span>
+                  <span class="fact"><span class="d" style="background:var(--teal)"></span><b>34</b>&nbsp;questions</span>
+                  <span class="fact"><span class="d" style="background:var(--emerald)"></span>pass = <b>6/10</b></span>
+                </div>
+
+                <div class="section-rule">
+                  <div class="chips">
+                    <i style="background:var(--gold)"></i>
+                    <i style="background:var(--lapis)"></i>
+                    <i style="background:var(--teal)"></i>
+                  </div>
+                  <h3>Where You Stand</h3>
+                  <span class="line"></span>
+                </div>
+
+                <div class="exam-facts">
+                  <span class="fact"><span class="d" style="background:var(--gold)"></span>Progress <b>72%</b></span>
+                  <span class="fact"><span class="d" style="background:var(--porphyry-br)"></span><b>86</b>&nbsp;days left</span>
+                  <span class="fact"><span class="d" style="background:var(--emerald)"></span><b>8</b>&nbsp;solid</span>
+                </div>
+
+                <p class="lede-line" style="margin-top:16px;margin-bottom:0">
+                  Five topics remain. Lay them down one tessera at a time and the mosaic of a pass completes itself.
+                </p>
+
+                <div class="btn-row">
+                  <a class="btn btn-gold" href="#"><span class="tdot"></span>Open the plan</a>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+          <div class="f-brand">
+            <div class="f-mark">M</div>
+            <div>
+              <b>Me Studing Stuff</b>
+              <span>Study smarter. Pass exams.</span>
+            </div>
+          </div>
+          <div class="f-tess">
+            <i style="background:var(--lapis)"></i>
+            <i style="background:var(--teal)"></i>
+            <i style="background:var(--gold)"></i>
+            <i style="background:var(--porphyry)"></i>
+            <i style="background:var(--emerald)"></i>
+            <i style="background:var(--terra)"></i>
+            <i style="background:var(--crimson)"></i>
+          </div>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+</div>
+</body>
+</html>

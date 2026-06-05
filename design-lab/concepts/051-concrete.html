@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Concrete</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --concrete-0:#0e0e10;
+    --concrete-1:#1a1a1d;
+    --concrete-2:#2a2a2e;
+    --concrete-3:#3a3a40;
+    --slab:#9a9a97;
+    --slab-lite:#b8b8b3;
+    --slab-pale:#d6d6cf;
+    --form-line:rgba(255,255,255,.06);
+    --rebar:#e8552a;
+    --rebar-deep:#c9421d;
+    --safety:#f2c14e;
+    --ink:#e9e8e2;
+    --ink-dim:#a3a39c;
+    --shadow:0 30px 60px -20px rgba(0,0,0,.8);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    background:var(--concrete-0);
+    color:var(--ink);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Poured concrete surface texture */
+  .grain{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(120% 80% at 15% 5%, rgba(255,255,255,.04), transparent 55%),
+      radial-gradient(140% 100% at 85% 95%, rgba(0,0,0,.5), transparent 60%),
+      repeating-linear-gradient(180deg, transparent 0 118px, var(--form-line) 118px 120px),
+      repeating-linear-gradient(180deg, transparent 0 118px, rgba(0,0,0,.35) 120px 121px),
+      var(--concrete-1);
+    opacity:1;
+  }
+  .grain::after{
+    content:"";position:absolute;inset:0;
+    background-image:
+      radial-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,.25) 1px, transparent 1px);
+    background-size:3px 3px, 4px 4px;
+    background-position:0 0, 1px 2px;
+    mix-blend-mode:overlay;opacity:.7;
+  }
+
+  .shell{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
+
+  /* ===== TOP BAR ===== */
+  header.top{
+    position:sticky;top:0;z-index:40;
+    background:rgba(14,14,16,.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--concrete-3);
+  }
+  .top-inner{
+    display:flex;align-items:stretch;justify-content:space-between;
+    max-width:1340px;margin:0 auto;padding:0 clamp(16px,3vw,40px);
+  }
+  .brand{display:flex;align-items:center;gap:16px;padding:18px 0}
+  .mmark{
+    width:54px;height:54px;flex:none;position:relative;
+    background:linear-gradient(150deg,var(--slab-lite),var(--slab) 60%,#6f6f6b);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.4), inset 0 -4px 8px rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.5);
+    display:grid;place-items:center;
+    font-family:'Archivo Black';font-size:30px;color:var(--concrete-0);
+    clip-path:polygon(0 0,100% 0,100% 86%,86% 100%,0 100%);
+  }
+  .mmark::after{content:"";position:absolute;right:0;bottom:0;width:14px;height:14px;background:var(--rebar)}
+  .brand .bt{display:flex;flex-direction:column;line-height:1}
+  .brand .bt b{font-family:'Archivo Black';font-size:18px;letter-spacing:.5px;text-transform:uppercase}
+  .brand .bt span{font-family:'JetBrains Mono';font-size:10.5px;color:var(--ink-dim);letter-spacing:1.5px;margin-top:5px;text-transform:uppercase}
+
+  nav.top-nav{display:flex;align-items:stretch}
+  nav.top-nav a{
+    display:flex;align-items:center;padding:0 18px;
+    font-family:'JetBrains Mono';font-size:12px;font-weight:600;
+    letter-spacing:1px;text-transform:uppercase;color:var(--ink-dim);
+    text-decoration:none;border-left:1px solid var(--concrete-2);
+    transition:.18s;
+  }
+  nav.top-nav a:hover{color:var(--ink);background:var(--concrete-1)}
+  nav.top-nav a.act{color:var(--concrete-0);background:var(--safety)}
+  .top-cta{display:flex;align-items:center;padding-left:18px;border-left:1px solid var(--concrete-2)}
+  .top-cta b{font-family:'JetBrains Mono';font-size:12px;color:var(--rebar);font-weight:800;letter-spacing:1px}
+
+  /* ===== LAYOUT ===== */
+  .layout{display:grid;grid-template-columns:268px 1fr;gap:0;align-items:start}
+
+  /* ===== SIDEBAR ===== */
+  aside{
+    position:sticky;top:91px;align-self:start;
+    border-right:1px solid var(--concrete-3);
+    padding:34px 26px 60px 0;
+    min-height:calc(100vh - 91px);
+  }
+  .side-label{
+    font-family:'JetBrains Mono';font-size:10px;letter-spacing:2.5px;
+    color:var(--rebar);font-weight:800;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .side-label::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--concrete-3) 0 6px,transparent 6px 10px)}
+  .topiclist{list-style:none;display:flex;flex-direction:column;gap:2px;margin-bottom:34px}
+  .topiclist a{
+    display:flex;align-items:center;gap:14px;
+    padding:13px 14px;text-decoration:none;color:var(--ink);
+    font-weight:600;font-size:14.5px;position:relative;
+    border-left:3px solid transparent;transition:.16s;
+  }
+  .topiclist a .n{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-dim);width:22px;flex:none}
+  .topiclist a:hover{background:var(--concrete-1);border-left-color:var(--slab);color:#fff}
+  .topiclist a.cur{background:var(--concrete-2);border-left-color:var(--rebar)}
+  .topiclist a.cur .n{color:var(--rebar)}
+  .topiclist a .dot{margin-left:auto;width:8px;height:8px;flex:none}
+  .dot.solid{background:var(--safety)}
+  .dot.part{background:transparent;border:1.5px solid var(--slab)}
+
+  .side-block{
+    background:var(--concrete-2);border:1px solid var(--concrete-3);
+    padding:18px;box-shadow:inset 0 2px 0 rgba(255,255,255,.04);
+  }
+  .side-block .h{font-family:'JetBrains Mono';font-size:10px;letter-spacing:2px;color:var(--ink-dim);text-transform:uppercase;margin-bottom:10px}
+  .side-block .big{font-family:'Archivo Black';font-size:34px;color:var(--safety);line-height:1}
+  .side-block .sub{font-size:12.5px;color:var(--ink-dim);margin-top:6px}
+
+  /* ===== MAIN ===== */
+  main{padding:34px 0 80px 46px}
+
+  /* HERO */
+  .hero{position:relative;padding-bottom:40px;border-bottom:1px solid var(--concrete-3);margin-bottom:40px}
+  .greet{
+    font-family:'JetBrains Mono';font-size:13px;letter-spacing:3px;
+    text-transform:uppercase;color:var(--rebar);font-weight:800;
+    display:inline-flex;align-items:center;gap:12px;margin-bottom:22px;
+  }
+  .greet .tick{width:34px;height:14px;background:repeating-linear-gradient(90deg,var(--rebar) 0 5px,transparent 5px 8px)}
+  h1.lede{
+    font-family:'Archivo Black';
+    font-size:clamp(46px,7.4vw,104px);
+    line-height:.9;letter-spacing:-2px;text-transform:uppercase;
+    color:var(--slab-pale);
+    text-shadow:2px 4px 0 rgba(0,0,0,.4);
+    margin-bottom:26px;
+  }
+  h1.lede em{font-style:normal;color:var(--ink);display:block}
+  h1.lede .pour{
+    color:transparent;
+    -webkit-text-stroke:2px var(--slab);
+  }
+  .intro{max-width:640px;font-size:18px;color:var(--ink-dim);line-height:1.55}
+  .intro b{color:var(--ink);font-weight:600}
+
+  /* STATS — concrete slabs */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:46px;background:var(--concrete-3)}
+  .stat{
+    background:linear-gradient(160deg,var(--concrete-2),var(--concrete-1));
+    padding:26px 24px;position:relative;overflow:hidden;
+  }
+  .stat::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:repeating-linear-gradient(90deg,var(--concrete-3) 0 8px,transparent 8px 16px)}
+  .stat .lab{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:14px}
+  .stat .num{font-family:'Archivo Black';font-size:54px;line-height:.85;color:var(--ink)}
+  .stat .num small{font-size:22px;color:var(--slab)}
+  .stat .meta{font-size:12.5px;color:var(--ink-dim);margin-top:12px}
+  .stat.accent .num{color:var(--safety)}
+  .stat.rebar .num{color:var(--rebar)}
+  .bar{height:8px;background:var(--concrete-0);margin-top:14px;position:relative;overflow:hidden}
+  .bar i{position:absolute;inset:0 28% 0 0;background:repeating-linear-gradient(90deg,var(--safety) 0 7px,#0e0e10 7px 9px)}
+
+  /* SECTION GRID */
+  .grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:34px;margin-bottom:34px}
+  @media(max-width:980px){.grid2{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--concrete-2);border:1px solid var(--concrete-3);
+    box-shadow:var(--shadow);position:relative;
+  }
+  .panel-head{
+    padding:18px 24px;border-bottom:1px solid var(--concrete-3);
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.03),transparent);
+  }
+  .panel-head h2{font-family:'Archivo Black';font-size:15px;letter-spacing:1px;text-transform:uppercase}
+  .panel-head .tag{font-family:'JetBrains Mono';font-size:10px;letter-spacing:1.5px;color:var(--concrete-0);background:var(--slab);padding:4px 9px;text-transform:uppercase;font-weight:800}
+  .panel-body{padding:24px}
+
+  /* EXAM CARD */
+  .exam-card .panel-body{display:flex;flex-direction:column;gap:18px}
+  .exam-title{font-family:'Archivo Black';font-size:40px;line-height:.9;letter-spacing:-1px;color:var(--slab-pale);text-transform:uppercase}
+  .exam-sub{font-size:14px;color:var(--ink-dim)}
+  .exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--concrete-3);border:1px solid var(--concrete-3)}
+  .exam-grid div{background:var(--concrete-1);padding:14px 16px}
+  .exam-grid .k{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:1.5px;color:var(--ink-dim);text-transform:uppercase}
+  .exam-grid .v{font-family:'Archivo Black';font-size:22px;color:var(--ink);margin-top:6px}
+  .exam-grid .v small{font-size:13px;color:var(--slab);font-family:'JetBrains Mono';font-weight:600}
+
+  /* FORMULA / TOPIC PREVIEW */
+  .topiclede{font-size:14.5px;color:var(--ink-dim);margin-bottom:20px;max-width:42ch}
+  .formula{
+    background:var(--concrete-0);
+    border:1px solid var(--concrete-3);
+    border-left:5px solid var(--rebar);
+    padding:0;display:flex;flex-direction:column;
+  }
+  .formula .frow{
+    font-family:'JetBrains Mono';font-size:16px;font-weight:600;
+    padding:16px 20px;color:var(--ink);
+    border-bottom:1px dashed var(--concrete-3);
+    display:flex;align-items:center;gap:14px;
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .frow::before{content:"§";color:var(--rebar);font-weight:800}
+  .formula .frow .eq{color:var(--safety)}
+
+  /* TRAP CALLOUT */
+  .trap{
+    margin-top:0;
+    background:
+      repeating-linear-gradient(135deg,rgba(242,193,78,.14) 0 14px,transparent 14px 28px),
+      var(--concrete-1);
+    border:1px solid var(--safety);
+    padding:20px 22px;position:relative;
+  }
+  .trap .badge{
+    position:absolute;top:-12px;left:18px;
+    background:var(--safety);color:var(--concrete-0);
+    font-family:'JetBrains Mono';font-weight:800;font-size:10.5px;
+    letter-spacing:2px;text-transform:uppercase;padding:5px 12px;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .trap p{font-size:14.5px;color:var(--ink);margin-top:6px;line-height:1.5}
+  .trap p strong{color:var(--safety)}
+
+  /* WORKED EXAMPLE */
+  .worked{margin-top:34px}
+  .worked .panel-body{display:flex;flex-direction:column;gap:22px}
+  .worked .ex-head{display:flex;align-items:flex-start;gap:18px}
+  .ex-num{
+    font-family:'Archivo Black';font-size:42px;color:transparent;
+    -webkit-text-stroke:1.5px var(--slab);line-height:.8;flex:none;
+  }
+  .ex-title{font-family:'Archivo Black';font-size:22px;text-transform:uppercase;letter-spacing:.5px;line-height:1.05}
+  .ex-title span{display:block;font-family:'JetBrains Mono';font-size:11px;font-weight:600;color:var(--ink-dim);letter-spacing:1px;text-transform:none;margin-top:8px}
+  .btns{display:flex;flex-wrap:wrap;gap:2px}
+  .btn{
+    font-family:'JetBrains Mono';font-weight:800;font-size:13px;
+    letter-spacing:1.5px;text-transform:uppercase;
+    padding:18px 30px;text-decoration:none;cursor:pointer;border:none;
+    display:inline-flex;align-items:center;gap:12px;transition:.16s;
+  }
+  .btn .arr{font-size:16px}
+  .btn-primary{
+    background:var(--rebar);color:#fff;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.25), inset 0 -4px 0 rgba(0,0,0,.3);
+  }
+  .btn-primary:hover{background:var(--rebar-deep);transform:translateY(-2px)}
+  .btn-ghost{
+    background:var(--concrete-3);color:var(--ink);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.08), inset 0 -4px 0 rgba(0,0,0,.3);
+  }
+  .btn-ghost:hover{background:var(--slab);color:var(--concrete-0);transform:translateY(-2px)}
+
+  /* FOOTER */
+  footer{
+    border-top:1px solid var(--concrete-3);margin-top:20px;
+    background:var(--concrete-0);
+  }
+  .foot-inner{
+    max-width:1340px;margin:0 auto;padding:32px clamp(16px,3vw,40px);
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+  .foot-brand{display:flex;align-items:center;gap:14px}
+  .foot-brand .fm{width:38px;height:38px;background:var(--slab);display:grid;place-items:center;font-family:'Archivo Black';color:var(--concrete-0);font-size:20px;clip-path:polygon(0 0,100% 0,100% 80%,80% 100%,0 100%)}
+  .foot-brand b{font-family:'Archivo Black';font-size:14px;text-transform:uppercase;letter-spacing:1px}
+  .foot-brand span{font-family:'JetBrains Mono';font-size:10px;color:var(--ink-dim);letter-spacing:1px;display:block;margin-top:3px}
+  .foot-meta{font-family:'JetBrains Mono';font-size:11px;color:var(--concrete-3);letter-spacing:1px;text-transform:uppercase}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    aside{position:static;min-height:0;border-right:none;border-bottom:1px solid var(--concrete-3);padding:28px 0 32px}
+    main{padding:30px 0 60px}
+    nav.top-nav,.top-cta{display:none}
+    .topiclist{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+  }
+  @media(max-width:700px){
+    .stats{grid-template-columns:1fr;gap:2px}
+    .exam-grid{grid-template-columns:1fr}
+    .topiclist{grid-template-columns:1fr}
+    h1.lede{font-size:clamp(38px,12vw,60px)}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div class="bt"><b>Me Studing Stuff</b><span>Study smarter. Pass exams.</span></div>
+    </div>
+    <nav class="top-nav">
+      <a href="#" class="act">Dashboard</a>
+      <a href="#">Topics</a>
+      <a href="#">Formulas</a>
+      <a href="#">Problems</a>
+      <div class="top-cta"><b>FAM-L / FAM-S</b></div>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="side-label">FAM-L / FAM-S · Syllabus</div>
+      <ul class="topiclist">
+        <li><a href="#" class="cur"><span class="n">01</span>Survival Models<span class="dot solid"></span></a></li>
+        <li><a href="#"><span class="n">02</span>Life Tables<span class="dot solid"></span></a></li>
+        <li><a href="#"><span class="n">03</span>Life Insurance<span class="dot part"></span></a></li>
+        <li><a href="#"><span class="n">04</span>Life Annuities<span class="dot solid"></span></a></li>
+        <li><a href="#"><span class="n">05</span>Premiums<span class="dot part"></span></a></li>
+        <li><a href="#"><span class="n">06</span>Policy Values<span class="dot part"></span></a></li>
+      </ul>
+      <div class="side-block">
+        <div class="h">Topics Solid</div>
+        <div class="big">8</div>
+        <div class="sub">slabs poured &amp; set · keep stacking</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="greet"><span class="tick"></span>Good evening</div>
+        <h1 class="lede">Let's get you<br><em>that</em><span class="pour">pass.</span></h1>
+        <p class="intro"><b>Your focused hub for SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat accent">
+          <div class="lab">Overall Progress</div>
+          <div class="num">72<small>%</small></div>
+          <div class="bar"><i></i></div>
+          <div class="meta">12 of 17 topics complete</div>
+        </div>
+        <div class="stat rebar">
+          <div class="lab">Exam Countdown</div>
+          <div class="num">86<small> days</small></div>
+          <div class="meta">until you sit Exam FAM</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Topics Solid</div>
+          <div class="num">8</div>
+          <div class="meta">fully drilled &amp; retained</div>
+        </div>
+      </section>
+
+      <!-- GRID: TOPIC PREVIEW + EXAM CARD -->
+      <div class="grid2">
+        <!-- TOPIC PREVIEW / FORMULA -->
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Life Insurance Present Values</h2>
+            <span class="tag">Topic 03</span>
+          </div>
+          <div class="panel-body">
+            <p class="topiclede">The core identities linking insurance EPVs, annuity factors and the discount rate — memorise the load-bearing three.</p>
+            <div class="formula">
+              <div class="frow">A<sub>x</sub> <span class="eq">=</span> 1 − d·ä<sub>x</sub></div>
+              <div class="frow">Var(Z) <span class="eq">=</span> ²A<sub>x</sub> − (A<sub>x</sub>)²</div>
+              <div class="frow">ä<sub>x</sub> <span class="eq">=</span> (1 − A<sub>x</sub>) / d</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EXAM CARD -->
+        <section class="panel exam-card">
+          <div class="panel-head">
+            <h2>Exam FAM</h2>
+            <span class="tag">SOA</span>
+          </div>
+          <div class="panel-body">
+            <div class="exam-title">Fundamentals of<br>Actuarial Math</div>
+            <p class="exam-sub">The foundation slab beneath FAM-L and FAM-S.</p>
+            <div class="exam-grid">
+              <div><div class="k">Provider</div><div class="v">SOA</div></div>
+              <div><div class="k">Questions</div><div class="v">34</div></div>
+              <div><div class="k">Pass Mark</div><div class="v">6<small> / 10</small></div></div>
+              <div><div class="k">Format</div><div class="v">FAM-L<small> + S</small></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TRAP CALLOUT -->
+      <div class="trap">
+        <span class="badge">⚠ Common Trap</span>
+        <p>Under UDD, multiply <strong>ONLY</strong> the term/death piece by <strong>i/δ</strong> — the pure endowment is never rescaled.</p>
+      </div>
+
+      <!-- WORKED EXAMPLE -->
+      <section class="panel worked">
+        <div class="panel-head">
+          <h2>Worked Example</h2>
+          <span class="tag">Drill</span>
+        </div>
+        <div class="panel-body">
+          <div class="ex-head">
+            <div class="ex-num">01</div>
+            <div class="ex-title">Whole Life EPV &amp; Variance
+              <span>Compute A_x and Var(Z) from a given life table, then sanity-check with the annuity identity.</span>
+            </div>
+          </div>
+          <div class="btns">
+            <a href="#" class="btn btn-primary">Start studying <span class="arr">→</span></a>
+            <a href="#" class="btn btn-ghost">Resume <span class="arr">↺</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <div class="fm">M</div>
+      <div><b>Me Studing Stuff</b><span>Study smarter. Pass exams.</span></div>
+    </div>
+    <div class="foot-meta">Concrete · Poured for SOA Exam FAM · © 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>

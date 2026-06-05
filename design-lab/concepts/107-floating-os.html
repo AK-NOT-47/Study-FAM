@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Floating OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --aero-blue:#3a86ff;
+    --aero-blue-2:#5fa8ff;
+    --glass:rgba(255,255,255,.62);
+    --glass-strong:rgba(255,255,255,.82);
+    --ink:#16202e;
+    --ink-soft:#41506a;
+    --line:rgba(20,32,46,.12);
+    --titlebar:linear-gradient(180deg,#fbfdff 0%,#e9f1fb 48%,#dbe8f7 100%);
+    --shadow:0 24px 60px -18px rgba(24,42,76,.55), 0 6px 18px -8px rgba(24,42,76,.35);
+    --r:14px;
+    --traffic-red:#ff5f57;
+    --traffic-yellow:#febc2e;
+    --traffic-green:#28c840;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 700px at 12% -8%, #bfe0ff 0%, transparent 55%),
+      radial-gradient(1100px 800px at 96% 8%, #d6c9ff 0%, transparent 50%),
+      radial-gradient(900px 900px at 60% 120%, #b6f0e2 0%, transparent 55%),
+      linear-gradient(160deg,#5b86c9 0%,#7f7fd0 45%,#56b8c0 100%);
+    background-attachment:fixed;
+    padding-bottom:46px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* faint desktop grid sheen */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0/100% 34px,
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0/34px 100%;
+    pointer-events:none; z-index:0;
+  }
+
+  /* ===== TOP MENU BAR ===== */
+  .menubar{
+    position:sticky; top:0; z-index:50;
+    height:34px;
+    display:flex; align-items:center; gap:18px;
+    padding:0 16px;
+    background:rgba(22,32,46,.55);
+    backdrop-filter:blur(16px) saturate(150%);
+    -webkit-backdrop-filter:blur(16px) saturate(150%);
+    color:#eef4ff;
+    font-size:13px; font-weight:600;
+    border-bottom:1px solid rgba(255,255,255,.14);
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset;
+  }
+  .menubar .mlogo{
+    display:flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:6px;
+    background:linear-gradient(135deg,var(--aero-blue-2),#a36bff);
+    font-weight:800; font-size:13px; color:#fff;
+    box-shadow:0 1px 6px rgba(80,40,200,.5);
+  }
+  .menubar .mi{opacity:.92; cursor:default}
+  .menubar .mi.bold{font-weight:800}
+  .menubar .spacer{margin-left:auto}
+  .menubar .clock{font-family:'JetBrains Mono',monospace; font-weight:500; opacity:.95; letter-spacing:.3px}
+  .menubar .tray{display:flex; gap:12px; opacity:.95}
+  @media(max-width:820px){
+    .menubar .mi:nth-child(n+5){display:none}
+  }
+
+  /* ===== DESKTOP CANVAS ===== */
+  .desktop{
+    position:relative; z-index:1;
+    max-width:1240px;
+    margin:0 auto;
+    padding:26px 22px 0;
+  }
+
+  /* desktop icons column (top-right floaty) */
+  .desk-icons{
+    position:absolute; top:24px; right:20px;
+    display:flex; flex-direction:column; gap:18px;
+    z-index:2;
+  }
+  .dicon{ width:64px; text-align:center; color:#fff; cursor:default; }
+  .dicon .glyph{
+    width:54px; height:54px; margin:0 auto 5px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:15px; font-size:24px;
+    background:var(--glass-strong);
+    box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.6);
+    color:var(--ink);
+  }
+  .dicon span{ font-size:10.5px; font-weight:600; text-shadow:0 1px 3px rgba(0,30,60,.6); letter-spacing:.2px }
+  @media(max-width:980px){ .desk-icons{display:none} }
+
+  /* ===== WINDOW SHELL ===== */
+  .window{
+    background:var(--glass);
+    backdrop-filter:blur(22px) saturate(160%);
+    -webkit-backdrop-filter:blur(22px) saturate(160%);
+    border:1px solid rgba(255,255,255,.55);
+    border-radius:var(--r);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  .titlebar{
+    height:42px;
+    display:flex; align-items:center; gap:12px;
+    padding:0 14px;
+    background:var(--titlebar);
+    border-bottom:1px solid var(--line);
+    cursor:grab;
+    user-select:none;
+  }
+  .lights{display:flex; gap:8px}
+  .lights i{ width:12px; height:12px; border-radius:50%; display:block; box-shadow:inset 0 0 0 .5px rgba(0,0,0,.18) }
+  .lights .r{background:var(--traffic-red)}
+  .lights .y{background:var(--traffic-yellow)}
+  .lights .g{background:var(--traffic-green)}
+  .titlebar .wtitle{
+    font-size:13px; font-weight:700; color:var(--ink-soft);
+    display:flex; align-items:center; gap:8px;
+  }
+  .titlebar .wtitle .dot{ width:14px; height:14px; border-radius:4px; background:linear-gradient(135deg,var(--aero-blue),#9b5cff); display:inline-block }
+  .titlebar .wpath{ margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; color:#7d8aa0; letter-spacing:.2px }
+  @media(max-width:700px){ .titlebar .wpath{display:none} }
+
+  /* ===== MAIN APP WINDOW LAYOUT ===== */
+  .app-grid{ display:grid; grid-template-columns:236px 1fr; }
+  @media(max-width:860px){ .app-grid{ grid-template-columns:1fr } }
+
+  /* sidebar (Finder source list) */
+  .sidebar{
+    padding:18px 14px 22px;
+    border-right:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,.36), rgba(235,243,253,.28));
+  }
+  .side-group{ margin-bottom:18px }
+  .side-label{
+    font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+    color:#7a88a0; padding:0 8px; margin-bottom:8px;
+    display:flex; align-items:center; gap:7px;
+  }
+  .side-label .pill{
+    font-size:9px; letter-spacing:.06em; background:linear-gradient(135deg,var(--aero-blue),#8a5cff);
+    color:#fff; padding:2px 7px; border-radius:999px; font-weight:800;
+  }
+  .nav-item{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px; border-radius:9px;
+    font-size:13.5px; font-weight:600; color:var(--ink-soft);
+    cursor:pointer; transition:.15s;
+  }
+  .nav-item .ic{ width:22px; height:22px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:12px; background:rgba(58,134,255,.12) }
+  .nav-item:hover{ background:rgba(58,134,255,.1); color:var(--ink) }
+  .nav-item.active{
+    background:linear-gradient(135deg,var(--aero-blue),#6d7bff);
+    color:#fff; box-shadow:0 6px 16px -6px rgba(58,90,255,.7);
+  }
+  .nav-item.active .ic{ background:rgba(255,255,255,.25) }
+  .nav-item .count{ margin-left:auto; font-size:10.5px; font-weight:700; color:#8190a8; }
+  .nav-item.active .count{ color:#dfe8ff }
+
+  .side-foot{
+    margin-top:6px; padding:10px; border-radius:10px;
+    background:rgba(255,255,255,.45); border:1px solid var(--line);
+    font-size:11px; color:var(--ink-soft);
+  }
+  .side-foot b{ color:var(--ink) }
+  .mini-bar{ height:6px; border-radius:99px; background:rgba(20,32,46,.1); margin-top:7px; overflow:hidden }
+  .mini-bar i{ display:block; height:100%; width:72%; border-radius:99px; background:linear-gradient(90deg,var(--aero-blue),#37d7a0) }
+
+  /* main content area */
+  .content{ padding:26px 28px 30px; min-width:0 }
+  @media(max-width:700px){ .content{ padding:20px 16px 24px } }
+
+  /* hero / greeting */
+  .greet{ font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--aero-blue); text-transform:uppercase; margin:0 0 6px }
+  .greet::before{ content:"●"; color:var(--traffic-green); font-size:9px; margin-right:7px; vertical-align:2px }
+  h1.head{
+    margin:0 0 12px; font-size:clamp(30px,4.4vw,46px); line-height:1.02;
+    font-weight:800; letter-spacing:-.02em;
+    background:linear-gradient(115deg,#152238 0%,#2c4d96 55%,#6a44c8 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .lede{ max-width:640px; font-size:15.5px; line-height:1.55; color:var(--ink-soft); margin:0 0 22px }
+
+  /* stats row */
+  .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px }
+  @media(max-width:640px){ .stats{ grid-template-columns:1fr } }
+  .stat{
+    position:relative; padding:16px 16px 15px; border-radius:13px;
+    background:var(--glass-strong); border:1px solid rgba(255,255,255,.6);
+    box-shadow:0 10px 28px -16px rgba(30,50,90,.5);
+    overflow:hidden;
+  }
+  .stat::after{ content:""; position:absolute; right:-22px; top:-22px; width:70px; height:70px; border-radius:50%; background:radial-gradient(circle,rgba(58,134,255,.22),transparent 70%) }
+  .stat .lab{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#7d8aa0 }
+  .stat .big{ font-size:34px; font-weight:800; letter-spacing:-.02em; margin:4px 0 2px; color:var(--ink) }
+  .stat .sub{ font-size:12px; color:var(--ink-soft) }
+  .stat.accent .big{ color:var(--aero-blue) }
+  .ring{ position:absolute; right:14px; top:50%; transform:translateY(-50%); width:46px; height:46px }
+  .prog-track{ height:7px; border-radius:99px; background:rgba(20,32,46,.1); margin-top:9px; overflow:hidden }
+  .prog-track i{ display:block; height:100%; width:72%; border-radius:99px; background:linear-gradient(90deg,var(--aero-blue),#37d7a0) }
+
+  /* two-column body */
+  .cols{ display:grid; grid-template-columns:1.2fr .85fr; gap:18px }
+  @media(max-width:880px){ .cols{ grid-template-columns:1fr } }
+
+  .panel{
+    background:var(--glass-strong); border:1px solid rgba(255,255,255,.6);
+    border-radius:13px; padding:18px 18px 16px;
+    box-shadow:0 10px 30px -18px rgba(30,50,90,.55);
+  }
+  .panel h3{ margin:0 0 4px; font-size:16px; font-weight:800; letter-spacing:-.01em; display:flex; align-items:center; gap:9px }
+  .panel .tag{ font-size:10px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:99px; background:rgba(58,134,255,.14); color:var(--aero-blue) }
+  .panel .micro{ font-size:13px; color:var(--ink-soft); margin:0 0 14px }
+
+  /* formula block — terminal style */
+  .formula{
+    font-family:'JetBrains Mono',monospace;
+    background:linear-gradient(180deg,#101826,#0c1320);
+    color:#d7e3ff; border-radius:11px; padding:14px 15px;
+    font-size:14px; line-height:2; border:1px solid rgba(255,255,255,.08);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+    overflow-x:auto;
+  }
+  .formula .ln{ display:block; white-space:nowrap }
+  .formula .prompt{ color:#4fd99a; margin-right:9px }
+  .formula .var{ color:#7fb6ff }
+  .formula .op{ color:#ff9eb5 }
+  .formula .num{ color:#ffd479 }
+  .formula .sep{ color:#5b6b86 }
+
+  /* common trap callout */
+  .trap{
+    margin-top:14px;
+    border-radius:11px; padding:13px 14px 13px 16px;
+    background:linear-gradient(135deg,rgba(255,191,46,.18),rgba(255,95,87,.12));
+    border:1px solid rgba(255,150,40,.4);
+    border-left:4px solid #ff9f1c;
+    font-size:13px; line-height:1.5; color:#5a3d12;
+  }
+  .trap b{ display:block; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:#b56b00; margin-bottom:4px }
+  .trap b::before{ content:"⚠"; margin-right:6px }
+
+  /* exam card */
+  .exam-card{
+    background:linear-gradient(150deg,#1b2740 0%,#2a3f74 60%,#5b3fae 100%);
+    color:#eaf1ff; border-radius:13px; padding:18px;
+    box-shadow:0 16px 38px -16px rgba(30,40,110,.7);
+    border:1px solid rgba(255,255,255,.12);
+    position:relative; overflow:hidden;
+  }
+  .exam-card::before{ content:""; position:absolute; right:-30px; bottom:-40px; width:150px; height:150px; border-radius:50%; background:radial-gradient(circle,rgba(120,160,255,.45),transparent 65%) }
+  .exam-card .ec-top{ display:flex; align-items:center; gap:11px; position:relative }
+  .exam-card .badge{ width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; font-size:20px; border:1px solid rgba(255,255,255,.22) }
+  .exam-card h3{ margin:0; font-size:18px; font-weight:800 }
+  .exam-card .ec-sub{ font-size:12px; opacity:.8 }
+  .ec-meta{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:16px; position:relative }
+  .ec-meta div{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:9px 11px }
+  .ec-meta .k{ font-size:10px; text-transform:uppercase; letter-spacing:.06em; opacity:.7 }
+  .ec-meta .v{ font-size:15px; font-weight:800; margin-top:2px }
+  .ec-meta .v small{ font-weight:500; opacity:.75; font-size:11px }
+
+  /* worked example teaser + buttons */
+  .example{
+    margin-top:18px; display:flex; align-items:center; gap:14px;
+    background:var(--glass-strong); border:1px solid rgba(255,255,255,.6);
+    border-radius:13px; padding:16px 18px;
+    box-shadow:0 10px 30px -18px rgba(30,50,90,.55);
+  }
+  .example .ex-ic{ width:46px; height:46px; flex:none; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:21px; background:linear-gradient(135deg,#37d7a0,#3a86ff); color:#fff; box-shadow:0 8px 18px -8px rgba(40,160,140,.7) }
+  .example .ex-txt{ min-width:0 }
+  .example .ex-k{ font-size:10.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--aero-blue) }
+  .example .ex-t{ font-size:15px; font-weight:700; color:var(--ink); margin-top:1px }
+  .example .ex-actions{ margin-left:auto; display:flex; gap:10px; flex:none }
+  @media(max-width:560px){ .example{ flex-wrap:wrap } .example .ex-actions{ margin-left:0; width:100% } .example .ex-actions .btn{ flex:1 } }
+
+  .btn{
+    font-family:inherit; font-weight:700; font-size:13.5px;
+    padding:10px 18px; border-radius:10px; cursor:pointer;
+    border:1px solid transparent; transition:.15s; white-space:nowrap;
+  }
+  .btn.primary{ background:linear-gradient(135deg,var(--aero-blue),#6d5cff); color:#fff; box-shadow:0 8px 18px -7px rgba(58,90,255,.8) }
+  .btn.primary:hover{ filter:brightness(1.07); transform:translateY(-1px) }
+  .btn.ghost{ background:rgba(255,255,255,.7); color:var(--ink); border-color:var(--line) }
+  .btn.ghost:hover{ background:#fff }
+
+  /* second-window: floating mini note (decorative, offset) */
+  .float-note{
+    position:relative; margin:0 0 24px auto; max-width:420px;
+    transform:rotate(-.6deg);
+  }
+  .float-note .titlebar{ height:36px }
+  .float-note .fn-body{ padding:14px 16px; font-size:13px; color:var(--ink-soft); line-height:1.5; background:rgba(255,255,255,.5) }
+  .float-note .fn-body b{ color:var(--ink) }
+
+  /* ===== DOCK ===== */
+  .dock{
+    position:fixed; left:50%; bottom:12px; transform:translateX(-50%);
+    z-index:60;
+    display:flex; align-items:flex-end; gap:10px;
+    padding:8px 14px;
+    background:rgba(255,255,255,.34);
+    backdrop-filter:blur(20px) saturate(170%);
+    -webkit-backdrop-filter:blur(20px) saturate(170%);
+    border:1px solid rgba(255,255,255,.5);
+    border-radius:20px;
+    box-shadow:0 18px 40px -14px rgba(20,40,80,.55);
+  }
+  .dock .di{
+    width:46px; height:46px; border-radius:13px;
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+    background:linear-gradient(160deg,#ffffff,#e7f0fc);
+    box-shadow:0 6px 14px -6px rgba(30,60,120,.5);
+    border:1px solid rgba(255,255,255,.7);
+    transition:transform .18s ease;
+    cursor:pointer; position:relative;
+  }
+  .dock .di:hover{ transform:translateY(-10px) scale(1.12) }
+  .dock .di.run::after{ content:""; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:#2c4d96 }
+  .dock .sepd{ width:1px; height:34px; align-self:center; background:rgba(20,40,80,.18); margin:0 3px }
+  @media(max-width:620px){ .dock .di:nth-child(n+7){display:none} }
+
+  /* footer */
+  footer{
+    position:relative; z-index:1;
+    max-width:1240px; margin:6px auto 0; padding:0 22px;
+    display:flex; align-items:center; gap:12px;
+    color:#eaf1ff; font-size:12.5px;
+    text-shadow:0 1px 4px rgba(0,20,50,.5);
+  }
+  footer .fm{ width:24px; height:24px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-weight:800; background:linear-gradient(135deg,var(--aero-blue-2),#a36bff); color:#fff; box-shadow:0 2px 8px rgba(60,40,160,.5) }
+  footer .sep{ opacity:.5 }
+  footer .right{ margin-left:auto; opacity:.85; font-family:'JetBrains Mono',monospace; font-size:11px }
+  @media(max-width:600px){ footer .right{ display:none } }
+</style>
+</head>
+<body>
+
+  <!-- ===== TOP MENU BAR ===== -->
+  <div class="menubar">
+    <span class="mlogo">M</span>
+    <span class="mi bold">Me Studing Stuff</span>
+    <span class="mi">File</span>
+    <span class="mi">Study</span>
+    <span class="mi">Topics</span>
+    <span class="mi">Formulas</span>
+    <span class="mi">Help</span>
+    <span class="spacer"></span>
+    <span class="tray">
+      <span title="focus mode">🔕</span>
+      <span title="battery">🔋</span>
+      <span title="wifi">📶</span>
+    </span>
+    <span class="clock">Thu 5 Jun&nbsp;&nbsp;19:42</span>
+  </div>
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="desktop">
+
+    <!-- desktop icons -->
+    <div class="desk-icons">
+      <div class="dicon"><div class="glyph">📓</div><span>Notes.app</span></div>
+      <div class="dicon"><div class="glyph">∑</div><span>Formulas</span></div>
+      <div class="dicon"><div class="glyph">🗂️</div><span>Past Qs</span></div>
+    </div>
+
+    <!-- ===== MAIN WINDOW ===== -->
+    <div class="window">
+      <div class="titlebar">
+        <div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+        <div class="wtitle"><span class="dot"></span> FAM Study — Dashboard</div>
+        <div class="wpath">~/study/SOA/exam-fam/dashboard</div>
+      </div>
+
+      <div class="app-grid">
+
+        <!-- SIDEBAR NAV -->
+        <aside class="sidebar">
+          <div class="side-group">
+            <div class="side-label">FAM-L / FAM-S <span class="pill">2 sections</span></div>
+            <div class="nav-item active"><span class="ic">📊</span> Dashboard</div>
+            <div class="nav-item"><span class="ic">📈</span> Survival Models <span class="count">solid</span></div>
+            <div class="nav-item"><span class="ic">📋</span> Life Tables <span class="count">solid</span></div>
+            <div class="nav-item"><span class="ic">🛡️</span> Life Insurance <span class="count">now</span></div>
+            <div class="nav-item"><span class="ic">💸</span> Life Annuities <span class="count">next</span></div>
+            <div class="nav-item"><span class="ic">🧾</span> Premiums <span class="count">·</span></div>
+            <div class="nav-item"><span class="ic">📦</span> Policy Values <span class="count">·</span></div>
+          </div>
+
+          <div class="side-group">
+            <div class="side-label">Workspace</div>
+            <div class="nav-item"><span class="ic">∑</span> Formula Sheet</div>
+            <div class="nav-item"><span class="ic">🗂️</span> Worked Problems</div>
+            <div class="nav-item"><span class="ic">🗓️</span> Study Plan</div>
+          </div>
+
+          <div class="side-foot">
+            <b>Topics solid:</b> 8 of 17<div class="mini-bar"><i></i></div>
+          </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="content">
+          <p class="greet">Good evening</p>
+          <h1 class="head">Let's get you that pass.</h1>
+          <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+          <!-- STATS -->
+          <div class="stats">
+            <div class="stat accent">
+              <div class="lab">Overall progress</div>
+              <div class="big">72%</div>
+              <div class="sub">12 of 17 topics</div>
+              <div class="prog-track"><i></i></div>
+            </div>
+            <div class="stat">
+              <div class="lab">Exam countdown</div>
+              <div class="big">86<small style="font-size:15px;font-weight:600;color:#7d8aa0"> days</small></div>
+              <div class="sub">Keep the streak going</div>
+            </div>
+            <div class="stat">
+              <div class="lab">Topics solid</div>
+              <div class="big">8</div>
+              <div class="sub">Mastered & retained</div>
+            </div>
+          </div>
+
+          <!-- TWO COLUMN -->
+          <div class="cols">
+
+            <!-- LEFT: topic preview + formula + trap -->
+            <div class="panel">
+              <h3>Life Insurance Present Values <span class="tag">Topic preview</span></h3>
+              <p class="micro">The expected present value of a benefit paid on death — the backbone of every premium and reserve you'll compute.</p>
+
+              <div class="formula">
+                <span class="ln"><span class="prompt">∑&gt;</span><span class="var">A_x</span> <span class="op">=</span> <span class="num">1</span> <span class="op">−</span> <span class="var">d</span>·<span class="var">ä_x</span></span>
+                <span class="ln"><span class="prompt">∑&gt;</span><span class="var">Var(Z)</span> <span class="op">=</span> <span class="var">²A_x</span> <span class="op">−</span> (<span class="var">A_x</span>)<span class="op">²</span></span>
+                <span class="ln"><span class="prompt">∑&gt;</span><span class="var">ä_x</span> <span class="op">=</span> (<span class="num">1</span> <span class="op">−</span> <span class="var">A_x</span>) <span class="op">/</span> <span class="var">d</span></span>
+              </div>
+
+              <div class="trap">
+                <b>Common trap</b>
+                Under UDD, multiply ONLY the term/death piece by i/δ — the pure endowment is never rescaled.
+              </div>
+            </div>
+
+            <!-- RIGHT: exam card -->
+            <div class="exam-card">
+              <div class="ec-top">
+                <div class="badge">🎓</div>
+                <div>
+                  <h3>Exam FAM</h3>
+                  <div class="ec-sub">Fundamentals of Actuarial Mathematics · SOA</div>
+                </div>
+              </div>
+              <div class="ec-meta">
+                <div><div class="k">Provider</div><div class="v">SOA</div></div>
+                <div><div class="k">Questions</div><div class="v">34</div></div>
+                <div><div class="k">Pass mark</div><div class="v">6/10</div></div>
+                <div><div class="k">Format</div><div class="v">CBT <small>multiple choice</small></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WORKED EXAMPLE TEASER -->
+          <div class="example">
+            <div class="ex-ic">🧮</div>
+            <div class="ex-txt">
+              <div class="ex-k">Worked example</div>
+              <div class="ex-t">Example 1 — Whole life EPV & variance</div>
+            </div>
+            <div class="ex-actions">
+              <button class="btn primary">Start studying</button>
+              <button class="btn ghost">Resume</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- floating sticky-note window (decorative, on-brand) -->
+    <div class="window float-note">
+      <div class="titlebar">
+        <div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+        <div class="wtitle"><span class="dot" style="background:linear-gradient(135deg,#37d7a0,#3a86ff)"></span> Quick note</div>
+      </div>
+      <div class="fn-body">
+        <b>Plan for tonight:</b> 40 min Life Insurance PVs → 3 past questions → review the i/δ trap card. Then call it.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== DOCK ===== -->
+  <div class="dock">
+    <div class="di run" title="Dashboard">📊</div>
+    <div class="di" title="Notes">📓</div>
+    <div class="di" title="Formulas">∑</div>
+    <div class="di" title="Worked problems">🧮</div>
+    <div class="di" title="Study plan">🗓️</div>
+    <div class="sepd"></div>
+    <div class="di" title="Past questions">🗂️</div>
+    <div class="di" title="Countdown">⏳</div>
+    <div class="di" title="Settings">⚙️</div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <span class="fm">M</span>
+    <strong>Me Studing Stuff</strong>
+    <span class="sep">·</span>
+    <span>Study smarter. Pass exams.</span>
+    <span class="right">v1.0 · build FAM-86d</span>
+  </footer>
+
+</body>
+</html>

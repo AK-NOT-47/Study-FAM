@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Insurance · FAM-L · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="lt-03" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Long-Term · Topic 3</div>
+      <h1>Life Insurance Present Values</h1>
+      <p class="lede">Every quantity in this chapter flows from one random variable: the present value of the benefit, <em>Z</em>. Master <em>Z</em> and the rest is mechanical — moments, variances, varying benefits, percentiles, and the continuous ↔ discrete ↔ $1/m$-thly conversions all fall out of writing $Z$ correctly.</p>
+      <div class="meta-row">
+        <span class="chip">📖 AMLCR · Ch. 4</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 EPV · variance · recursions</span>
+        <span class="chip">📈 varying benefits (IA · DA)</span>
+        <span class="chip">🔢 1/m-thly · UDD · claims acceleration</span>
+        <span class="chip">📊 percentiles &amp; probabilities</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After mastering this topic you should be able to:</p>
+        <ul>
+          <li>Define the <strong>present-value-of-benefit random variable</strong> $Z$ for each standard insurance and write its functional form in terms of $T_x$ or $K_x$.</li>
+          <li>Compute the <strong>Expected Present Value</strong> (EPV) — also the Actuarial Present Value (APV) or net single premium — denoted with the standard $A$-symbols, and scale to any benefit $b$.</li>
+          <li>Distinguish <strong>continuous</strong> ($\bar{A}_x$, moment of death), <strong>discrete</strong> ($A_x$, end of year of death), and <strong>$1/m$-thly</strong> ($A_x^{(m)}$, end of $1/m$-year) models.</li>
+          <li>Handle the building blocks: <strong>whole life, term, endowment, deferred whole life, deferred term, pure endowment</strong>, plus combinations and their <strong>covariances</strong>.</li>
+          <li>Compute <strong>variance</strong> via the "second-moment-at-double-force" rule, use <strong>recursions</strong> (level and increasing), and relate continuous ↔ discrete ↔ $1/m$-thly under <strong>UDD</strong> and via the <strong>claims-acceleration</strong> approximation.</li>
+          <li>Handle <strong>varying benefits</strong>: continuously / annually increasing $(\bar I\bar A,\,IA)$ and decreasing $(\bar D\bar A,\,DA)$ insurance, and non-level benefits where no $A$-notation exists.</li>
+          <li>Apply the <strong>special-case shortcuts</strong> under constant force of mortality and under a uniform (de Moivre) distribution.</li>
+          <li>Compute <strong>percentiles</strong> $z_p$ and <strong>probabilities</strong> $\Pr[Z\le z]$ using the $Z$-vs-$T_x$ graph method.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. The random variable comes first</h3>
+      <p>Everything here starts from a single random variable: <strong>the present value, at issue, of whatever benefit the contract pays.</strong> Call it $Z$. Because the time of payment depends on when the life dies, $Z$ is a function of $T_x$ (continuous models) or $K_x$ (discrete models).</p>
+      <p>The <strong>EPV is just $E[Z]$</strong>. The <strong>variance of the loss</strong> is $\text{Var}(Z)$. If you can write $Z$ correctly, every quantity follows mechanically. Candidates who memorize $A$-formulas without understanding $Z$ get stuck the moment a problem is phrased differently.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">The universal recipe for any EPV</div>
+        <p>Whether continuous, discrete, or $1/m$-thly, the EPV is the sum/integral over all possible payment times of the product of <strong>three pieces</strong>:</p>
+        <p>(i) the <strong>benefit amount</strong> · (ii) the <strong>discount factor</strong> to time 0 · (iii) the <strong>probability the benefit is paid at that time</strong>.</p>
+        <p>If you ever forget a formula, rebuild it from these three pieces. This is the single most useful habit in the chapter.</p>
+      </div>
+
+      <h3>2. The three timing conventions</h3>
+      <p>A death benefit of 1 paid on a life $(x)$:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Convention</th><th>Symbol</th><th>Benefit paid at…</th><th>$Z$</th></tr></thead>
+        <tbody>
+          <tr><td>Continuous</td><td>$\bar{A}_x$</td><td>the <strong>moment</strong> of death, $T_x$</td><td>$v^{T_x} = e^{-\delta T_x}$</td></tr>
+          <tr><td>Discrete (annual)</td><td>$A_x$</td><td>the <strong>end of the year</strong> of death, $K_x+1$</td><td>$v^{K_x+1}$</td></tr>
+          <tr><td>$1/m$-thly</td><td>$A_x^{(m)}$</td><td>the <strong>end of the $1/m$-year</strong> of death</td><td>$v^{K_x^{(m)}+1/m}$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Continuous is the "purest," but life tables are integer-age, so in practice we compute $A_x$ from the table and convert. The benefit is discounted from a <strong>later</strong> point as we move continuous → $1/m$-thly → annual, so:</p>
+      <div class="formula">$$\bar{A}_x \;\ge\; A_x^{(m)} \;\ge\; A_x \quad (\text{larger } m \Rightarrow \text{closer to } \bar{A}_x).$$</div>
+
+      <h3>3. The building blocks</h3>
+      <ul>
+        <li><strong>Whole life</strong> $A_x$: benefit of 1 whenever death occurs.</li>
+        <li><strong>$n$-year term</strong> $A^{1}_{x:\overline{n}|}$: benefit of 1 <strong>only if death occurs within $n$ years</strong>. The "1" over the $x$ marks the <em>death</em> benefit.</li>
+        <li><strong>$n$-year pure endowment</strong> $A^{\;\;1}_{x:\overline{n}|}$ (= $\,_{n}E_x$): benefit of 1 at time $n$ <strong>only if the life survives</strong>. The "1" over the $n$ marks the <em>survival</em> trigger.</li>
+        <li><strong>$n$-year endowment insurance</strong> $A_{x:\overline{n}|}$: pays 1 at death if within $n$ years, <strong>or</strong> 1 at time $n$ on survival. It is the <strong>sum</strong> of term + pure endowment.</li>
+        <li><strong>$u$-year deferred whole life</strong> $\,_{u|}A_x$: coverage doesn't start until time $u$.</li>
+        <li><strong>$u$-year deferred $m$-year term</strong> $\,_{u|m}A_x = \,_{u|}A^1_{x:\overline{m}|}$: an $m$-year term whose coverage starts only after $u$ years.</li>
+        <li><strong>Varying benefit</strong>: increasing $(IA)$ or decreasing $(DA)$, continuous or annual — see §6.</li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The structural identities to never forget</div>
+        $$A_{x:\overline{n}|} = A^{1}_{x:\overline{n}|} + A^{\;\;1}_{x:\overline{n}|} = A^{1}_{x:\overline{n}|} + \,_{n}E_x,$$
+        $$A_x = A^{1}_{x:\overline{n}|} + \,_{n|}A_x \quad(\text{whole life}=\text{term}+\text{deferred whole life}).$$
+      </div>
+
+      <h3>4. Scaling and non-level benefits</h3>
+      <p>For a <strong>level</strong> benefit $b$ instead of 1, just scale: $E[Z]=b\,A_x$, and because $Z$ is scaled by $b$, the second moment scales by $b^2$: $E[Z^2]=b^2\,{}^2A_x$, so $\text{Var}(Z)=b^2\big[{}^2A_x-(A_x)^2\big]$.</p>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">When the benefit is <em>not</em> level, the "2" notation breaks</div>
+        <p>If $b_t$ varies with time it <strong>cannot be pulled out of the integral/sum</strong>, so there is no clean shortcut — fall back to first principles:</p>
+        $$E[Z]=\int_0^\infty b_t\,e^{-\delta t}\,{}_tp_x\,\mu_{x+t}\,dt,\qquad E[Z^2]=\int_0^\infty \big(b_t\,e^{-\delta t}\big)^2\,{}_tp_x\,\mu_{x+t}\,dt.$$
+        <p>There is generally <strong>no actuarial symbol</strong> for the EPV of a non-level benefit; write it as $E[Z]$. And the second moment is <strong>not</strong> ${}^2(\text{symbol})$ — the pre-superscript 2 only means "recompute at $2\delta$," which equals the true second moment <em>only when the benefit is level</em>.</p>
+      </div>
+
+      <h3>5. Variance via "double force of interest"</h3>
+      <p>Because $Z$ is a power of $v$, the <strong>square</strong> of $Z$ is the same power of $v^2 = e^{-2\delta}$:</p>
+      <div class="formula">$$E[Z^2] = E[(v^{T})^2] = E[e^{-2\delta T}] = (\text{the same EPV but at force } 2\delta).$$</div>
+      <p>We write $^2A_x$ for "the whole-life EPV computed at force $2\delta$." Doubling the <strong>force</strong> is not doubling the <strong>rate</strong>:</p>
+      <div class="formula">
+        $$\delta \to 2\delta, \qquad v \to v^2, \qquad i \to j = (1+i)^2 - 1 = 2i + i^2.$$
+      </div>
+      <p>Then $\text{Var}(Z) = {}^{2}A_x - (A_x)^2$. The pre-superscript "2" <strong>always</strong> means "recompute at double force" — the workhorse of the whole chapter.</p>
+
+      <h3>6. Effect of interest</h3>
+      <p>Higher $i$ ⇒ stronger discounting ⇒ <strong>lower EPV</strong> for death benefits. As $i \to 0$, $v \to 1$ and $A_x \to 1$. As $i \to \infty$, $A_x \to 0$. The EPV is a <strong>decreasing function of $i$</strong>.</p>
+
+      <h3>7. Pure endowment is the "life-contingent discount factor"</h3>
+      <p>On Exam FM you discounted certain cash flows by $v^n$. Here cash flows are contingent on survival, so the discount factor also carries survivorship:</p>
+      <div class="formula">
+        <span class="formula-label">Life-contingent discount &amp; accumulation</span>
+        $$_{n}E_x = v^n\,{}_np_x \quad(\text{discount}), \qquad \frac{1}{{}_nE_x} = \frac{1}{v^n\,{}_np_x}\quad(\text{accumulate}).$$
+        <span class="formula-label">Splitting (chain) rule — extremely common with the SULT</span>
+        $$_{t+h}E_x = {}_tE_x \cdot {}_hE_{x+t}, \qquad {}_t^2E_x = v^t\cdot{}_tE_x = (v^t)^2\,{}_tp_x.$$
+      </div>
+      <p>This is why $\,_{n|}A_x = {}_nE_x\,A_{x+n}$: discount the future coverage back through both interest <em>and</em> survival.</p>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <p>$\,_tp_x$ = prob. $(x)$ survives $t$ years; $\,_tq_x$ = prob. dies within $t$; $\mu_{x+t}$ = force of mortality; $f_{T_x}(t)=\,_tp_x\,\mu_{x+t}$ = density of $T_x$; $\,_{k|}q_x = \,_kp_x\,q_{x+k}$ = prob. of dying in year $k+1$.</p>
+      </div>
+
+      <h3>Continuous insurances (benefit at moment of death)</h3>
+      <div class="formula">
+        <span class="formula-label">Whole life</span>
+        $$\bar{A}_x = E[v^{T_x}] = \int_0^{\infty} e^{-\delta t}\, {}_tp_x\,\mu_{x+t}\,dt.$$
+        <span class="formula-label">$n$-year term</span>
+        $$\bar{A}^{1}_{x:\overline{n}|} = \int_0^{n} e^{-\delta t}\, {}_tp_x\,\mu_{x+t}\,dt.$$
+        <span class="formula-label">$n$-year pure endowment (fixed-time payment)</span>
+        $$_{n}E_x = A^{\;\;1}_{x:\overline{n}|} = e^{-\delta n}\, {}_np_x = v^{n}\, {}_np_x.$$
+        <span class="formula-label">$n$-year endowment insurance</span>
+        $$\bar{A}_{x:\overline{n}|} = \bar{A}^{1}_{x:\overline{n}|} + {}_{n}E_x.$$
+        <span class="formula-label">$u$-year deferred whole life</span>
+        $$_{u|}\bar{A}_x = \int_u^{\infty} e^{-\delta t}\, {}_tp_x\,\mu_{x+t}\,dt = {}_uE_x \cdot \bar{A}_{x+u} = \bar{A}_x - \bar{A}^{1}_{x:\overline{u}|}.$$
+      </div>
+
+      <h3>Discrete insurances (benefit at end of year of death)</h3>
+      <div class="formula">
+        <span class="formula-label">Whole life</span>
+        $$A_x = E[v^{K_x+1}] = \sum_{k=0}^{\infty} v^{k+1}\, {}_kp_x\,q_{x+k} = \sum_{k=0}^{\infty} v^{k+1}\, {}_{k|}q_x.$$
+        <span class="formula-label">$n$-year term</span>
+        $$A^{1}_{x:\overline{n}|} = \sum_{k=0}^{n-1} v^{k+1}\, {}_{k|}q_x.$$
+        <span class="formula-label">$n$-year endowment insurance</span>
+        $$A_{x:\overline{n}|} = A^{1}_{x:\overline{n}|} + {}_{n}E_x = \sum_{k=0}^{n-1} v^{k+1}\, {}_{k|}q_x \;+\; v^{n}\,{}_np_x.$$
+        <span class="formula-label">$u$-year deferred whole life</span>
+        $$_{u|}A_x = {}_uE_x\cdot A_{x+u} = A_x - A^{1}_{x:\overline{u}|}.$$
+        <span class="formula-label">$u$-year deferred $m$-year term ($\,_{u|m}A_x = \,_{u|}A^1_{x:\overline{m}|}$)</span>
+        $$_{u|m}A_x = \sum_{k=u}^{u+m-1} v^{k+1}\, {}_{k|}q_x = {}_uE_x \cdot A^{1}_{x+u:\overline{m}|}.$$
+      </div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Two slick discrete shortcuts (great on the SULT)</div>
+        <p><strong>1-year endowment is just $v$:</strong> a benefit of 1 is paid whether you live or die, so</p>
+        $$A_{x:\overline{1}|} = v\,q_x + v\,p_x = v.$$
+        <p>(If a problem hands you $A_{x:\overline{1}|}$, that <em>is</em> your $v$.) <strong>$n$-year term two ways</strong> from the SULT:</p>
+        $$A^{1}_{x:\overline{n}|} = A_x - {}_nE_x\,A_{x+n} = A_{x:\overline{n}|} - {}_nE_x.$$
+        <p><strong>3-year endowment with only two years of mortality:</strong> once you survive to the start of the last year, $1$ is paid regardless, so $q$ and $p$ in that last year collapse to 1:</p>
+        $$A_{x:\overline{3}|} = v\,q_x + v^2\,{}_{1|}q_x + v^3\,{}_2p_x.$$
+      </div>
+
+      <h3>Varying benefit insurance</h3>
+      <div class="formula">
+        <span class="formula-label">Continuously increasing whole life ($Z = T_x\,v^{T_x}$)</span>
+        $$(\bar I\bar A)_x = \int_0^{\infty} t\,e^{-\delta t}\, {}_tp_x\,\mu_{x+t}\,dt.$$
+        <span class="formula-label">Continuously increasing $n$-year term ($Z = T_x v^{T_x}$, $T_x&lt;n$)</span>
+        $$(\bar I\bar A)^{1}_{x:\overline{n}|} = \int_0^{n} t\,e^{-\delta t}\, {}_tp_x\,\mu_{x+t}\,dt.$$
+        <span class="formula-label">Continuously decreasing $n$-year term ($Z = (n-T_x)v^{T_x}$, $T_x&lt;n$)</span>
+        $$(\bar D\bar A)^{1}_{x:\overline{n}|} = \int_0^{n} (n-t)\,e^{-\delta t}\, {}_tp_x\,\mu_{x+t}\,dt.$$
+        <span class="formula-label">Annually increasing whole life ($Z = (K_x+1)v^{K_x+1}$)</span>
+        $$(IA)_x = \sum_{k=0}^{\infty} (k+1)\,v^{k+1}\, {}_{k|}q_x.$$
+        <span class="formula-label">Annually increasing / decreasing $n$-year term</span>
+        $$(IA)^{1}_{x:\overline{n}|} = \sum_{k=0}^{n-1} (k+1)\,v^{k+1}\, {}_{k|}q_x, \qquad (DA)^{1}_{x:\overline{n}|} = \sum_{k=0}^{n-1} (n-k)\,v^{k+1}\, {}_{k|}q_x.$$
+      </div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Increasing + Decreasing = level (note the $n$ vs $n+1$!)</div>
+        $$(\bar I\bar A)^{1}_{x:\overline{n}|} + (\bar D\bar A)^{1}_{x:\overline{n}|} = n\,\bar{A}^{1}_{x:\overline{n}|}, \qquad (IA)^{1}_{x:\overline{n}|} + (DA)^{1}_{x:\overline{n}|} = (n+1)\,A^{1}_{x:\overline{n}|}.$$
+        <p>The continuous benefits run $0\!\to\! n$ and $n\!\to\!0$ (sum $=n$); the annual benefits run $1\!\to\! n$ and $n\!\to\!1$ (sum $=n+1$). There is <strong>no</strong> decreasing whole life — a decreasing benefit must hit 0 and cannot decrease past it.</p>
+      </div>
+
+      <h3>Variances (square the benefit ⇒ double the force, $1+j=(1+i)^2$)</h3>
+      <div class="formula">
+        $$\text{Var}(v^{T_x}) = {}^{2}\bar{A}_x - \left(\bar{A}_x\right)^2, \qquad \text{Var}(v^{K_x+1}) = {}^{2}A_x - \left(A_x\right)^2.$$
+        <span class="formula-label">Endowment insurance (most-tested variance)</span>
+        $$\text{Var}\!\left(Z_{x:\overline{n}|}\right) = {}^{2}A_{x:\overline{n}|} - \left(A_{x:\overline{n}|}\right)^2,$$
+        where ${}^{2}A_{x:\overline{n}|} = {}^{2}A^{1}_{x:\overline{n}|} + {}^{2}\!\left({}_nE_x\right)$ and ${}^{2}\!\left({}_nE_x\right) = v^{2n}\,{}_np_x$.
+        <span class="formula-label">Pure endowment — Bernoulli shortcut (Z takes only 2 values)</span>
+        $$\text{Var}\!\left({}_nE_x\right) = v^{2n}\,{}_np_x\,{}_nq_x = (v^n)^2\,{}_np_x\,(1-{}_np_x).$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Combining insurances: watch the covariance</div>
+        <p>If $Z = Z_1 + Z_2$ then $\text{Var}(Z)=\text{Var}(Z_1)+\text{Var}(Z_2)+2\,\text{Cov}(Z_1,Z_2)$. When the two benefits <strong>never pay at the same time</strong> (e.g. term vs. its pure endowment, or coverage in disjoint time intervals), $Z_1Z_2=0$, so $E[Z_1Z_2]=0$ and</p>
+        $$\text{Cov}(Z_1,Z_2) = -\,E[Z_1]\,E[Z_2].$$
+        <p>That negative covariance is why endowment-insurance variance is <em>smaller</em> than the naïve sum of the two pieces' variances.</p>
+      </div>
+
+      <h3>Recursions (move one age at a time)</h3>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">The backward recursions — memorize these</div>
+        $$A_x = v\,q_x + v\,p_x\,A_{x+1}, \qquad {}^2A_x = v^2 q_x + v^2 p_x\,{}^2A_{x+1}.$$
+        <p>Read it as: "next year you either die (prob $q_x$, pay 1 discounted one year) or survive (prob $p_x$, now holding $A_{x+1}$, discounted one year)." At double force, every $v$ becomes $v^2$.</p>
+      </div>
+      <div class="formula">
+        <span class="formula-label">Term</span>
+        $$A^{1}_{x:\overline{n}|} = v\,q_x + v\,p_x\,A^{1}_{x+1:\overline{n-1}|}.$$
+        <span class="formula-label">Endowment</span>
+        $$A_{x:\overline{n}|} = v\,q_x + v\,p_x\,A_{x+1:\overline{n-1}|}, \qquad A_{x:\overline{1}|} = v.$$
+        <span class="formula-label">Increasing whole life (two equivalent forms)</span>
+        $$(IA)_x = v\,q_x + v\,p_x\big(A_{x+1} + (IA)_{x+1}\big) = A_x + v\,p_x\,(IA)_{x+1}.$$
+        <span class="formula-label">$1/m$-thly whole life</span>
+        $$A_x^{(m)} = A^{1\;(m)}_{x:\overline{1/m}|} + {}_{1/m}E_x\,A_{x+1/m}^{(m)} = v^{1/m}\,{}_{1/m}q_x + v^{1/m}\,{}_{1/m}p_x\,A_{x+1/m}^{(m)}.$$
+      </div>
+
+      <h3>$1/m$-thly insurance from first principles</h3>
+      <p>Define the $1/m$-thly curtate lifetime $K_x^{(m)} = \tfrac1m\lfloor m\,T_x\rfloor$ (future lifetime rounded down to the nearest $1/m$). Its mass function is $\Pr[K_x^{(m)}=r] = {}_rp_x\,{}_{1/m}q_{x+r}$. Then the benefit is paid at $K_x^{(m)}+\tfrac1m$:</p>
+      <div class="formula">
+        <span class="formula-label">Whole life, $1/m$-thly ($Z = v^{K_x^{(m)}+1/m}$)</span>
+        $$A_x^{(m)} = \sum_{k=0}^{\infty} v^{(k+1)/m}\, {}_{\frac{k}{m}|}{}_{\frac1m}q_x.$$
+        <span class="formula-label">$n$-year term, $1/m$-thly ($mn$ periods)</span>
+        $$A^{1\,(m)}_{x:\overline{n}|} = \sum_{k=0}^{mn-1} v^{(k+1)/m}\, {}_{\frac{k}{m}|}{}_{\frac1m}q_x.$$
+      </div>
+
+      <h3>Converting continuous / $1/m$-thly to discrete (under UDD)</h3>
+      <p>Under UDD the death-benefit pieces scale by a constant factor:</p>
+      <div class="formula">
+        $$\bar{A}_x = \frac{i}{\delta}\,A_x, \qquad A_x^{(m)} = \frac{i}{i^{(m)}}\,A_x, \qquad \,_{u|}\bar A_x = \frac{i}{\delta}\,{}_{u|}A_x,$$
+        and likewise for term: $\;\bar{A}^1_{x:\overline{n}|} = \frac{i}{\delta}A^1_{x:\overline{n}|}$, $\;A^{1(m)}_{x:\overline{n}|} = \frac{i}{i^{(m)}}A^1_{x:\overline{n}|}$.
+        At double force: $\;{}^2\bar A_x = \frac{i^2+2i}{2\delta}\,{}^2A_x$ (replace $i\to i^2+2i$, $\delta\to2\delta$).
+      </div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Endowment insurance: convert only the death part</div>
+        <p>The pure endowment is already paid at a fixed time and is unchanged:</p>
+        $$\bar{A}_{x:\overline{n}|} = \frac{i}{\delta}\,A^{1}_{x:\overline{n}|} + {}_{n}E_x, \qquad A^{(m)}_{x:\overline{n}|} = \frac{i}{i^{(m)}}\,A^{1}_{x:\overline{n}|} + {}_{n}E_x.$$
+        <p>Here $i^{(m)} = m\left[(1+i)^{1/m}-1\right]$ and $\delta=\ln(1+i)$. Note $\frac{i}{\delta} > \frac{i}{i^{(m)}} > 1$, consistent with $\bar{A}_x \ge A_x^{(m)} \ge A_x$. And crucially $\;\bar A_{x:\overline n|}\ne\frac{i}{\delta}A_{x:\overline n|}$ — that is the trap.</p>
+      </div>
+      <p>The factor $i/i^{(m)}$ is just the general version of $i/\delta$: as $m\to\infty$, $i^{(m)}\to\delta$ and $A_x^{(m)}\to\bar A_x$. At $i=0.05$ the FAM-L table gives $i^{(m)},\,d^{(m)},\,i/i^{(m)},\,d/d^{(m)}$ directly; for any other $i$ use the all-in-one relation $(1+i)^t = \big(1+\tfrac{i^{(m)}}{m}\big)^{mt} = e^{\delta t} = v^{-t}$.</p>
+
+      <h3>Claims-acceleration approximation (alternative to UDD)</h3>
+      <p>A heuristic: a $1/m$-thly benefit is paid, on average, $\frac{m-1}{2m}$ of a year <em>earlier</em> than the annual benefit, so accumulate $A_x$ forward for that fraction of a year:</p>
+      <div class="formula">
+        $$A_x^{(m)} \approx (1+i)^{\frac{m-1}{2m}}\,A_x, \qquad \bar A_x \approx (1+i)^{1/2}\,A_x \;\;(m\to\infty).$$
+        <p>As with UDD, apply the factor to the <strong>death/term part only</strong> for endowment insurance: $A^{(m)}_{x:\overline n|}\approx (1+i)^{\frac{m-1}{2m}}A^1_{x:\overline n|} + {}_nE_x$.</p>
+      </div>
+
+      <h3>Special cases — constant force of mortality</h3>
+      <div class="formula">
+        <span class="formula-label">Master set ($\,_np_x=e^{-\mu n}$, age-independent)</span>
+        $$_{n}E_x = e^{-(\mu+\delta)n}, \qquad \bar A_x = \frac{\mu}{\mu+\delta}, \qquad {}^2\bar A_x = \frac{\mu}{\mu+2\delta},$$
+        $$\bar A^{1}_{x:\overline{n}|} = \bar A_x\big(1-{}_nE_x\big) = \frac{\mu}{\mu+\delta}\Big(1-e^{-(\mu+\delta)n}\Big), \qquad \bar A_{x:\overline{n}|} = \bar A^{1}_{x:\overline{n}|} + {}_nE_x.$$
+      </div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">$\bar A^1_{x:\overline n|}=\bar A_x(1-{}_nE_x)$ needs constant force</div>
+        <p>This shortcut works <em>only</em> because age is irrelevant under constant force, so $\bar A_{x+n}=\bar A_x$. For any other mortality, use the always-true $\bar A^1_{x:\overline n|} = \bar A_x - {}_nE_x\,\bar A_{x+n}$.</p>
+      </div>
+
+      <h3>Special cases — uniform (de Moivre) distribution, $\omega$ limiting age</h3>
+      <div class="formula">
+        $$_{n}E_x = v^n\cdot\frac{\omega-x-n}{\omega-x}, \qquad \bar A_x = \frac{\bar a_{\overline{\omega-x}|}}{\omega-x} = \frac{1-v^{\omega-x}}{\delta(\omega-x)}, \qquad \bar A^{1}_{x:\overline{n}|} = \frac{\bar a_{\overline{n}|}}{\omega-x} = \frac{1-v^{n}}{\delta(\omega-x)},$$
+        where $\bar a_{\overline{n}|} = \dfrac{1-v^n}{\delta}$ is the continuous certain annuity.
+      </div>
+
+      <h3>Link to annuities (cross-chapter, very common)</h3>
+      <div class="formula">
+        $$A_{x:\overline{n}|} = 1 - d\,\ddot{a}_{x:\overline{n}|}, \qquad A_x = 1 - d\,\ddot{a}_x, \qquad \bar{A}_x = 1 - \delta\,\bar{a}_x,$$
+        where $d = iv = 1 - v$ is the annual discount rate.
+      </div>
+
+      <h3>Percentiles &amp; probabilities of $Z$ (the graph method)</h3>
+      <p>The $100p$-th percentile of $Z$ is $z_p$ with $\Pr[Z\le z_p]=p$. Because $Z$ is a <strong>decreasing</strong> function of $T_x$ for a death benefit, "small $Z$" means "large $T_x$." The reliable procedure:</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Three steps that never fail</div>
+        <ol>
+          <li><strong>Graph</strong> $Z$ (vertical) against $T_x$ (horizontal) — note any jumps where the benefit changes.</li>
+          <li><strong>Identify</strong> the region of $T_x$ giving the target $Z$ values, and translate the percentile/probability condition into a statement about $T_x$.</li>
+          <li><strong>Solve</strong> for the threshold time(s), then plug back to get $z_p$ or evaluate the survival/death probability.</li>
+        </ol>
+        <p>For a level whole life of $b$: $z_p = b\,v^{h}$ where $h$ solves $\,_hp_x = p$ (since $\Pr[Z\le z_p]=\Pr[T_x>h]=\,_hp_x$).</p>
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Whole life EPV &amp; variance (constant force) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A life aged $x$ has <strong>constant force</strong> $\mu = 0.02$ for all ages; $\delta = 0.05$; benefit 1 at the moment of death. Find $\bar{A}_x$, $\text{Var}(v^{T_x})$, and the SD.</p>
+          <p><strong>Solution.</strong> With constant force, $\,_tp_x = e^{-\mu t}$ and density $\mu e^{-\mu t}$:</p>
+          $$\bar{A}_x = \int_0^\infty e^{-\delta t}\,\mu e^{-\mu t}\,dt = \frac{\mu}{\mu+\delta} = \frac{0.02}{0.07} = 0.285714.$$
+          <p>Second moment — replace $\delta$ by $2\delta = 0.10$:</p>
+          $$^{2}\bar{A}_x = \frac{\mu}{\mu+2\delta} = \frac{0.02}{0.12} = 0.166667.$$
+          $$\text{Var}(v^{T_x}) = 0.166667 - (0.285714)^2 = 0.085034, \quad \text{SD} = 0.291606.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\bar{A}_x = 0.28571$, $\text{Var} = 0.08503$, $\text{SD} = 0.29161$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Endowment via its two pieces + UDD conversion <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For a life aged 50: $A^{1}_{50:\overline{10}|} = 0.04$, $\,_{10}p_{50} = 0.92$, $i = 0.05$, deaths UDD. (a) Find $A_{50:\overline{10}|}$. (b) Find $\bar{A}_{50:\overline{10}|}$.</p>
+          <p><strong>Solution.</strong> Pure endowment: $v^{10} = 1.05^{-10} = 0.613913$, so $\,_{10}E_{50} = 0.613913 \times 0.92 = 0.564800.$</p>
+          <p><strong>(a)</strong> $A_{50:\overline{10}|} = 0.04 + 0.564800 = 0.604800.$</p>
+          <p><strong>(b)</strong> Convert <strong>only the term part</strong> with $\frac{i}{\delta}$, $\delta=\ln1.05=0.0487902$:</p>
+          $$\tfrac{i}{\delta} = \tfrac{0.05}{0.0487902} = 1.024797, \quad \bar{A}^{1}_{50:\overline{10}|} = 1.024797 \times 0.04 = 0.040992.$$
+          $$\bar{A}_{50:\overline{10}|} = 0.040992 + 0.564800 = 0.605792.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $0.60480$ &nbsp;·&nbsp; (b) $0.60579$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Discrete whole life from a mini life table + recursion check <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Ages 90–93 (terminal age 93, $q_{92}=1$), $i=0.06$, $v=0.943396$. Find $A_{90}$, then verify with $A_{90}=vq_{90}+vp_{90}A_{91}$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>90</th><th>91</th><th>92</th><th>93</th></tr></thead>
+            <tbody><tr><td>$\ell_x$</td><td>1000</td><td>700</td><td>400</td><td>0</td></tr></tbody>
+          </table></div>
+          <p>Deaths $d_{90}=300,\;d_{91}=300,\;d_{92}=400$, so $\,_{0|}q_{90}=0.30,\;_{1|}q_{90}=0.30,\;_{2|}q_{90}=0.40$.</p>
+          $$A_{90} = 0.943396(0.30) + 0.889996(0.30) + 0.839619(0.40) = 0.885865.$$
+          <p><strong>Recursion check.</strong> $A_{91} = 0.943396(\tfrac{300}{700}) + 0.889996(\tfrac{400}{700}) = 0.912881.$ Then</p>
+          $$A_{90} = 0.943396(0.30) + 0.943396(0.70)(0.912881) = 0.885865. \;\checkmark$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$A_{90} = 0.88587$ (both methods agree).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Non-level continuous benefit — no $A$-shortcut <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[CAS4A-S92]</em> Whole life, benefit $b_t=e^{0.04t}$ at the moment of death, $\mu_{x+t}=0.03$, $\delta=0.05$. Find $\text{Var}[Z]$.</p>
+          <p><strong>Solution.</strong> Use first principles — the benefit varies, so no $\bar A$ symbol applies. With $\,_tp_x\mu_{x+t}=0.03\,e^{-0.03t}$:</p>
+          $$E[Z]=\int_0^\infty e^{0.04t}\,e^{-0.05t}\,(0.03)e^{-0.03t}\,dt = 0.03\!\int_0^\infty e^{-0.04t}\,dt = \frac{0.03}{0.04}=0.75.$$
+          $$E[Z^2]=\int_0^\infty \big(e^{0.04t}e^{-0.05t}\big)^2(0.03)e^{-0.03t}\,dt = 0.03\!\int_0^\infty e^{-0.05t}\,dt = \frac{0.03}{0.05}=0.60.$$
+          $$\text{Var}[Z]=0.60-(0.75)^2 = 0.0375.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{Var}[Z]=0.0375$. Note $E[Z^2]$ was built by squaring <em>benefit × discount</em>, not by a "$^2A$" lookup.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Term variance from an endowment via covariance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[CAS3-F03]</em> $Z_1$ = $n$-year term of 1, $Z_2$ = $n$-year endowment insurance of 1 (claims at moment of death). Given $v^n=0.250$, $\,_np_x=0.400$, $E[Z_2]=0.400$, $\text{Var}[Z_2]=0.055$. Find $\text{Var}[Z_1]$.</p>
+          <p><strong>Solution (decomposition + covariance).</strong> Let $Z_3$ be the pure endowment, so $Z_2=Z_1+Z_3$ and $Z_1Z_3=0$ (they never both pay).</p>
+          $$_nE_x = v^n\,{}_np_x = 0.250(0.400)=0.100, \quad E[Z_1]=E[Z_2]-{}_nE_x = 0.400-0.100=0.300.$$
+          $$\text{Var}[Z_3]=v^{2n}\,{}_np_x\,{}_nq_x = 0.25^2(0.4)(0.6)=0.015, \quad \text{Cov}[Z_1,Z_3]=-E[Z_1]E[Z_3]=-0.300(0.100)=-0.03.$$
+          $$\text{Var}[Z_2]=\text{Var}[Z_1]+\text{Var}[Z_3]+2\,\text{Cov} \;\Rightarrow\; 0.055 = \text{Var}[Z_1]+0.015+2(-0.03).$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{Var}[Z_1]=0.055-0.015+0.06 = 0.100.$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Increasing whole life recursion <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[150-F96]</em> Given $A_{35:\overline{1}|}=0.9434$, $A_{35}=0.1300$, $p_{35}=0.9964$, $(IA)_{35}=3.7100$. Find $(IA)_{36}$.</p>
+          <p><strong>Solution.</strong> A 1-year endowment is $v$, so $v=A_{35:\overline{1}|}=0.9434$. Use $(IA)_x = A_x + v\,p_x\,(IA)_{x+1}$:</p>
+          $$3.7100 = 0.1300 + (0.9434)(0.9964)\,(IA)_{36} \;\Rightarrow\; (IA)_{36}=\frac{3.5800}{0.939989}=3.8085.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$(IA)_{36}=3.8085$. The trick: read $v$ straight off $A_{x:\overline 1|}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Increasing &amp; decreasing term from a table <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Table: $\ell_{70}=100,\ \ell_{71}=90,\ \ell_{72}=70,\ \ell_{73}=50$; $i=0.08$, $v=0.925926$. Find $(IA)^1_{70:\overline{3}|}$ and $(DA)^1_{70:\overline{3}|}$, and verify their sum.</p>
+          <p>$\,_{0|}q_{70}=0.10,\ _{1|}q_{70}=0.20,\ _{2|}q_{70}=0.20$.</p>
+          $$(IA)^1_{70:\overline{3}|} = 1\,v(0.10)+2\,v^2(0.20)+3\,v^3(0.20) = 0.91183.$$
+          $$(DA)^1_{70:\overline{3}|} = 3\,v(0.10)+2\,v^2(0.20)+1\,v^3(0.20) = 0.77948.$$
+          <p><strong>Check:</strong> $A^1_{70:\overline 3|}=v(0.10)+v^2(0.20)+v^3(0.20)=0.42283$, and $(n+1)A^1 = 4(0.42283)=1.69131 = 0.91183+0.77948.\ \checkmark$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$(IA)=0.91183$, $(DA)=0.77948$; sum $=(n+1)A^1_{70:\overline 3|}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> 3-year discrete endowment — the survival shortcut <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Same table ($\ell_{70}=100,\ \ell_{71}=90,\ \ell_{72}=70$), $i=0.08$. Find $A_{70:\overline{3}|}$.</p>
+          <p><strong>Solution.</strong> Once $(70)$ reaches the start of year 3, a benefit of 1 is paid for sure (death or survival), so the last term is $v^3\,{}_2p_{70}$ — no need for $q_{72}$:</p>
+          $$A_{70:\overline{3}|} = v(0.10) + v^2(0.20) + v^3\,{}_2p_{70} = v(0.10)+v^2(0.20)+v^3\Big(\tfrac{70}{100}\Big) = 0.81974.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$A_{70:\overline{3}|}=0.81974$ — survival to the final year guarantees the payout.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Portfolio funding via normal approximation <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[CAS3-F04]</em> 900 independent lives aged 30, benefit 10,000 at the moment of death, $\mu=0.01$, $\delta=0.04$. Find the fund $F$ so that $\Pr[S\le F]=0.95$ (normal approximation).</p>
+          <p>Per life: $\bar A_{30}=\frac{0.01}{0.05}=0.20$, $\,^2\bar A_{30}=\frac{0.01}{0.09}=0.11111$.</p>
+          $$E[Z]=10{,}000(0.20)=2{,}000, \quad E[Z^2]=10{,}000^2(0.11111)=11{,}111{,}111, \quad \text{Var}[Z]=7{,}111{,}111.$$
+          $$E[S]=900(2{,}000)=1{,}800{,}000, \quad \text{Var}[S]=900(7{,}111{,}111)=6.4\times10^9.$$
+          $$F = E[S] + 1.645\sqrt{\text{Var}[S]} = 1{,}800{,}000 + 1.64485\sqrt{6.4\times10^9} = 1{,}931{,}588.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$F \approx 1{,}931{,}588$. The standard portfolio template: per-life $E$ and $\text{Var}$, scale by $N$, add $z_{0.95}\,\text{SD}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> $1/m$-thly endowment variance under UDD <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[adapted]</em> 2-year endowment of 1, benefit at end of <strong>quarter</strong> of death, $q_x=0.050$, $q_{x+1}=0.055$, $i=0.05$, UDD. Find $10{,}000\,\text{Var}[Z]$.</p>
+          <p><strong>Single rate.</strong> $A^1_{x:\overline 2|}=v(0.05)+v^2(0.95)(0.055)=0.095011$; $\,_2E_x=v^2(0.95)(0.945)=0.814286$. With $i/i^{(4)}=1.01856$ (FAM-L table):</p>
+          $$A^{(4)}_{x:\overline 2|}=1.01856(0.095011)+0.814286 = 0.9111.$$
+          <p><strong>Double force.</strong> $1+j=(1.05)^2\Rightarrow j=0.1025$, $j^{(4)}=0.098780$, $j/j^{(4)}=1.037656$. With $\,^2A^1_{x:\overline 2|}=0.088338$ and $\,^2_2E_x=0.738581$:</p>
+          $$^2A^{(4)}_{x:\overline 2|}=1.037656(0.088338)+0.738581 = 0.830245.$$
+          $$\text{Var}[Z]=0.830245-0.9111^2 \;\Rightarrow\; 10{,}000\,\text{Var}[Z]\approx 2.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$10{,}000\,\text{Var}[Z]\approx 2$. Convert the term part with $j/j^{(4)}$ at double force; the pure endowment uses $v^2$ at the doubled rate.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Percentile of $Z$ (constant force) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$\mu=0.04$, $\delta=0.07$; $Z$ = PV of a whole life of 1,000 on (30). Find the 70th percentile $z_{0.70}$.</p>
+          <p><strong>Solution.</strong> $Z=1000\,e^{-0.07T_{30}}$ is decreasing in $T_{30}$, so small $Z$ ↔ large $T_{30}$:</p>
+          $$\Pr[Z\le z_{0.70}] = 0.70 = \Pr[T_{30}>h] = {}_hp_{30}=e^{-0.04h}.$$
+          $$e^{-0.04h}=0.70 \;\Rightarrow\; h=\frac{-\ln 0.70}{0.04}=8.9169, \quad z_{0.70}=1000\,e^{-0.07(8.9169)}=535.70.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$z_{0.70}=535.70$. Always translate the percentile of $Z$ into a survival probability of $T_x$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Probability with a benefit jump <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><em>[S-07 adapted]</em> Whole life on (40), benefit 1,000 for first 10 years then 2,500, paid at moment of death, $\delta=0.10$, SULT with UDD. Find $\Pr[Z>700]$.</p>
+          <p><strong>Solution.</strong> Graph $Z$: it falls from 1000 to $1000v^{10}=367.88$, then <strong>jumps up</strong> to $2500v^{10}=919.70$, then falls again. So $Z>700$ on two disjoint intervals:</p>
+          $$1000e^{-0.1h_1}=700 \Rightarrow h_1=3.57, \qquad 2500e^{-0.1h_2}=700 \Rightarrow h_2=12.73.$$
+          $$\Pr[Z>700]=\Pr[T_{40}<3.57]+\Pr[10\lt T_{40}<12.73] = {}_{3.57}q_{40} + {}_{10|2.73}q_{40}.$$
+          <p>Interpolating $\ell$-values (UDD): $\ell_{43.57}=99{,}132.29$, $\ell_{52.73}=98{,}220.79$, with $\ell_{40}=99{,}338.3$, $\ell_{50}=98{,}576.4$:</p>
+          $$\Pr[Z>700]=\frac{99{,}338.3-99{,}132.29}{99{,}338.3}+\frac{98{,}576.4-98{,}220.79}{99{,}338.3}=0.0057.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\Pr[Z>700]=0.0057$. A benefit jump creates a non-monotone $Z$ — the graph is essential.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Discrete probability — round the integer $K$ <strong>up</strong> off the table <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Whole life of <strong>100,000</strong> on $(80)$, benefit at the <strong>end of the year of death</strong>, $i=0.06$. Using the table below, find $\Pr[Z\le 80{,}000]$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>80</th><th>81</th><th>82</th><th>83</th><th>84</th></tr></thead>
+            <tbody><tr><td>$\ell_x$</td><td>100</td><td>92</td><td>74</td><td>58</td><td>38</td></tr></tbody>
+          </table></div>
+          <p><strong>Solution.</strong> Here $Z = 100{,}000\,v^{K_{80}+1}$, a <strong>step</strong> function of the integer $K_{80}$. Translate the dollar condition into a condition on $K_{80}$:</p>
+          $$100{,}000\,v^{K_{80}+1}\le 80{,}000 \;\Longleftrightarrow\; v^{K_{80}+1}\le 0.8 \;\Longleftrightarrow\; (1.06)^{-(K_{80}+1)}\le 0.8.$$
+          <p>Take logs. Because $\ln v \lt 0$, dividing flips the inequality to a <strong>$\ge$</strong>:</p>
+          $$-(K_{80}+1)\ln 1.06 \le \ln 0.8 \;\Longrightarrow\; K_{80}+1 \ge \frac{-\ln 0.8}{\ln 1.06}=\frac{0.223144}{0.058269}=3.8295 \;\Longrightarrow\; K_{80}\ge 2.8295.$$
+          <p>Now the crucial step: $K_{80}$ takes only <strong>integer</strong> values, so $K_{80}\ge 2.8295$ means $K_{80}\ge 3$ — the boundary <strong>rounds UP</strong> to the next integer (any $K_{80}=2$ gives $Z$ <em>above</em> 80,000). Read the survival probability straight off the table:</p>
+          $$\Pr[Z\le 80{,}000]=\Pr[K_{80}\ge 3]={}_3p_{80}=\frac{\ell_{83}}{\ell_{80}}=\frac{58}{100}=0.58.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\Pr[Z\le 80{,}000]=0.58.$</div>
+          <div class="callout trap" data-icon="⚠️"><div class="callout-title">Round UP, then read $\ell_x$ — don't truncate</div>
+          <p>For a discrete death benefit, "$Z$ small" $\Leftrightarrow$ "death late" $\Leftrightarrow$ "$K$ large," so the threshold becomes $K_x\ge(\text{a number})$. Always round that number <strong>up</strong> to the next integer ($2.83\to3$): rounding down would wrongly include $K_{80}=2$, whose $Z=100{,}000v^3=83{,}962\gt80{,}000$. Then the answer is a single ${}_kp_x=\ell_{x+k}/\ell_x$ off the life table — no summation needed. Contrast this with the <em>continuous</em> percentile in Example 11, where $T_x$ is not rounded.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> Master decomposition — whole life $=$ term $+$ deferred term $+$ deferred whole life, with chained $_tE_x$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>This example ties the building blocks together. A whole life of 1 on $(50)$ is split across three disjoint time windows: deaths in years $0\!-\!5$, deaths in years $5\!-\!12$, and deaths after year $12$. You are given:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Quantity</th><th>Value</th><th>Quantity</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>$A^{1}_{50:\overline{5}|}$ (5-yr term)</td><td>$0.012$</td><td>${}_5E_{50}$</td><td>$0.78$</td></tr>
+              <tr><td>$A^{1}_{55:\overline{7}|}$ (7-yr term at 55)</td><td>$0.030$</td><td>${}_7E_{55}$</td><td>$0.70$</td></tr>
+              <tr><td>$A_{62}$ (whole life at 62)</td><td>$0.30$</td><td></td><td></td></tr>
+            </tbody>
+          </table></div>
+          <p>Find $A_{50}$ by decomposing it into a 5-year term, a 5-deferred 7-year term, and a 12-deferred whole life:</p>
+          $$A_{50} = \underbrace{A^{1}_{50:\overline{5}|}}_{\text{die yrs }0\text{–}5} \;+\; \underbrace{{}_{5|7}A_{50}}_{\text{die yrs }5\text{–}12} \;+\; \underbrace{{}_{12|}A_{50}}_{\text{die after yr }12}.$$
+          <p><strong>Step 1 — chain the pure endowments.</strong> Coverage in the second window starts at time 5, so discount with ${}_5E_{50}$; coverage in the third window starts at time 12, and we build ${}_{12}E_{50}$ by <strong>chaining</strong> (survive 5 years to 55, then 7 more to 62):</p>
+          $$_{12}E_{50} = {}_5E_{50}\cdot{}_7E_{55} = (0.78)(0.70) = 0.546.$$
+          <p><strong>Step 2 — value each window</strong> by sliding the coverage out to where it begins, then discounting back with the matching ${}_tE_x$:</p>
+          $$_{5|7}A_{50} = {}_5E_{50}\cdot A^{1}_{55:\overline{7}|} = (0.78)(0.030)=0.0234,$$
+          $$_{12|}A_{50} = {}_{12}E_{50}\cdot A_{62} = (0.546)(0.30)=0.1638.$$
+          <p><strong>Step 3 — add the three disjoint pieces:</strong></p>
+          $$A_{50} = 0.012 + 0.0234 + 0.1638 = 0.1992.$$
+          <p><strong>Consistency check.</strong> The first two windows together are exactly a 12-year term, $A^{1}_{50:\overline{12}|}=0.012+0.0234=0.0354$, so the familiar two-piece split must also hold:</p>
+          $$A_{50} = A^{1}_{50:\overline{12}|} + {}_{12|}A_{50} = 0.0354 + 0.1638 = 0.1992. \;\checkmark$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$A_{50}=0.1992$. Any whole life can be sliced into as many disjoint time windows as you like; each window is valued at its own age and pulled back with a chained ${}_tE_x={}_aE_x\cdot{}_bE_{x+a}$.</div>
+          <div class="callout key" data-icon="🔑"><div class="callout-title">The two moves that drive every multi-period split</div>
+          <p><strong>(i) Slide-and-discount:</strong> a deferred term equals the same term started at the later age, discounted back by the pure endowment — $\,_{u|m}A_x={}_uE_x\,A^{1}_{x+u:\overline{m}|}$ and $\,_{u|}A_x={}_uE_x\,A_{x+u}$. <strong>(ii) Chain the survival discount:</strong> ${}_{t+h}E_x={}_tE_x\cdot{}_hE_{x+t}$ (e.g. ${}_{12}E_x={}_5E_x\cdot{}_7E_{x+5}$), so you never need a 12-year survival probability directly — only the SULT pieces you already have.</p></div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Converting the wrong part of an endowment.</strong> Under UDD (or $1/m$-thly, or claims acceleration) multiply <strong>only</strong> the term/death piece by $i/\delta$ (or $i/i^{(m)}$). The pure endowment $\,_nE_x$ is <strong>never</strong> rescaled, and $\bar A_{x:\overline n|}\ne\frac{i}{\delta}A_{x:\overline n|}$. This is the #1 error.</li>
+          <li><strong>Off-by-one in the discrete benefit.</strong> $A_x = \sum v^{k+1}\,{}_{k|}q_x$ — exponent $k+1$, so the first term is $v^1 q_x$, not $v^0 q_x$. Term sums to $n-1$.</li>
+          <li><strong>"Double force" means $1+j=(1+i)^2$, not $2i$.</strong> Use $\delta\to2\delta$ or $j=2i+i^2$. For pure endowment, $^2(_nE_x)=v^{2n}\,{}_np_x$ — survival prob. is <strong>not</strong> squared, only the discount.</li>
+          <li><strong>Using "$^2$" on a non-level benefit.</strong> The pre-superscript 2 equals the true second moment <em>only for level benefits</em>. For varying or increasing benefits, $E[Z^2]\ne{}^2(IA)$ etc. — go to first principles and square <em>benefit × discount</em>.</li>
+          <li><strong>Squaring the EPV before subtracting.</strong> $\text{Var}={}^2A - A^2$, not $^2A - {}^2A^2$.</li>
+          <li><strong>Misplacing the "1".</strong> $A^1_{x:\overline{n}|}$ (1 over $x$) = term/death; $A^{\;1}_{x:\overline{n}|}$ (1 over $n$) = pure endowment/survival. Swapping them swaps the problem.</li>
+          <li><strong>Deferred vs. term sign error.</strong> $_{u|}A_x = A_x - A^1_{x:\overline{u}|}$ and $_{u|}A_x = {}_uE_x\,A_{x+u}$ — subtract the skipped term, or discount with both interest and survival.</li>
+          <li><strong>Forgetting the covariance.</strong> When combining overlapping benefits, $\text{Var}(Z_1+Z_2)$ needs $2\,\text{Cov}$. For disjoint payments $Z_1Z_2=0$ so $\text{Cov}=-E[Z_1]E[Z_2]$ (negative!).</li>
+          <li><strong>Increasing+decreasing sum.</strong> Continuous gives $n\,\bar A^1$; <strong>annual gives $(n+1)A^1$.</strong> The off-by-one is deliberate exam bait.</li>
+          <li><strong>SULT at the wrong $i$.</strong> SULT $A$-columns assume $i=0.05$. If $i\ne0.05$, only $\ell_x$ and $q_x$ are usable — recompute everything else.</li>
+          <li><strong>Percentile direction.</strong> For a death benefit $Z$ decreases in $T_x$, so $\Pr[Z\le z_p]=\Pr[T_x>h]=\,_hp_x$ — flip survival vs. death carefully, and watch for benefit jumps that make $Z$ non-monotone.</li>
+          <li><strong>Treating $A_x$ as a probability.</strong> It is an EPV. As $i\to0$, $A_x\to1$ regardless of mortality.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Write the present-value RV $Z$ for an $n$-year <strong>endowment insurance</strong> of 1 on $(x)$, in terms of $K_x$.</summary>
+        <div class="qa-answer">$Z = v^{K_x+1}$ if $K_x < n$ (death in first $n$ years), and $Z = v^{n}$ if $K_x \ge n$ (survival). Compactly, $Z = v^{\min(K_x+1,\,n)}$.</div>
+      </details>
+      <details class="qa"><summary>You have $A_x = 0.30$ at $i=0.05$ under UDD. What is $\bar{A}_x$?</summary>
+        <div class="qa-answer">$\bar{A}_x = \frac{i}{\delta}A_x$ with $\delta=\ln1.05=0.0487902$, so $\frac{i}{\delta}=1.024797$ and $\bar{A}_x = 1.024797\times0.30 = 0.30744.$</div>
+      </details>
+      <details class="qa"><summary>Given $^2A_{40}=0.085$ and $A_{40}=0.20$, find $\text{Var}(v^{K_{40}+1})$.</summary>
+        <div class="qa-answer">$\text{Var} = {}^2A_{40} - (A_{40})^2 = 0.085 - 0.040 = 0.045.$</div>
+      </details>
+      <details class="qa"><summary>For a 5-year pure endowment with $\,_5p_{60}=0.95$ and $i=0.04$, compute $\,_5E_{60}$ and $\text{Var}({}_5E_{60})$.</summary>
+        <div class="qa-answer">$_5E_{60} = v^5\,{}_5p_{60} = 1.04^{-5}\times0.95 = 0.821927\times0.95 = 0.78083.$ Bernoulli variance: $v^{10}\,{}_5p_{60}\,{}_5q_{60}=0.821927^2(0.95)(0.05)=0.03209.$</div>
+      </details>
+      <details class="qa"><summary>True/False: to convert a discrete endowment to continuous under UDD, multiply the entire $A_{x:\overline{n}|}$ by $i/\delta$.</summary>
+        <div class="qa-answer"><strong>False.</strong> Only the term component gets $i/\delta$. The pure endowment is unchanged: $\bar{A}_{x:\overline{n}|} = \frac{i}{\delta}A^1_{x:\overline{n}|} + {}_nE_x.$</div>
+      </details>
+      <details class="qa"><summary>A benefit varies as $b_t=e^{0.04t}$. Why can't you write its second moment as $^2(\bar A)$?</summary>
+        <div class="qa-answer">The pre-superscript 2 only means "recompute the EPV at force $2\delta$," which equals the true $E[Z^2]$ <strong>only for level benefits</strong>. Here $b_t$ varies, so $E[Z^2]=\int (b_t v^t)^2\,{}_tp_x\mu_{x+t}\,dt$ has no actuarial symbol — use first principles.</div>
+      </details>
+      <details class="qa"><summary>State both recursions for $(IA)_x$ and explain the second intuitively.</summary>
+        <div class="qa-answer">$(IA)_x = vq_x + vp_x\big(A_{x+1}+(IA)_{x+1}\big) = A_x + vp_x(IA)_{x+1}.$ The second form: an increasing whole life $=$ a level whole life $A_x$ (the "+1 each year" base) plus, on survival, another increasing whole life starting one year later, discounted with interest and survival.</div>
+      </details>
+      <details class="qa"><summary>Sum of $(IA)^1_{x:\overline n|}$ and $(DA)^1_{x:\overline n|}$? And the continuous version?</summary>
+        <div class="qa-answer">Annual: $(IA)^1+(DA)^1=(n+1)A^1_{x:\overline n|}$. Continuous: $(\bar I\bar A)^1+(\bar D\bar A)^1=n\,\bar A^1_{x:\overline n|}$. The $n$ vs $n+1$ is the classic gotcha.</div>
+      </details>
+      <details class="qa"><summary>If a problem gives you $A_{x:\overline 1|}=0.9434$, what have you actually been told?</summary>
+        <div class="qa-answer">$A_{x:\overline 1|}=vq_x+vp_x=v$, so $v=0.9434$ (and $i=1/v-1\approx 0.06$). A 1-year endowment always pays 1, so it equals the bare discount factor.</div>
+      </details>
+      <details class="qa"><summary>Express $\,_{3|2}A_{30}$ (3-year deferred 2-year term) using a discount and a term insurance.</summary>
+        <div class="qa-answer">$_{3|2}A_{30} = {}_3E_{30}\cdot A^1_{33:\overline 2|}$ — value the 2-year term starting at age 33, then discount back 3 years with interest and survival.</div>
+      </details>
+      <details class="qa"><summary>$Z=1000v^{T_x}$ whole life under $\mu=0.04$, $\delta=0.07$. Find the 70th percentile of $Z$.</summary>
+        <div class="qa-answer">$Z$ decreases in $T_x$, so $\Pr[Z\le z_{0.70}]=\Pr[T_x>h]={}_hp_x=e^{-0.04h}=0.70\Rightarrow h=8.917$. Then $z_{0.70}=1000e^{-0.07(8.917)}=535.70.$</div>
+      </details>
+      <details class="qa"><summary>Under the claims-acceleration approach, how do you get $\bar A_x$ from $A_x$? Compare to UDD.</summary>
+        <div class="qa-answer">Accumulate half a year: $\bar A_x\approx(1+i)^{1/2}A_x$ (the $m\to\infty$ limit of $(1+i)^{(m-1)/2m}$). UDD instead uses the exact-under-UDD factor $\bar A_x=\frac{i}{\delta}A_x$. Both apply only to the death part of an endowment.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

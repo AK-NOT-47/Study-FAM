@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Thermal Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f1e9;
+    --paper-2:#efece2;
+    --ink:#1c1a17;
+    --ink-soft:#46423b;
+    --faint:#8b857a;
+    --line:#211f1c;
+    --accent:#c2362f;
+    --hi:#fbe3a0;
+    --tape:#e9e5d8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    background:
+      radial-gradient(circle at 20% 0%, #ded9cb 0%, transparent 55%),
+      radial-gradient(circle at 80% 100%, #d6d1c2 0%, transparent 55%),
+      #cfc9ba;
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 70px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+  }
+
+  /* ===== THE RECEIPT ===== */
+  .receipt{
+    width:100%;
+    max-width:430px;
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.012) 0 2px, transparent 2px 4px);
+    color:var(--ink);
+    position:relative;
+    padding:30px 26px 0;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.6) inset,
+      0 24px 50px -18px rgba(0,0,0,.45),
+      0 4px 14px rgba(0,0,0,.18);
+    /* torn edges via mask */
+    --tooth:8px;
+    -webkit-mask:
+      radial-gradient(var(--tooth) at 50% 0, transparent 98%, #000) 0 0 / 16px var(--tooth) repeat-x,
+      radial-gradient(var(--tooth) at 50% 100%, transparent 98%, #000) 0 100% / 16px var(--tooth) repeat-x,
+      linear-gradient(#000 0 0) 0 var(--tooth) / 100% calc(100% - var(--tooth)*2) no-repeat;
+    mask:
+      radial-gradient(var(--tooth) at 50% 0, transparent 98%, #000) 0 0 / 16px var(--tooth) repeat-x,
+      radial-gradient(var(--tooth) at 50% 100%, transparent 98%, #000) 0 100% / 16px var(--tooth) repeat-x,
+      linear-gradient(#000 0 0) 0 var(--tooth) / 100% calc(100% - var(--tooth)*2) no-repeat;
+  }
+  /* faint thermal fade overlay */
+  .receipt::after{
+    content:"";
+    position:absolute; inset:0;
+    pointer-events:none;
+    background:linear-gradient(180deg, rgba(0,0,0,.05), transparent 14%, transparent 86%, rgba(0,0,0,.06));
+    mix-blend-mode:multiply;
+  }
+
+  /* dashed divider */
+  .dash{
+    border:none;
+    border-top:2px dashed var(--line);
+    margin:18px 0;
+    opacity:.85;
+  }
+  .dash.tight{margin:12px 0;}
+  .dash.thin{border-top:1px dashed var(--faint);}
+
+  /* ===== HEADER ===== */
+  .brandhead{text-align:center;}
+  .logo{
+    width:54px;height:54px;margin:0 auto 10px;
+    border:3px solid var(--ink);
+    display:grid;place-items:center;
+    font-weight:800;font-size:30px;
+    transform:rotate(-3deg);
+    box-shadow:4px 4px 0 var(--ink);
+  }
+  .brandname{
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+  }
+  .tagline{
+    font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .barcode{
+    height:34px;margin:14px auto 4px;width:78%;
+    background:repeating-linear-gradient(90deg,
+      var(--ink) 0 2px, transparent 2px 4px,
+      var(--ink) 4px 5px, transparent 5px 9px,
+      var(--ink) 9px 12px, transparent 12px 13px);
+  }
+  .barnum{text-align:center;font-size:10px;letter-spacing:6px;color:var(--ink-soft);}
+
+  .meta-row{
+    display:flex;justify-content:space-between;
+    font-size:11px;letter-spacing:.5px;color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+
+  /* ===== NAV (line items) ===== */
+  .section-label{
+    font-size:11px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--accent);font-weight:700;
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:6px;
+  }
+  .section-label::after{content:"";flex:1;border-top:1px dashed var(--accent);opacity:.5;}
+
+  .nav{list-style:none;margin:0;padding:0;font-size:13px;}
+  .nav li{
+    display:flex;align-items:baseline;
+    padding:4px 0;
+  }
+  .nav li .qty{color:var(--faint);width:26px;}
+  .nav li .name{flex:1;font-weight:500;}
+  .nav li .leader{
+    flex:1;border-bottom:1px dotted var(--faint);
+    margin:0 6px 4px;min-width:14px;
+  }
+  .nav li .price{color:var(--ink-soft);font-weight:700;white-space:nowrap;}
+  .nav li.done .name{}
+  .nav li.done .price{color:var(--accent);}
+  .nav li .check{width:16px;color:var(--accent);font-weight:800;}
+
+  /* ===== HERO / DASHBOARD ===== */
+  .greet{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);}
+  .headline{
+    font-size:30px;line-height:1.08;font-weight:800;
+    margin:6px 0 8px;letter-spacing:-.5px;
+  }
+  .headline mark{background:var(--hi);padding:0 4px;box-decoration-break:clone;}
+  .lede{font-size:12.5px;color:var(--ink-soft);line-height:1.55;}
+
+  /* stats as receipt totals */
+  .totals{font-size:13px;}
+  .total-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:5px 0;
+  }
+  .total-row .k{text-transform:uppercase;letter-spacing:1px;font-size:11.5px;color:var(--ink-soft);}
+  .total-row .v{font-weight:800;font-size:18px;}
+  .total-row.grand .k{color:var(--ink);font-weight:700;font-size:13px;}
+  .total-row.grand .v{font-size:24px;color:var(--accent);}
+  .sub{font-size:10px;color:var(--faint);letter-spacing:.5px;}
+  /* progress meter ascii-ish */
+  .meter{
+    margin-top:4px;font-size:13px;letter-spacing:1px;color:var(--ink);
+    overflow:hidden;white-space:nowrap;
+  }
+  .meter b{color:var(--accent);}
+
+  /* ===== EXAM CARD ===== */
+  .stamp{
+    border:2px dashed var(--line);
+    padding:14px 16px;
+    position:relative;
+    background:repeating-linear-gradient(135deg, rgba(194,54,47,.04) 0 6px, transparent 6px 12px);
+  }
+  .stamp .tag{
+    position:absolute;top:-11px;right:14px;background:var(--paper);
+    padding:0 8px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700;
+  }
+  .stamp h3{margin:0 0 6px;font-size:18px;letter-spacing:1px;text-transform:uppercase;}
+  .stamp .specs{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--ink-soft);}
+  .stamp .specs span{white-space:nowrap;}
+  .stamp .pass{
+    display:inline-block;margin-top:10px;border:2px solid var(--accent);color:var(--accent);
+    font-weight:800;font-size:12px;letter-spacing:1px;padding:3px 9px;
+    transform:rotate(-2deg);text-transform:uppercase;
+  }
+
+  /* ===== TOPIC PREVIEW ===== */
+  .topic h4{margin:0 0 3px;font-size:16px;letter-spacing:.5px;}
+  .topic .lede2{font-size:11.5px;color:var(--ink-soft);margin-bottom:10px;}
+  .formula{
+    background:var(--ink);color:var(--paper);
+    padding:12px 14px;font-size:13px;line-height:2;
+    font-family:'JetBrains Mono',monospace;
+    box-shadow:4px 4px 0 rgba(28,26,23,.25);
+  }
+  .formula .lbl{font-size:9px;letter-spacing:3px;color:#c9a45a;text-transform:uppercase;display:block;margin-bottom:6px;}
+  .formula div{white-space:nowrap;overflow-x:auto;}
+  .formula sup{font-size:.7em;}
+
+  /* ===== TRAP CALLOUT ===== */
+  .trap{
+    border-left:none;
+    background:var(--hi);
+    border:2px dashed var(--ink);
+    padding:12px 14px;font-size:12px;line-height:1.55;
+    position:relative;
+  }
+  .trap .lbl{font-weight:800;text-transform:uppercase;letter-spacing:1px;font-size:11px;display:block;margin-bottom:4px;}
+  .trap .warn{font-size:15px;}
+
+  /* ===== WORKED EXAMPLE ===== */
+  .example{font-size:13px;}
+  .example .ex-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);}
+  .example .ex-title{font-weight:700;font-size:14.5px;margin:2px 0 0;}
+
+  /* buttons */
+  .actions{display:flex;gap:10px;margin-top:14px;}
+  .btn{
+    flex:1;text-align:center;text-decoration:none;
+    font-weight:800;letter-spacing:1px;text-transform:uppercase;font-size:12px;
+    padding:12px 8px;cursor:pointer;
+    transition:transform .08s ease;
+  }
+  .btn:active{transform:translateY(2px);}
+  .btn.primary{background:var(--ink);color:var(--paper);box-shadow:4px 4px 0 var(--accent);}
+  .btn.ghost{background:transparent;color:var(--ink);border:2px dashed var(--ink);}
+
+  /* ===== FOOTER ===== */
+  .foot{text-align:center;padding:18px 0 26px;}
+  .foot .thanks{font-size:12px;letter-spacing:1px;}
+  .foot .brandmark{font-weight:800;letter-spacing:2px;font-size:14px;text-transform:uppercase;margin-top:4px;}
+  .foot .barcode2{
+    height:26px;width:60%;margin:12px auto 6px;
+    background:repeating-linear-gradient(90deg,var(--ink) 0 3px,transparent 3px 5px,var(--ink) 5px 6px,transparent 6px 10px);
+  }
+  .foot .fine{font-size:9px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;}
+
+  .pageline{font-size:10px;color:var(--faint);text-align:center;letter-spacing:2px;margin-top:14px;}
+
+  @media (max-width:460px){
+    .receipt{padding:26px 18px 0;}
+    .headline{font-size:25px;}
+    .formula{font-size:11.5px;}
+  }
+</style>
+</head>
+<body>
+
+  <main class="receipt" role="main">
+
+    <!-- HEADER -->
+    <header class="brandhead">
+      <div class="logo">M</div>
+      <div class="brandname">Me Studing Stuff</div>
+      <div class="tagline">Study smarter · Pass exams</div>
+      <div class="barcode" aria-hidden="true"></div>
+      <div class="barnum">8 6 D A Y S · F A M · 2 0 2 6</div>
+    </header>
+
+    <hr class="dash">
+
+    <div class="meta-row">
+      <span>Reg# 0072</span>
+      <span>Term: Spring</span>
+      <span>05 JUN 2026</span>
+    </div>
+
+    <hr class="dash">
+
+    <!-- DASHBOARD HERO -->
+    <section>
+      <div class="greet">▸ Good evening</div>
+      <h1 class="headline">Let's get you <mark>that pass.</mark></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <hr class="dash">
+
+    <!-- STATS AS TOTALS -->
+    <section class="totals" aria-label="Progress totals">
+      <div class="total-row grand">
+        <span class="k">Overall progress</span>
+        <span class="v">72%</span>
+      </div>
+      <div class="meter" aria-hidden="true">[<b>█████████████</b>·····] 12/17</div>
+      <div class="sub">12 of 17 topics complete</div>
+
+      <hr class="dash thin">
+
+      <div class="total-row">
+        <span class="k">Exam countdown</span>
+        <span class="v">86<span style="font-size:11px;"> days</span></span>
+      </div>
+      <div class="total-row">
+        <span class="k">Topics solid</span>
+        <span class="v">8</span>
+      </div>
+    </section>
+
+    <hr class="dash">
+
+    <!-- NAV / LINE ITEMS -->
+    <section aria-label="Primary navigation">
+      <div class="section-label">FAM-L / FAM-S · Syllabus</div>
+      <ul class="nav">
+        <li class="done"><span class="check">✓</span><span class="name">Survival Models</span><span class="leader"></span><span class="price">DONE</span></li>
+        <li class="done"><span class="check">✓</span><span class="name">Life Tables</span><span class="leader"></span><span class="price">DONE</span></li>
+        <li><span class="check">▸</span><span class="name">Life Insurance</span><span class="leader"></span><span class="price">NOW</span></li>
+        <li><span class="check"> </span><span class="name">Life Annuities</span><span class="leader"></span><span class="price">TODO</span></li>
+        <li><span class="check"> </span><span class="name">Premiums</span><span class="leader"></span><span class="price">TODO</span></li>
+        <li><span class="check"> </span><span class="name">Policy Values</span><span class="leader"></span><span class="price">TODO</span></li>
+      </ul>
+    </section>
+
+    <hr class="dash">
+
+    <!-- EXAM CARD / STAMP -->
+    <section class="stamp">
+      <span class="tag">Exam FAM</span>
+      <h3>Exam FAM</h3>
+      <div class="specs">
+        <span>· Fundamentals of Actuarial Mathematics</span>
+        <span>· SOA</span>
+        <span>· 34 questions</span>
+      </div>
+      <span class="pass">PASS = 6 / 10</span>
+    </section>
+
+    <hr class="dash">
+
+    <!-- TOPIC PREVIEW + FORMULA -->
+    <section class="topic">
+      <div class="section-label">Topic preview</div>
+      <h4>Life Insurance Present Values</h4>
+      <p class="lede2">EPV of a benefit paid on death — the engine behind premiums and reserves.</p>
+      <div class="formula" aria-label="Key formulas">
+        <span class="lbl">·· Key formulas ··</span>
+        <div>A<sub>x</sub> = 1 &minus; d·&auml;<sub>x</sub></div>
+        <div>Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)&sup2;</div>
+        <div>&auml;<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</div>
+      </div>
+    </section>
+
+    <hr class="dash">
+
+    <!-- TRAP CALLOUT -->
+    <section class="trap">
+      <span class="lbl"><span class="warn">⚠</span> Common trap</span>
+      Under UDD, multiply ONLY the term/death piece by i/&delta; — the pure endowment is never rescaled.
+    </section>
+
+    <hr class="dash">
+
+    <!-- WORKED EXAMPLE -->
+    <section class="example">
+      <div class="section-label">Worked example</div>
+      <div class="ex-tag">Example 1</div>
+      <div class="ex-title">Whole life EPV &amp; variance</div>
+      <div class="actions">
+        <a class="btn primary" href="#">Start studying</a>
+        <a class="btn ghost" href="#">Resume</a>
+      </div>
+    </section>
+
+    <hr class="dash">
+
+    <!-- FOOTER -->
+    <footer class="foot">
+      <div class="thanks">★ THANK YOU FOR STUDYING ★</div>
+      <div class="brandmark">Me Studing Stuff</div>
+      <div class="barcode2" aria-hidden="true"></div>
+      <div class="fine">No refunds on effort · Keep this receipt</div>
+    </footer>
+
+  </main>
+
+  <div class="pageline">— — — — — — TEAR HERE — — — — — —</div>
+
+</body>
+</html>

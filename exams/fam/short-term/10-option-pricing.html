@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option Pricing Fundamentals · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-10" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 10</div>
+      <h1>Option Pricing Fundamentals</h1>
+      <p class="lede">Derivatives, calls &amp; puts, moneyness, options as insurance, put–call parity, the binomial model, and Black–Scholes — the same risk-transfer logic insurers use to price embedded guarantees.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Financial Economics · Options</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 payoffs · moneyness · put–call parity</span>
+        <span class="chip">🌳 binomial · risk-neutral · lognormal</span>
+        <span class="chip">🧮 Black–Scholes · delta-hedge</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout note" data-icon="📌">
+        <div class="callout-title">Exam FAM — Study Note</div>
+        <p>This is Section S6 of the financial-economics material: derivatives (S6.1), put–call parity (S6.2), the binomial model (S6.3), and the lognormal/Black–Scholes model (S6.4). FAM treats <strong>European</strong> options for the pricing formulas; American options appear only in the binomial early-exercise discussion. Where the math overlaps with <em>Loss Models</em> and <em>Actuarial Mathematics for Life Contingent Risks (AMLCR)</em>, the insurance connection is flagged in the final section.</p>
+      </div>
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After mastering this topic you should be able to:</p>
+        <ol>
+          <li><strong>Define a derivative and its underlying asset</strong>, describe long vs. short positions, and explain the three-step mechanics of <em>short-selling</em>.</li>
+          <li><strong>Identify and describe</strong> the four basic option positions — long call, short call, long put, short put — and state who has the right and who has the obligation.</li>
+          <li><strong>Decide whether an option will be exercised</strong>, write its <strong>payoff</strong>, and classify its <strong>moneyness</strong> (in-, at-, out-of-the-money).</li>
+          <li><strong>Draw and interpret payoff and profit diagrams</strong> for calls, puts, and simple combinations, including the breakeven point and the role of accumulated premium.</li>
+          <li><strong>Explain how a call is insurance against a price increase and a put insurance against a price decrease</strong>, and recognize an <em>embedded option</em> inside an insurer's guarantee.</li>
+          <li><strong>Apply put–call parity</strong> (via the law of one price) to price one option given the other, to back out $S_0,K,r$, and to detect arbitrage.</li>
+          <li><strong>Price a European option with the one-period binomial model</strong> using both the <em>replicating portfolio</em> method and the <em>risk-neutral</em> method, and show the two give the same price.</li>
+          <li><strong>Extend the binomial model to multiple periods</strong> on a recombining tree — both node-by-node and the binomial-probability shortcut — and handle American early exercise.</li>
+          <li><strong>Compute the replicating portfolio</strong> $(\Delta, B)$, interpret the signs, and explain self-financing / dynamic hedging.</li>
+          <li><strong>State the lognormal stock model</strong> and compute real-world probabilities such as $\Pr[S_T\lt K]$.</li>
+          <li><strong>Use the Black–Scholes formula</strong> to price European calls and puts on a non-dividend and dividend-paying stock, compute $d_1,d_2,N(\cdot)$, and build a <strong>delta-hedge</strong> for a written option.</li>
+          <li><strong>Connect</strong> option pricing to embedded options in insurance products (e.g., guarantees on variable annuities / equity-indexed annuities).</li>
+        </ol>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. Derivatives, underlying assets, and short-selling</h3>
+      <p>A <strong>derivative</strong> is a financial instrument whose value is <em>derived from</em> the price of something else — its <strong>underlying asset</strong>. On FAM the underlying is a tradable security: a <strong>stock</strong> (common stock — ownership, dividends, voting), an <strong>index</strong> (e.g., Dow Jones, S&amp;P 500), or a <strong>mutual fund</strong>. Mathematically these behave identically; we write the price as $S_t$ ($t$ in years).</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Known vs. random prices (notation that matters)</div>
+        <ul>
+          <li>$S_0$ (or $S_t$, "now") — the <strong>current</strong> price, which we can look up, so it is treated as a <strong>known constant</strong>.</li>
+          <li>$S_T$ — a <strong>future</strong> price of a risky asset, which is a <strong>random variable</strong> (nobody knows tomorrow's price).</li>
+          <li>Underlying assets are assumed to <strong>pay no dividends</strong> (or to reinvest them) — mathematically the same.</li>
+        </ul>
+      </div>
+      <p><strong>Long vs. short.</strong> A <em>long</em> position is a positive holding — you <strong>own</strong> the asset; the payoff of a long stock is $+S_T$. A <em>short</em> position is a negative holding — you <strong>owe</strong> the asset; the payoff of a short stock is $-S_T$ (the opposite of long).</p>
+      <p><strong>Short-selling</strong> lets you profit from a price <em>decline</em> on a stock you do not own, in three steps:</p>
+      <ol>
+        <li><strong>Borrow</strong> shares now from a lender (promise to return them later).</li>
+        <li><strong>Sell</strong> the borrowed shares immediately and invest the proceeds at the risk-free rate.</li>
+        <li><strong>Buy back</strong> the shares later and return them to the lender.</li>
+      </ol>
+      <p>A <strong>payoff</strong> is the amount you would have if you completely cashed out at a given time, ignoring cash flows on other dates. A risk-free zero-coupon bond has payoff equal to its maturity value $B$ regardless of anything else. We combine long/short positions in stocks and bonds into a <strong>portfolio</strong>; in particular, <em>long stock + short bond</em> reappears in put–call parity below.</p>
+
+      <h3>2. What is an option?</h3>
+      <p>Motivating scenario: an insurer will receive $\$1{,}000$ of premium in one year and wants to buy a stock index then for today's price of $\$1{,}000$ — but the index might rise. It buys, for an upfront fee, the <em>right</em> (not the obligation) to pay $\$1{,}000$ for the index in one year. This caps its purchase price at $\$1{,}000$: it exercises only if the index rises above $\$1{,}000$. That contract is a <strong>call option</strong>.</p>
+      <p>An <strong>option</strong> gives its <em>owner the right, but not the obligation,</em> to buy or sell an underlying asset at an agreed price.</p>
+      <ul>
+        <li><strong>Call option</strong> — the right to <strong>buy</strong> the asset for the <strong>strike price</strong> $K$. <em>Mnemonic: COB — Call is Option to Buy.</em></li>
+        <li><strong>Put option</strong> — the right to <strong>sell</strong> the asset for $K$. <em>Mnemonic: POS — Put is Option to Sell.</em></li>
+        <li><strong>Expiration</strong> (expiry / maturity date) — when the contract ends; <strong>strike price</strong> $K$ — the exchange price; <strong>exercising</strong> — invoking your right.</li>
+        <li><strong>European</strong> — exercisable only at expiry $T$. <strong>American</strong> — exercisable any time up to $T$. FAM's pricing formulas are European; American options appear in the binomial early-exercise context.</li>
+      </ul>
+      <p>The buyer (<strong>holder</strong>) pays a <strong>premium</strong> up front and is <strong>long</strong>; the seller (<strong>writer</strong>) receives the premium, is <strong>short</strong>, and takes on the obligation. We write the time-$t$ premiums as $c(t)$ and $p(t)$, with $T-t$ years to expiry — e.g. $c(0)$ is today's call price.</p>
+      <p><strong>Intuition:</strong> an option is asymmetric. The long side caps its loss at the premium but keeps unlimited (call) or large (put) upside; the short side keeps a fixed premium but bears open-ended risk — exactly insurance's risk-transfer logic, which is why this lives on FAM.</p>
+
+      <h3>3. To exercise or not? — and Payoff vs. Profit</h3>
+      <p><strong>A rational holder exercises only when it pays.</strong> A call is exercised iff $S_T>K$ (buy cheap at $K$, worth more); a put iff $S_T\lt K$ (sell dear at $K$, cheaper in market). Otherwise the holder walks away and the payoff is floored at $0$.</p>
+      <ul>
+        <li><strong>Payoff</strong> = value of the option <em>at expiry</em>, ignoring what you paid for it. Always $\ge 0$ for the long holder.</li>
+        <li><strong>Profit</strong> = payoff minus the <strong>accumulated cost</strong> of the position (premium grown at the risk-free rate to time $T$).</li>
+      </ul>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Position</th><th>Payoff at $T$</th><th>Profit at $T$</th></tr></thead>
+        <tbody>
+          <tr><td>Long stock</td><td>$S_T$</td><td>—</td></tr>
+          <tr><td>Short stock</td><td>$-S_T$</td><td>—</td></tr>
+          <tr><td>Long call</td><td>$(S_T-K)_+=\max(S_T-K,\,0)$</td><td>$\max(S_T-K,0) - C e^{rT}$</td></tr>
+          <tr><td>Short call</td><td>$-\max(S_T-K,\,0)$</td><td>$C e^{rT} - \max(S_T-K,0)$</td></tr>
+          <tr><td>Long put</td><td>$(K-S_T)_+=\max(K-S_T,\,0)$</td><td>$\max(K-S_T,0) - P e^{rT}$</td></tr>
+          <tr><td>Short put</td><td>$-\max(K-S_T,\,0)$</td><td>$P e^{rT} - \max(K-S_T,0)$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Here $C, P$ are the time-0 premiums and $S_T$ is the asset price at expiry. A short position's payoff is always the <strong>opposite</strong> of the matching long position — its diagram is the reflection of the long diagram about the horizontal axis.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Diagram shapes (commit these to memory)</div>
+        <ul>
+          <li><em>Long call:</em> flat at the loss line for $S_T\lt K$, then rises at 45° (slope $+1$) past $K$. Breakeven at $S_T = K + Ce^{rT}$.</li>
+          <li><em>Long put:</em> falls at 45° (slope $-1$) up to $K$, then flat. Breakeven at $S_T = K - Pe^{rT}$.</li>
+          <li><em>Short positions</em> are the <strong>mirror image across the horizontal axis</strong> of the corresponding long position.</li>
+        </ul>
+      </div>
+
+      <h3>4. Option moneyness</h3>
+      <p><strong>Moneyness</strong> describes what the option's payoff <em>would be if exercised right now</em> — ignoring its exercise style entirely (we pretend it could be exercised immediately, even if the payoff is negative).</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Moneyness</th><th>If exercised now, payoff is…</th><th>Call</th><th>Put</th></tr></thead>
+        <tbody>
+          <tr><td><strong>In-the-money</strong> (ITM)</td><td>positive</td><td>$S>K$</td><td>$S\lt K$</td></tr>
+          <tr><td><strong>At-the-money</strong> (ATM)</td><td>exactly $0$</td><td>$S=K$</td><td>$S=K$</td></tr>
+          <tr><td><strong>Out-of-the-money</strong> (OTM)</td><td>negative</td><td>$S\lt K$</td><td>$S>K$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Moneyness is a snapshot for classification only; the <em>actual</em> payoff is still floored at $0$ because no rational holder exercises into a loss.</p>
+
+      <h3>5. Options as insurance &amp; embedded options</h3>
+      <p>A <strong>call is insurance against a price increase</strong> (it caps what you'll pay for the asset at $K$); a <strong>put is insurance against a price decrease</strong> (it guarantees you can sell at $K$). Insurers package such protection into <strong>guarantees</strong>, and many guarantees can be rewritten as options — these are <strong>embedded options</strong>.</p>
+      <p>The classic decomposition uses $\max(S_0,S_T)=\max(S_0-S_T,0)+S_T$: a "get at least your money back" guarantee equals <strong>a share of the asset plus a long put</strong> struck at the guaranteed floor. A variable-annuity guaranteed minimum maturity benefit (GMMB) is a put on the policyholder's fund; an equity-indexed annuity's participation feature is effectively a call. Once the insurer recognizes the embedded option, it can <em>hedge</em> the guarantee by buying that option — exactly the machinery in the rest of this topic.</p>
+
+      <h3>6. Put–Call Parity and the law of one price (the single most testable formula)</h3>
+      <p>A portfolio of <em>long $K$-call + short $K$-put</em> has payoff $\max(S_T-K,0)-\max(K-S_T,0)=S_T-K$ — identical to <em>long stock + short bond maturing for $K$</em> (a <strong>forward</strong> to buy the stock at $K$). The <strong>law of one price</strong> (the no-arbitrage assumption) says two positions with identical payoffs must cost the same, else an <strong>arbitrage</strong> ("free money": buy low, sell high, no risk, no net investment) exists. Equating costs gives, for <strong>European</strong> options on the same underlying, strike $K$, and expiry $T$:</p>
+      <div class="formula">$$ C - P = S_0 - K e^{-rT} \quad(\text{non-dividend stock}) $$</div>
+      <p>Parity holds <strong>only for European options</strong> and only when call and put share the same underlying, strike, and time to expiry. The dividend versions below adjust $S_0$ downward; you are not separately tested on the dividend forms, but they are good to know.</p>
+
+      <h3>7. The Binomial Model — two equivalent pricers</h3>
+      <p>Assumptions: a risky stock and a risk-free bond, discrete trading times, no transaction costs, short-selling allowed, and <strong>no arbitrage</strong>. Over one period the stock either goes <strong>up</strong> to $S_0 u$ or <strong>down</strong> to $S_0 d$ (with $u>d$; note $d$ need not be below $1$).</p>
+      <p><strong>(a) Replicating portfolio.</strong> Buy $\Delta$ shares and lend (or borrow) $B$ in cash so the portfolio exactly reproduces the option's two possible payoffs. By the law of one price the option must cost the same: price $= \Delta S_0 + B$. Sign reading is crucial — see the table below.</p>
+      <p><strong>(b) Risk-neutral valuation.</strong> Invent a probability under which the stock earns the risk-free rate <em>on average</em>; price the option as its <strong>expected payoff discounted at the risk-free rate</strong>. Same answer, faster.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Replicating-portfolio sign table</div>
+        <div class="table-scroll"><table>
+          <thead><tr><th></th><th>Call</th><th>Put</th></tr></thead>
+          <tbody>
+            <tr><td>$\Delta$ (shares)</td><td>$+$ → <strong>buy</strong> stock</td><td>$-$ → <strong>short-sell</strong> stock</td></tr>
+            <tr><td>$B$ (cash)</td><td>$-$ → <strong>borrow</strong></td><td>$+$ → <strong>lend</strong></td></tr>
+          </tbody>
+        </table></div>
+        <p>So: replicate a <strong>call</strong> by buying stock and borrowing; replicate a <strong>put</strong> by short-selling stock and lending.</p>
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">The risk-neutral measure ($Q$) vs. the real world ($P$)</div>
+        <p>The risk-neutral probability is a <em>pricing tool</em>, not the true probability. The <strong>$Q$-measure</strong> (risk-neutral measure) is what we price with; the <strong>$P$-measure</strong> is the physical / real-world distribution. Risk-neutral pricing says we may discount <em>every</em> asset at the risk-free rate as if investors demanded no risk premium. As a sanity check, discounting the stock's own risk-neutral expected price returns $S_0$ exactly. The real-world up-probability <strong>never enters</strong> the option price (a result that surprises everyone the first time).</p>
+      </div>
+      <p><strong>Delta</strong> $\Delta$ — the number of shares in the replicating portfolio — is the option's price sensitivity to the stock and the foundation of <strong>delta-hedging</strong>: a writer who holds $\Delta$ shares per option written is (instantaneously) immune to small stock moves.</p>
+
+      <h3>8. Multi-period binomial: backward induction, the binomial shortcut, and self-financing</h3>
+      <p>Keeping $u,d$ constant makes the tree <strong>recombine</strong> ($S_0ud=S_0du$). Two ways to price:</p>
+      <ul>
+        <li><strong>Node-by-node (backward).</strong> Apply the one-period formula at every node from expiry back to time 0. <em>Required</em> when a question asks for a replicating-portfolio component ($\Delta$ or $B$) at an interior node, or for an American option.</li>
+        <li><strong>Binomial-probability shortcut (European only).</strong> Compute each terminal payoff, weight by the binomial probability of reaching it, and discount once back to time 0.</li>
+      </ul>
+      <p>The hedge is <strong>self-financing</strong>: the value of the portfolio held into a node exactly equals the cost of the portfolio you need <em>at</em> that node, so you only invest cash at time 0 and merely rebalance thereafter — this continual rebalancing is <strong>dynamic hedging</strong>.</p>
+      <p>For an <strong>American</strong> option, at each node take the larger of the continuation value and the <strong>immediate-exercise value</strong>.</p>
+
+      <h3>9. The lognormal stock model</h3>
+      <p>Let the binomial period length shrink to zero: the tree becomes a continuous-time <strong>lognormal stochastic process</strong> (geometric Brownian motion), $\{S_t\}_{t\ge0}$. Define the <strong>accumulation factor</strong> $S_{t+\tau}/S_t$; these factors are <strong>independent over non-overlapping intervals</strong> and lognormally distributed. The <strong>log-return</strong> $\ln(S_{t+\tau}/S_t)$ is normal with mean $\mu\tau$ and variance $\sigma^2\tau$, where (with $\tau$ in years) $\mu$ is the annual expected return and $\sigma$ the annual volatility. This lets us compute <strong>real-world</strong> probabilities of future prices — see the Formulas section. (Watch the Greek $\tau$ "tau" — easy to misread as $r$ or $t$.)</p>
+
+      <h3>10. Black–Scholes</h3>
+      <p>As the number of binomial periods $\to\infty$ with appropriately chosen $u,d$, the binomial price converges to the <strong>Black–Scholes–Merton (BSM)</strong> price. BSM assumes a constant, flat risk-free rate, frictionless continuous trading, no dividends, and a stock that is lognormal with drift $\mu$ (real world) but drift $r-\tfrac12\sigma^2$ under the risk-neutral measure. The price of any payoff is its risk-neutral expectation discounted at $r$: $v(t)=e^{-r(T-t)}E^Q_t[h(S_T)]$. For calls/puts this yields the closed form below; $N(d_1)$ and $N(d_2)$ are the risk-neutral deltas/probabilities, and $N(d_2)$ is (under $Q$) the probability the call finishes in the money. The BSM call/put are themselves <strong>delta-hedge portfolios</strong>: $\Delta_{\text{call}}=N(d_1)$, $\Delta_{\text{put}}=-N(-d_1)$.</p>
+
+      <h3>11. Why insurers care</h3>
+      <p>Insurance products often contain <strong>embedded options</strong>: a variable-annuity guaranteed minimum maturity benefit (GMMB) is a <strong>put</strong> on the policyholder's fund (the insurer guarantees a floor); an equity-indexed annuity's participation feature is effectively a <strong>call</strong>. Pricing and reserving for these guarantees uses exactly the option-pricing machinery above.</p>
+
+      <h2>Formulas</h2>
+
+      <h3>Payoffs and profit</h3>
+      <div class="formula">
+        $$ \text{Long stock} = S_T, \qquad \text{Short stock} = -S_T, \qquad \text{Bond} = B $$
+        $$ \text{Call payoff} = (S_T-K)_+ = \max(S_T - K,\,0), \qquad \text{Put payoff} = (K-S_T)_+ = \max(K - S_T,\,0) $$
+        $$ \text{Short call} = -\max(S_T-K,0), \qquad \text{Short put} = -\max(K-S_T,0) $$
+        $$ \text{Long-option profit} = \text{payoff} - (\text{premium})\,e^{rT} $$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <p>$S_T$ — underlying price at expiry; $K$ — strike; $r$ — continuously-compounded risk-free rate; $T$ — time to expiry (years); $c(t),p(t)$ — time-$t$ call/put premiums.</p>
+      </div>
+
+      <h3>Put–call parity</h3>
+      <div class="formula">
+        <span class="formula-label">Non-dividend stock</span>
+        $$ C(K,T) - P(K,T) = S_0 - K e^{-rT} $$
+        <span class="formula-label">Continuous dividend yield $\delta$</span>
+        $$ C - P = S_0 e^{-\delta T} - K e^{-rT} $$
+        <span class="formula-label">Discrete dividends with present value $\mathrm{PV}_{0,T}(\text{Div})$</span>
+        $$ C - P = \big(S_0 - \mathrm{PV}_{0,T}(\text{Div})\big) - K e^{-rT} $$
+      </div>
+      <p>$C, P$ — current call/put premiums; $\delta$ — continuous dividend yield; $S_0$ — current stock price. Same underlying, same strike, same expiry; <strong>European only</strong>.</p>
+
+      <h3>One-period binomial — replicating portfolio</h3>
+      <div class="formula">
+        $$ \Delta = e^{-\delta h}\,\frac{V_u - V_d}{S_0(u - d)}, \qquad B = e^{-rh}\,\frac{u\,V_d - d\,V_u}{u - d} $$
+        $$ \boxed{\;\text{Option price} = V_0 = \Delta S_0 + B\;}$$
+      </div>
+      <p>$h$ — length of the period (years); $u, d$ — up/down <strong>multiplicative factors</strong> ($S_u=S_0u,\ S_d=S_0d$); $V_u, V_d$ — option payoffs in the up/down state; $\delta$ — dividend yield ($\delta = 0$ if none, the case the exam emphasizes).</p>
+
+      <h3>One-period binomial — risk-neutral probability</h3>
+      <p>Writing $p^{*}$ for the risk-neutral probability of an <strong>up</strong>-move (equivalently $1-q$ in the down-move convention some texts use):</p>
+      <div class="formula">
+        $$ p^{*} = \frac{e^{(r-\delta)h} - d}{u - d}, \qquad q = 1-p^{*} = \frac{u - e^{(r-\delta)h}}{u - d} $$
+        $$ \boxed{\;\text{Option price} = e^{-rh}\,E^Q[V_h] = e^{-rh}\big[\,p^{*} V_u + (1-p^{*}) V_d\,\big]\;}$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Two conventions — same price</div>
+        <p>Coaching-Actuaries writes $q=\dfrac{u-e^{(r-\delta)h}}{u-d}$ for the <em>down</em>-move probability, so its formula reads $V_0=e^{-rh}[(1-q)V_u+qV_d]$. That is identical to the up-probability $p^{*}=1-q$ above. Whichever you use, weight $V_u$ by the up-probability and $V_d$ by the down-probability and discount at $r$.</p>
+      </div>
+      <p>For arbitrage-free pricing we need $d < e^{(r-\delta)h} < u$, which guarantees $0 < p^* < 1$.</p>
+
+      <h3>Multi-period binomial</h3>
+      <p>Build a <strong>recombining tree</strong>: after $n$ periods the stock can be $S_0 u^{j} d^{\,n-j}$ for $j = 0,\dots,n$. Work <strong>backwards</strong> from expiry, applying the one-period risk-neutral formula at each node:</p>
+      <div class="formula">$$ V_{\text{node}} = e^{-rh}\big[\,p^{*}V_{\text{up}} + (1-p^{*})V_{\text{down}}\,\big] $$</div>
+      <p><strong>European shortcut</strong> — let $k$ be the number of down-jumps to an ending node; the probability of reaching it is binomial in the down-move probability $q=1-p^{*}$:</p>
+      <div class="formula">
+        $$ \Pr(k\text{ down jumps}) = \binom{n}{k} q^{k}(1-q)^{\,n-k}, \quad k = 0,1,\dots,n $$
+        $$ V_0 = e^{-rnh}\sum_{k=0}^{n} \binom{n}{k} q^{k}(1-q)^{\,n-k}\, V_{(n-k\ \text{up moves})} $$
+      </div>
+      <p>For an <strong>American</strong> option, at each node take the larger of the continuation value and the <strong>immediate-exercise value</strong>:</p>
+      <div class="formula">$$ V_{\text{node}} = \max\big(\text{exercise value},\; e^{-rh}[p^{*}V_{\text{up}} + (1-p^{*})V_{\text{down}}]\big) $$</div>
+      <p><strong>Forward (Cox-Ross-Rubinstein style) tree factors</strong> often given on the exam:</p>
+      <div class="formula">
+        $$ u = e^{(r-\delta)h + \sigma\sqrt{h}}, \qquad d = e^{(r-\delta)h - \sigma\sqrt{h}} $$
+      </div>
+      <p>with this choice, $p^{*} = \dfrac{1}{1+e^{\sigma\sqrt{h}}}$.</p>
+
+      <h3>Lognormal model — real-world probabilities</h3>
+      <div class="formula">
+        <span class="formula-label">Accumulation factor &amp; log-return ($P$-measure)</span>
+        $$ \frac{S_{t+\tau}}{S_t}\sim \mathrm{LogN}(\mu\tau,\ \sigma^2\tau), \qquad \ln\!\frac{S_{t+\tau}}{S_t}\sim N(\mu\tau,\ \sigma^2\tau) $$
+        <span class="formula-label">Probability the future price is below $K$</span>
+        $$ \Pr[S_{t+\tau}\lt K] = \Pr\!\left[Z < \frac{\ln(K/S_t) - \mu\tau}{\sigma\sqrt{\tau}}\right] = N\!\left(\frac{\ln(K/S_t)-\mu\tau}{\sigma\sqrt{\tau}}\right) $$
+      </div>
+      <p>$\mu$ — annual expected (continuously-compounded) return; $\sigma$ — annual volatility; $Z\sim N(0,1)$. Use $1-N(\cdot)$ for $\Pr[S_{t+\tau}>K]$. <strong>This is a real-world ($P$) calculation — it uses $\mu$, not $r$.</strong></p>
+
+      <h3>Black–Scholes (European options)</h3>
+      <p>Stock with continuous dividend yield $\delta$ ($N=$ standard normal CDF):</p>
+      <div class="formula">
+        $$ C = S_0 e^{-\delta T} N(d_1) - K e^{-rT} N(d_2) $$
+        $$ P = K e^{-rT} N(-d_2) - S_0 e^{-\delta T} N(-d_1) $$
+        $$ d_1 = \frac{\ln(S_0/K) + \big(r - \delta + \tfrac{1}{2}\sigma^{2}\big)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T} $$
+      </div>
+      <ul>
+        <li>$\sigma$ — annual volatility of the stock's continuously-compounded return; all other symbols as above. Set $\delta = 0$ for a non-dividend stock.</li>
+        <li><strong>Call delta</strong> $= e^{-\delta T} N(d_1)$; <strong>put delta</strong> $= -e^{-\delta T} N(-d_1)$.</li>
+        <li>BS satisfies put–call parity automatically, so you can always get the put from the call.</li>
+      </ul>
+      <div class="formula">
+        <span class="formula-label">Delta-hedge / replicating portfolio (non-dividend)</span>
+        $$ \text{Call: } \Delta = N(d_1),\ B = -Ke^{-rT}N(d_2) \;\Rightarrow\; \text{buy } N(d_1)\text{ shares, borrow } Ke^{-rT}N(d_2) $$
+        $$ \text{Put: } \Delta = -N(-d_1),\ B = Ke^{-rT}N(-d_2) \;\Rightarrow\; \text{short } N(-d_1)\text{ shares, lend } Ke^{-rT}N(-d_2) $$
+      </div>
+      <p>Both BSM portfolios are <strong>self-financing</strong>, mirroring the multi-period binomial hedge.</p>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Short-sale payoff <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A non-dividend stock trades at $\$100$; the continuously-compounded risk-free rate is $8\%$. An insurer short-sells one share and invests all proceeds in a 6-month risk-free bond. Find the payoff if the stock is $\$110$ in six months.</p>
+          <p><strong>Solution.</strong> Bond proceeds: $100e^{0.08(0.5)} = 104.08$. Buying back the share to close the short: $-110$.</p>
+          $$ \text{Total payoff} = 104.08 - 110 = -5.92 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>A loss of $\boxed{\$5.92}$. (The short bet lost because the stock <em>rose</em>.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Moneyness of a call <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For a long call with strike $K=100$, classify the moneyness when the underlying is $80$, $100$, and $120$.</p>
+          <ul>
+            <li>$S=80$: $80-100=-20<0$ → <strong>out-of-the-money</strong>.</li>
+            <li>$S=100$: $100-100=0$ → <strong>at-the-money</strong>.</li>
+            <li>$S=120$: $120-100=+20>0$ → <strong>in-the-money</strong>.</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>OTM, ATM, ITM respectively. (Classify by the <em>would-be</em> payoff, ignoring exercise style.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Embedded option in a guarantee <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The PB&amp;J 300 Index ($S_0=2500$, no dividends) has historically returned $10\%$/yr. An insurer guarantees a customer she will earn <strong>at least</strong> $10\%$/yr over two years on the index, and plans to offset the risk with one share plus a put. Available 2-year European puts:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Strike</th><th>Put price</th></tr></thead>
+            <tbody><tr><td>$2500$</td><td>$130.77$</td></tr><tr><td>$2750$</td><td>$223.78$</td></tr><tr><td>$3025$</td><td>$357.94$</td></tr></tbody>
+          </table></div>
+          <p><strong>Step 1 — Identify the guarantee.</strong> Guaranteed payoff $=\max\!\big(S_2,\ 2500\times1.10^2\big)=\max(S_2,3025)$.</p>
+          <p><strong>Step 2 — Decompose.</strong> $\max(S_2,3025)=\max(3025-S_2,0)+S_2$ = a 2-year put struck at $K=3025$ plus one share.</p>
+          <p><strong>Step 3 — Cost.</strong> Buy the $3025$-strike put ($357.94$) and one share of the index ($2500$):</p>
+          $$ \text{Cost} = S_0 + p(0) = 2500 + 357.94 = 2{,}857.94 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Time-0 cost of the hedge $=\boxed{\$2{,}857.94}$. The embedded put is what makes the guarantee hedgeable.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Put–call parity to back out $r$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Non-dividend stock at $\$105$. A 6-month $\$100$-strike European call costs $\$9.88$; the matching put costs $\$2.90$. Find the continuously-compounded risk-free rate.</p>
+          <p><strong>Solution.</strong> Parity $C-P=S_0-Ke^{-rT}$:</p>
+          $$ 9.88-2.90 = 105 - 100e^{-r(0.5)} \;\Rightarrow\; 98.02 = 100e^{-0.5r} \;\Rightarrow\; r = -2\ln(0.9802) = 0.04 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{r = 4\%}$. (A call &amp; put on the same underlying/strike/expiry is your cue to reach for parity.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Put–call parity to price the put <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A non-dividend-paying stock trades at $S_0 = 50$. A 1-year European call with strike $K=52$ costs $C = 4.50$. The continuously-compounded risk-free rate is $r = 6\%$. Find the price of the 1-year European put with the same strike.</p>
+          <p>Compute $Ke^{-rT} = 52\,e^{-0.06(1)} = 52(0.941765) = 48.9718$.</p>
+          $$ P = C - S_0 + Ke^{-rT} = 4.50 - 50 + 48.9718 = 3.4718 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P \approx 3.47}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> One-period binomial: replicating portfolio for a put <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$S_0=100$ (no dividends), in 6 months the stock is $110$ or $90$, $r=6\%$. Price an at-the-money put ($K=100$) by replication.</p>
+          <p><strong>Factors:</strong> $u=110/100=1.1$, $d=90/100=0.9$, $h=0.5$. <strong>Payoffs:</strong> $V_u=\max(100-110,0)=0$, $V_d=\max(100-90,0)=10$.</p>
+          $$ \Delta = \frac{V_u-V_d}{S_0(u-d)} = \frac{0-10}{100(0.2)} = -0.50 \quad(\text{negative}\Rightarrow\text{short-sell }0.5\text{ shares}) $$
+          $$ B = e^{-rh}\frac{uV_d - dV_u}{u-d} = e^{-0.06(0.5)}\frac{1.1(10)-0.9(0)}{0.2} = e^{-0.03}(55) = 53.3745 \quad(\text{positive}\Rightarrow\text{lend}) $$
+          $$ V_0 = \Delta S_0 + B = -0.5(100) + 53.3745 = 3.37 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P \approx 3.37}$. Sign check matches the table: put → short stock, lend cash.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> One-period binomial (both methods agree) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A stock with $S_0 = 100$ pays no dividends. Over the next $h = 1$ year it moves to either $S_u = 120$ ($u=1.2$) or $S_d = 90$ ($d=0.9$). The risk-free rate is $r = 5\%$ (continuous). Price a 1-year European <strong>call</strong> with strike $K = 105$.</p>
+          <p><strong>Step 1 — Payoffs.</strong> $V_u = \max(120-105,0) = 15$, $\quad V_d = \max(90-105,0) = 0$.</p>
+          <p><strong>Step 2 — Risk-neutral (up) probability.</strong></p>
+          $$ p^{*} = \frac{e^{(0.05)(1)} - 0.9}{1.2 - 0.9} = \frac{1.051271 - 0.9}{0.3} = \frac{0.151271}{0.3} = 0.504237 $$
+          <p><strong>Step 3 — Price (risk-neutral).</strong></p>
+          $$ C = e^{-0.05}\big[0.504237(15) + 0.495763(0)\big] = 0.951229 \times 7.56356 = 7.1949 $$
+          <p><strong>Check via replicating portfolio.</strong></p>
+          $$ \Delta = \frac{V_u - V_d}{S_0(u-d)} = \frac{15-0}{100(0.3)} = 0.5 $$
+          $$ B = e^{-rh}\frac{uV_d - dV_u}{u-d} = e^{-0.05}\frac{(1.2)(0)-(0.9)(15)}{0.3} = 0.951229\times(-45) = -42.8053 $$
+          $$ \Delta S_0 + B = 0.5(100) - 42.8053 = 7.1947 $$
+          <p>The two methods agree (rounding). The replicating portfolio is "buy 0.5 shares, borrow 42.81."</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{C \approx 7.19}$, with $\Delta = 0.5$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Two-period binomial via the binomial shortcut (European call) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$S_0=100$ (no dividends), each year $u=1.05$ or $d=0.90$, $r=3\%$, $h=1$. Price a 2-year $K=100$ European call.</p>
+          <p><strong>Down-move probability:</strong> $q=\dfrac{u-e^{rh}}{u-d}=\dfrac{1.05-e^{0.03}}{0.15}=0.13030$, so $1-q=0.86970$.</p>
+          <p><strong>Terminal prices &amp; payoffs:</strong> $S_{uu}=110.25\to10.25$; $S_{ud}=94.50\to0$; $S_{dd}=81\to0$.</p>
+          <p><strong>Node probabilities</strong> ($n=2$): $\Pr(0\text{ down})=(1-q)^2=0.75637$, $\Pr(1)=2q(1-q)=0.22665$, $\Pr(2)=q^2=0.01698$.</p>
+          $$ V_0 = e^{-0.03(2)}\big[0.75637(10.25) + 0.22665(0) + 0.01698(0)\big] = 7.30133 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{C \approx 7.30}$ — identical to working node-by-node, but faster for European options.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Two-period binomial (American put, early exercise matters) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$S_0 = 100$, $u = 1.10$, $d = 0.90$, $r = 4\%$ continuous, each period $h = 1$ year, no dividends. Price a <strong>2-year American put</strong> with strike $K = 105$.</p>
+          <p><strong>Step 1 — Risk-neutral probability.</strong></p>
+          $$ p^{*} = \frac{e^{0.04} - 0.9}{1.10 - 0.90} = \frac{1.040811 - 0.9}{0.2} = \frac{0.140811}{0.2} = 0.704054 $$
+          <p>So $1-p^{*} = 0.295946$ and discount factor $e^{-0.04} = 0.960789$.</p>
+          <p><strong>Step 2 — Stock tree.</strong></p>
+          <ul>
+            <li>$S_{uu} = 100(1.1)^2 = 121$</li>
+            <li>$S_{ud} = 100(1.1)(0.9) = 99$</li>
+            <li>$S_{dd} = 100(0.9)^2 = 81$</li>
+            <li>Period-1: $S_u = 110$, $S_d = 90$.</li>
+          </ul>
+          <p><strong>Step 3 — Terminal payoffs</strong> $\max(105 - S,0)$:</p>
+          <ul>
+            <li>$P_{uu} = \max(105-121,0) = 0$</li>
+            <li>$P_{ud} = \max(105-99,0) = 6$</li>
+            <li>$P_{dd} = \max(105-81,0) = 24$</li>
+          </ul>
+          <p><strong>Step 4 — Node $S_u = 110$.</strong> Continuation $= e^{-0.04}[0.704054(0) + 0.295946(6)] = 0.960789(1.775676) = 1.7061$. Exercise $= \max(105-110,0) = 0$. Take max $\Rightarrow P_u = 1.7061$.</p>
+          <p><strong>Step 5 — Node $S_d = 90$.</strong> Continuation $= e^{-0.04}[0.704054(6) + 0.295946(24)] = 0.960789[4.224324 + 7.102704] = 0.960789(11.327028) = 10.8829$. Exercise $= \max(105-90,0) = 15$. Since $15 > 10.8829$, <strong>exercise early</strong> $\Rightarrow P_d = 15$.</p>
+          <p><strong>Step 6 — Root node.</strong> Continuation $= e^{-0.04}[0.704054(1.7061) + 0.295946(15)] = 0.960789[1.201288 + 4.439190] = 0.960789(5.640478) = 5.4194$. Exercise $= \max(105-100,0) = 5$. Since $5.4194 > 5$, hold $\Rightarrow$ price $= 5.4194$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P_{\text{American}} \approx 5.42}$. (Early exercise at the down node adds value; the European version would be worth less.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Lognormal: real-world exercise probability <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An at-the-money 2-year European put, $S_0=100$, no dividends; the stock is lognormal with $\mu=0.10$, $\sigma^2=0.09$. Find the real-world probability the put is exercised.</p>
+          <p>The put is exercised iff $S_2\lt K=100$. Use $\mu\tau=0.10(2)=0.20$, $\sigma\sqrt{\tau}=0.30\sqrt{2}=0.424264$.</p>
+          $$ \Pr[S_2<100] = N\!\left(\frac{\ln(100/100)-0.20}{0.424264}\right) = N(-0.47140) = 0.31868 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\approx 0.3187}$. Note this uses $\mu$ (real world), <em>not</em> $r$ — it is not a pricing calculation.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Black–Scholes call &amp; put <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>6-month $K=120$ European options on a non-dividend stock: $S_0=100$, $r=5\%$, $\sigma=30\%$, $\delta=0$, $T=0.5$.</p>
+          $$ d_1=\frac{\ln(100/120)+(0.05+\tfrac12(0.3)^2)(0.5)}{0.3\sqrt{0.5}}=-0.63555, \qquad d_2=d_1-0.3\sqrt{0.5}=-0.84769 $$
+          <p>$N(-0.63555)=0.26253$, $N(-0.84769)=0.19831$.</p>
+          $$ C = 100(0.26253) - 120e^{-0.05(0.5)}(0.19831) = 3.04 $$
+          <p><strong>Put</strong> via parity (fastest): $P = C - S_0 + Ke^{-rT} = 3.04 - 100 + 120e^{-0.025} = 20.08$ (or directly with $N(0.63555),N(0.84769)$).</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{C \approx 3.04,\ P \approx 20.08}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Black–Scholes delta-hedge for a written call <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An insurer <strong>shorts 1,000</strong> one-year $K=200$ European calls on a non-dividend stock: $S_0=200$, $r=3\%$, $\sigma=50\%$. Build the delta-hedge.</p>
+          $$ d_1=\frac{\ln(200/200)+(0.03+\tfrac12(0.5)^2)(1)}{0.5\sqrt1}=0.31, \qquad d_2=0.31-0.5=-0.19 $$
+          <p>$N(0.31)=0.62172$, $N(-0.19)=0.42465$. Per call: buy $\Delta=0.62172$ shares and borrow $B=200e^{-0.03}(0.42465)=82.41994$.</p>
+          <p>Scale to 1,000 written calls (the insurer buys the replicating portfolio to offset the short):</p>
+          $$ \text{Shares} = 1000(0.62172) = 621.72, \qquad \text{Borrow} = 1000(82.41994) = \$82{,}419.94 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Buy $\boxed{621.72}$ shares and borrow $\boxed{\$82{,}419.94}$ at the risk-free rate.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ol>
+          <li><strong>Confusing payoff with profit.</strong> Payoff ignores the premium; profit subtracts the <em>accumulated</em> premium $e^{rT}\times$ premium. Read the question's word carefully.</li>
+          <li><strong>Confusing moneyness with whether you'd exercise.</strong> Moneyness pretends the option is exercised <em>regardless</em> of sign (so an OTM call has a "negative" would-be payoff); the <em>actual</em> payoff is still floored at $0$.</li>
+          <li><strong>Mixing up real-world and risk-neutral.</strong> Pricing uses the risk-neutral $p^{*}$ and discounts at $r$. Real-world probabilities $\Pr[S_T\lt K]$ use the drift $\mu$ — never put $r$ into a lognormal probability question, and never put $\mu$ into a pricing question.</li>
+          <li><strong>Up vs. down convention for the risk-neutral probability.</strong> Coaching-Actuaries' $q=\frac{u-e^{rh}}{u-d}$ is the <em>down</em>-move probability; the up-probability is $p^{*}=\frac{e^{rh}-d}{u-d}$. Make sure $V_u$ is weighted by the up-probability.</li>
+          <li><strong>Forgetting dividends in $p^{*}$ and in $\Delta$.</strong> With a dividend yield $\delta$, the risk-neutral probability uses $e^{(r-\delta)h}$ and delta carries a factor $e^{-\delta h}$. Dropping these is the most common binomial error.</li>
+          <li><strong>$u$ and $d$ as factors vs. returns.</strong> $u = 1.2$ means multiply by 1.2; "$\sigma\sqrt h$ style" means $u=e^{(r-\delta)h+\sigma\sqrt h}$. Confirm the convention. Also: $d$ need not be below $1$ (a stock can have two "up-ish" states and still satisfy no-arbitrage).</li>
+          <li><strong>Misreading replicating-portfolio signs.</strong> $\Delta>0$ buy / $\Delta<0$ short; $B>0$ lend / $B<0$ borrow. Call → $(+\Delta,-B)$; put → $(-\Delta,+B)$.</li>
+          <li><strong>Sign / direction in put–call parity.</strong> It is $C - P = S_0 - Ke^{-rT}$ (call <em>minus</em> put). Memorize the LHS order. For dividends, <strong>subtract</strong> their PV from $S_0$ (or use $S_0e^{-\delta T}$), never add. Parity is <strong>European only</strong>.</li>
+          <li><strong>Skipping the early-exercise check on American options.</strong> At <em>every</em> node take $\max(\text{exercise}, \text{continuation})$. American <strong>calls on non-dividend stocks</strong> are never exercised early (so they equal European), but American <strong>puts</strong> frequently are — and FAM loves to test exactly this.</li>
+          <li><strong>Using the European shortcut on American options.</strong> The binomial-probability formula assumes no early exercise — for American options you <em>must</em> go node-by-node.</li>
+          <li><strong>$d_2$ sign and the put formula.</strong> $d_2 = d_1 - \sigma\sqrt T$ (subtract). For the put, use $N(-d_1)$ and $N(-d_2)$, or just compute the call and apply put–call parity.</li>
+          <li><strong>Discounting at the wrong rate.</strong> Binomial and BS both discount at the <strong>risk-free</strong> rate $r$, never at an expected stock return.</li>
+          <li><strong>Rounding $N(\cdot)$ too early.</strong> Carry $d_1, d_2$ to 4+ decimals before looking up the normal CDF; small errors blow up in the final price.</li>
+        </ol>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>State the three steps of short-selling and the payoff of a short stock.</summary>
+        <div class="qa-answer">(1) Borrow shares from a lender; (2) sell them now and invest the proceeds at $r$; (3) buy the shares back later and return them. The short-stock payoff is $-S_T$ — the opposite of a long stock's $+S_T$.</div>
+      </details>
+      <details class="qa"><summary>An option is in-the-money. What does that tell you about its would-be payoff, and is "in-the-money" the same as "will be exercised"?</summary>
+        <div class="qa-answer">ITM means the immediate (would-be) payoff is <strong>positive</strong> — for a call $S>K$, for a put $S\lt K$. It is a classification snapshot ignoring exercise style; the <em>actual</em> payoff is floored at $0$, so an OTM option simply isn't exercised.</div>
+      </details>
+      <details class="qa"><summary>How is a call "insurance," and how do you rewrite a "get at least your money back" guarantee as an option plus a share?</summary>
+        <div class="qa-answer">A call caps the price you pay for the asset at $K$ — insurance against a price increase (a put insures a decrease). Using $\max(S_0,S_T)=\max(S_0-S_T,0)+S_T$, the guarantee = one share of the asset plus a long put struck at the floor $K=S_0$ (an embedded option the insurer can buy to hedge).</div>
+      </details>
+      <details class="qa"><summary>A long call and a short put on the same stock, strike, and expiry together replicate what simple position, and what principle turns that into put–call parity?</summary>
+        <div class="qa-answer">A <strong>long forward</strong> to buy the stock at strike $K$ (payoff $S_T - K$), which also equals long stock + short bond. The <strong>law of one price</strong> (no arbitrage) equates their costs, giving $C - P = S_0 - Ke^{-rT}$.</div>
+      </details>
+      <details class="qa"><summary>Write the one-period binomial $\Delta$ and $B$ for a call, then state whether you buy/short stock and lend/borrow cash for a call vs. a put.</summary>
+        <div class="qa-answer">$\Delta=\dfrac{V_u-V_d}{S_0(u-d)}$, $\;B=e^{-rh}\dfrac{uV_d-dV_u}{u-d}$. Call: $\Delta>0$ (buy stock), $B<0$ (borrow). Put: $\Delta<0$ (short stock), $B>0$ (lend).</div>
+      </details>
+      <details class="qa"><summary>Write the risk-neutral probability $p^{*}$ on a stock paying continuous dividend yield $\delta$, the no-arbitrage condition, and say what happens to a stock priced under the risk-neutral measure.</summary>
+        <div class="qa-answer">$p^{*} = \dfrac{e^{(r-\delta)h} - d}{u - d}$, valid when $d\lt e^{(r-\delta)h}\lt u$ (so $0\lt p^{*}<1$). Discounting the stock's risk-neutral expected price at $r$ returns $S_0$ exactly — every asset earns $r$ on average under $Q$.</div>
+      </details>
+      <details class="qa"><summary>True or false: a higher real-world probability of an up-move raises the price of a European call in the binomial model.</summary>
+        <div class="qa-answer"><strong>False.</strong> Real-world probabilities never enter the option price; only the risk-neutral $p^{*}$ (a function of $u, d, r, \delta, h$) does.</div>
+      </details>
+      <details class="qa"><summary>For a recombining $n$-period tree, what is the probability of reaching the node with $k$ down-jumps, and when can you NOT use this shortcut?</summary>
+        <div class="qa-answer">$\binom{n}{k}q^k(1-q)^{n-k}$ where $q=1-p^{*}$ is the down-move probability. It works for <strong>European</strong> options only; American options require node-by-node backward induction so you can test early exercise at each node.</div>
+      </details>
+      <details class="qa"><summary>For a non-dividend stock, why is an American call worth the same as the otherwise-identical European call?</summary>
+        <div class="qa-answer">Early exercise of a call forfeits the time value and the interest you could earn on the strike; with no dividends there is never a benefit to exercising early, so the early-exercise feature is worthless and the two prices coincide. (American puts often <em>do</em> benefit.)</div>
+      </details>
+      <details class="qa"><summary>State the distribution of the log-return and the formula for $\Pr[S_{t+\tau}\lt K]$. Which rate goes in it?</summary>
+        <div class="qa-answer">$\ln(S_{t+\tau}/S_t)\sim N(\mu\tau,\sigma^2\tau)$, so $\Pr[S_{t+\tau}\lt K]=N\!\big(\frac{\ln(K/S_t)-\mu\tau}{\sigma\sqrt{\tau}}\big)$. It uses the <strong>real-world drift $\mu$</strong>, not $r$.</div>
+      </details>
+      <details class="qa"><summary>In Black–Scholes, what does $N(d_2)$ represent, and which input shifts the call price the most for an at-the-money option?</summary>
+        <div class="qa-answer">$N(d_2)$ is the <strong>risk-neutral probability the call finishes in the money</strong> ($S_T > K$). Near at-the-money, the call value is most sensitive to <strong>volatility $\sigma$</strong> (and to time $T$), since both increase the chance and magnitude of finishing in the money.</div>
+      </details>
+      <details class="qa"><summary>An insurer writes calls and wants to be hedged. Under BS, what does it buy and borrow per written call?</summary>
+        <div class="qa-answer">It replicates a long call: <strong>buy $N(d_1)$ shares</strong> and <strong>borrow $Ke^{-rT}N(d_2)$</strong> per call. This self-financing delta-hedge offsets the short-call risk; multiply by the number of calls written.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

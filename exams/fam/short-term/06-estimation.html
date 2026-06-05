@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parametric &amp; Non-Parametric Estimation · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-06" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 6</div>
+      <h1>Parametric and Non-Parametric Estimation</h1>
+      <p class="lede">Two words decide every estimation problem on this exam — <em>truncation</em> conditions the density and drops data; <em>censoring</em> keeps the point but swaps $f(x)$ for $S(u)$. Master the four-step likelihood recipe, then learn the shortcuts that turn a page of algebra into one line.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models · KPW</span>
+        <span class="chip">⏱️ ~3–4 hrs</span>
+        <span class="chip">🔑 MLE recipe</span>
+        <span class="chip">✂️ Truncation · Censoring · Grouping</span>
+        <span class="chip">⚡ Closed-form shortcuts</span>
+        <span class="chip">🔑 Kaplan–Meier · Greenwood</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After studying this topic you should be able to:</p>
+        <ul>
+          <li>Construct and use the <strong>empirical distribution</strong> (and empirical survival/cdf) for complete, individual data.</li>
+          <li>Estimate parameters via the <strong>method of moments</strong> and <strong>percentile matching</strong>.</li>
+          <li>Execute the <strong>four-step MLE recipe</strong> (likelihood → log-likelihood → derivative → set to zero) for complete, <strong>censored</strong>, <strong>truncated</strong>, and <strong>grouped</strong> data.</li>
+          <li>Write the correct <strong>likelihood factor</strong> for left/right truncation, left/right censoring, and grouped intervals, including <strong>mixed policies</strong> with different deductibles and limits.</li>
+          <li>Derive MLEs for common parametric distributions (exponential, gamma scale, Pareto, single-parameter Pareto, Weibull, lognormal, inverse exponential, beta, Poisson, binomial, negative binomial, uniform).</li>
+          <li>Apply the <strong>matching-moments shortcuts</strong> for severity and $(a,b,0)$ distributions, plus the <strong>$(a,b,1)$</strong> zero-truncated / zero-modified shortcuts.</li>
+          <li>Use the <strong>invariance property</strong> $\hat{g}(\theta)=g(\hat\theta)$ to estimate any function of a parameter (e.g. a VaR).</li>
+          <li>Construct the <strong>Kaplan–Meier</strong> product-limit estimator and the <strong>Nelson–Aalen</strong> estimator of the cumulative hazard from left-truncated, right-censored data.</li>
+          <li>Estimate the <strong>variance</strong> of estimators: empirical, Greenwood's formula, Aalen's variance, and the asymptotic variance of MLEs via the information matrix; build <strong>confidence intervals</strong> (linear and log-transformed).</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>Data types: the four words that change everything</h3>
+      <ul>
+        <li><strong>Complete (individual) data</strong>: every observation is a single exact value $x_i$. No information loss.</li>
+        <li><strong>Grouped data</strong>: you only know counts in intervals.</li>
+        <li><strong>Truncated data</strong>: observations below (left) or above (right) a threshold are <strong>not in the data set at all</strong> — you don't even know how many there were. A deductible $d$ produces <strong>left truncation</strong>: claims below $d$ are never reported. You must condition on the value exceeding the truncation point.</li>
+        <li><strong>Censored data</strong>: the observation <strong>is</strong> in the data set, but you only know it exceeds (right-censored) or is below (left-censored) some value. A policy limit $u$ produces <strong>right censoring</strong>: any loss $\geq u$ is recorded as exactly $u$. You know it happened and that it was at least $u$.</li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The single most important distinction on this exam</div>
+        <ul>
+          <li><strong>Truncation</strong> affects the <em>denominator</em> (it conditions the density/probability) and removes data points.</li>
+          <li><strong>Censoring</strong> keeps the data point but replaces a density factor $f(x)$ with a survival factor $S(u)$.</li>
+        </ul>
+      </div>
+
+      <h3>What "likelihood" means</h3>
+      <p>The <strong>likelihood</strong> of a single data value is the probability (or density) function evaluated at that value. Assuming the observations are i.i.d., the likelihood of the whole sample is the <em>product</em> of the individual likelihoods. The MLE is the parameter value that makes this product as large as possible — i.e. that makes the observed data "most probable."</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — likelihood vs. joint probability</div>
+        <p>The likelihood function looks like a joint probability evaluated at all the observations, and for this exam you may treat it that way. But they are conceptually different: a <strong>likelihood is a function of the parameter(s)</strong> (the data are fixed), whereas a joint probability is a function of the random-variable outcomes (the parameter is fixed). Evaluating a PDF at a point isn't a probability — it's a <em>relative likelihood</em> — so the product of PDFs serves as a proxy for the probability of the set of observations.</p>
+      </div>
+
+      <h3>The four-step MLE recipe</h3>
+      <p>Every MLE problem — complete, censored, truncated, or grouped — follows the same four steps. The only thing that changes is which factor you write for each observation.</p>
+      <ol>
+        <li><strong>Construct the likelihood</strong> $L(\theta)=\prod_i (\text{factor}_i)$.</li>
+        <li><strong>Take logs</strong> to get the log-likelihood $\ell(\theta)=\ln L(\theta)$ (turns the product into a sum).</li>
+        <li><strong>Differentiate</strong>: compute $\ell'(\theta)=\dfrac{d}{d\theta}\ell(\theta)$.</li>
+        <li><strong>Set to zero and solve</strong>: $\ell'(\theta)=0$, then check it's a maximum and that the solution is in the valid parameter range.</li>
+      </ol>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Coach's Remark — why logs, and dropping constants</div>
+        <ul>
+          <li><strong>Logs are optional but smart.</strong> $\ln$ is increasing, so it peaks at the same $\hat\theta$. Differentiating a sum (log-likelihood) avoids the product rule you'd need on $L$ itself.</li>
+          <li><strong>Drop multiplicative constants early.</strong> Anything that does <em>not</em> depend on the parameter (a factor like $c=\prod x_i^3/6^5$) is multiplicative in $L$ — it vanishes when you differentiate, so you may discard it from the start. <strong>Caution:</strong> if a question needs the <em>actual</em> value of $\ell$ (e.g. a likelihood-ratio test later), you must keep the constants.</li>
+        </ul>
+      </div>
+
+      <h3>Non-parametric (empirical) models</h3>
+      <p>The <strong>empirical distribution</strong> puts probability mass $1/n$ on each of the $n$ data points. It makes no distributional assumption.</p>
+      <div class="formula">$$F_n(x) = \frac{\#\{x_i \le x\}}{n}, \qquad S_n(x) = 1 - F_n(x).$$</div>
+      <p>When data are left-truncated and/or right-censored, the empirical cdf is generalized to the <strong>Kaplan–Meier</strong> estimator (for $S(x)$) and the cumulative hazard to the <strong>Nelson–Aalen</strong> estimator.</p>
+
+      <h3>Parametric estimation methods (in order of exam importance)</h3>
+      <ol>
+        <li><strong>Maximum likelihood (MLE)</strong> — by far the most tested. Pick parameters that maximize the probability of the observed data. Works cleanly for censored/truncated data and has known asymptotic variance.</li>
+        <li><strong>Method of moments (MoM)</strong> — set sample raw moments equal to theoretical raw moments and solve. Simple but inefficient; uses only complete data.</li>
+        <li><strong>Percentile matching</strong> — set the fitted percentile equal to the <strong>smoothed empirical percentile</strong> and solve.</li>
+      </ol>
+
+      <h3>Likelihood building blocks</h3>
+      <p>For each observation, write one factor:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Situation</th><th>Likelihood factor</th></tr></thead>
+        <tbody>
+          <tr><td>Exact observation at $x$ (complete)</td><td>$f(x)$ &nbsp;(or $p(x)$ if discrete)</td></tr>
+          <tr><td>Right-censored at $u$ (e.g. policy limit)</td><td>$S(u)=\Pr(X\ge u)$</td></tr>
+          <tr><td>Left-censored at $d$</td><td>$F(d)=\Pr(X\le d)$</td></tr>
+          <tr><td>Left-truncated at $d$ (e.g. deductible), exact loss $x$</td><td>$\dfrac{f(x)}{S(d)}=\dfrac{f(x)}{\Pr(X>d)}$</td></tr>
+          <tr><td>Right-truncated at $u$, exact value $x$</td><td>$\dfrac{f(x)}{F(u)}=\dfrac{f(x)}{\Pr(X\lt u)}$</td></tr>
+          <tr><td>Left-truncated at $d$, right-censored at $u$</td><td>$\dfrac{S(u)}{S(d)}$</td></tr>
+          <tr><td>Interval / grouped $(a,\,b]$</td><td>$F(b) - F(a)=S(a)-S(b)$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Multiply all factors, take logs, differentiate, set to zero. For discrete grouped data the interval factor is the <em>sum</em> of pmf values, e.g. $\Pr(1\le N\le 2)=p(1)+p(2)$.</p>
+
+      <h3>The invariance property of the MLE</h3>
+      <p>One of the most useful facts on this exam: the MLE of <em>any function</em> of a parameter is that function of the MLE.</p>
+      <div class="formula">$$\widehat{g(\theta)} = g(\hat\theta).$$</div>
+      <p>So once you have $\hat\theta$, you can immediately read off the MLE of the fitted mean, variance, a percentile/VaR, a limited expected value, etc. — just plug $\hat\theta$ into the formula for that quantity.</p>
+
+      <h3>Special cases &amp; shortcuts</h3>
+      <p>For <strong>complete</strong> data, many MLEs reduce to <strong>matching raw moments</strong> — set the fitted $k$-th raw moment equal to the empirical one, $\mathrm E[X^k]=\frac1n\sum x_i^k$, and solve. These shortcuts are the fastest route through severity and $(a,b,0)$/$(a,b,1)$ frequency problems (see the Formulas section). Some closed forms (exponential, Pareto, Weibull) extend to truncated/censored data; others (uniform, inverse exponential, beta) are <strong>complete-data only</strong>.</p>
+
+      <h3>Kaplan–Meier and Nelson–Aalen</h3>
+      <p>These estimate the survival function $S(t)$ when each subject can enter late (left truncation) and leave early (right censoring). Define at each observed <strong>death/loss time</strong> $y_j$:</p>
+      <ul>
+        <li>$s_j$ = number of observed events (deaths) <strong>at</strong> $y_j$,</li>
+        <li>$r_j$ = <strong>risk set</strong> = number under observation <strong>at</strong> time $y_j$ (those who have entered and not yet exited).</li>
+      </ul>
+      <p>The conditional probability of surviving past $y_j$, given alive just before, is estimated by $1 - s_j/r_j$. The product of these gives Kaplan–Meier; summing the hazard contributions $s_j/r_j$ gives Nelson–Aalen (cumulative hazard $\hat H$), and $\hat S(t) = e^{-\hat H(t)}$.</p>
+
+      <h2>Formulas</h2>
+
+      <h3>Empirical distribution (complete, individual data)</h3>
+      <div class="formula">
+        $$F_n(x) = \frac{1}{n}\sum_{i=1}^{n}\mathbf{1}(x_i \le x), \qquad S_n(x) = 1 - F_n(x).$$
+        <span class="formula-label">Empirical raw moment (used for MoM)</span>
+        $$\hat\mu_k' = \frac{1}{n}\sum_{i=1}^n x_i^k.$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$n$ = sample size; $x_i$ = $i$-th observation; $\mathbf{1}(\cdot)$ = indicator.</p>
+      </div>
+
+      <h3>Method of moments</h3>
+      <p>Solve, for $p$ parameters, the first $p$ equations:</p>
+      <div class="formula">$$\frac{1}{n}\sum_{i=1}^n x_i^k = \mathrm{E}[X^k], \quad k = 1, 2, \dots, p.$$</div>
+
+      <h3>Percentile matching (smoothed empirical percentile)</h3>
+      <p>Order the data $x_{(1)} \le \dots \le x_{(n)}$. The <strong>smoothed empirical estimate</strong> of the $100p$-th percentile uses</p>
+      <div class="formula">$$\hat\pi_p = x_{(j)} + h\,(x_{(j+1)} - x_{(j)}), \qquad \text{where } (n+1)p = j + h,$$</div>
+      <p>$j$ = integer part, $0 \le h < 1$. Then set the fitted percentile equal to $\hat\pi_p$: solve $F(\hat\pi_p \mid \theta) = p$ for the parameter(s).</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$p$ = chosen probability level; $j$ = integer index; $h$ = fractional part.</p>
+      </div>
+
+      <h3>Maximum likelihood</h3>
+      <p>Likelihood and log-likelihood:</p>
+      <div class="formula">$$L(\theta) = \prod_{i=1}^n (\text{factor}_i), \qquad \ell(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln(\text{factor}_i).$$</div>
+      <p>The MLE $\hat\theta$ solves $\dfrac{\partial \ell}{\partial \theta} = 0$ (and is a maximum). For <strong>two parameters</strong>, take partial derivatives with respect to each, set both to zero, and solve the system.</p>
+      <div class="formula">
+        <span class="formula-label">Two-parameter MLE (general form)</span>
+        $$\frac{\partial \ell}{\partial \theta_1} = 0, \qquad \frac{\partial \ell}{\partial \theta_2} = 0.$$
+      </div>
+
+      <h3>MLEs for common distributions (complete data) — matching moments</h3>
+      <p>For complete data, set the fitted raw moment equal to the empirical raw moment. Let $\bar x = \frac1n\sum x_i$.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Closed-form MLEs to memorize</div>
+        <ul>
+          <li><strong>Exponential</strong> (mean $\theta$): $\quad \hat\theta = \bar x.$ &nbsp;(gamma special case, $\alpha=1$).</li>
+          <li><strong>Gamma</strong> with <strong>known</strong> $\alpha$, scale $\theta$: $\quad \mathrm E[X]=\alpha\theta=\bar x \Rightarrow \hat\theta = \bar x / \alpha.$</li>
+          <li><strong>Normal</strong> (the only distribution where you match the first two moments to get both parameters): $\hat\mu = \bar x, \quad \hat\sigma^2 = \frac1n\sum x_i^2 - \bar x^2 = \frac1n\sum (x_i - \bar x)^2$ (divides by $n$, not $n-1$).</li>
+          <li><strong>Lognormal</strong>: let $y_i = \ln x_i$, apply the normal shortcuts: $\hat\mu = \frac1n\sum y_i$, $\hat\sigma^2 = \frac1n\sum(y_i - \hat\mu)^2$.</li>
+          <li><strong>Poisson</strong> (mean $\lambda$): $\quad \hat\lambda = \bar x.$</li>
+          <li><strong>Binomial</strong> with known $m$: $\quad m\hat q=\bar x \Rightarrow \hat q = \bar x / m.$</li>
+          <li><strong>Negative binomial</strong> with <strong>known</strong> $r$: $\quad r\hat\beta=\bar x \Rightarrow \hat\beta = \bar x / r.$ &nbsp;(geometric is $r=1$, so $\hat\beta=\bar x$).</li>
+          <li><strong>Uniform</strong> $(0,\theta)$: $\quad \hat\theta = \max(x_i) = x_{(n)}$ (boundary MLE, not from a derivative).</li>
+        </ul>
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — fitted mean equals sample mean</div>
+        <p>For the <strong>gamma, binomial, and negative binomial</strong>, if $\theta$, $q$, or $\beta$ is the MLE, then the <strong>fitted mean equals the sample mean</strong> — regardless of how $\alpha$, $m$, $r$ were obtained. So: given $\alpha/m/r$, get the scale instantly by equating fitted mean to $\bar x$; or given the scale's MLE, recover the missing shape parameter the same way. Also note: matching the 2nd moment for $\sigma^2$ is valid <em>only when $\mu$ is also estimated by MLE</em>; if $\mu$ is fixed, use $\hat\sigma^2=\frac1n\sum (x_i-\mu)^2$.</p>
+      </div>
+
+      <h3>$(a,b,1)$ class shortcuts — zero-truncated &amp; zero-modified</h3>
+      <p>The matching-moments idea extends to the $(a,b,1)$ family; just match the <em>appropriate</em> mean. Let $X$ be the parent $(a,b,0)$ variable.</p>
+      <div class="formula">
+        <span class="formula-label">Zero-truncated: match $\mathrm E[X^T]=\dfrac{1}{1-p_0}\,\mathrm E[X]=\bar x$</span>
+        $$\text{ZT Poisson: }\ \frac{\hat\lambda}{1-e^{-\hat\lambda}}=\bar x, \qquad \text{ZT binomial: }\ \frac{m\hat q}{1-(1-\hat q)^m}=\bar x,$$
+        $$\text{ZT negative binomial: }\ \frac{r\hat\beta}{1-(1+\hat\beta)^{-r}}=\bar x.$$
+        <span class="formula-label">Zero-modified: two matches</span>
+        $$\hat p_0^M=\frac{n_0}{n}\quad(\text{proportion of zeros}), \qquad \mathrm E[X^M]=\frac{1-\hat p_0^M}{1-p_0}\,\mathrm E[X]=\bar x.$$
+      </div>
+      <p>Here $n_0$ = number of observed zeros. Solve the mean match for the parent parameter, then use $\hat g(\theta)=g(\hat\theta)$ for any modified moment you need.</p>
+
+      <h3>Uniform $(0,\theta)$ — boundary MLE</h3>
+      <p>The uniform PDF $f(x)=1/\theta$ has no interior critical point: $\ell(\theta)=-n\ln\theta$ gives $\ell'(\theta)=-n/\theta\ne 0$. Since $L=1/\theta^n$ <em>increases</em> as $\theta$ shrinks, push $\theta$ as small as the data allow — but $\theta$ must be at least the largest observation.</p>
+      <div class="formula">$$\hat\theta = \max(x_1,\dots,x_n)=x_{(n)}.$$</div>
+
+      <h3>Other closed-form shortcuts (truncation/censoring allowed where noted)</h3>
+      <p>Let $n$ = number of <strong>uncensored</strong> points, $c$ = number of <strong>censored</strong> points, $x_i$ = observed value (or censoring point), $d_i$ = truncation point ($0$ if none).</p>
+      <div class="formula">
+        <span class="formula-label">Exponential (handles truncation + censoring)</span>
+        $$\hat\theta = \frac{\sum_{i=1}^{n+c}(x_i-d_i)}{n}=\frac{\text{total amount above truncation, all obs}}{\text{number of uncensored (exact) obs}}.$$
+        <span class="formula-label">Pareto, fixed $\theta$ (handles truncation + censoring)</span>
+        $$\hat\alpha = \frac{n}{\sum_{i=1}^{n+c}\big[\ln(x_i+\theta)-\ln(d_i+\theta)\big]}.$$
+        <span class="formula-label">Single-parameter Pareto, fixed $\theta$ (handles truncation + censoring)</span>
+        $$\hat\alpha = \frac{n}{\sum_{i=1}^{n+c}\big\{\ln x_i-\ln[\max(\theta,d_i)]\big\}}.$$
+        <span class="formula-label">Weibull, fixed $\tau$ (handles truncation + censoring)</span>
+        $$\hat\theta = \left(\frac{\sum_{i=1}^{n+c}x_i^{\tau}-\sum_{i=1}^{n+c}d_i^{\tau}}{n}\right)^{1/\tau}.$$
+      </div>
+      <div class="formula">
+        <span class="formula-label">Complete-data only</span>
+        $$\text{Inverse exponential: }\ \hat\theta=\frac{n}{\sum_{i=1}^{n}1/x_i}, \qquad \text{Beta }(b{=}1,\text{ fixed }\theta):\ \hat a=\frac{n}{\,n\ln\theta-\sum\ln x_i\,},$$
+        $$\text{Beta }(a{=}1,\text{ fixed }\theta):\ \hat b=\frac{n}{\,n\ln\theta-\sum\ln(\theta-x_i)\,}, \qquad \text{Uniform }[0,\theta]\text{ grouped: }\ \hat\theta=c_j\!\left(\frac{n}{\,n-n_j\,}\right).$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — how much to memorize</div>
+        <p>Don't memorize the whole table. The <strong>exponential</strong> shortcut <code>θ̂ = total payment ÷ number of uncensored observations</code> is the one worth knowing cold. The rest exist for completeness — you're expected to be able to do any of them from first principles (build $L$, log, differentiate, solve). The uniform grouped shortcut and the inverse-exponential/beta forms are <strong>complete-data only</strong> (uniform also can't handle truncation). In the grouped-uniform formula, $n$ = total observations and $n_j$ = number in the last interval $[c_j,\infty)$.</p>
+      </div>
+
+      <h3>Kaplan–Meier (product-limit) estimator of $S(t)$</h3>
+      <p>For observed event times $y_1 < y_2 < \dots < y_k$, with $s_j$ events and risk set $r_j$ at $y_j$:</p>
+      <div class="formula">$$\hat S(t) = \prod_{j:\,y_j \le t}\left(1 - \frac{s_j}{r_j}\right), \qquad \hat S(t) = 1 \text{ for } t < y_1.$$</div>
+
+      <h3>Nelson–Aalen estimator of cumulative hazard $H(t)$</h3>
+      <div class="formula">$$\hat H(t) = \sum_{j:\,y_j \le t} \frac{s_j}{r_j}, \qquad \hat S(t) = e^{-\hat H(t)}.$$</div>
+
+      <h3>Variance estimates and confidence intervals</h3>
+      <div class="formula">
+        <span class="formula-label">Greenwood's formula (variance of the Kaplan–Meier $\hat S(t)$)</span>
+        $$\widehat{\mathrm{Var}}\big[\hat S(t)\big] = \big[\hat S(t)\big]^2 \sum_{j:\,y_j \le t} \frac{s_j}{r_j\,(r_j - s_j)}.$$
+        <span class="formula-label">Aalen's variance (variance of the Nelson–Aalen $\hat H(t)$)</span>
+        $$\widehat{\mathrm{Var}}\big[\hat H(t)\big] = \sum_{j:\,y_j \le t} \frac{s_j}{r_j^{2}} \quad\text{(textbook form)} \;\;\Big(\text{some texts: } \sum \tfrac{s_j (r_j - s_j)}{r_j^3}\Big).$$
+      </div>
+      <p>On FAM use $\sum_{j} s_j / r_j^2$ unless told otherwise.</p>
+      <div class="formula">
+        <span class="formula-label">Linear (normal) CI for $S(t)$</span>
+        $$\hat S(t) \pm z_{1-\alpha/2}\,\sqrt{\widehat{\mathrm{Var}}[\hat S(t)]}.$$
+        <span class="formula-label">Log-transformed CI for $S(t)$ (keeps endpoints in $(0,1)$)</span>
+        $$\big(\hat S(t)^{1/U},\ \hat S(t)^{U}\big), \qquad U = \exp\!\left(\frac{z_{1-\alpha/2}\sqrt{\widehat{\mathrm{Var}}[\hat S(t)]}}{\hat S(t)\,\ln \hat S(t)}\right).$$
+      </div>
+      <p>Asymptotic variance of MLEs via Fisher information. For a single parameter,</p>
+      <div class="formula">$$I(\theta) = -\mathrm{E}\!\left[\frac{\partial^2 \ell}{\partial\theta^2}\right], \qquad \widehat{\mathrm{Var}}[\hat\theta] \approx \frac{1}{I(\hat\theta)} \approx \left(-\frac{\partial^2 \ell}{\partial\theta^2}\bigg|_{\hat\theta}\right)^{-1}.$$</div>
+      <p>For multiple parameters, $\widehat{\mathrm{Var}}(\hat{\boldsymbol\theta}) = I(\hat{\boldsymbol\theta})^{-1}$ (inverse of the information matrix). The <strong>delta method</strong> gives the variance of a function $g(\hat\theta)$:</p>
+      <div class="formula">$$\widehat{\mathrm{Var}}[g(\hat\theta)] \approx [g'(\hat\theta)]^2\,\widehat{\mathrm{Var}}[\hat\theta].$$</div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$z_{1-\alpha/2}$ = standard normal quantile (1.96 for 95%); $\ell$ = log-likelihood; $I$ = Fisher information.</p>
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> The four-step MLE recipe (exponential, complete data) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>You observe 4 claims: $20,\ 50,\ 150,\ 380$. Claim amounts follow an exponential with mean $\theta$. Find the MLE of $\theta$ from first principles.</p>
+          <p><strong>Step 1 — likelihood.</strong> For continuous data each factor is the PDF $f(x)=\frac1\theta e^{-x/\theta}$:</p>
+          $$L(\theta)=\prod_{i=1}^4\frac1\theta e^{-x_i/\theta}=\frac{1}{\theta^4}\,e^{-(20+50+150+380)/\theta}=\frac{1}{\theta^4}\,e^{-600/\theta}.$$
+          <p><strong>Step 2 — log-likelihood.</strong> $\ \ell(\theta)=-4\ln\theta-\dfrac{600}{\theta}.$</p>
+          <p><strong>Step 3 — derivative.</strong> $\ \ell'(\theta)=-\dfrac{4}{\theta}+\dfrac{600}{\theta^2}.$</p>
+          <p><strong>Step 4 — set to zero.</strong> $\ -\dfrac{4}{\theta}+\dfrac{600}{\theta^2}=0 \Rightarrow -4\theta+600=0 \Rightarrow \hat\theta=\dfrac{600}{4}=150.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat\theta=150}$ — identical to the shortcut $\hat\theta=\bar x=600/4=150$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Recognizing a gamma from its PDF (the shape trick) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses follow $f(x)=\dfrac{x^3 e^{-x/\theta}}{6\,\theta^4},\ x>0$. You observe 5 losses totaling 700. Find the MLE of $\theta$.</p>
+          <p><strong>First principles.</strong> The product of PDFs is $L(\theta)=c\cdot\theta^{-20}e^{-700/\theta}$, where $c=\big(\prod x_i^3\big)/6^5$ is a constant (no $\theta$), so drop it:</p>
+          $$\ell(\theta)=-20\ln\theta-\frac{700}{\theta}\ \Rightarrow\ \ell'(\theta)=-\frac{20}{\theta}+\frac{700}{\theta^2}=0\ \Rightarrow\ \hat\theta=\frac{700}{20}=35.$$
+          <p><strong>Shortcut.</strong> A PDF of the form $x^{\alpha-1}e^{-x/\theta}$ is a gamma. Comparing $x^3 e^{-x/\theta}$ to $(x/\theta)^\alpha e^{-x/\theta}/(x\,\Gamma(\alpha))$ gives $\alpha=4$. With fixed $\alpha$ the fitted mean equals the sample mean:</p>
+          $$\alpha\hat\theta=\bar x\ \Rightarrow\ 4\hat\theta=\frac{700}{5}=140\ \Rightarrow\ \hat\theta=\frac{140}{4}=35.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat\theta=35}$ — and notice the constant $c$ never mattered.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Left truncation (deductible): exponential MLE <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses $6,\ 7,\ 9,\ 10$ are observed; <strong>no information is available for losses of 5 or less</strong> (left-truncated at $d=5$). Losses are exponential with mean $\theta$. Find $\hat\theta$.</p>
+          <p><strong>Solution.</strong> Each factor is conditioned: $\dfrac{f(x)}{S(5)}$. With $f(x)=\frac1\theta e^{-x/\theta}$ and $S(5)=e^{-5/\theta}$:</p>
+          $$L(\theta)=\frac{f(6)f(7)f(9)f(10)}{S(5)^4}=\frac{1}{\theta^4}\,e^{-(6+7+9+10)/\theta}\,\big(e^{-5/\theta}\big)^{-4}=\frac{1}{\theta^4}\,e^{-12/\theta}.$$
+          <p>The four $-5$'s in the exponent cancel $\tfrac{20}{\theta}$ of the numerator's $\tfrac{32}{\theta}$, leaving $\tfrac{12}{\theta}$. Then $\ell(\theta)=-4\ln\theta-\frac{12}{\theta}$, so $\hat\theta=\frac{12}{4}=3$.</p>
+          <p><strong>Cross-check (shortcut).</strong> $\hat\theta=\frac{\sum(x_i-d)}{n}=\frac{(6{-}5)+(7{-}5)+(9{-}5)+(10{-}5)}{4}=\frac{12}{4}=3.$ </p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat\theta=3}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Right censoring + invariance: a VaR from a single-parameter Pareto <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Policy limit $=10$. Observed claim payments: $2,\ 3,\ 5,\ 8,\ 10,\ 10$. Claim sizes have $S(x)=x^{-\alpha},\ 1\lt x<\infty$ (single-parameter Pareto, $\theta=1$). The two $10$'s are at the limit (right-censored). Find the MLE of $\mathrm{VaR}_{0.90}(X)$.</p>
+          <p><strong>Solution.</strong> The first four are exact (use $f$); the two $10$'s are right-censored (use $S(10)$). With $f(x)=\alpha x^{-\alpha-1}$:</p>
+          $$L(\alpha)=f(2)f(3)f(5)f(8)\,S(10)^2=\frac{\alpha^4}{(2\cdot3\cdot5\cdot8)^{\alpha+1}}\cdot 10^{-2\alpha}=\frac{\alpha^4}{240^{\alpha+1}\,100^{\alpha}}.$$
+          $$\ell(\alpha)=4\ln\alpha-(\alpha+1)\ln 240-\alpha\ln 100\ \Rightarrow\ \ell'(\alpha)=\frac{4}{\alpha}-\ln 240-\ln 100=0.$$
+          $$\hat\alpha=\frac{4}{\ln 240+\ln 100}=0.3966.$$
+          <p>By invariance, $\widehat{\mathrm{VaR}}_{0.90}=g(\hat\alpha)$ with $\mathrm{VaR}_{0.90}=\theta(1-0.90)^{-1/\alpha}=0.1^{-1/\alpha}$:</p>
+          $$\widehat{\mathrm{VaR}}_{0.90}(X)=0.1^{-1/0.3966}=332.24.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat\alpha=0.3966,\quad \widehat{\mathrm{VaR}}_{0.90}\approx 332.24}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Mixed policies: the exponential shortcut on two policy types <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Policy I: no deductible, limit 100. Policy II: deductible 20, no limit. Losses below the deductible are not recorded. A ground-up exponential is fit by MLE.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Policy</th><th>Observed losses</th></tr></thead>
+            <tbody>
+              <tr><td>I (limit 100)</td><td>$50,\ 60,\ 60,\ 70,\ 80,\ 100^+,\ 100^+$</td></tr>
+              <tr><td>II (deductible 20)</td><td>$30,\ 50,\ 60,\ 70,\ 90,\ 120$</td></tr>
+            </tbody>
+          </table></div>
+          <p>$^+$ = censored at the limit. Estimate the mean of the ground-up distribution.</p>
+          <p><strong>Solution.</strong> Use $\hat\theta=\dfrac{\sum_{i=1}^{n+c}(x_i-d_i)}{n}$, where $n$ counts only <strong>uncensored</strong> observations.</p>
+          <ul>
+            <li>Policy I ($d=0$): the two $100^+$ are censored. Numerator pieces (all 7): $50+60+60+70+80+100+100=520$. Uncensored count = 5.</li>
+            <li>Policy II ($d=20$): all 6 exact. Numerator pieces: $(30{-}20)+(50{-}20)+(60{-}20)+(70{-}20)+(90{-}20)+(120{-}20)=10+30+40+50+70+100=300$. Uncensored count = 6.</li>
+          </ul>
+          $$\hat\theta=\frac{520+300}{5+6}=\frac{820}{11}=74.55.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat\theta=820/11\approx 74.55}$ — i.e. total payment $\div$ number of uncensored observations.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Lognormal mean via the normal shortcut + invariance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Claims $25,\ 70,\ 215,\ 535$ are fit by a lognormal $(\mu,\sigma^2)$ via MLE. Find the mean of the fitted distribution.</p>
+          <p><strong>Solution.</strong> $\ln X\sim$ Normal$(\mu,\sigma^2)$, so apply the normal shortcuts to $y_i=\ln x_i$:</p>
+          $$\hat\mu=\frac{\ln 25+\ln 70+\ln 215+\ln 535}{4}=4.7801,$$
+          $$\hat\sigma^2=\frac{(\ln 25)^2+(\ln 70)^2+(\ln 215)^2+(\ln 535)^2}{4}-\hat\mu^2=1.3313.$$
+          <p>By invariance, the fitted mean is $\mathrm E[X]=e^{\mu+\sigma^2/2}$ evaluated at the MLEs:</p>
+          $$\widehat{\mathrm E}[X]=e^{4.7801+0.5(1.3313)}=231.77.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\widehat{\mathrm E}[X]\approx 231.77}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Grouped discrete data: geometric from accident counts <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual accidents per car $\sim$ Geometric$(\beta)$. From 20 cars: 9 had 0 accidents, 6 had $[1,2]$, 5 had $[3,4]$. Find the MLE of $\beta$.</p>
+          <p><strong>Solution.</strong> Grouped likelihood uses interval probabilities (sums of pmf for discrete data). With $p_N(k)=\frac{\beta^k}{(1+\beta)^{k+1}}$:</p>
+          $$L(\beta)=p_N(0)^9\,[p_N(1)+p_N(2)]^6\,[p_N(3)+p_N(4)]^5=\frac{\beta^{21}(1+2\beta)^{11}}{(1+\beta)^{52}}.$$
+          $$\ell(\beta)=21\ln\beta+11\ln(1+2\beta)-52\ln(1+\beta).$$
+          $$\ell'(\beta)=\frac{21}{\beta}+\frac{22}{1+2\beta}-\frac{52}{1+\beta}=0\ \Rightarrow\ 40\beta^2-33\beta-21=0.$$
+          <p>Quadratic formula: $\hat\beta=\dfrac{33\pm\sqrt{33^2+4(40)(21)}}{2(40)}=1.2463$ or $-0.4213$. Since $\beta>0$:</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat\beta=1.2463}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Zero-modified binomial: the two-match recipe <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>From 100 policies, the accident counts are: 45 zeros, 37 ones, 16 twos, 2 threes. Fit a zero-modified binomial with $m=3$ by MLE; find $\mathrm E[(N^M)^2]$.</p>
+          <p><strong>Match 1 — probability of zero = proportion of zeros.</strong> $\ \hat p_0^M=\frac{45}{100}=0.45.$</p>
+          <p><strong>Match 2 — fitted ZM mean = sample mean.</strong> Sample mean $=\frac{0(45)+1(37)+2(16)+3(2)}{100}=0.75.$ With $\mathrm E[N]=mq=3q$ and $p_0=(1-q)^3$:</p>
+          $$\frac{1-0.45}{1-(1-q)^3}\cdot 3q=0.75\ \Rightarrow\ q^2-3q+0.8=0\ \Rightarrow\ \hat q=0.2958\ (\text{the root in }(0,1)).$$
+          <p>The ZM second moment scales by the same factor as the mean:</p>
+          $$\widehat{\mathrm E}[(N^M)^2]=\frac{1-\hat p_0^M}{1-(1-\hat q)^3}\big[3\hat q(1-\hat q)+(3\hat q)^2\big]=1.1938.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat q=0.2958,\quad \widehat{\mathrm E}[(N^M)^2]\approx 1.1938}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Building a mixed likelihood (Weibull, multiple policies) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Losses $\sim$ Weibull$(\theta=1,\tau)$. Policy A: no deductible/limit, claims $x_1,x_2$. Policy B: deductible $a$, claim $x_3$. Policy C: deductible $b$, limit $c$, claims $x_4,x_5$, and one at the limit $b+c$. Write $\ell(\tau)$.</p>
+          <p><strong>Solution.</strong> A → plain $f$; B → $f/S(a)$; C → $f/S(b)$ for the two exact, and the limit claim → $S(b+c)/S(b)$. With $\theta=1$, $f(x)=\tau x^{\tau-1}e^{-x^\tau}$ and $S(x)=e^{-x^\tau}$:</p>
+          $$L(\tau)=\big[f(x_1)f(x_2)\big]\cdot\frac{f(x_3)}{S(a)}\cdot\frac{f(x_4)f(x_5)\,S(b+c)}{S(b)^3}.$$
+          $$\ell(\tau)=5\ln\tau+(\tau-1)\sum_{i=1}^{5}\ln x_i-\sum_{i=1}^{5}x_i^{\tau}-(b+c)^{\tau}+a^{\tau}+3b^{\tau}.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Key idea</div>The censored/limit claim adds $-(b+c)^\tau$ (a survival factor), while each truncation denominator adds back a positive term: $+a^\tau$ once and $+b^\tau$ three times (three Policy-C claims each divided by $S(b)$).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Kaplan–Meier and Greenwood confidence interval <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Ten policies are observed for time to first claim. Exact claim times (in months): 2, 3, 3, 5, 8. The remaining 5 policies were censored (no claim) at times 4, 6, 6, 9, 10. No left truncation. Estimate $S(5)$ by Kaplan–Meier and give a 95% linear confidence interval.</p>
+          <p><strong>Solution.</strong> Order the event times and build the risk sets. Total $n = 10$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$y_j$</th><th>$s_j$ (events)</th><th>$r_j$ (risk set)</th><th>$1 - s_j/r_j$</th></tr></thead>
+            <tbody>
+              <tr><td>2</td><td>1</td><td>10</td><td>$9/10 = 0.9$</td></tr>
+              <tr><td>3</td><td>2</td><td>9</td><td>$7/9 \approx 0.7778$</td></tr>
+              <tr><td>5</td><td>1</td><td>6</td><td>$5/6 \approx 0.8333$</td></tr>
+            </tbody>
+          </table></div>
+          <p>Risk sets: at $t=2$, all 10 are at risk. After $t=2$: one event removed, 9 remain. At $t=3$, $r=9$, two events; one censored at 4 leaves. At $t=5$: from 9, subtract 2 events (at 3) and 1 censored (at 4) = 6 at risk. Good.</p>
+          $$\hat S(5) = 0.9 \times \tfrac{7}{9} \times \tfrac{5}{6} = 0.9 \times 0.77778 \times 0.83333 = 0.5833.$$
+          <p>Greenwood sum:</p>
+          $$\sum \frac{s_j}{r_j(r_j - s_j)} = \frac{1}{10\cdot 9} + \frac{2}{9\cdot 7} + \frac{1}{6\cdot 5} = 0.011111 + 0.031746 + 0.033333 = 0.076190.$$
+          $$\widehat{\mathrm{Var}}[\hat S(5)] = (0.5833)^2 (0.076190) = 0.34028 \times 0.076190 = 0.025927.$$
+          <p>Standard error $= \sqrt{0.025927} = 0.16102$.</p>
+          <p>95% linear CI: $0.5833 \pm 1.96(0.16102) = 0.5833 \pm 0.3156 = (0.2677,\ 0.8989).$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat S(5) = 0.5833,\quad \text{95\% CI } \approx (0.268,\ 0.899)}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Method of moments and percentile matching for a Pareto <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Five complete observations: 100, 150, 200, 400, 700.</p>
+          <p><strong>(a)</strong> Fit a Pareto with <strong>known</strong> $\alpha = 3$ by method of moments (solve for $\theta$).<br>
+          <strong>(b)</strong> Estimate the median of an exponential by percentile matching using the same data.</p>
+          <p><strong>Solution (a).</strong></p>
+          <p>Sample mean $\bar x = (100+150+200+400+700)/5 = 1550/5 = 310.$</p>
+          <p>Pareto mean (for $\alpha>1$): $\mathrm{E}[X] = \dfrac{\theta}{\alpha - 1} = \dfrac{\theta}{2}.$</p>
+          <p>Set equal: $\theta/2 = 310 \Rightarrow \hat\theta = 620.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer (a)</div>$\boxed{\hat\theta = 620}$</div>
+          <p><strong>Solution (b).</strong></p>
+          <p>Smoothed empirical median: $p = 0.5$, $(n+1)p = 6(0.5) = 3.0$, so $j=3$, $h=0$. The smoothed 50th percentile is the 3rd order statistic $= 200$.</p>
+          <p>For an exponential with mean $\theta$, the median solves $F(\hat\pi_{0.5}) = 0.5$:</p>
+          $$1 - e^{-200/\theta} = 0.5 \;\Rightarrow\; e^{-200/\theta} = 0.5 \;\Rightarrow\; \frac{200}{\theta} = \ln 2 \;\Rightarrow\; \hat\theta = \frac{200}{0.6931} = 288.5.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer (b)</div>$\boxed{\hat\theta = 200/\ln 2 \approx 288.5}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Nelson–Aalen with Aalen variance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Using the same data as Example 10 (events at 2, 3, 3, 5; risk sets 10, 9, 6), estimate $H(5)$ and $S(5)$ by Nelson–Aalen, and give the variance of $\hat H(5)$.</p>
+          <p><strong>Solution.</strong></p>
+          $$\hat H(5) = \frac{1}{10} + \frac{2}{9} + \frac{1}{6} = 0.10000 + 0.22222 + 0.16667 = 0.48889.$$
+          $$\hat S(5) = e^{-0.48889} = 0.6134.$$
+          <p>Aalen variance ($\sum s_j/r_j^2$):</p>
+          $$\frac{1}{10^2} + \frac{2}{9^2} + \frac{1}{6^2} = 0.01000 + 0.024691 + 0.027778 = 0.062469.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat H(5) = 0.4889,\;\; \hat S(5) = 0.6134,\;\; \widehat{\mathrm{Var}}[\hat H(5)] = 0.06247}$</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Truncation vs. censoring confusion.</strong> A deductible truncates (divide by $S(d)$, drop unobserved small claims); a policy limit censors (replace $f$ with $S(u)$, keep the point). Mixing these up is the #1 error.</li>
+          <li><strong>Dropping the wrong "constants."</strong> You may discard factors that don't depend on the parameter, since they vanish on differentiation. But never drop them if the problem asks for the <em>actual</em> log-likelihood value (e.g. a likelihood-ratio test). And remember a "constant" must be <em>multiplicative</em> in $L$ (additive in $\ell$), not just a number.</li>
+          <li><strong>Forgetting to subtract the deductible</strong> in the exponential MLE numerator. You sum <em>amounts above the truncation point</em> $(x_i - d)$, not the raw $x_i$. Same mistake: forgetting censored observations contribute $(u-d)$ to the numerator but <strong>0</strong> to the denominator.</li>
+          <li><strong>Counting the wrong denominator</strong> in the exponential MLE: it is the number of <strong>exact (uncensored) deaths</strong>, never the total sample size, when censoring is present.</li>
+          <li><strong>Payments vs. losses.</strong> If a table gives <em>claim payments</em>, add back the deductible to recover the <em>loss</em>; a limited payment of $u-d$ means the loss reached the maximum covered loss $u$. Fit the loss distribution, not the payment.</li>
+          <li><strong>MLE of $\sigma^2$ divides by $n$, not $n-1$.</strong> The MLE is biased; do not "correct" it unless asked. And you may match the 2nd moment for $\sigma^2$ <em>only when $\mu$ is also MLE-estimated</em> — if $\mu$ is fixed, use $\frac1n\sum(x_i-\mu)^2$ directly.</li>
+          <li><strong>Uniform / shifted distributions:</strong> the MLE is at the <strong>boundary</strong> ($\hat\theta = \max x_i$ for $U(0,\theta)$). Setting a derivative to zero gives no solution. The uniform/inverse-exp/beta shortcuts are <strong>complete-data only</strong>.</li>
+          <li><strong>Forgetting the invariance property.</strong> To estimate a VaR, fitted mean, or any $g(\theta)$, plug in $\hat\theta$: $\widehat{g(\theta)}=g(\hat\theta)$. Don't re-derive a new MLE for the function.</li>
+          <li><strong>Grouped discrete data uses a sum of pmf values</strong> over the interval, e.g. $p(1)+p(2)$ — not a single pmf and not a continuous $F(b)-F(a)$.</li>
+          <li><strong>$(a,b,1)$ matching.</strong> For zero-truncated, match $\frac{1}{1-p_0}\mathrm E[X]$ to $\bar x$; for zero-modified, first set $\hat p_0^M=n_0/n$, then match the modified mean. Using the plain $(a,b,0)$ mean here is wrong.</li>
+          <li><strong>Risk-set bookkeeping in Kaplan–Meier.</strong> Censored observations leave the risk set but do <strong>not</strong> create a factor. Only event times produce factors $(1 - s_j/r_j)$. With <strong>left truncation</strong>, subjects enter the risk set <em>late</em>; the risk set is not monotonically decreasing.</li>
+          <li><strong>Greenwood vs. Aalen.</strong> Greenwood's denominator is $r_j(r_j - s_j)$ and multiplies by $\hat S(t)^2$; Aalen's is $r_j^2$ with no leading factor. Don't swap them.</li>
+          <li><strong>Percentile matching index.</strong> Use $(n+1)p = j + h$ for the <em>smoothed</em> empirical percentile, not $np$. Interpolate between order statistics.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Describe the four-step process of maximum likelihood estimation for complete data.</summary>
+        <div class="qa-answer">(1) Build the likelihood $L(\theta)=\prod f(x_i)$ (or $\prod p(x_i)$ for discrete). (2) Take logs: $\ell(\theta)=\ln L(\theta)$. (3) Differentiate: $\ell'(\theta)$. (4) Set $\ell'(\theta)=0$ and solve, checking it's a maximum and in the valid range. For two parameters, set both partial derivatives to zero and solve the system.</div>
+      </details>
+      <details class="qa"><summary>Why is it valid to take logs, and why can you drop multiplicative constants before differentiating?</summary>
+        <div class="qa-answer">$\ln$ is strictly increasing, so $\ell$ peaks at the same $\hat\theta$ as $L$ — and a sum is far easier to differentiate than a product. Constants that don't depend on $\theta$ are multiplicative in $L$ (additive in $\ell$) and vanish on differentiation, so they don't affect $\hat\theta$. Caveat: keep them if you need the actual value of $\ell$ (e.g. likelihood-ratio test).</div>
+      </details>
+      <details class="qa"><summary>Write the likelihood factor for each case: left-truncated at $d$; right-truncated at $u$; left-censored at $d$; right-censored at $u$; grouped on $(a,b]$.</summary>
+        <div class="qa-answer">Left-truncated: $f(x)/\Pr(X>d)$. Right-truncated: $f(x)/\Pr(X\lt u)$. Left-censored: $\Pr(X\le d)=F(d)$. Right-censored: $\Pr(X\ge u)=S(u)$. Grouped: $\Pr(a\lt X\le b)=F(b)-F(a)$ (sum of pmf values if discrete).</div>
+      </details>
+      <details class="qa"><summary>A loss is recorded as exactly 1000 because the policy has a 1000 limit. Is this observation censored or truncated, and what likelihood factor does it contribute?</summary>
+        <div class="qa-answer"><strong>Censored</strong> (right-censored at $u=1000$). It contributes the survival factor $S(1000)$ to the likelihood.</div>
+      </details>
+      <details class="qa"><summary>For an exponential fit with deductible $d$ on every policy, three exact claims (above $d$) and two claims censored at limit $u$, write the MLE numerator and denominator in words.</summary>
+        <div class="qa-answer">Numerator = $\sum(\text{exact } x_i - d) + \sum(\text{censored } u - d)$ = total amount exposed above the deductible across all five policies. Denominator = number of exact claims = <strong>3</strong>. (Memory hook: total payment $\div$ number of uncensored observations.)</div>
+      </details>
+      <details class="qa"><summary>You are given claim <em>payments</em> together with each policy's deductible and limit. What two adjustments translate them into the loss likelihood?</summary>
+        <div class="qa-answer">Add the deductible back to each payment to get the loss amount, and add the deductible to the limit to get the maximum covered loss. Then write $f(\text{loss})/S(\text{deductible})$ for exact losses and $S(\text{max covered loss})/S(\text{deductible})$ for losses at the limit.</div>
+      </details>
+      <details class="qa"><summary>State the invariance property and use it: if $\hat\alpha=0.4$ for a single-parameter Pareto $(\theta=1)$, what is the MLE of $\mathrm{VaR}_{0.90}$?</summary>
+        <div class="qa-answer">$\widehat{g(\theta)}=g(\hat\theta)$ — plug the MLE into the function. $\widehat{\mathrm{VaR}}_{0.90}=0.1^{-1/0.4}=0.1^{-2.5}\approx 316.2.$</div>
+      </details>
+      <details class="qa"><summary>A PDF is $f(x)=c\,x^{3}e^{-x/\theta}$. Which distribution is it, and what's the quick MLE of $\theta$ if 5 losses total 700?</summary>
+        <div class="qa-answer">$x^{\alpha-1}e^{-x/\theta}$ identifies a <strong>gamma with $\alpha=4$</strong>. With fixed $\alpha$, fitted mean = sample mean: $4\hat\theta=700/5=140\Rightarrow\hat\theta=35$.</div>
+      </details>
+      <details class="qa"><summary>How do you MLE-fit a zero-modified distribution?</summary>
+        <div class="qa-answer">Two matches: (1) set the fitted probability of zero equal to the sample proportion of zeros, $\hat p_0^M=n_0/n$; (2) set the fitted modified mean $\frac{1-\hat p_0^M}{1-p_0}\mathrm E[X]$ equal to $\bar x$ and solve for the parent parameter. (Zero-truncated needs only the second match with $p_0$ removed.)</div>
+      </details>
+      <details class="qa"><summary>Give the MLE of $\theta$ for a $U(0,\theta)$ sample $\{4, 7, 2, 9, 5\}$, and explain why no derivative is used.</summary>
+        <div class="qa-answer">$\hat\theta = \max\{4,7,2,9,5\} = \mathbf{9}$. $L=1/\theta^n$ increases as $\theta$ shrinks, but $\theta$ can't be below the largest observation — so the maximum sits at the boundary $\max x_i$, not at a derivative root.</div>
+      </details>
+      <details class="qa"><summary>In Kaplan–Meier, what happens to the survival estimate at a <em>censoring</em> time (no event)?</summary>
+        <div class="qa-answer">Nothing — the survival estimate $\hat S$ is unchanged (flat) at a censoring time; only the risk set $r_j$ for <em>later</em> event times is reduced. Factors $(1 - s_j/r_j)$ arise only at event times.</div>
+      </details>
+      <details class="qa"><summary>State Greenwood's formula and what it estimates.</summary>
+        <div class="qa-answer">$\widehat{\mathrm{Var}}[\hat S(t)] = [\hat S(t)]^2 \sum_{y_j \le t} \dfrac{s_j}{r_j(r_j - s_j)}$. It estimates the variance of the Kaplan–Meier survival estimator $\hat S(t)$.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

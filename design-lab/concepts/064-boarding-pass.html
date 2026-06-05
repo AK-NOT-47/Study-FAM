@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Boarding Pass to FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15201b;
+    --paper:#f4efe2;
+    --paper-2:#ece5d3;
+    --card:#fbf8ef;
+    --accent:#e34a2b;     /* stamp red-orange */
+    --accent-2:#0f5c4a;   /* aviation green */
+    --teal:#0a7d7d;
+    --gold:#c69a3e;
+    --line:#26332b;
+    --muted:#5c6a5f;
+    --barcode:#16201b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',sans-serif;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(15,92,74,.10), transparent 40%),
+      radial-gradient(circle at 88% 90%, rgba(227,74,43,.08), transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    padding:26px 18px 60px;
+    min-height:100vh;
+  }
+  /* subtle paper texture via repeating lines */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.04;
+    background-image:repeating-linear-gradient(0deg,#000 0 1px,transparent 1px 4px);
+  }
+  .mono{font-family:'Space Mono',monospace}
+  .wrap{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+
+  /* ============ AIRLINE HEADER STRIP ============ */
+  .topstrip{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:16px;flex-wrap:wrap;margin-bottom:18px;
+    border:2px solid var(--line);background:var(--ink);color:var(--paper);
+    border-radius:12px;padding:12px 20px;
+    box-shadow:6px 6px 0 rgba(21,32,27,.18);
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .mmark{
+    width:42px;height:42px;border-radius:9px;display:grid;place-items:center;
+    background:var(--accent);color:#fff;font-weight:900;font-size:24px;
+    border:2px solid #fff2; box-shadow:inset 0 0 0 2px rgba(255,255,255,.15);
+    transform:rotate(-4deg);
+  }
+  .brand b{font-size:18px;font-weight:800;letter-spacing:.5px;display:block;line-height:1}
+  .brand small{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#b9c9bf}
+  .flightcode{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;color:#cdbf9a;text-align:right}
+  .flightcode strong{color:#fff;display:block;font-size:14px;letter-spacing:3px}
+
+  /* primary nav */
+  nav.topnav{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:2px}
+  .seclabel{
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+    background:var(--gold);color:#1a140a;padding:5px 9px;border-radius:5px;font-weight:700;
+    text-transform:uppercase;border:1.5px solid #00000022;
+  }
+  nav.topnav a{
+    font-size:12.5px;font-weight:600;color:var(--paper);text-decoration:none;
+    padding:6px 11px;border-radius:6px;border:1.5px solid transparent;letter-spacing:.3px;
+    transition:.15s;
+  }
+  nav.topnav a:hover{background:#ffffff14;border-color:#ffffff33}
+
+  /* ============ THE BOARDING PASS ============ */
+  .pass{
+    display:grid;grid-template-columns:1fr 300px;
+    background:var(--card);
+    border:2px solid var(--line);
+    border-radius:16px;
+    box-shadow:10px 12px 0 rgba(21,32,27,.20);
+    position:relative;overflow:hidden;
+  }
+  /* perforation between main + stub */
+  .pass::after{
+    content:"";position:absolute;top:0;bottom:0;left:calc(100% - 300px);
+    width:0;border-left:3px dashed var(--line);opacity:.55;z-index:5;
+  }
+  /* notch holes top & bottom of perforation */
+  .notch{position:absolute;left:calc(100% - 300px);width:22px;height:22px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--line);transform:translateX(-50%);z-index:6}
+  .notch.top{top:-12px}
+  .notch.bot{bottom:-12px}
+
+  /* ---- MAIN PANEL ---- */
+  .main{padding:26px 30px 30px;position:relative}
+  .mainhead{display:flex;justify-content:space-between;align-items:flex-start;
+    border-bottom:2px solid var(--line);padding-bottom:14px;margin-bottom:20px;gap:14px;flex-wrap:wrap}
+  .mainhead .route{display:flex;align-items:center;gap:14px}
+  .iata{font-family:'Space Mono',monospace;font-weight:700;font-size:34px;line-height:1;letter-spacing:1px}
+  .arrow{font-size:26px;color:var(--accent);transform:translateY(-2px)}
+  .iata small{display:block;font-family:'Archivo';font-size:9.5px;letter-spacing:2px;
+    text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:5px}
+  .classtag{
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    background:var(--accent-2);color:#eafff5;padding:7px 12px;border-radius:6px;font-weight:700;
+    align-self:center;
+  }
+
+  .greet{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--accent-2);font-weight:700;margin-bottom:6px}
+  .headline{font-size:clamp(30px,5vw,52px);font-weight:900;line-height:1.02;letter-spacing:-1.5px;margin-bottom:12px}
+  .headline em{font-style:normal;color:var(--accent);position:relative}
+  .headline em::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:8px;background:var(--gold);opacity:.4;z-index:-1}
+  .lede{font-size:15px;max-width:560px;color:#33413a;margin-bottom:24px}
+
+  /* fields grid (travel-doc fields) */
+  .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+    border:2px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:24px;background:#fff}
+  .field{padding:14px 16px;border-right:2px solid var(--line);position:relative}
+  .field:last-child{border-right:none}
+  .field .lab{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:7px}
+  .field .val{font-family:'Space Mono',monospace;font-size:30px;font-weight:700;line-height:1;color:var(--ink)}
+  .field .sub{font-size:11px;color:var(--muted);margin-top:6px;font-weight:600}
+  .field .val span{font-size:14px;color:var(--accent)}
+  /* tiny progress meter under progress field */
+  .meter{height:7px;border:1.5px solid var(--line);border-radius:20px;margin-top:9px;overflow:hidden;background:var(--paper-2)}
+  .meter i{display:block;height:100%;width:72%;background:repeating-linear-gradient(45deg,var(--accent-2) 0 7px,#0c4d3e 7px 14px)}
+
+  /* topic preview + formula */
+  .twocol{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}
+  .panel{border:2px solid var(--line);border-radius:11px;background:#fff;padding:18px 20px;position:relative}
+  .panel .kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--teal);font-weight:700;margin-bottom:8px}
+  .panel h3{font-size:21px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+  .panel p.line{font-size:13px;color:var(--muted);margin-bottom:14px}
+  .formula{
+    background:var(--ink);color:#eafdf5;border-radius:9px;padding:14px 15px;
+    font-family:'Space Mono',monospace;font-size:13.5px;line-height:2.1;letter-spacing:.3px;
+    border:2px solid var(--line);box-shadow:inset 0 0 0 2px rgba(255,255,255,.05);
+  }
+  .formula div{white-space:nowrap;overflow-x:auto}
+  .formula b{color:var(--gold)}
+  .formula .op{color:var(--accent);font-weight:700;padding:0 4px}
+
+  /* common trap callout */
+  .trap{
+    border:2px dashed var(--accent);border-radius:11px;background:#fdeee9;
+    padding:15px 18px;margin-top:18px;position:relative;
+  }
+  .trap .tag{display:inline-flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:10.5px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:7px}
+  .trap p{font-size:13.5px;color:#4a1f12;font-weight:500}
+  .trap p b{color:var(--accent)}
+
+  /* worked example teaser + buttons */
+  .example{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+    margin-top:22px;border-top:2px dashed var(--line);padding-top:20px}
+  .example .ex{flex:1;min-width:240px}
+  .example .extag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:5px}
+  .example .ex h4{font-size:18px;font-weight:800;letter-spacing:-.2px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{font-family:'Archivo';font-weight:700;font-size:13.5px;letter-spacing:.3px;border:2px solid var(--line);
+    padding:12px 20px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    transition:.15s;box-shadow:3px 3px 0 var(--line)}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.ghost{background:var(--card);color:var(--ink)}
+  .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--line)}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+
+  /* ---- STUB (right perforated tear-off) ---- */
+  .stub{padding:24px 22px 26px;background:var(--paper-2);position:relative;
+    display:flex;flex-direction:column;gap:16px}
+  .stub h5{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .stub .biggie{font-family:'Space Mono',monospace;font-weight:700}
+  .stubrow{border-bottom:1.5px dashed #9aa79c;padding-bottom:12px}
+  .stubrow .v{font-size:20px;font-weight:700;font-family:'Space Mono',monospace;color:var(--ink)}
+  .stubrow .s{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:3px}
+
+  /* exam FAM card inside stub */
+  .examcard{background:var(--ink);color:var(--paper);border-radius:10px;padding:15px 16px;border:2px solid var(--line)}
+  .examcard .ttl{font-size:15px;font-weight:800;margin-bottom:3px;color:#fff}
+  .examcard .sub{font-size:10.5px;color:#b9c9bf;font-family:'Space Mono',monospace;letter-spacing:.5px;line-height:1.6}
+  .examcard .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .examcard .pill{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;background:#ffffff15;border:1px solid #ffffff22;
+    padding:4px 8px;border-radius:5px;font-weight:700}
+  .examcard .pill.hot{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* barcode */
+  .barcodewrap{margin-top:auto;text-align:center}
+  .barcode{height:64px;width:100%;
+    background:
+      repeating-linear-gradient(90deg,
+        var(--barcode) 0 2px, transparent 2px 4px,
+        var(--barcode) 4px 7px, transparent 7px 9px,
+        var(--barcode) 9px 10px, transparent 10px 14px,
+        var(--barcode) 14px 18px, transparent 18px 20px,
+        var(--barcode) 20px 21px, transparent 21px 24px,
+        var(--barcode) 24px 27px, transparent 27px 30px);
+    border:2px solid var(--line);border-radius:4px;background-color:#fff}
+  .barcode-num{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:5px;margin-top:8px;color:var(--ink);font-weight:700}
+
+  /* topic nav second row as "departures board" inside main bottom — handled by topnav */
+
+  /* footer */
+  footer{margin-top:26px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+    border:2px solid var(--line);border-radius:12px;padding:14px 22px;background:var(--ink);color:#cdbf9a;
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px}
+  footer .fbrand{display:flex;align-items:center;gap:10px;color:var(--paper)}
+  footer .fbrand .mmark{width:30px;height:30px;font-size:17px;transform:rotate(-4deg)}
+  footer .fbrand b{font-family:'Archivo';font-weight:800;letter-spacing:.5px}
+  footer .stamp{color:var(--accent);font-weight:700}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:900px){
+    .pass{grid-template-columns:1fr}
+    .pass::after{display:none}
+    .notch{display:none}
+    .stub{border-top:3px dashed var(--line)}
+    .twocol{grid-template-columns:1fr}
+  }
+  @media(max-width:560px){
+    .fields{grid-template-columns:1fr}
+    .field{border-right:none;border-bottom:2px solid var(--line)}
+    .field:last-child{border-bottom:none}
+    .iata{font-size:27px}
+    body{padding:16px 10px 40px}
+    .main{padding:20px 18px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- AIRLINE HEADER -->
+  <header class="topstrip">
+    <div>
+      <div class="brand">
+        <div class="mmark">M</div>
+        <div>
+          <b>Me Studing Stuff</b>
+          <small>Study smarter · Pass exams</small>
+        </div>
+      </div>
+      <nav class="topnav">
+        <span class="seclabel">FAM-L / FAM-S</span>
+        <a href="#">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+      </nav>
+    </div>
+    <div class="flightcode">
+      BOARDING PASS
+      <strong>MSS · FAM</strong>
+      SEAT 06/10
+    </div>
+  </header>
+
+  <!-- THE BOARDING PASS -->
+  <section class="pass">
+    <span class="notch top"></span>
+    <span class="notch bot"></span>
+
+    <!-- MAIN PANEL -->
+    <div class="main">
+      <div class="mainhead">
+        <div class="route">
+          <div class="iata">NOW<small>Departure</small></div>
+          <div class="arrow">✈</div>
+          <div class="iata">PASS<small>Arrival</small></div>
+        </div>
+        <div class="classtag">Direct · Non-stop to a pass</div>
+      </div>
+
+      <p class="greet">★ Good evening — passenger boarding</p>
+      <h1 class="headline">Let's get you <em>that pass.</em></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <!-- STATS as travel-doc fields -->
+      <div class="fields">
+        <div class="field">
+          <div class="lab">Overall progress</div>
+          <div class="val">72<span>%</span></div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="meter"><i></i></div>
+        </div>
+        <div class="field">
+          <div class="lab">Exam countdown</div>
+          <div class="val">86<span> d</span></div>
+          <div class="sub">days to departure</div>
+        </div>
+        <div class="field">
+          <div class="lab">Topics solid</div>
+          <div class="val">08</div>
+          <div class="sub">locked &amp; loaded</div>
+        </div>
+      </div>
+
+      <!-- TOPIC PREVIEW + FORMULA -->
+      <div class="twocol">
+        <div class="panel">
+          <div class="kicker">Now boarding · Topic preview</div>
+          <h3>Life Insurance Present Values</h3>
+          <p class="line">The EPV of a benefit paid on death — and how its variance falls out of the second moment.</p>
+          <div class="formula">
+            <div><b>A_x</b> = 1 <span class="op">−</span> d·ä_x</div>
+            <div><b>Var(Z)</b> = ²A_x <span class="op">−</span> (A_x)²</div>
+            <div><b>ä_x</b> = (1 <span class="op">−</span> A_x) / d</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="kicker">Gate notes</div>
+          <h3>Read before you board</h3>
+          <p class="line">A pre-flight reminder that catches most passengers out on the approach.</p>
+          <div class="trap" style="margin-top:6px">
+            <div class="tag">⚠ Common trap</div>
+            <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKED EXAMPLE + BUTTONS -->
+      <div class="example">
+        <div class="ex">
+          <div class="extag">Worked example · Gate 1</div>
+          <h4>Example 1 — Whole life EPV &amp; variance</h4>
+        </div>
+        <div class="btns">
+          <a href="#" class="btn primary">Start studying →</a>
+          <a href="#" class="btn ghost">↺ Resume</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUB / TEAR-OFF -->
+    <aside class="stub">
+      <div class="stubrow">
+        <h5>Passenger</h5>
+        <div class="v">YOU / FUTURE FSA</div>
+        <div class="s">Status · boarding now</div>
+      </div>
+
+      <div class="examcard">
+        <div class="ttl">Exam FAM</div>
+        <div class="sub">Fundamentals of Actuarial<br>Mathematics · SOA</div>
+        <div class="pills">
+          <span class="pill">34 QUESTIONS</span>
+          <span class="pill hot">PASS = 6/10</span>
+        </div>
+      </div>
+
+      <div class="stubrow">
+        <h5>Flight · Date</h5>
+        <div class="v">FAM-86</div>
+        <div class="s">Departs in 86 days</div>
+      </div>
+
+      <div class="stubrow" style="border-bottom:none">
+        <h5>Boarding group</h5>
+        <div class="v">GROUP 72%</div>
+        <div class="s">8 topics solid · 12/17 done</div>
+      </div>
+
+      <div class="barcodewrap">
+        <div class="barcode"></div>
+        <div class="barcode-num">FAM · 0610 · MSS</div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="fbrand">
+      <div class="mmark">M</div>
+      <b>Me Studing Stuff</b>
+    </div>
+    <div>STUDY SMARTER. PASS EXAMS. <span class="stamp">— DESTINATION: FSA</span></div>
+  </footer>
+
+</div>
+</body>
+</html>

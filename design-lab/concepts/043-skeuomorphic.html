@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Sniglet:wght@400;800&family=Special+Elite&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --leather:#5a3a26;
+    --leather-dk:#3f2817;
+    --leather-lt:#7a5236;
+    --stitch:#e9d3a8;
+    --felt:#2d6a4a;
+    --felt-dk:#1f4d35;
+    --felt-lt:#3c8a62;
+    --linen:#efe7d4;
+    --linen-dk:#d9cdb2;
+    --paper:#f7f1e1;
+    --brass:#caa14e;
+    --brass-dk:#9a7427;
+    --brass-hi:#f6e0a0;
+    --ink:#2a2018;
+    --ink-soft:#564636;
+    --red:#b0392b;
+    --glass-blue:#3a73c4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255,255,255,.08), transparent 40%),
+      repeating-linear-gradient(135deg, rgba(0,0,0,.04) 0 2px, transparent 2px 5px),
+      repeating-linear-gradient(45deg, rgba(0,0,0,.03) 0 2px, transparent 2px 5px),
+      linear-gradient(160deg,#6e4a30,#4a2f1d 70%);
+    background-attachment:fixed;
+    padding:22px;
+  }
+
+  /* ============ THE DESK / FRAME ============ */
+  .desk{
+    max-width:1180px;
+    margin:0 auto;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,.06), transparent 55%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 3px, transparent 3px 7px),
+      linear-gradient(160deg,var(--leather-lt),var(--leather) 55%,var(--leather-dk));
+    border-radius:26px;
+    padding:18px;
+    box-shadow:
+      inset 0 2px 4px rgba(255,255,255,.22),
+      inset 0 -10px 24px rgba(0,0,0,.5),
+      0 30px 60px rgba(0,0,0,.55),
+      0 2px 0 rgba(0,0,0,.4);
+    position:relative;
+    border:1px solid rgba(0,0,0,.4);
+  }
+  /* stitched border on the leather frame */
+  .desk::before{
+    content:"";
+    position:absolute;inset:9px;
+    border:2px dashed var(--stitch);
+    border-radius:18px;
+    opacity:.55;
+    pointer-events:none;
+  }
+
+  .leather-inner{
+    position:relative;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.018) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,.018) 0 1px, transparent 1px 4px),
+      linear-gradient(170deg,#fbf6ea,var(--linen) 60%,var(--linen-dk));
+    border-radius:14px;
+    padding:0;
+    overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 -2px 8px rgba(120,90,50,.25);
+  }
+
+  /* ============ HEADER BAR (leather strip) ============ */
+  .topbar{
+    display:flex;align-items:center;gap:18px;
+    padding:16px 22px;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 3px, transparent 3px 7px),
+      linear-gradient(180deg,var(--leather-lt),var(--leather-dk));
+    border-bottom:3px solid rgba(0,0,0,.35);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 4px 10px rgba(0,0,0,.3);
+    position:relative;
+  }
+  .topbar::after{
+    content:"";position:absolute;left:14px;right:14px;bottom:6px;height:0;
+    border-bottom:2px dashed var(--stitch);opacity:.5;
+  }
+  .logo{
+    display:flex;align-items:center;gap:13px;
+  }
+  .logo-mark{
+    width:54px;height:54px;border-radius:13px;flex:none;
+    display:grid;place-items:center;
+    font-family:'Playfair Display',serif;font-weight:800;font-size:30px;
+    color:#3a2c12;
+    background:
+      radial-gradient(circle at 30% 25%, var(--brass-hi), transparent 60%),
+      linear-gradient(150deg,#f0d27e,var(--brass) 55%,var(--brass-dk));
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.7),
+      inset 0 -3px 6px rgba(120,80,10,.6),
+      0 4px 8px rgba(0,0,0,.45);
+    text-shadow:0 1px 0 rgba(255,255,255,.5);
+    border:1px solid rgba(120,80,10,.5);
+  }
+  .logo-txt b{
+    display:block;
+    font-family:'Playfair Display',serif;font-weight:800;font-size:21px;color:var(--paper);
+    letter-spacing:.3px;text-shadow:0 1px 0 rgba(0,0,0,.45);line-height:1.1;
+  }
+  .logo-txt span{
+    display:block;font-family:'Special Elite',monospace;font-size:11px;
+    color:var(--brass-hi);opacity:.92;letter-spacing:.5px;margin-top:2px;
+  }
+  .topbar-spacer{flex:1}
+  .lamp{
+    font-size:13px;color:var(--brass-hi);font-family:'Special Elite',monospace;
+    display:flex;align-items:center;gap:9px;
+    background:rgba(0,0,0,.25);padding:8px 15px;border-radius:30px;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.12);
+    border:1px solid rgba(0,0,0,.3);
+  }
+  .led{
+    width:10px;height:10px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff7c6, #f2c24a 50%, #b8851f);
+    box-shadow:0 0 9px 2px rgba(246,194,74,.85), inset 0 -1px 1px rgba(120,80,10,.6);
+  }
+
+  /* ============ MAIN GRID ============ */
+  .stage{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:0;
+  }
+
+  /* ============ SIDEBAR (felt notebook tabs) ============ */
+  .sidebar{
+    background:
+      radial-gradient(circle at 50% -10%, rgba(255,255,255,.07), transparent 60%),
+      repeating-linear-gradient(115deg, rgba(0,0,0,.05) 0 2px, transparent 2px 4px),
+      repeating-linear-gradient(25deg, rgba(0,0,0,.05) 0 2px, transparent 2px 4px),
+      linear-gradient(170deg,var(--felt-lt),var(--felt) 55%,var(--felt-dk));
+    padding:22px 16px 26px;
+    box-shadow:inset -8px 0 18px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.1);
+    position:relative;
+  }
+  .sidebar::after{
+    content:"";position:absolute;top:10px;bottom:10px;right:5px;width:0;
+    border-right:2px dashed var(--stitch);opacity:.4;
+  }
+  .section-label{
+    font-family:'Special Elite',monospace;
+    font-size:11px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--brass-hi);
+    margin:6px 4px 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-label::before{content:"";flex:none;width:18px;height:2px;background:var(--brass);border-radius:2px}
+  .ribbon{
+    display:inline-block;
+    font-family:'Special Elite',monospace;font-size:10px;letter-spacing:1.5px;
+    color:#3a2c12;background:linear-gradient(180deg,var(--brass-hi),var(--brass));
+    padding:5px 12px;border-radius:4px;margin:0 0 16px 2px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 2px 4px rgba(0,0,0,.35);
+    text-shadow:0 1px 0 rgba(255,255,255,.4);
+    position:relative;
+  }
+  nav ul{list-style:none}
+  nav li{margin-bottom:9px}
+  .tab{
+    display:flex;align-items:center;gap:11px;
+    padding:11px 14px;
+    border-radius:9px;
+    font-size:14px;font-weight:600;
+    color:#f3ead6;
+    text-decoration:none;
+    background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.14));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18), inset 0 -2px 4px rgba(0,0,0,.25), 0 2px 4px rgba(0,0,0,.2);
+    border:1px solid rgba(0,0,0,.2);
+    transition:transform .12s ease, box-shadow .12s ease, background .12s;
+  }
+  .tab .ic{
+    width:28px;height:28px;border-radius:7px;flex:none;display:grid;place-items:center;font-size:15px;
+    background:linear-gradient(160deg,#f0d27e,var(--brass-dk));
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.6), 0 1px 2px rgba(0,0,0,.4);
+  }
+  .tab:hover{transform:translateX(4px);background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.1))}
+  .tab.active{
+    background:linear-gradient(180deg,var(--paper),var(--linen-dk));
+    color:var(--leather-dk);font-weight:700;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 3px 7px rgba(0,0,0,.4);
+    transform:translateX(6px);
+  }
+  .tab.active .ic{background:linear-gradient(160deg,var(--felt-lt),var(--felt-dk))}
+
+  /* ============ MAIN PANEL (linen pad) ============ */
+  .panel{
+    padding:26px 30px 30px;
+    background:
+      radial-gradient(circle at 85% 0%, rgba(255,255,255,.5), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(180,150,100,.05) 0 26px, rgba(120,90,50,.07) 26px 27px),
+      linear-gradient(180deg,var(--paper),#efe6d2);
+    position:relative;
+  }
+  /* margin red line like a notepad */
+  .panel::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:0;
+    border-left:2px solid rgba(176,57,43,.35);margin-left:14px;
+  }
+
+  /* GREETING / HERO */
+  .greet{
+    font-family:'Special Elite',monospace;font-size:13px;letter-spacing:1px;
+    color:var(--red);margin-bottom:4px;
+  }
+  .greet::before{content:"\2728 ";}
+  h1.headline{
+    font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(30px,5vw,46px);
+    line-height:1.04;color:var(--ink);
+    text-shadow:0 1px 0 rgba(255,255,255,.7);
+    margin-bottom:10px;
+  }
+  .lede{
+    max-width:640px;font-size:15px;line-height:1.6;color:var(--ink-soft);margin-bottom:22px;
+  }
+
+  /* STATS — glossy gauges */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+  .gauge{
+    background:linear-gradient(170deg,#fffdf7,#e7dcc3);
+    border-radius:15px;padding:16px 18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 6px 14px rgba(120,90,50,.3), inset 0 -3px 6px rgba(150,120,70,.25);
+    border:1px solid rgba(150,120,70,.3);
+    position:relative;overflow:hidden;
+  }
+  .gauge .cap{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.5px;color:var(--ink-soft);text-transform:uppercase}
+  .gauge .big{font-family:'Playfair Display',serif;font-weight:800;font-size:34px;color:var(--leather-dk);line-height:1;margin:6px 0 3px;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+  .gauge .sub{font-size:11.5px;color:var(--ink-soft)}
+  .gauge .meter{height:9px;border-radius:6px;margin-top:11px;background:linear-gradient(180deg,#cdbf9e,#e7ddc4);box-shadow:inset 0 2px 4px rgba(90,60,30,.4)}
+  .gauge .fill{height:100%;border-radius:6px;background:linear-gradient(180deg,var(--felt-lt),var(--felt-dk));box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 0 8px rgba(60,138,98,.5)}
+  .gauge.brass .fill{background:linear-gradient(180deg,var(--brass-hi),var(--brass-dk))}
+  .gauge.red .fill{background:linear-gradient(180deg,#e07b6c,#8c281c)}
+  .gauge .badge{
+    position:absolute;top:12px;right:12px;font-size:18px;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));
+  }
+
+  /* CONTENT GRID */
+  .content{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+  @media(max-width:880px){.content{grid-template-columns:1fr}}
+
+  .card{
+    background:linear-gradient(170deg,#fffdf7,#ece1c9);
+    border-radius:16px;padding:20px 22px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 8px 18px rgba(120,90,50,.28);
+    border:1px solid rgba(150,120,70,.3);
+    margin-bottom:18px;
+    position:relative;
+  }
+  .card h3{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:21px;color:var(--leather-dk);
+    margin-bottom:4px;
+  }
+  .card .one-line{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px}
+
+  /* EXAM FAM card — leather luggage tag */
+  .examtag{
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 3px, transparent 3px 7px),
+      linear-gradient(170deg,var(--leather-lt),var(--leather-dk));
+    color:var(--paper);
+    border-radius:16px;padding:20px 22px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16), 0 10px 22px rgba(0,0,0,.4);
+    border:1px solid rgba(0,0,0,.4);
+    position:relative;
+    margin-bottom:18px;
+  }
+  .examtag::before{
+    content:"";position:absolute;inset:8px;border:2px dashed var(--stitch);border-radius:10px;opacity:.5;pointer-events:none;
+  }
+  .examtag .hole{
+    position:absolute;top:14px;right:16px;width:22px;height:22px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #2a1a0e, #120a05);
+    box-shadow:inset 0 2px 3px rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.15);
+    border:2px solid var(--brass);
+  }
+  .examtag .kicker{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;color:var(--brass-hi);text-transform:uppercase}
+  .examtag h3{font-family:'Playfair Display',serif;font-size:26px;color:var(--paper);margin:3px 0 6px;text-shadow:0 1px 0 rgba(0,0,0,.5)}
+  .examtag .meta{font-size:13px;color:var(--stitch);line-height:1.6}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+  .chip{
+    font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.5px;
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass));color:#3a2c12;
+    padding:5px 11px;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 2px 4px rgba(0,0,0,.4);
+    text-shadow:0 1px 0 rgba(255,255,255,.4);
+  }
+
+  /* FORMULA block — engraved brass plate */
+  .formula-plate{
+    background:
+      linear-gradient(180deg,#1f2a24,#16201b);
+    border-radius:12px;padding:16px 18px;margin:6px 0 4px;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.7), inset 0 -1px 0 rgba(255,255,255,.06), 0 4px 8px rgba(0,0,0,.3);
+    border:1px solid #0c120f;
+  }
+  .formula-plate .flabel{
+    font-family:'Special Elite',monospace;font-size:10px;letter-spacing:2px;color:var(--felt-lt);text-transform:uppercase;margin-bottom:9px;display:block;
+  }
+  .formula{
+    font-family:'Playfair Display',serif;font-style:italic;font-size:17px;
+    color:var(--brass-hi);line-height:2;
+    text-shadow:0 1px 0 rgba(0,0,0,.8), 0 -1px 0 rgba(255,255,255,.07);
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;
+  }
+  .formula .eq{
+    background:rgba(0,0,0,.25);padding:4px 12px;border-radius:7px;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.6);white-space:nowrap;
+  }
+  .formula .dot{color:var(--felt-lt);font-style:normal;font-weight:700;font-family:'Inter';font-size:14px}
+  sup{font-size:.7em}
+  sub{font-size:.65em}
+
+  /* TRAP callout — sticky note */
+  .trap{
+    background:linear-gradient(165deg,#ffe9a8,#f6cf6a);
+    color:#4a3410;
+    border-radius:4px;padding:18px 20px 18px 22px;
+    box-shadow:0 10px 18px rgba(120,90,30,.35), inset 0 1px 0 rgba(255,255,255,.6);
+    transform:rotate(-1.4deg);
+    position:relative;
+    margin:8px 4px 22px;
+    border:1px solid rgba(160,120,40,.35);
+  }
+  .trap::before{
+    content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(3deg);
+    width:78px;height:24px;
+    background:linear-gradient(180deg, rgba(220,200,150,.85), rgba(180,150,90,.6));
+    box-shadow:0 2px 4px rgba(0,0,0,.25);
+    border-radius:2px;
+  }
+  .trap .t-h{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .trap p{font-size:14px;line-height:1.55;font-weight:500}
+
+  /* WORKED example teaser + buttons */
+  .worked .ex-line{
+    display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;
+    font-size:18px;font-weight:700;color:var(--leather-dk);margin-bottom:6px;
+  }
+  .worked .ex-tag{
+    font-family:'Special Elite',monospace;font-size:10px;letter-spacing:1px;
+    background:var(--felt);color:#eafdf3;padding:3px 9px;border-radius:5px;text-transform:uppercase;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.3);
+  }
+  .worked .ex-sub{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:16px}
+
+  .btn-row{display:flex;gap:13px;flex-wrap:wrap}
+  .btn{
+    font-family:'Inter',sans-serif;font-weight:700;font-size:14.5px;
+    border:none;cursor:pointer;text-decoration:none;
+    padding:13px 26px;border-radius:13px;
+    display:inline-flex;align-items:center;gap:9px;
+    transition:transform .1s ease, box-shadow .1s ease, filter .1s;
+    position:relative;
+  }
+  .btn:active{transform:translateY(2px)}
+  .btn-primary{
+    color:#fff;
+    background:linear-gradient(180deg,var(--felt-lt),var(--felt-dk));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), inset 0 -3px 6px rgba(0,0,0,.35), 0 6px 12px rgba(31,77,53,.5);
+    text-shadow:0 1px 1px rgba(0,0,0,.4);
+    border:1px solid var(--felt-dk);
+  }
+  .btn-primary:hover{filter:brightness(1.08)}
+  .btn-primary:active{box-shadow:inset 0 2px 5px rgba(0,0,0,.5), 0 2px 4px rgba(31,77,53,.4)}
+  .btn-glass{
+    color:#1c2b14;
+    background:linear-gradient(180deg,#fff7e2,var(--linen-dk));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 -3px 6px rgba(150,120,70,.3), 0 6px 12px rgba(120,90,50,.35);
+    text-shadow:0 1px 0 rgba(255,255,255,.7);
+    border:1px solid rgba(150,120,70,.4);
+  }
+  .btn-glass:hover{filter:brightness(1.04)}
+
+  /* ============ FOOTER (leather plate) ============ */
+  .footer{
+    margin-top:0;
+    padding:16px 24px;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 3px, transparent 3px 7px),
+      linear-gradient(180deg,var(--leather-lt),var(--leather-dk));
+    border-top:3px solid rgba(0,0,0,.35);
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16);
+    position:relative;
+  }
+  .footer::before{content:"";position:absolute;left:14px;right:14px;top:6px;border-top:2px dashed var(--stitch);opacity:.45}
+  .footer .fbrand{display:flex;align-items:center;gap:10px;color:var(--paper);font-family:'Playfair Display',serif;font-weight:700;font-size:15px}
+  .footer .fmark{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:'Playfair Display',serif;font-weight:800;font-size:17px;color:#3a2c12;background:linear-gradient(150deg,var(--brass-hi),var(--brass-dk));box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 4px rgba(0,0,0,.4)}
+  .footer .ftag{font-family:'Special Elite',monospace;font-size:11px;color:var(--brass-hi);letter-spacing:.5px}
+
+  @media(max-width:760px){
+    body{padding:10px}
+    .stage{grid-template-columns:1fr}
+    .sidebar{box-shadow:inset 0 -8px 18px rgba(0,0,0,.3)}
+    .sidebar::after{display:none}
+    nav ul{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    nav li{margin:0}
+    .stats{grid-template-columns:1fr}
+    .panel{padding:20px 16px 24px}
+  }
+</style>
+</head>
+<body>
+  <div class="desk">
+    <div class="leather-inner">
+
+      <!-- TOP BAR -->
+      <div class="topbar">
+        <div class="logo">
+          <div class="logo-mark">M</div>
+          <div class="logo-txt">
+            <b>Me Studing Stuff</b>
+            <span>Study smarter. Pass exams.</span>
+          </div>
+        </div>
+        <div class="topbar-spacer"></div>
+        <div class="lamp"><span class="led"></span> Desk lamp on &middot; Tue, 9:42 PM</div>
+      </div>
+
+      <div class="stage">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <div class="ribbon">FAM-L / FAM-S</div>
+          <div class="section-label">Topics</div>
+          <nav>
+            <ul>
+              <li><a class="tab active" href="#"><span class="ic">&#128201;</span> Survival Models</a></li>
+              <li><a class="tab" href="#"><span class="ic">&#128202;</span> Life Tables</a></li>
+              <li><a class="tab" href="#"><span class="ic">&#128737;&#65039;</span> Life Insurance</a></li>
+              <li><a class="tab" href="#"><span class="ic">&#127974;</span> Life Annuities</a></li>
+              <li><a class="tab" href="#"><span class="ic">&#128176;</span> Premiums</a></li>
+              <li><a class="tab" href="#"><span class="ic">&#128209;</span> Policy Values</a></li>
+            </ul>
+          </nav>
+        </aside>
+
+        <!-- MAIN PANEL -->
+        <main class="panel">
+          <p class="greet">Good evening</p>
+          <h1 class="headline">Let&rsquo;s get you that pass.</h1>
+          <p class="lede">Your focused hub for SOA Exam FAM &mdash; notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+          <!-- STATS -->
+          <div class="stats">
+            <div class="gauge brass">
+              <span class="badge">&#127919;</span>
+              <div class="cap">Overall progress</div>
+              <div class="big">72%</div>
+              <div class="sub">12 of 17 topics</div>
+              <div class="meter"><div class="fill" style="width:72%"></div></div>
+            </div>
+            <div class="gauge red">
+              <span class="badge">&#9203;</span>
+              <div class="cap">Exam countdown</div>
+              <div class="big">86</div>
+              <div class="sub">days remaining</div>
+              <div class="meter"><div class="fill" style="width:34%"></div></div>
+            </div>
+            <div class="gauge">
+              <span class="badge">&#9989;</span>
+              <div class="cap">Topics solid</div>
+              <div class="big">8</div>
+              <div class="sub">mastered &amp; reviewed</div>
+              <div class="meter"><div class="fill" style="width:47%"></div></div>
+            </div>
+          </div>
+
+          <!-- CONTENT GRID -->
+          <div class="content">
+
+            <!-- LEFT COLUMN -->
+            <div>
+              <!-- TOPIC PREVIEW + FORMULA -->
+              <div class="card">
+                <h3>Life Insurance Present Values</h3>
+                <p class="one-line">Tie the EPV of a benefit to the annuity it funds &mdash; one identity unlocks the rest.</p>
+                <div class="formula-plate">
+                  <span class="flabel">&#9874; Engraved &middot; Key identities</span>
+                  <div class="formula">
+                    <span class="eq">A<sub>x</sub> = 1 &minus; d&middot;&auml;<sub>x</sub></span>
+                    <span class="dot">&bull;</span>
+                    <span class="eq">Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)<sup>2</sup></span>
+                    <span class="dot">&bull;</span>
+                    <span class="eq">&auml;<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TRAP -->
+              <div class="trap">
+                <div class="t-h">&#9888;&#65039; Common trap</div>
+                <p>Under UDD, multiply ONLY the term/death piece by i/&delta; &mdash; the pure endowment is never rescaled.</p>
+              </div>
+
+              <!-- WORKED EXAMPLE -->
+              <div class="card worked">
+                <div class="ex-line"><span class="ex-tag">Example 1</span></div>
+                <div class="ex-line">Whole life EPV &amp; variance</div>
+                <p class="ex-sub">Walk the full computation: build A<sub>x</sub> from the life table, recover &auml;<sub>x</sub>, then square up for Var(Z) &mdash; step by careful step.</p>
+                <div class="btn-row">
+                  <a class="btn btn-primary" href="#">&#9654; Start studying</a>
+                  <a class="btn btn-glass" href="#">&#8634; Resume</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div>
+              <!-- EXAM FAM TAG -->
+              <div class="examtag">
+                <div class="hole"></div>
+                <div class="kicker">Exam FAM</div>
+                <h3>Fundamentals of Actuarial Mathematics</h3>
+                <div class="meta">The exam, at a glance. Pack your formulas, mind the time, and aim past the line.</div>
+                <div class="chips">
+                  <span class="chip">SOA</span>
+                  <span class="chip">34 questions</span>
+                  <span class="chip">Pass = 6/10</span>
+                </div>
+              </div>
+
+              <!-- QUICK NOTE CARD -->
+              <div class="card">
+                <h3>Tonight&rsquo;s plan</h3>
+                <p class="one-line">Three calm sittings &mdash; no cramming, just clean reps on the identities above.</p>
+                <div class="formula-plate" style="background:linear-gradient(180deg,#2a2218,#1c160f)">
+                  <span class="flabel" style="color:var(--brass)">&#128221; Checklist</span>
+                  <div class="formula" style="font-size:14px;line-height:1.9;color:var(--stitch)">
+                    <span class="eq" style="font-style:normal;font-family:Inter">&#9744; Re-derive A<sub>x</sub> identity</span>
+                    <span class="eq" style="font-style:normal;font-family:Inter">&#9744; UDD i/&delta; drill</span>
+                    <span class="eq" style="font-style:normal;font-family:Inter">&#9744; Finish Example 1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <div class="fbrand">
+          <span class="fmark">M</span>
+          Me Studing Stuff
+        </div>
+        <div class="ftag">Study smarter. Pass exams. &middot; SOA Exam FAM hub</div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

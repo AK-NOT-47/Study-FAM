@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insurance and Reinsurance Coverages · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-01" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 1</div>
+      <h1>Insurance and Reinsurance Coverages</h1>
+      <p class="lede">Every coverage modification — deductible, limit, coinsurance, reinsurance — is just algebra on the same two layers: <em>what stays below a retention</em> and <em>what spills above it</em>. This page maps the <strong>contract structures</strong> (especially <strong>reinsurance</strong>) and the high-level risk framing; the heavy per-loss / per-payment severity math lives on the <em>Coverage Modifications</em> page.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models · KPW 5th ed.</span>
+        <span class="chip">⏱️ ~3–4 hrs</span>
+        <span class="chip">🔑 deductibles · limits · coinsurance</span>
+        <span class="chip">🤝 quota share · surplus · XL · stop-loss</span>
+        <span class="chip">🏢 treaty · facultative · cedant · retrocession</span>
+        <span class="chip">📊 individual vs collective risk</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After studying this topic, you should be able to:</p>
+        <ul>
+          <li>Describe the standard <strong>coverage modifications</strong> — deductibles (fixed-dollar / ordinary, fixed-percentage, disappearing, franchise, per-calendar-year, elimination period), policy limits, and coinsurance — and state the <strong>objectives</strong> (and drawbacks) of each.</li>
+          <li>Combine an ordinary deductible $d$, policy limit / maximum covered loss, and coinsurance $\alpha$ into the standard <strong>three-modification payment structure</strong> and compute the <strong>maximum covered loss</strong> $m = \tfrac{u}{\alpha}+d$.</li>
+          <li>Distinguish the <strong>per-loss</strong> random variable $Y^L$ from the <strong>per-payment</strong> random variable $Y^P$, and link them via $\Pr(X>d)$.</li>
+          <li>Explain why insurers buy <strong>reinsurance</strong> (capital relief, underwriting capacity, catastrophe protection, stabilizing experience, diversification, expertise, withdrawal) and define <strong>cedant</strong>, <strong>reinsurer</strong>, <strong>retrocession</strong>, and <strong>ceding commission</strong>.</li>
+          <li>Classify reinsurance two ways: <strong>treaty vs facultative</strong>, and <strong>pro rata (proportional) vs excess of loss (non-proportional)</strong>.</li>
+          <li>Split a loss between cedant and reinsurer under <strong>quota share</strong>, <strong>surplus share</strong>, <strong>excess of loss (per-risk, per-occurrence, aggregate/stop-loss)</strong>, and <strong>layered XL</strong> treaties.</li>
+          <li>Define the <strong>individual risk model</strong> and the <strong>collective risk model</strong> and compute the mean and variance of aggregate losses under each.</li>
+          <li>Explain the key ways <strong>short-term</strong> insurance differs from <strong>long-term</strong> (life-contingent) insurance.</li>
+        </ul>
+      </div>
+
+      <div class="callout note" data-icon="📌">
+        <p><strong>Exam FAM — Short-Term Insurance.</strong> Notation follows <em>Loss Models: From Data to Decisions</em> (Klugman, Panjer, Willmot, 5th ed.). <strong>Scope note:</strong> the detailed per-loss / per-payment severity calculations (LER, inflation, limited expected values, variances) are developed on the <em>Coverage Modifications</em> page — this page is the structural / qualitative map and the reinsurance deep-dive.</p>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. Coverage modifications — the high-level menu</h3>
+      <p>Most real insurance contracts combine some mix of <strong>deductibles</strong>, <strong>policy limits</strong>, and <strong>coinsurance</strong> — and so do the reinsurance treaties insurers buy. A <strong>deductible</strong> is the amount of each claim the policyholder pays before the insurer pays anything. The exam-relevant deductible types:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Type</th><th>What it does</th><th>Insurer pays</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fixed-dollar (ordinary)</strong></td><td>Fixed amount $d$ regardless of loss size. The default — and the most exam-likely.</td><td>$\max(0, X-d)$</td></tr>
+          <tr><td><strong>Franchise</strong></td><td>"Cliff" deductible: once the loss exceeds $d$, the deductible vanishes and the full loss is paid. Exam-likely; was common in ocean marine.</td><td>$0$ if $X\le d$, else $X$</td></tr>
+          <tr><td><strong>Fixed-percentage</strong></td><td>Deductible is $\delta X$ but with a dollar floor $d$ (so small claims are still excluded).</td><td>see Formulas</td></tr>
+          <tr><td><strong>Disappearing</strong></td><td>Deductible decreases <em>linearly</em> from $d$ to $0$ as the loss grows from $a$ to $b$ ($d\le a < b$).</td><td>see Formulas</td></tr>
+          <tr><td><strong>Per-calendar-year (health)</strong></td><td>An individual amount and a family amount; coverage starts when either is met. Rare outside health / major-medical.</td><td>—</td></tr>
+          <tr><td><strong>Elimination period</strong></td><td>Disability/WC: a waiting period before benefits begin. If the retroactive-qualification period equals the elimination period, the policy behaves like a <em>franchise</em> deductible.</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Coach's remark — focus your effort</div>
+        <p>For the exam, master <strong>fixed-dollar (ordinary)</strong> and <strong>franchise</strong> deductibles. The fixed-percentage, disappearing, calendar-year, and elimination-period flavours are mostly qualitative recognition — know what they are and which one a word problem is describing.</p>
+      </div>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Elimination period vs. retroactive qualification period (WC / disability)</div>
+        <p>In workers-compensation and disability cover, the <strong>elimination period</strong> is the waiting time between the date of the disability/accident and the date benefits begin — during it the insured receives nothing. If the disability lasts long enough, benefits may be paid <em>retroactively</em> back over the elimination period. The <strong>retroactive qualification period</strong> is the length of time the disability must continue <em>before</em> those retroactive benefits are triggered.</p>
+        <p><strong>The exam rule:</strong> when the retroactive qualification period <em>equals</em> the elimination period, the policy behaves exactly like a <strong>franchise</strong> deductible — short disabilities (below the threshold) get $0$, but once the threshold is crossed the insured is paid in full back to day one (the "deductible" disappears), just as a franchise pays the whole loss $X$ once $X\gt d$.</p>
+      </div>
+
+      <p><strong>A policy limit</strong> $u$ caps the insurer's payment at $u$. <strong>Coinsurance</strong> $\alpha$ ($0<\alpha\le1$) is the fraction of the (post-deductible, post-limit) loss the insurer pays; the insured retains $1-\alpha$. Order of application: <em>cap → subtract deductible → apply coinsurance</em>.</p>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Objectives & trade-offs (qualitative — examiners love these)</div>
+        <ul>
+          <li><strong>Deductibles</strong> eliminate small, expensive-to-administer claims, reduce average large-claim payments (lowering premiums), and give the insured "skin in the game" (less moral hazard). Downsides: claims not paid in full (dissatisfaction), harder marketing, and insureds may <em>inflate</em> claims to recover the deductible.</li>
+          <li><strong>Policy limits</strong> clarify and bound the insurer's obligation, reduce insolvency risk, and let buyers trade lower limits for lower premiums. A limit is the mirror image of a deductible — the <em>insured's</em> payment $\max(0,X-u)$ looks just like an insurer's payment under a deductible of $u$, and the two payments always sum to $X$.</li>
+        </ul>
+      </div>
+
+      <h3>2. The three-modification payment structure & maximum covered loss</h3>
+      <p>When an ordinary deductible $d$, policy limit $u$, and coinsurance $\alpha$ are all present, the insurer's payment has three pieces (zero below $d$, linear in the middle, capped at the limit). The pivotal quantity is the <strong>maximum covered loss</strong> $m$ — the smallest <em>ground-up loss</em> at which the insurer first pays the full policy limit:</p>
+      <div class="formula"><span class="formula-label">Maximum covered loss</span>
+        $$m = \frac{u}{\alpha} + d.$$
+      </div>
+      <p>With a <strong>franchise</strong> deductible instead (full loss paid above $d$), the maximum covered loss equals the limit itself, $m=u$ — there is no $d$ added on. (See Example 1.)</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Turning modifications on/off</div>
+        <p>Use one master structure and switch features off: set $d=0$ (no deductible), $u=\infty$ (no limit), or $\alpha=1$ (no coinsurance). If — rarely — coinsurance is applied <em>before</em> the deductible, the deductible is effectively met at $d^*=d/\alpha$, and $m=\tfrac{u}{\alpha}+d^*$.</p>
+      </div>
+
+      <h3>3. Ground-up loss: per-loss vs. per-payment</h3>
+      <p>Start with the <strong>ground-up loss</strong> $X\ge0$ — the full economic loss before any provision. Two perspectives you must never confuse:</p>
+      <ul>
+        <li><strong>Per-loss variable</strong> $Y^L$: payment <strong>per loss event</strong>, <em>including zeros</em> for losses that produce no payment. The natural variable for the insurer (every loss is one observation).</li>
+        <li><strong>Per-payment variable</strong> $Y^P$: payment <strong>conditional on a payment being made</strong> ($Y^P=Y^L\mid Y^L>0$). Zeros discarded — this is what a claims database shows.</li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Mantra</div>
+        <p><em>Per-loss includes the zeros; per-payment conditions them away.</em></p>
+        $$E[Y^P]=\frac{E[Y^L]}{\Pr(X>d)}.$$
+        <p>The detailed moments, LER, and inflation algebra are on the <em>Coverage Modifications</em> page — here just keep the distinction crisp.</p>
+      </div>
+
+      <h3>4. Reinsurance — what it is and why insurers buy it</h3>
+      <p><strong>Reinsurance is insurance for insurance companies.</strong> The <strong>cedant</strong> (primary / direct insurer) <em>cedes</em> some or all of its risk to a <strong>reinsurer</strong>. A reinsurer can in turn cede risk onward to another reinsurer — this is called <strong>retrocession</strong>. Beyond sharing premiums and losses, the reinsurer often pays the cedant a <strong>ceding commission</strong> to reimburse part of the cedant's cost of writing the business.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Functions of reinsurance (memorize the list — pure exam fodder)</div>
+        <ul>
+          <li><strong>Capital relief</strong> — reserves aren't required for risk that's reinsured, freeing capital for other uses.</li>
+          <li><strong>Increase underwriting capacity</strong> — cede part of a risk that's bigger than your appetite, so you can still write it.</li>
+          <li><strong>Catastrophe protection</strong> — shields against rare, severe events.</li>
+          <li><strong>Stabilize loss experience</strong> — smooths fluctuations even in non-catastrophic claims.</li>
+          <li><strong>Risk diversification</strong> — avoids over-concentration in one region or peril.</li>
+          <li><strong>Technical expertise</strong> — reinsurers have deep experience with large/complex claims.</li>
+          <li><strong>Withdrawal</strong> — an insurer can exit a market by ceding all of its risk.</li>
+        </ul>
+      </div>
+
+      <h3>5. Two classifications of reinsurance</h3>
+      <p>Every treaty is described two independent ways: <strong>how risks are selected</strong> (treaty vs facultative) and <strong>how the loss is shared</strong> (pro rata vs excess of loss).</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Axis</th><th>Type</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2"><strong>Risk selection</strong></td><td><strong>Treaty</strong></td><td><em>All</em> risks in a specified line/class are automatically ceded; the reinsurer cannot underwrite each one individually.</td></tr>
+          <tr><td><strong>Facultative</strong></td><td>Risks ceded <em>individually</em>; the reinsurer underwrites and accepts/rejects each one.</td></tr>
+          <tr><td rowspan="2"><strong>Loss sharing</strong></td><td><strong>Pro rata (proportional)</strong></td><td>Cedant and reinsurer share risk, premium, and losses in fixed proportions. Two flavours: <em>quota share</em> and <em>surplus share</em>.</td></tr>
+          <tr><td><strong>Excess of loss (non-proportional)</strong></td><td>Reinsurer pays only amounts <em>above</em> the cedant's retention — structurally a deductible held by the cedant.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>6. Proportional reinsurance: quota share & surplus share</h3>
+      <ul>
+        <li><strong>Quota share</strong> — both parties share a fixed <em>percentage of every risk</em>. A "70%/30%" treaty means the cedant pays 70% and the reinsurer 30% of all covered claims. Mathematically identical to coinsurance: if $Y$ is the insurer's gross payment and the cedant keeps fraction $a$,
+          $$Z_I=aY,\qquad Z_R=(1-a)Y,\qquad Z_I+Z_R=Y.$$
+        </li>
+        <li><strong>Surplus share</strong> — proportional sharing, but <em>only for policies whose coverage exceeds</em> a stated amount called the cedant's <strong>net retention</strong> (retention limit), a.k.a. the reinsurer's <strong>attachment point</strong>. Policies below the retention are kept 100% by the cedant; above it, the cedant and reinsurer split per agreed percentages (which in practice vary by each policy's retention and limit).</li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Two exam conventions to lock in</div>
+        <ul>
+          <li><strong>Surplus share is qualitative on FAM.</strong> Because the ceded percentage varies policy-by-policy, expect only <em>conceptual</em> questions — don't expect to compute a surplus-share split numerically.</li>
+          <li><strong>Quota-share ambiguity.</strong> If a question says "70% quota share" without saying whose share it is, <em>assume the percentage is the reinsurer's share</em> (so the reinsurer covers 70%).</li>
+        </ul>
+      </div>
+
+      <h3>7. Excess-of-loss reinsurance: per-risk, per-occurrence, aggregate</h3>
+      <p>Under excess of loss (XL) the reinsurer pays everything above the cedant's <strong>retention</strong> (attachment point) $\delta$ — just like a deductible the cedant holds:</p>
+      $$Z_I=\min(Y,\delta),\qquad Z_R=(Y-\delta)_+.$$
+      <p>The crucial distinction is <em>what quantity the retention attaches to</em>:</p>
+      <ul>
+        <li><strong>Per-risk XL</strong> — the retention applies to each <em>individual policy/risk's</em> total loss. Sum the claims belonging to a single policy, then apply $\delta$ to that sum.</li>
+        <li><strong>Per-occurrence XL</strong> — the retention applies to the <em>combined losses of one event</em> (e.g. one earthquake) across all affected policies. Sum all claims from the event, then apply $\delta$ once.</li>
+        <li><strong>Aggregate XL = stop-loss</strong> — the retention applies to the <em>total of all losses over the policy period</em> (the aggregate $S$). The reinsurer pays $(S-\delta)_+$.</li>
+      </ul>
+      <p><strong>Layered XL.</strong> Real treaties often split the excess into <em>layers</em>, each with its own reinsurer share and band of loss (e.g. "70% of 500,000 in excess of 1,000,000"). Apply each layer's percentage to the portion of the loss that falls inside that layer, then add (see Example 4).</p>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">The recurring algebra</div>
+        <p>Every retention/deductible/attachment splits a quantity into an upper layer $(\cdot-\delta)_+$ and a lower layer $\min(\cdot,\delta)$, and the two always sum to the whole. Deductibles, policy limits, XL, and stop-loss are all the <em>same</em> two-layer split applied to different quantities ($X$ vs $S$ vs a per-policy or per-event sum).</p>
+      </div>
+
+      <h3>8. Two aggregate-loss models</h3>
+      <p>Aggregate loss $S$ = total of all claims in a period. Two standard constructions:</p>
+      <ul>
+        <li><strong>Individual risk model</strong>: $S=X_1+\cdots+X_n$, a <strong>fixed</strong> number $n$ of policies, each $X_i$ the (possibly zero) loss on policy $i$. The $X_i$ need not be identically distributed. Natural for a group of $n$ distinct insureds (e.g. group life).</li>
+        <li><strong>Collective risk model</strong>: $S=X_1+\cdots+X_N$, where the claim count $N$ (<strong>frequency</strong>) is itself <strong>random</strong> and the $X_i$ (<strong>severities</strong>) are i.i.d. and independent of $N$. This is a <strong>compound distribution</strong> (compound Poisson, etc.).</li>
+      </ul>
+
+      <h3>9. Short-term vs. long-term insurance</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Feature</th><th>Short-term (FAM-S, Loss Models)</th><th>Long-term (FAM-L, AMLCR)</th></tr></thead>
+        <tbody>
+          <tr><td>Coverage period</td><td>One year or less, frequently renewed (6 or 12 months); claims settle in months</td><td>Years to decades (whole life, pensions); claims may take years to arise/settle</td></tr>
+          <tr><td>Main random element</td><td>Loss <strong>amount/severity</strong> and <strong>frequency</strong></td><td><strong>Timing of death/survival</strong></td></tr>
+          <tr><td>Time value of money</td><td>Often ignored (short horizon)</td><td>Central — heavy discounting</td></tr>
+          <tr><td>Typical lines</td><td>Auto, homeowners, health, liability</td><td>Life insurance, annuities, pensions</td></tr>
+          <tr><td>Number of claims per policy</td><td>0, 1, or many</td><td>Usually exactly one (death)</td></tr>
+          <tr><td>Models</td><td>Frequency–severity, aggregate loss</td><td>Survival models, life tables</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Setup</div>
+        <p>$X\ge0$ is the ground-up loss; $d$ = deductible, $u$ = policy limit, $\alpha$ = coinsurance. Detailed expected-value / LER / inflation formulas live on the <em>Coverage Modifications</em> page — here are the structural payment functions and the reinsurance splits.</p>
+      </div>
+
+      <h3>Deductible payment functions</h3>
+      <div class="formula"><span class="formula-label">Ordinary (fixed-dollar) deductible $d$</span>
+        $$Y=\max(0,X-d)=\begin{cases}0,& X\le d\\ X-d,& X>d.\end{cases}$$
+        <span class="formula-label">Franchise deductible $d$</span>
+        $$Y=\begin{cases}0,& X\le d\\ X,& X>d.\end{cases}$$
+        <span class="formula-label">Fixed-percentage $\delta$ with floor $d$ — effective deductible $D=\max(d,\delta X)$</span>
+        $$Y=\begin{cases}0,& X\le d\\ X-d,& d\lt X\le d/\delta\\ (1-\delta)X,& X> d/\delta.\end{cases}$$
+        <span class="formula-label">Disappearing deductible: $d\to0$ linearly over $[a,b]$ ($d\le a\lt b$)</span>
+        $$Y=\begin{cases}0,& X\lt d\\ X-d,& d\le X\le a\\ X-d\!\left(\dfrac{b-X}{b-a}\right),& a\lt X\le b\\ X,& X>b.\end{cases}$$
+      </div>
+
+      <h3>Policy limit & coinsurance</h3>
+      <div class="formula"><span class="formula-label">Policy limit $u$</span>
+        $$Y=\min(X,u)=\begin{cases}X,& X\le u\\ u,& X>u.\end{cases}\qquad \text{Insured pays }\max(0,X-u).$$
+        <span class="formula-label">Coinsurance $\alpha$ (insurer's share)</span>
+        $$Y=\alpha X.$$
+      </div>
+
+      <h3>All three together (ordinary $d$, limit $u$, coinsurance $\alpha$)</h3>
+      <div class="formula">
+        $$Y=\begin{cases}0,& X\le d\\ \alpha(X-d),& d\lt X\le m\\ u,& X>m\end{cases}\qquad\text{where } m=\frac{u}{\alpha}+d \text{ (maximum covered loss).}$$
+      </div>
+      <p>Per-payment link: $E[Y^P]=\dfrac{E[Y^L]}{\Pr(X>d)}$.</p>
+
+      <h3>Reinsurance splits</h3>
+      <div class="formula">
+        <span class="formula-label">Quota share — reinsurer share $1-a$ (cedant keeps fraction $a$ of every loss $Y$)</span>
+        $$Z_I=aY,\quad Z_R=(1-a)Y,\quad \operatorname{Var}(Z_R)=(1-a)^2\operatorname{Var}(Y).$$
+        <span class="formula-label">Excess of loss — retention (attachment) $\delta$</span>
+        $$Z_I=\min(Y,\delta),\quad Z_R=(Y-\delta)_+,\quad E[Z_R]=E[Y]-E[Y\wedge\delta].$$
+        <span class="formula-label">Stop-loss (aggregate XL) on $S$, retention $d$</span>
+        $$Z_R=(S-d)_+,\qquad E[(S-d)_+]=E[S]-E[S\wedge d]=\sum_{s>d}(s-d)\Pr(S=s)\ \ (\text{discrete }S).$$
+        <span class="formula-label">Layered XL — reinsurer pays $\sum_k p_k\cdot(\text{loss falling in layer }k)$</span>
+        $$Z_R=\sum_k p_k\big[(Y\wedge t_k)-(Y\wedge t_{k-1})\big].$$
+      </div>
+
+      <h3>Individual risk model</h3>
+      <div class="formula">
+        $$S=\sum_{i=1}^{n}X_i,\quad E[S]=\sum_{i=1}^n E[X_i],\quad \operatorname{Var}(S)=\sum_{i=1}^n \operatorname{Var}(X_i)\ \ (\text{independent }X_i).$$
+        <span class="formula-label">Each policy pays benefit $b_i$ with prob. $q_i$, else 0</span>
+        $$E[X_i]=b_i q_i,\qquad \operatorname{Var}(X_i)=b_i^2 q_i(1-q_i).$$
+      </div>
+
+      <h3>Collective risk model (compound distribution)</h3>
+      <div class="formula">
+        $$S=\sum_{i=1}^{N}X_i,\quad N\perp\{X_i\},\ X_i \text{ i.i.d.}$$
+        $$E[S]=E[N]\,E[X],\qquad \operatorname{Var}(S)=E[N]\operatorname{Var}(X)+\operatorname{Var}(N)\big(E[X]\big)^2.$$
+      </div>
+      <p>For the <strong>compound Poisson</strong> ($N\sim\text{Poisson}(\lambda)$, so $\operatorname{Var}(N)=E[N]=\lambda$):</p>
+      <div class="formula">
+        $$E[S]=\lambda E[X],\qquad \operatorname{Var}(S)=\lambda\,E[X^2].$$
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> One loss, four deductible designs (+ franchise max covered loss) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Dorothy incurs a loss of $X=2{,}350$. Find the insurer's payout under each design.</p>
+          <p><strong>(1) Ordinary deductible 500.</strong> Loss exceeds $d$, so $Y=2{,}350-500=\boxed{1{,}850}$.</p>
+          <p><strong>(2) Fixed-percentage 30% with floor 500.</strong> $0.30(2{,}350)=705>500$, so the effective deductible is $705$ and $Y=2{,}350-705=\boxed{1{,}645}$.</p>
+          <p><strong>(3) Disappearing deductible</strong> of 500 for losses below 2,000, decreasing linearly to 0 between 2,000 and 3,000. Since $2{,}000<2{,}350<3{,}000$,
+          $$Y=2{,}350-500\!\left(\frac{3{,}000-2{,}350}{3{,}000-2{,}000}\right)=2{,}350-500(0.65)=\boxed{2{,}025}.$$</p>
+          <p><strong>(4) Franchise deductible 500.</strong> Loss exceeds $d$, so the insurer pays the full loss $Y=\boxed{2{,}350}$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Franchise + limit twist</div>
+          <p>If instead a policy "pays the full amount of losses above 500, up to a maximum payment of 1,500," that's a <em>franchise</em> deductible with limit 1,500 — so the maximum covered loss is $m=u=1{,}500$ (not $2{,}000$). A claim of 2,100 exceeds $m$, so the payment is capped at $\boxed{1{,}500}$.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Deductible + coinsurance + limit (maximum covered loss) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A policy: the policyholder is fully responsible for claims below 200; the policy reimburses 80% of claims in excess of 200; the payment is capped at 2,000. So $d=200$, $\alpha=0.80$, $u=2{,}000$. Find the payment for a claim of $X=2{,}100$.</p>
+          <p>Maximum covered loss: $m=\dfrac{u}{\alpha}+d=\dfrac{2{,}000}{0.8}+200=2{,}500+200=2{,}700.$</p>
+          <p>Since $200<2{,}100\le2{,}700$, use the middle piece:</p>
+          $$Y=\alpha(X-d)=0.8(2{,}100-200)=0.8(1{,}900)=\boxed{1{,}520}.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Why $m$ matters</div><p>If you had forgotten the cap and plugged $X=2{,}100$ blindly you'd still be fine here (because $2{,}100\lt m$), but if the claim were 3,000 the answer would be the limit $u=2{,}000$, not $0.8(3{,}000-200)=2{,}240$. Always check against $m$.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Excess of loss: per-risk vs. per-occurrence <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An insurer's claims from a single earthquake, with an XL treaty at retention $\delta=500{,}000$:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Claim</th><th>Policy</th><th>Loss</th></tr></thead>
+            <tbody>
+              <tr><td>1001</td><td>A3001</td><td>250,000</td></tr>
+              <tr><td>1002</td><td>A2936</td><td>236,500</td></tr>
+              <tr><td>1003</td><td>A3001</td><td>325,000</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>(1) Retained loss on a per-risk basis.</strong> Apply $\delta$ to each <em>policy's</em> total.</p>
+          <ul>
+            <li>Policy A3001: $250{,}000+325{,}000=575{,}000>500{,}000$ → cedant retains $500{,}000$.</li>
+            <li>Policy A2936: $236{,}500<500{,}000$ → cedant retains all $236{,}500$.</li>
+          </ul>
+          <p>Primary insurer's retained losses $=500{,}000+236{,}500=\boxed{736{,}500}$.</p>
+          <p><strong>(2) Reinsurer's loss on a per-occurrence basis.</strong> Apply $\delta$ once to the whole event:</p>
+          $$Z_R=(250{,}000+236{,}500+325{,}000)-500{,}000=811{,}500-500{,}000=\boxed{311{,}500}.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Lesson</div><p>Same numbers, very different answers depending on what the retention attaches to. Read "per-risk" vs "per-occurrence" vs "aggregate" carefully.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Layered excess-of-loss treaty <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A primary insurer has an XL treaty with net retention 1,000,000, structured in layers (percentages are the <em>reinsurer's</em> share):</p>
+          <ul>
+            <li>Layer 1: 70% of 500,000 in excess of 1,000,000 (covers loss in $[1.0\text{M}, 1.5\text{M}]$)</li>
+            <li>Layer 2: 80% of 500,000 in excess of 1,500,000 (covers $[1.5\text{M}, 2.0\text{M}]$)</li>
+            <li>Layer 3: 90% in excess of 2,000,000 (covers everything above 2.0M)</li>
+          </ul>
+          <p>Find the reinsurer's payment for a loss of 2,750,000. The reinsurer pays nothing up to 1.0M, then a share of each layer's filled amount:</p>
+          $$
+          \begin{aligned}
+          Z_R&=0.70(500{,}000)+0.80(500{,}000)+0.90(2{,}750{,}000-2{,}000{,}000)\\
+          &=350{,}000+400{,}000+0.90(750{,}000)\\
+          &=350{,}000+400{,}000+675{,}000=1{,}425{,}000.
+          \end{aligned}
+          $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$Z_R=\boxed{1{,}425{,}000}$ (the cedant keeps the 1.0M retention plus the un-ceded slivers of each layer).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Stop-loss reinsurance on a discrete aggregate <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Aggregate annual losses $S$:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$s$</th><th>0</th><th>1000</th><th>2000</th><th>3000</th><th>4000</th></tr></thead>
+            <tbody><tr><td>$\Pr(S=s)$</td><td>0.40</td><td>0.25</td><td>0.20</td><td>0.10</td><td>0.05</td></tr></tbody>
+          </table></div>
+          <p>A stop-loss with retention $d=1500$ is purchased. Find $E[(S-1500)_+]$.</p>
+          $$
+          \begin{aligned}
+          E[(S-1500)_+]&=(2000-1500)(0.20)+(3000-1500)(0.10)+(4000-1500)(0.05)\\
+          &=100+150+125=375.
+          \end{aligned}
+          $$
+          <p>Check via $E[S]-E[S\wedge1500]$: $E[S]=1150$, $E[S\wedge1500]=250+1500(0.35)=775$, difference $=375$. ✓</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[(S-1500)_+]=\boxed{375}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Collective risk model mean and variance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$N\sim\text{Poisson}(\lambda=3)$; severities $X$ exponential with mean 500 ($E[X]=500$, $E[X^2]=2\theta^2=500{,}000$). Find $E[S]$, $\operatorname{Var}(S)$.</p>
+          $$E[S]=\lambda E[X]=3(500)=1500,\qquad \operatorname{Var}(S)=\lambda E[X^2]=3(500{,}000)=1{,}500{,}000.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S]=\boxed{1500}$, $\operatorname{Var}(S)=\boxed{1{,}500{,}000}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Individual risk model (group life) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Three independent members; member $i$ pays $b_i$ on death (prob $q_i$):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$i$</th><th>$b_i$</th><th>$q_i$</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>100</td><td>0.10</td></tr>
+              <tr><td>2</td><td>200</td><td>0.05</td></tr>
+              <tr><td>3</td><td>300</td><td>0.02</td></tr>
+            </tbody>
+          </table></div>
+          <p>$E[X_i]=b_iq_i$: $10,10,6$ → $E[S]=26$. $\operatorname{Var}(X_i)=b_i^2q_i(1-q_i)$: $900,1900,1764$ → $\operatorname{Var}(S)=4564$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S]=\boxed{26}$, $\operatorname{Var}(S)=\boxed{4564}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Inverse disappearing deductible — recover $b$ from a claims table, then price a new claim <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>You are <em>not</em> told the parameters $(d,a,b)$ of a linearly disappearing deductible. Instead you are given recorded (claim amount, payment) pairs and must reverse-engineer the design. The trick: <strong>effective deductible $D=X-\text{payment}$</strong>, and inside the disappearing band $D$ is linear in $X$, falling to $0$ at the upper bound $b$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Claim amount $X$</th><th>Payment $Y$</th><th>Effective deductible $D=X-Y$</th></tr></thead>
+            <tbody>
+              <tr><td>200</td><td>0</td><td>$\ge 200$ (still fully retained)</td></tr>
+              <tr><td>750</td><td>600</td><td>150</td></tr>
+              <tr><td>900</td><td>800</td><td>100</td></tr>
+              <tr><td>1,300</td><td>1,300</td><td>0</td></tr>
+            </tbody>
+          </table></div>
+          <p>Find the payment for a claim of $X=1{,}000$.</p>
+          <p><strong>Step 1 — recover the upper bound $b$ by linear interpolation.</strong> Use the two interior points that sit inside the band, $(750,150)$ and $(900,100)$. The deductible line has slope</p>
+          $$\frac{900-750}{100-150}=\frac{150}{-50}=-3,$$
+          <p>and the deductible hits $0$ at $X=b$, so extend the same line from $(900,100)$ down to $D=0$:</p>
+          $$-3=\frac{b-900}{0-100}\;\Longrightarrow\;b-900=300\;\Longrightarrow\;b=1{,}200.$$
+          <p><strong>Step 2 — confirm $1{,}000$ lies in the band</strong> ($a\lt 1{,}000\lt b=1{,}200$): yes, so the deductible still applies on a sliding scale (it has not yet disappeared).</p>
+          <p><strong>Step 3 — price the new claim.</strong> Interpolate the deductible at $X=1{,}000$ along the same line through $(900,100)$:</p>
+          $$-3=\frac{1{,}000-900}{D-100}\;\Longrightarrow\;D-100=\frac{100}{-3}=-33.3333\;\Longrightarrow\;D=66.6667.$$
+          $$Y=1{,}000-D=1{,}000-66.6667=933.3333.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div><p>$b=1{,}200$ and the payment for the $1{,}000$ claim is $Y=\boxed{933.33}$.</p></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Per-calendar-year deductible — individual vs. family caps across several claims <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A family of five holds a health policy with a <strong>$100$ deductible per person per year</strong> and a <strong>$250$ deductible for the whole family per year</strong>. Coverage on any given claim kicks in once <em>either</em> that person's $100$ individual deductible <em>or</em> the $250$ family deductible has been met. Process these claims <em>in order</em>: Dad 70, then Chloe 110, then Chloe 90, then Anne 180.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>#</th><th>Claimant · loss</th><th>Family pays</th><th>Insurer pays</th><th>Running family deductible</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Dad · 70</td><td>70</td><td>0</td><td>70 (Dad's $100$ not yet met)</td></tr>
+              <tr><td>2</td><td>Chloe · 110</td><td>100</td><td>10</td><td>170 (Chloe's $100$ now met)</td></tr>
+              <tr><td>3</td><td>Chloe · 90</td><td>0</td><td>90</td><td>170 (Chloe already met her $100$)</td></tr>
+              <tr><td>4</td><td>Anne · 180</td><td>80</td><td>100</td><td>250 (family cap reached)</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Reading each row.</strong> (1) Dad's loss is below his individual $100$, so the family eats all $70$. (2) Chloe's first claim crosses her individual $100$: she pays $100$, the insurer covers the remaining $10$. (3) Chloe's <em>second</em> claim — her individual deductible is already satisfied, so the insurer pays the full $90$. (4) For Anne, only $250-170=80$ of family deductible remains; the family pays that last $80$ (hitting the $250$ family cap) and the insurer pays the other $100$. After this, the family deductible is fully met for the year, so further claims are paid in full by the insurer.</p>
+          <p>Totals across the four claims:</p>
+          $$\text{Family} = 70+100+0+80 = 250,\qquad \text{Insurer} = 0+10+90+100 = 200.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div><p>The family pays $\boxed{250}$ (exactly the family cap) and the insurer pays $\boxed{200}$.</p></div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Maximum covered loss formula.</strong> With ordinary deductible, limit, and coinsurance, $m=\tfrac{u}{\alpha}+d$ — <em>not</em> just $u$. With a <strong>franchise</strong> deductible, though, $m=u$ (no $d$ added). Mixing these up caps the payment in the wrong place.</li>
+          <li><strong>Order of operations.</strong> Always cap → subtract deductible → apply coinsurance. Inflation (if present) scales the loss first. Applying coinsurance before the deductible, or inflating the deductible itself, is wrong.</li>
+          <li><strong>Franchise vs ordinary deductible.</strong> Once the loss clears $d$, a franchise pays the <em>full</em> loss — $d$ more per payment than an ordinary deductible. Candidates routinely treat it like an ordinary deductible.</li>
+          <li><strong>Per-loss vs per-payment.</strong> "Per payment" → divide $E[Y^L]$ by $\Pr(X>d)$; "per loss" → don't divide. The single most common point lost on this material.</li>
+          <li><strong>Inverse disappearing deductible — don't skip the band check.</strong> When you reverse-engineer a disappearing deductible from a (claim, payment) table, use <em>effective deductible</em> $D=X-Y$ and recover $b$ by interpolating $D$ to $0$. Then <em>verify the new claim is actually inside the band</em> $a\lt X\lt b$ before interpolating its deductible. If $X\ge b$ the deductible has already vanished and the answer is the <em>full</em> loss; if $X\le a$ the full fixed deductible $d$ applies. Blindly interpolating a claim that lies outside the band (see Example 8, where $b=1{,}200$) gives a wrong payment. Also remember the slope is negative — the deductible <em>decreases</em> as the loss grows.</li>
+          <li><strong>XL basis: per-risk vs per-occurrence vs aggregate.</strong> The retention attaches to a single policy's total (per-risk), one event's total across policies (per-occurrence), or the whole period's total $S$ (aggregate/stop-loss). Applying it to the wrong quantity is a guaranteed wrong answer (see Example 3).</li>
+          <li><strong>Layered XL.</strong> Apply each layer's percentage only to the loss <em>inside that layer's band</em>, and remember the reinsurer pays $0$ below the retention. Don't apply one percentage to the whole excess.</li>
+          <li><strong>Quota-share ambiguity.</strong> If the question doesn't say whose share a quoted percentage is, assume it's the <em>reinsurer's</em> share.</li>
+          <li><strong>Surplus share is qualitative.</strong> Don't waste time hunting for a numeric surplus-share split — FAM tests it conceptually (retention line / attachment point), not computationally.</li>
+          <li><strong>Quota-share variance.</strong> The reinsurer's variance is $(1-a)^2\operatorname{Var}(Y)$ — the proportion is <strong>squared</strong>.</li>
+          <li><strong>Compound variance formula.</strong> $\operatorname{Var}(S)=E[N]\operatorname{Var}(X)+\operatorname{Var}(N)(E[X])^2$ — never $\operatorname{Var}(N)\operatorname{Var}(X)$. Compound Poisson shortcut: $\lambda E[X^2]$ (second <em>moment</em> of severity, not variance).</li>
+          <li><strong>Individual vs collective model.</strong> Individual = fixed $n$, possibly non-identical $X_i$, sum variances directly. Collective = random $N$, i.i.d. severities, use the compound formula.</li>
+          <li><strong>Cedant terminology.</strong> The <em>cedant</em> is the primary/direct insurer that buys reinsurance; <em>retrocession</em> is a reinsurer ceding onward; a <em>ceding commission</em> flows from reinsurer to cedant.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>A policy has ordinary deductible 200, coinsurance 80%, and policy limit 2,000. What is the maximum covered loss, and what does it represent?</summary>
+        <div class="qa-answer">$m=\dfrac{u}{\alpha}+d=\dfrac{2{,}000}{0.8}+200=\mathbf{2{,}700}$ — the smallest ground-up loss at which the insurer first pays the full policy limit.</div>
+      </details>
+      <details class="qa"><summary>How does the maximum covered loss differ when the deductible is a <strong>franchise</strong> rather than ordinary?</summary>
+        <div class="qa-answer">A franchise pays the full loss above $d$, so the maximum covered loss equals the limit itself, $m=u$ — you do <em>not</em> add $d$. (Example 1's franchise-plus-limit policy caps at 1,500, not 2,000.)</div>
+      </details>
+      <details class="qa"><summary>Define the <strong>retroactive qualification period</strong> and state when an elimination-period policy behaves like a franchise deductible.</summary>
+        <div class="qa-answer">The retroactive qualification period is how long a disability must continue before benefits are paid <em>retroactively</em> over the elimination period (the initial waiting period during which nothing is paid). When the retroactive qualification period <strong>equals</strong> the elimination period, the policy acts like a <strong>franchise</strong> deductible: nothing below the threshold, but full payment back to day one once the threshold is crossed.</div>
+      </details>
+      <details class="qa"><summary>A family policy has a $100$ per-person and a $250$ per-family annual deductible. Claims occur in order: Dad 70, Chloe 110, Chloe 90, Anne 180. How much does the <em>insurer</em> pay in total?</summary>
+        <div class="qa-answer">Insurer pays $0+10+90+100=\mathbf{200}$ (family pays $70+100+0+80=250$, exactly the family cap). Key moves: Chloe's first claim meets her individual $100$ (insurer pays the $10$ excess); her second is then paid in full ($90$); Anne's claim only needs $80$ more to reach the $250$ family cap, so the insurer covers the remaining $100$.</div>
+      </details>
+      <details class="qa"><summary>You are given (claim, payment) pairs $(750,600)$ and $(900,800)$ for a linearly disappearing deductible. Find the upper bound $b$ at which the deductible disappears.</summary>
+        <div class="qa-answer">Effective deductibles are $D=X-Y$: $150$ and $100$. The line has slope $\frac{900-750}{100-150}=-3$; extending to $D=0$ gives $-3=\frac{b-900}{0-100}$, so $b-900=300$ and $b=\mathbf{1{,}200}$. (Then check any new claim is below $b$ before interpolating its deductible.)</div>
+      </details>
+      <details class="qa"><summary>Name four functions (benefits) of reinsurance for a primary insurer.</summary>
+        <div class="qa-answer">Any four of: capital relief, increased underwriting capacity, catastrophe protection, stabilizing loss experience, risk diversification, access to technical expertise, and orderly withdrawal from a market.</div>
+      </details>
+      <details class="qa"><summary>Distinguish <strong>treaty</strong> from <strong>facultative</strong> reinsurance.</summary>
+        <div class="qa-answer">Treaty cedes <em>all</em> risks in a specified line/class automatically (the reinsurer can't underwrite each one); facultative cedes <em>individual</em> risks, each underwritten and accepted/rejected by the reinsurer.</div>
+      </details>
+      <details class="qa"><summary>Name the two types of <strong>pro rata</strong> reinsurance and the key difference between them.</summary>
+        <div class="qa-answer"><strong>Quota share</strong> (both parties share a fixed % of <em>every</em> risk) and <strong>surplus share</strong> (proportional sharing applies only to policies whose coverage exceeds the cedant's net retention / the reinsurer's attachment point).</div>
+      </details>
+      <details class="qa"><summary>For excess-of-loss reinsurance, how do <strong>per-risk</strong>, <strong>per-occurrence</strong>, and <strong>aggregate (stop-loss)</strong> differ?</summary>
+        <div class="qa-answer">The retention attaches to: a single policy's total loss (per-risk); the combined loss of one event across multiple policies (per-occurrence); or the total of all losses over the policy period $S$ (aggregate/stop-loss, reinsurer pays $(S-d)_+$).</div>
+      </details>
+      <details class="qa"><summary>A question says "70% quota share" but doesn't state whose share it is. What should you assume?</summary>
+        <div class="qa-answer">Assume the percentage is the <strong>reinsurer's</strong> share — the reinsurer covers 70%, the cedant 30%.</div>
+      </details>
+      <details class="qa"><summary>A quota-share treaty cedes 30% of every loss. If $\operatorname{Var}(Y)=4{,}000{,}000$, what is the variance of the reinsurer's payment?</summary>
+        <div class="qa-answer">Reinsurer pays $0.30Y$, so variance $=(0.30)^2(4{,}000{,}000)=\mathbf{360{,}000}$ — square the proportion.</div>
+      </details>
+      <details class="qa"><summary>An XL treaty has retention 500,000. Two claims of 250,000 and 325,000 come from the <em>same policy</em>. What does the cedant retain on a per-risk basis?</summary>
+        <div class="qa-answer">Sum the policy's claims first: $250{,}000+325{,}000=575{,}000>500{,}000$, so the cedant retains the full retention $\mathbf{500{,}000}$ and the reinsurer pays 75,000.</div>
+      </details>
+      <details class="qa"><summary>In the collective risk model with $N\sim\text{Poisson}(\lambda)$, write $\operatorname{Var}(S)$. Which moment of $X$ appears?</summary>
+        <div class="qa-answer">$\operatorname{Var}(S)=\lambda\,E[X^2]$ — the <strong>second raw moment</strong> of severity (because $\operatorname{Var}(N)=E[N]=\lambda$ collapses the general formula).</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

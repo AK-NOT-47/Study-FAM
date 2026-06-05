@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Lab · 200 concepts for Me Studing Stuff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  :root{--bg:#0a0b10;--surface:#14161e;--surface2:#1c1f2a;--border:#282c38;--text:#eef0f6;--soft:#9aa2b6;--mute:#646b7e}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(40rem 30rem at 8% -5%,#1e1b4b,transparent 60%),radial-gradient(40rem 30rem at 100% 0%,#3b0764,transparent 55%);opacity:.5}
+  header.lab{position:sticky;top:0;z-index:30;backdrop-filter:blur(16px);background:rgba(10,11,16,.82);border-bottom:1px solid var(--border);padding:16px 26px 12px}
+  .lab h1{margin:0;font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.02em}
+  .lab h1 .grad{background:linear-gradient(120deg,#818cf8,#e879f9,#fbbf24);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lab p.sub{margin:5px 0 0;color:var(--soft);font-size:14px;max-width:90ch}
+  .lab p.sub b{color:var(--text)}
+  .controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:12px}
+  .search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:8px 13px;min-width:220px}
+  .search input{border:none;background:none;outline:none;color:var(--text);font:inherit;font-size:14px;width:100%}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{border:1px solid var(--border);background:var(--surface);color:var(--soft);padding:6px 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+  .chip:hover{color:var(--text);border-color:#3a3f4f}
+  .chip.on{background:linear-gradient(120deg,#6366f1,#8b5cf6);border-color:transparent;color:#fff}
+  .count{margin-left:auto;color:var(--mute);font-size:13px;font-weight:600;white-space:nowrap}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;padding:22px 26px 90px;max-width:1760px;margin:0 auto}
+  .card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -16px rgba(0,0,0,.6);border-color:#4b4f63}
+  .thumb{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--surface2)}
+  .thumb iframe{position:absolute;top:0;left:0;width:1280px;height:800px;border:0;transform:scale(.27);transform-origin:top left;pointer-events:none;background:#fff}
+  .thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:12px}
+  .thumb .open{position:absolute;right:8px;bottom:8px;background:rgba(8,9,14,.78);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:11px;font-weight:700;padding:4px 9px;opacity:0;transition:.15s}
+  .card:hover .thumb .open{opacity:1}
+  .meta{padding:11px 13px;display:flex;align-items:center;gap:9px;border-top:1px solid var(--border)}
+  .meta .num{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--mute);font-weight:600}
+  .meta .nm{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+  .meta .vb{font-size:10.5px;color:var(--soft);background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;max-width:46%;overflow:hidden;text-overflow:ellipsis}
+  .empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:60px}
+  /* modal */
+  .modal{position:fixed;inset:0;z-index:60;display:none;background:rgba(4,5,9,.86);backdrop-filter:blur(8px);flex-direction:column;padding:16px}
+  .modal.open{display:flex}
+  .mbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:6px 6px 12px}
+  .mbar .num{font-family:"JetBrains Mono",monospace;color:#a5b4fc;font-weight:700;font-size:15px}
+  .mbar .nm{font-family:"Fraunces",serif;font-size:1.4rem;font-weight:600}
+  .mbar .vb{font-size:12px;color:var(--soft);border:1px solid var(--border);padding:3px 10px;border-radius:99px}
+  .mbar .sp{flex:1}
+  .mbar button,.mbar a{font:inherit;font-weight:700;font-size:13px;border-radius:10px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:9px 14px;text-decoration:none}
+  .mbar .use{background:linear-gradient(120deg,#6366f1,#8b5cf6);border-color:transparent;color:#fff}
+  .mbar .nav{width:42px;text-align:center}
+  .stage{flex:1;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;min-height:0}
+  .stage iframe{width:100%;height:100%;border:0;display:block}
+  .hint{color:var(--soft);font-size:12.5px;padding:8px 4px 0}
+  .hint b{color:#fbbf24}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}.mbar .nm{font-size:1.1rem}}
+</style>
+</head>
+<body>
+<header class="lab">
+  <h1>Design Lab — <span class="grad">200 complete concepts</span> for Me Studing Stuff</h1>
+  <p class="sub">Every tile is a <b>full, live mockup of your real content</b> in a totally different design language — built by a team of agents. Filter by family or search. Click any to view it full-screen. <b>When one clicks, tell me its number</b> (e.g. <i>“use #117”</i>) and I'll rebuild the entire site in that style. You can also mix: <i>“#4's layout with #168's colors.”</i></p>
+  <div class="controls">
+    <label class="search">🔍 <input id="q" type="text" placeholder="Search name, vibe or number…" autocomplete="off"></label>
+    <div class="chips" id="chips"></div>
+    <div class="count" id="count"></div>
+  </div>
+</header>
+<div class="grid" id="grid"></div>
+
+<div class="modal" id="modal">
+  <div class="mbar">
+    <span class="num" id="mNum"></span><span class="nm" id="mNm"></span><span class="vb" id="mVb"></span>
+    <span class="sp"></span>
+    <button class="nav" id="mPrev" title="Previous">‹</button>
+    <button class="nav" id="mNext" title="Next">›</button>
+    <a class="" id="mOpen" target="_blank" rel="noopener">Open in tab ↗</a>
+    <button class="use" id="mUse">✦ Use this (copy “use #N”)</button>
+    <button id="mClose">✕ Close</button>
+  </div>
+  <div class="stage"><iframe id="mFrame" title="preview"></iframe></div>
+  <p class="hint">To apply: message me <b id="mHint">use #1</b> — I'll restyle the whole site (it's a token + component swap, so it's quick). Use ‹ › to browse.</p>
+</div>
+
+<script>
+var CATS={TE:"Type & Editorial",RB:"Raw & Bold",ST:"Soft & Tactile",DA:"Dark & Atmospheric",CM:"Clean & Modern",RE:"Retro & Era",AC:"Art & Craft",NO:"Nature & Organic",DO:"Document & Object",PG:"Playful & Game",DT:"Data & Tools",MX:"Mashups"};
+// [id, slug, name, vibe, catCode]
+var D=[
+[1,"swiss","Swiss International","Grid · Typographic","TE"],[2,"brutalist","Raw Brutalist","Raw · Mono","RB"],[3,"neo-brutalist","Neo-Brutalist Pop","Thick borders · Hard shadow","RB"],[4,"editorial","Editorial Magazine","Serif · Columns","TE"],[5,"dark-academia","Dark Academia","Parchment · Scholarly","DA"],[6,"glassmorphism","Glassmorphism","Frosted · Gradient","ST"],[7,"claymorphism","Claymorphism","Puffy · Pastel","ST"],[8,"neumorphism","Soft Neumorphism","Monochrome · Extruded","ST"],[9,"terminal","Retro Terminal","CRT · Phosphor","RE"],[10,"vaporwave","Vaporwave","Neon · 80s","RE"],
+[11,"cyberpunk","Cyberpunk HUD","Neon · Angular","DA"],[12,"bauhaus","Bauhaus","Geometric · Primary","AC"],[13,"memphis","Memphis 80s","Playful · Confetti","RE"],[14,"zen","Zen Minimal","Whitespace · Calm","CM"],[15,"notion","Notion Workspace","Clean · Functional","CM"],[16,"material-you","Material You","Tonal · Rounded","CM"],[17,"newspaper","Broadsheet","Newsprint · Columns","TE"],[18,"art-deco","Art Deco","Gold · Geometric","AC"],[19,"sketch","Notebook Sketch","Hand-drawn · Paper","AC"],[20,"blueprint","Technical Blueprint","Draft · Grid","DT"],
+[21,"risograph","Risograph Zine","Duotone · Grain","AC"],[22,"mesh-saas","Modern Mesh SaaS","Gradient · Crisp","CM"],[23,"luxury","Luxury Fashion","Mono · Editorial","TE"],[24,"gamified","Gamified Quest","Friendly · Bright","PG"],[25,"analytics","Control Room","Dark · Data","DT"],[26,"earthy","Warm Earthy","Terracotta · Organic","NO"],[27,"frutiger-aero","Frutiger Aero Y2K","Glossy · Aqua","RE"],[28,"mono-type","Monochrome Type","B/W · Scale","TE"],[29,"pastel-dream","Pastel Dream","Soft · Dreamy","ST"],[30,"kinetic","Kinetic Motion","Animated · Alive","CM"],
+[31,"art-nouveau","Art Nouveau","Organic · Filigree","AC"],[32,"constructivism","Constructivism","Red/Black · Diagonal","AC"],[33,"de-stijl","De Stijl","Mondrian · Primary","AC"],[34,"suprematism","Suprematism","Floating · Geometric","AC"],[35,"pop-art","Pop Art","Halftone · Comic","AC"],[36,"op-art","Op Art","Optical · B/W","AC"],[37,"psychedelic","Psychedelic 60s","Swirl · Rainbow","RE"],[38,"steampunk","Steampunk","Brass · Victorian","RE"],[39,"googie","Atomic Googie","50s · Starburst","RE"],[40,"solarpunk","Solarpunk","Eco · Hopeful","NO"],
+[41,"grunge-90s","90s Grunge","Distressed · Zine","RE"],[42,"geocities","Retro Web 90s","Garish · Nostalgic","RE"],[43,"skeuomorphic","Skeuomorphic","Texture · Real","ST"],[44,"flat-design","Flat Design 2.0","Bright · Clean","CM"],[45,"holographic","Holographic","Iridescent · Foil","ST"],[46,"liquid","Liquid Fluid","Blob · Morph","ST"],[47,"origami","Origami Paper","Folded · Facets","AC"],[48,"knitted","Cozy Knit","Wool · Warm","NO"],[49,"wood","Wood Workshop","Grain · Artisan","NO"],[50,"marble","Marble Luxury","Veined · Classical","NO"],
+[51,"concrete","Concrete","Raw · Monolithic","RB"],[52,"chrome","Liquid Chrome","Metal · Y2K","RE"],[53,"neon-tube","Neon Sign","Glow · Brick","DA"],[54,"letterpress","Letterpress","Deboss · Cotton","AC"],[55,"botanical","Botanical","Herbarium · Cream","NO"],[56,"cottagecore","Cottagecore","Floral · Storybook","NO"],[57,"ocean","Aquatic","Deep Sea · Calm","NO"],[58,"forest","Deep Forest","Moss · Woodland","NO"],[59,"desert","Desert Southwest","Terracotta · Adobe","NO"],[60,"alpine","Alpine Nordic","Glacier · Crisp","NO"],
+[61,"cosmic","Cosmic","Starfield · Nebula","DA"],[62,"crystal","Crystal Mineral","Faceted · Prism","NO"],[63,"topographic","Topographic","Contour · Map","DO"],[64,"boarding-pass","Boarding Pass","Ticket · Perforated","DO"],[65,"receipt","Thermal Receipt","Mono · Dashed","DO"],[66,"passport","Passport Stamp","Official · Guilloché","DO"],[67,"architecture","Architectural Plan","Floorplan · Section","DO"],[68,"album-liner","Album Art","Cover · Liner","DO"],[69,"movie-poster","Movie Poster","Billing · Cinematic","DO"],[70,"comic-book","Comic Book","Panels · Inks","AC"],
+[71,"manga","Manga","Screentone · Speed","AC"],[72,"storybook","Storybook","Watercolor · Whimsy","AC"],[73,"textbook","Vintage Textbook","Two-color · Figures","TE"],[74,"clinical","Clinical","Teal · Sterile","DT"],[75,"legal","Legal Document","Serif · Seals","DO"],[76,"fintech","Fintech","Trust · Number","DT"],[77,"web3","Web3 Crypto","Neon · Glassy","DA"],[78,"athletic","Athletic","Diagonal · Bold","RB"],[79,"recipe-card","Recipe Card","Kitchen · Index","DO"],[80,"museum","Museum Placard","Gallery · Label","TE"],
+[81,"vinyl","Vinyl Record","Circular · Analog","DO"],[82,"polaroid","Polaroid Scrapbook","Photo · Tape","DO"],[83,"cartography","Old Map","Parchment · Compass","DO"],[84,"trading-card","Trading Card","Holo · Stats","PG"],[85,"banknote","Banknote","Engraving · Guilloché","DO"],[86,"duotone","Duotone Bold","Two-color · Editorial","TE"],[87,"neon-noir","Neon Noir","Rain · Cinematic","DA"],[88,"jewel","Jewel Tones","Emerald · Opulent","DA"],[89,"sepia","Vintage Sepia","Aged · Nostalgic","RE"],[90,"rainbow-grad","Rainbow Gradient","Spectrum · Joyful","ST"],
+[91,"nordic-muted","Muted Nordic","Dusty · Calm","CM"],[92,"bubblegum","Bubblegum Pop","Candy · Glossy","PG"],[93,"giant-serif","Giant Serif","Headline · Bravado","TE"],[94,"variable-kinetic","Kinetic Type","Variable · Motion","TE"],[95,"pixel","Pixel 8-bit","Retro · Blocky","PG"],[96,"stencil","Stencil Industrial","Spray · Utility","RB"],[97,"slab","Slab Serif","Heavy · Vintage Ad","TE"],[98,"calligraphy","Calligraphy","Script · Graceful","AC"],[99,"blackletter","Blackletter","Gothic · Illuminated","AC"],[100,"typewriter","Typewriter","Courier · Manuscript","TE"],
+[101,"bento","Bento Grid","Modular · Tidy","CM"],[102,"long-scroll","Long-Scroll Story","Narrative · Reveal","CM"],[103,"split-screen","Split Screen","50/50 · Duality","CM"],[104,"command-palette","Command Palette","Keyboard · ⌘K","DT"],[105,"kanban","Kanban Board","Columns · Cards","DT"],[106,"timeline","Study Timeline","Journey · Path","DT"],[107,"floating-os","Floating OS","Windows · Desktop","RE"],[108,"widget","Widget Board","Tiles · Glance","CM"],[109,"binder","Tabbed Binder","Rings · Dividers","DO"],[110,"index-cards","Index Cards","Flashcard · Ruled","DO"],
+[111,"sticky-wall","Sticky Wall","Post-its · Brainstorm","PG"],[112,"cozy-hygge","Cozy Hygge","Candlelit · Soft","NO"],[113,"corporate-clean","Corporate Clean","Navy · Polished","CM"],[114,"spa-calm","Spa Wellness","Sage · Serene","NO"],[115,"noir-mystery","Film Noir","Shadow · Mystery","DA"],[116,"festive","Festive","Confetti · Gold","PG"],[117,"linear-app","Linear Style","Dark · Crisp","CM"],[118,"spotify-dark","Music App Dark","Vivid · Bold","DA"],[119,"apple-glass","Apple Glass","Vibrancy · Refined","CM"],[120,"vercel","Vercel Geist","B/W · Sharp","CM"],
+[121,"obsidian","Knowledge Graph","Nodes · Purple","DA"],[122,"arc-gradient","Playful Gradient","Soft · Delight","CM"],[123,"brutalism-pastel","Brutalist Pastel","Raw × Sweet","MX"],[124,"editorial-neon","Editorial Neon","Serif × Electric","MX"],[125,"terminal-paper","Terminal Paper","Mono × Analog","MX"],[126,"deco-cyber","Deco Cyber","Gatsby × Blade Runner","MX"],[127,"bauhaus-vapor","Bauhaus Vapor","Primary × Sunset","MX"],[128,"swiss-botanical","Swiss Botanical","Grid × Organic","MX"],[129,"newspaper-neon","Newsprint Neon","Print × Rave","MX"],[130,"academia-terminal","Scholar Hacker","Serif × Phosphor","MX"],
+[131,"clay-dark","Dark Clay","Puffy × Night","MX"],[132,"memphis-mono","Memphis Mono","Shapes × B/W","MX"],[133,"mid-century-mod","Mid-Century","Eames · Atomic","RE"],[134,"disco-70s","70s Disco","Funk · Gold","RE"],[135,"miami-80s","Miami 80s","Flamingo · Vice","RE"],[136,"rave-90s","90s Rave","Acid · Flyer","RE"],[137,"y2k-bling","Y2K Bling","Metallic · Sparkle","RE"],[138,"retrofuture-50s","World of Tomorrow","Rockets · Chrome","RE"],[139,"dieselpunk","Dieselpunk","Riveted · Machine","RE"],[140,"atompunk","Atompunk","Fallout · Starburst","RE"],
+[141,"biopunk","Biopunk","Cellular · Bioluminescent","DA"],[142,"minimal-line","Line Art","Thin · Airy","CM"],[143,"maximalist","Maximalist","Layered · Riot","AC"],[144,"gradient-noir","Dark Glow","Luminous · Premium","DA"],[145,"paper-cut","Paper-Cut","Layers · Depth","AC"],[146,"embroidery","Embroidery","Stitch · Textile","NO"],[147,"stained-glass","Stained Glass","Leaded · Jewel","AC"],[148,"mosaic","Mosaic Tile","Tessellated · Byzantine","AC"],[149,"watercolor","Watercolor","Wash · Bloom","AC"],[150,"ink-wash","Sumi-e Ink","Brush · Zen","AC"],
+[151,"screenprint","Gig Poster","Spot · Overprint","AC"],[152,"woodcut","Woodcut","Carved · Folk","AC"],[153,"engraving","Engraving","Hatched · Old-world","AC"],[154,"collage","Cut-Paper Collage","Torn · Mixed","AC"],[155,"graffiti","Graffiti Street","Spray · Urban","RB"],[156,"sticker-bomb","Sticker Bomb","Die-cut · Playful","PG"],[157,"dithered-lofi","Dithered Lo-fi","1-bit · Texture","RE"],[158,"glitch","Glitch Art","RGB-split · Datamosh","DA"],[159,"ascii-art","ASCII Art","Text · Mono","RE"],[160,"matrix-rain","Code Rain","Green · Cinema","DA"],
+[161,"rpg-hud","RPG HUD","XP · Quest","PG"],[162,"retro-arcade","Retro Arcade","CRT · High-score","PG"],[163,"board-game","Board Game","Tabletop · Dice","PG"],[164,"modular-blocks","Modular Blocks","Interlock · Primary","PG"],[165,"isometric","Isometric 3D","Faux-3D · Infographic","DT"],[166,"claymation-3d","Claymation 3D","Rounded · Studio","ST"],[167,"glass-dark","Dark Glass","Frosted · Luminous","DA"],[168,"aurora","Aurora","Northern Lights · Ethereal","DA"],[169,"sunset-gradient","Sunset","Dusk · Golden","ST"],[170,"mono-blue","Monochrome Blue","Single-hue · Serene","CM"],
+[171,"mono-green","Phosphor Mono","Green · Focused","RE"],[172,"sepia-academia","Sepia Academia","Library · Antique","DA"],[173,"riso-tritone","Risograph Tri-tone","Fluoro · Indie","AC"],[174,"corporate-memphis","Corporate Memphis","Alegria · Friendly","CM"],[175,"swiss-dark","Dark Swiss","Grid · Nocturnal","TE"],[176,"fashion-spread","Fashion Spread","Vogue · Couture","TE"],[177,"punk-zine","Punk Zine","Photocopy · DIY","RB"],[178,"instruction-manual","Instruction Manual","Diagram · Minimal","DT"],[179,"infographic","Infographic","Icons · Numbers","DT"],[180,"wireframe","Lo-fi Wireframe","Greyscale · Skeleton","DT"],
+[181,"dotgrid-journal","Dot-Grid Journal","Bullet · Planner","DO"],[182,"graph-paper","Graph Paper","Pencil · Math","DO"],[183,"chalkboard","Chalkboard","Slate · Classroom","DA"],[184,"whiteboard","Whiteboard","Marker · Lecture","CM"],[185,"ide-editor","Code Editor","Syntax · IDE","DT"],[186,"spreadsheet","Spreadsheet","Cells · Quant","DT"],[187,"trading-terminal","Trading Terminal","Bloomberg · Dense","DT"],[188,"warm-minimal","Warm Minimal","Off-white · Focused","CM"],[189,"elegant-emerald","Emerald & Cream","Boutique · Gold","DA"],[190,"warm-beige-mono","Warm Beige Mono","Tonal · Quiet Luxury","CM"],
+[191,"high-contrast-a11y","High-Contrast","Black/Yellow · Bold","RB"],[192,"pastel-mesh","Pastel Mesh","Dreamy · Gentle","ST"],[193,"cyber-minimal","Minimal Cyber","Dark · Single-neon","DA"],[194,"amber-terminal","Amber Terminal","CRT · Cozy","RE"],[195,"swiss-color","Swiss Colorful","Grid · Vibrant","TE"],[196,"deco-emerald","Deco Emerald","Gold · Speakeasy","AC"],[197,"origami-pastel","Pastel Origami","Folded · Soft","ST"],[198,"botanical-dark","Dark Botanical","Garden · Opulent","DA"],[199,"marquee-kinetic","Marquee Kinetic","Ticker · Restless","CM"],[200,"signature-hybrid","Signature Flagship","Refined · Best-of","CM"]
+];
+function file(r){var id=r[0];var p=id<=30?(id<10?"0"+id:""+id):(id<100?"0"+id:""+id);return "concepts/"+p+"-"+r[1]+".html";}
+
+var grid=document.getElementById("grid"),countEl=document.getElementById("count");
+var activeCat="All",query="";
+var order=["All"].concat(Object.keys(CATS).map(function(k){return CATS[k];}));
+var chipsEl=document.getElementById("chips");
+order.forEach(function(f){var c=document.createElement("button");c.className="chip"+(f==="All"?" on":"");c.textContent=f;c.onclick=function(){activeCat=f;[].forEach.call(chipsEl.children,function(x){x.classList.toggle("on",x.textContent===f);});render();};chipsEl.appendChild(c);});
+document.getElementById("q").addEventListener("input",function(e){query=e.target.value.trim().toLowerCase();render();});
+
+var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){var t=en.target,src=t.getAttribute("data-src");if(src&&!t.dataset.loaded){var f=document.createElement("iframe");f.loading="lazy";f.src=src;f.setAttribute("scrolling","no");t.appendChild(f);t.dataset.loaded="1";}io.unobserve(t);}});},{rootMargin:"300px"});
+
+function match(r){
+ if(activeCat!=="All"&&CATS[r[4]]!==activeCat)return false;
+ if(query){var q=query.replace("#","");var hay=(r[0]+" "+r[2]+" "+r[3]+" "+r[1]+" "+CATS[r[4]]).toLowerCase();if(hay.indexOf(q)<0)return false;}
+ return true;
+}
+function render(){
+ var list=D.filter(match);
+ countEl.textContent=list.length+" of 200";
+ grid.innerHTML="";
+ if(!list.length){grid.innerHTML='<div class="empty">No concepts match. Try “All”.</div>';return;}
+ list.forEach(function(r){
+  var card=document.createElement("div");card.className="card";card.setAttribute("data-id",r[0]);
+  card.innerHTML='<div class="thumb" data-src="'+file(r)+'"><div class="ph">Loading preview…</div><span class="open">Open ↗</span></div>'+
+   '<div class="meta"><span class="num">#'+r[0]+'</span><span class="nm">'+r[2]+'</span><span class="vb">'+r[3]+'</span></div>';
+  card.onclick=function(){openModal(r[0]);};
+  grid.appendChild(card);
+  io.observe(card.querySelector(".thumb"));
+ });
+}
+
+/* modal */
+var modal=document.getElementById("modal"),curId=1;
+function rowById(id){for(var i=0;i<D.length;i++)if(D[i][0]===id)return D[i];return D[0];}
+function openModal(id){
+ curId=id;var r=rowById(id);
+ document.getElementById("mNum").textContent="#"+id;
+ document.getElementById("mNm").textContent=r[2];
+ document.getElementById("mVb").textContent=r[3];
+ document.getElementById("mHint").textContent="use #"+id;
+ var url=file(r);
+ document.getElementById("mFrame").src=url;
+ document.getElementById("mOpen").href=url;
+ modal.classList.add("open");document.body.style.overflow="hidden";
+}
+function closeModal(){modal.classList.remove("open");document.getElementById("mFrame").src="about:blank";document.body.style.overflow="";}
+function step(d){var idx=D.findIndex(function(x){return x[0]===curId;});idx=(idx+d+D.length)%D.length;openModal(D[idx][0]);}
+document.getElementById("mClose").onclick=closeModal;
+document.getElementById("mPrev").onclick=function(){step(-1);};
+document.getElementById("mNext").onclick=function(){step(1);};
+document.getElementById("mUse").onclick=function(){var t="use #"+curId;if(navigator.clipboard)navigator.clipboard.writeText(t);this.textContent="✓ Copied “"+t+"”";var b=this;setTimeout(function(){b.textContent="✦ Use this (copy “use #N”)";},1600);};
+modal.addEventListener("click",function(e){if(e.target===modal)closeModal();});
+document.addEventListener("keydown",function(e){if(!modal.classList.contains("open"))return;if(e.key==="Escape")closeModal();else if(e.key==="ArrowRight")step(1);else if(e.key==="ArrowLeft")step(-1);});
+
+render();
+</script>
+</body>
+</html>

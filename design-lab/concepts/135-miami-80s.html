@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Miami 80s · Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Audiowide&family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff4eb8;
+    --pink-hot:#ff2d95;
+    --teal:#0fe5d4;
+    --teal-deep:#08c6c0;
+    --purple:#3a2b6e;
+    --indigo:#1a1240;
+    --night:#120a2e;
+    --night2:#1b0f3d;
+    --sun-top:#ffd86b;
+    --sun-mid:#ff7ab8;
+    --sun-bot:#ff3d8b;
+    --ink:#fbeeff;
+    --ink-dim:#c9b6e6;
+    --grid:#ff4eb8;
+    --glass:rgba(40,18,84,.55);
+    --line:rgba(255,78,184,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Outfit',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--night);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    line-height:1.5;
+  }
+  /* ===== Animated sun-grid backdrop ===== */
+  .backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .sky{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(120% 80% at 80% -10%, rgba(255,122,184,.35), transparent 55%),
+      linear-gradient(180deg,#26124f 0%, #1b0f3d 38%, #120a2e 60%, #0c0722 100%);
+  }
+  .sun{
+    position:absolute;left:50%;top:6%;transform:translateX(-50%);
+    width:min(540px,78vw);height:min(540px,78vw);border-radius:50%;
+    background:linear-gradient(180deg,var(--sun-top) 0%, var(--sun-mid) 48%, var(--sun-bot) 100%);
+    filter:blur(.3px);
+    -webkit-mask:repeating-linear-gradient(180deg,#000 0 18px,transparent 18px 24px),linear-gradient(180deg,#000 60%,transparent 100%);
+            mask:repeating-linear-gradient(180deg,#000 0 18px,transparent 18px 24px),linear-gradient(180deg,#000 60%,transparent 100%);
+    -webkit-mask-composite:source-in;mask-composite:intersect;
+    box-shadow:0 0 120px 30px rgba(255,90,160,.45);
+    opacity:.9;
+  }
+  .grid-floor{
+    position:absolute;left:-20%;right:-20%;bottom:-10%;height:55vh;
+    background-image:
+      linear-gradient(var(--grid) 2px,transparent 2px),
+      linear-gradient(90deg,var(--grid) 2px,transparent 2px);
+    background-size:60px 60px;
+    transform:perspective(420px) rotateX(74deg);
+    transform-origin:top center;
+    opacity:.35;
+    -webkit-mask:linear-gradient(180deg,transparent,#000 30%);
+            mask:linear-gradient(180deg,transparent,#000 30%);
+    animation:flow 6s linear infinite;
+  }
+  @keyframes flow{to{background-position:0 60px,60px 0}}
+  .scanlines{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(0,0,0,.12) 0 2px,transparent 2px 4px);mix-blend-mode:overlay;opacity:.5}
+
+  /* palm silhouettes */
+  .palm{position:absolute;bottom:18vh;font-size:140px;line-height:1;filter:drop-shadow(0 0 14px rgba(255,45,149,.6)) brightness(.55) saturate(1.4) hue-rotate(-10deg);opacity:.85}
+  .palm.l{left:2%}
+  .palm.r{right:2%;transform:scaleX(-1)}
+
+  /* ===== Shell ===== */
+  .shell{position:relative;z-index:2;display:grid;grid-template-columns:268px 1fr;min-height:100vh}
+
+  /* ===== Sidebar Nav ===== */
+  aside{
+    position:relative;
+    padding:26px 20px 32px;
+    border-right:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(27,15,61,.78),rgba(18,10,46,.66));
+    backdrop-filter:blur(8px);
+  }
+  .brand{display:flex;align-items:center;gap:13px;margin-bottom:8px}
+  .mmark{
+    width:52px;height:52px;border-radius:15px;flex:none;display:grid;place-items:center;
+    font-family:'Audiowide',sans-serif;font-size:27px;color:#10052a;
+    background:linear-gradient(150deg,var(--teal),var(--pink));
+    box-shadow:0 0 0 2px rgba(255,255,255,.18) inset,0 8px 26px rgba(255,45,149,.5);
+  }
+  .brand h1{font-family:'Outfit';font-size:17px;font-weight:800;letter-spacing:.2px;line-height:1.05}
+  .brand small{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-top:3px}
+
+  .navwrap{margin-top:26px}
+  .navlabel{
+    font-family:'Space Mono';font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--ink-dim);margin:0 6px 12px;display:flex;align-items:center;gap:9px;
+  }
+  .navlabel::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .badge-fl{
+    display:inline-block;margin:0 6px 16px;padding:5px 11px;border-radius:999px;
+    font-family:'Space Mono';font-size:10px;font-weight:700;letter-spacing:.2em;
+    color:#0b0420;background:linear-gradient(90deg,var(--teal),var(--pink));
+    box-shadow:0 6px 18px rgba(15,229,212,.3);
+  }
+  nav a{
+    display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:13px;
+    color:var(--ink-dim);text-decoration:none;font-weight:500;font-size:14.5px;
+    margin-bottom:3px;position:relative;transition:.18s;
+  }
+  nav a .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);flex:none;opacity:.55}
+  nav a:hover{color:#fff;background:rgba(255,78,184,.12);transform:translateX(3px)}
+  nav a:hover .dot{opacity:1}
+  nav a.active{
+    color:#fff;background:linear-gradient(90deg,rgba(255,78,184,.28),rgba(15,229,212,.1));
+    box-shadow:inset 0 0 0 1px var(--line);
+  }
+  nav a.active .dot{background:var(--pink);box-shadow:0 0 10px var(--pink);opacity:1}
+
+  .side-cta{
+    margin:24px 6px 0;padding:16px;border-radius:16px;text-align:center;
+    background:linear-gradient(160deg,rgba(255,78,184,.16),rgba(15,229,212,.08));
+    border:1px solid var(--line);
+  }
+  .side-cta p{font-size:12.5px;color:var(--ink-dim);margin-bottom:11px;line-height:1.45}
+  .side-cta b{color:var(--teal)}
+
+  /* ===== Main ===== */
+  main{padding:30px clamp(20px,3.4vw,46px) 50px;position:relative}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:30px}
+  .greet{font-family:'Space Mono';font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--teal)}
+  .greet::before{content:"◆ ";color:var(--pink)}
+  .topright{display:flex;gap:10px;align-items:center}
+  .pill{
+    font-family:'Space Mono';font-size:11px;letter-spacing:.12em;padding:9px 15px;border-radius:999px;
+    border:1px solid var(--line);color:var(--ink-dim);background:var(--glass);backdrop-filter:blur(6px);
+  }
+  .pill b{color:var(--pink)}
+
+  /* Hero */
+  .hero h2{
+    font-family:'Monoton',cursive;font-weight:400;line-height:1.04;letter-spacing:.01em;
+    font-size:clamp(38px,6.6vw,82px);
+    background:linear-gradient(180deg,#fff 0%,var(--sun-top) 30%,var(--pink) 70%,var(--pink-hot) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 36px rgba(255,77,160,.25);
+    margin-bottom:18px;
+  }
+  .hero .lede{max-width:660px;font-size:clamp(15px,1.5vw,18px);color:var(--ink-dim);font-weight:300}
+  .hero .lede b{color:#fff;font-weight:600}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:30px 0 8px}
+  .stat{
+    position:relative;padding:20px 20px 18px;border-radius:18px;overflow:hidden;
+    background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(8px);
+  }
+  .stat::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,78,184,.12),transparent 60%);pointer-events:none}
+  .stat .k{font-family:'Space Mono';font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim)}
+  .stat .v{font-family:'Audiowide';font-size:clamp(30px,3.4vw,42px);line-height:1.1;margin:6px 0 2px}
+  .stat .s{font-size:12.5px;color:var(--ink-dim)}
+  .v.pink{color:var(--pink);text-shadow:0 0 22px rgba(255,45,149,.55)}
+  .v.teal{color:var(--teal);text-shadow:0 0 22px rgba(15,229,212,.5)}
+  .v.sun{color:var(--sun-top);text-shadow:0 0 22px rgba(255,180,90,.5)}
+  .bar{height:7px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:12px;overflow:hidden}
+  .bar i{display:block;height:100%;width:72%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--pink),var(--pink-hot))}
+
+  /* Content grid */
+  .grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:18px;align-items:start}
+
+  .card{
+    position:relative;border-radius:20px;padding:24px;overflow:hidden;
+    background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(8px);
+  }
+  .card-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .tag{
+    font-family:'Space Mono';font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    padding:4px 10px;border-radius:99px;color:#0b0420;font-weight:700;
+    background:linear-gradient(90deg,var(--teal),var(--pink));
+  }
+  .tag.alt{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+  h3.title{font-family:'Outfit';font-weight:700;font-size:clamp(20px,2.3vw,26px);letter-spacing:.1px}
+  .lede-sm{color:var(--ink-dim);font-size:14px;margin:6px 0 16px;font-weight:300}
+
+  /* Exam card */
+  .exam{
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgba(15,229,212,.18), transparent 50%),
+      linear-gradient(160deg,rgba(58,43,110,.7),rgba(18,10,46,.7));
+    border:1px solid var(--line);
+  }
+  .exam .big{font-family:'Audiowide';font-size:clamp(26px,3vw,34px);margin:4px 0 2px;
+    background:linear-gradient(90deg,var(--teal),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .examrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+  .chip{
+    font-family:'Space Mono';font-size:11.5px;letter-spacing:.04em;padding:8px 12px;border-radius:11px;
+    background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--ink);
+  }
+  .chip b{color:var(--teal)}
+
+  /* Formula block */
+  .formula{
+    margin-top:4px;border-radius:15px;padding:18px 18px 20px;
+    background:linear-gradient(180deg,#0b0726,#0e0830);
+    border:1px solid var(--line);
+    box-shadow:0 0 0 1px rgba(15,229,212,.12),0 18px 40px rgba(0,0,0,.4) inset;
+    position:relative;
+  }
+  .formula::before{
+    content:"f(x)";position:absolute;top:10px;right:14px;font-family:'Space Mono';
+    font-size:10px;letter-spacing:.2em;color:rgba(15,229,212,.5)
+  }
+  .formula .frow{
+    font-family:'Space Mono';font-size:clamp(14px,1.7vw,17px);color:#eafcff;
+    padding:9px 4px;border-bottom:1px dashed rgba(255,78,184,.22);display:flex;align-items:center;gap:8px;
+  }
+  .formula .frow:last-child{border-bottom:0;padding-bottom:2px}
+  .formula .frow:first-child{padding-top:2px}
+  .formula .frow span{color:var(--pink);font-weight:700;margin-right:2px}
+  .formula sup{color:var(--teal)}
+
+  /* Trap callout */
+  .trap{
+    margin-top:18px;border-radius:16px;padding:18px 18px 18px 56px;position:relative;
+    background:linear-gradient(120deg,rgba(255,45,149,.16),rgba(255,122,184,.06));
+    border:1px solid rgba(255,77,160,.5);
+    box-shadow:0 0 26px rgba(255,45,149,.18);
+  }
+  .trap::before{content:"⚠";position:absolute;left:18px;top:16px;font-size:24px;filter:drop-shadow(0 0 8px var(--pink))}
+  .trap .tt{font-family:'Space Mono';font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink-hot);font-weight:700}
+  .trap p{font-size:14px;color:#fff;margin-top:5px;line-height:1.5}
+  .trap b{color:var(--teal)}
+
+  /* Worked example teaser */
+  .example{
+    margin-top:18px;border-radius:16px;padding:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    background:linear-gradient(120deg,rgba(15,229,212,.1),rgba(255,78,184,.08));
+    border:1px solid var(--line);
+  }
+  .example .num{
+    width:50px;height:50px;border-radius:13px;flex:none;display:grid;place-items:center;
+    font-family:'Audiowide';font-size:20px;color:#06121a;
+    background:linear-gradient(150deg,var(--teal),var(--sun-top));
+    box-shadow:0 8px 20px rgba(15,229,212,.35)
+  }
+  .example .ex-t{flex:1;min-width:170px}
+  .example .ex-t .lab{font-family:'Space Mono';font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal)}
+  .example .ex-t .nm{font-weight:600;font-size:15.5px;margin-top:3px}
+
+  .btns{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .btn{
+    font-family:'Outfit';font-weight:700;font-size:14.5px;letter-spacing:.02em;
+    padding:14px 26px;border-radius:13px;border:0;cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:9px;transition:.18s;
+  }
+  .btn.primary{
+    color:#0a0320;background:linear-gradient(95deg,var(--teal),var(--pink));
+    box-shadow:0 10px 30px rgba(255,45,149,.45),0 0 0 1px rgba(255,255,255,.25) inset;
+  }
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(255,45,149,.6)}
+  .btn.ghost{
+    color:#fff;background:rgba(255,255,255,.04);border:1px solid var(--teal);
+  }
+  .btn.ghost:hover{background:rgba(15,229,212,.12);transform:translateY(-2px)}
+
+  /* Footer */
+  footer{
+    position:relative;z-index:2;margin-top:40px;padding:26px clamp(20px,3.4vw,46px);
+    border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+    gap:14px;flex-wrap:wrap;background:rgba(12,7,34,.6);backdrop-filter:blur(6px);
+  }
+  footer .fbrand{display:flex;align-items:center;gap:11px;font-weight:700}
+  footer .mmark{width:38px;height:38px;border-radius:11px;font-size:19px}
+  footer .tg{font-size:12px;color:var(--ink-dim);font-weight:300}
+  footer .copy{font-family:'Space Mono';font-size:11px;letter-spacing:.1em;color:var(--ink-dim)}
+  footer .copy span{color:var(--pink)}
+
+  /* Responsive */
+  @media(max-width:980px){
+    .shell{grid-template-columns:1fr}
+    aside{display:flex;flex-direction:column;border-right:0;border-bottom:1px solid var(--line)}
+    .navwrap{margin-top:18px}
+    nav{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
+    .side-cta{display:none}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media(max-width:700px){
+    .stats{grid-template-columns:1fr}
+    nav{grid-template-columns:1fr}
+    .palm{display:none}
+    main{padding:24px 18px 40px}
+  }
+</style>
+</head>
+<body>
+
+<div class="backdrop" aria-hidden="true">
+  <div class="sky"></div>
+  <div class="sun"></div>
+  <div class="grid-floor"></div>
+  <div class="palm l">🌴</div>
+  <div class="palm r">🌴</div>
+  <div class="scanlines"></div>
+</div>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <aside>
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+
+    <div class="navwrap">
+      <span class="badge-fl">★ FAM-L / FAM-S</span>
+      <div class="navlabel">Topics</div>
+      <nav>
+        <a href="#" class="active"><span class="dot"></span>Survival Models</a>
+        <a href="#"><span class="dot"></span>Life Tables</a>
+        <a href="#"><span class="dot"></span>Life Insurance</a>
+        <a href="#"><span class="dot"></span>Life Annuities</a>
+        <a href="#"><span class="dot"></span>Premiums</a>
+        <a href="#"><span class="dot"></span>Policy Values</a>
+      </nav>
+    </div>
+
+    <div class="side-cta">
+      <p>You're <b>72%</b> through the syllabus. Keep the streak — sunset's not over.</p>
+      <a href="#" class="btn primary" style="width:100%;justify-content:center;padding:11px">▶ Resume</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+    <div class="topbar">
+      <div class="greet">Good evening</div>
+      <div class="topright">
+        <span class="pill"><b>86</b> days to exam</span>
+        <span class="pill">FAM · <b>SOA</b></span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h2>Let's get you<br>that pass.</h2>
+      <p class="lede">Your focused hub for <b>SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat">
+        <div class="k">Overall progress</div>
+        <div class="v pink">72%</div>
+        <div class="s">12 of 17 topics</div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="stat">
+        <div class="k">Exam countdown</div>
+        <div class="v teal">86<span style="font-size:.4em"> days</span></div>
+        <div class="s">Keep the pace steady</div>
+      </div>
+      <div class="stat">
+        <div class="k">Topics solid</div>
+        <div class="v sun">8</div>
+        <div class="s">Mastered &amp; review-ready</div>
+      </div>
+    </section>
+
+    <!-- Content -->
+    <div class="grid2">
+      <!-- Left column -->
+      <section class="card">
+        <div class="card-h">
+          <span class="tag">Topic preview</span>
+        </div>
+        <h3 class="title">Life Insurance Present Values</h3>
+        <p class="lede-sm">The EPV of a benefit paid on death — and how its variance falls right out of the same actuarial discounting.</p>
+
+        <div class="formula">
+          <div class="frow"><span>1</span> A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+          <div class="frow"><span>2</span> Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></div>
+          <div class="frow"><span>3</span> ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+        </div>
+
+        <!-- Trap -->
+        <div class="trap">
+          <div class="tt">Common trap</div>
+          <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+
+        <!-- Worked example -->
+        <div class="example">
+          <div class="num">1</div>
+          <div class="ex-t">
+            <div class="lab">Worked example</div>
+            <div class="nm">Example 1 — Whole life EPV &amp; variance</div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <a href="#" class="btn primary">▶ Start studying</a>
+          <a href="#" class="btn ghost">↻ Resume</a>
+        </div>
+      </section>
+
+      <!-- Right column -->
+      <section class="card exam">
+        <div class="card-h">
+          <span class="tag alt">Your exam</span>
+        </div>
+        <h3 class="title">Exam <span style="color:var(--teal)">FAM</span></h3>
+        <div class="big">Fundamentals of<br>Actuarial Mathematics</div>
+        <p class="lede-sm">Administered by the Society of Actuaries. One sitting, two halves — model it, price it, value it.</p>
+        <div class="examrow">
+          <span class="chip">🏛 <b>SOA</b></span>
+          <span class="chip">📝 <b>34</b> questions</span>
+          <span class="chip">🎯 pass = <b>6/10</b></span>
+        </div>
+        <div class="examrow">
+          <span class="chip">FAM-<b>L</b> · Long-term</span>
+          <span class="chip">FAM-<b>S</b> · Short-term</span>
+        </div>
+
+        <div class="formula" style="margin-top:20px">
+          <div class="frow" style="border:0;color:var(--ink-dim);font-size:12px">Next up on your plan</div>
+          <div class="frow"><span>→</span> Premiums &amp; Policy Values</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div class="fbrand">
+    <div class="mmark">M</div>
+    <div>
+      Me Studing Stuff
+      <div class="tg">Study smarter. Pass exams.</div>
+    </div>
+  </div>
+  <div class="copy">MIAMI <span>80s</span> EDITION · SOA EXAM FAM · © 2026</div>
+</footer>
+
+</body>
+</html>

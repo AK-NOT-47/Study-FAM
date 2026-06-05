@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c180f;
+    --ink-soft:#3d362a;
+    --faded:#6b5f49;
+    --paper:#f4ecd8;
+    --paper-2:#efe5cd;
+    --paper-3:#e8dcbe;
+    --line:#bba87f;
+    --line-soft:#d2c19a;
+    --seal:#8c2b1f;
+    --seal-deep:#6e1f15;
+    --gold:#9a7b2e;
+    --rule:#2a2316;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'EB Garamond',Georgia,serif;
+    color:var(--ink);
+    background:#cdbf9c;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ====== PAGE / PARCHMENT ====== */
+  .deed{
+    max-width:1180px;
+    margin:32px auto;
+    background:
+      radial-gradient(120% 90% at 12% 8%, rgba(255,250,235,.7), transparent 60%),
+      radial-gradient(120% 90% at 92% 96%, rgba(120,95,40,.10), transparent 55%),
+      var(--paper);
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.4) inset,
+      0 0 0 1px var(--line),
+      0 1px 0 4px var(--paper),
+      0 0 0 5px var(--line-soft),
+      0 26px 70px rgba(40,28,8,.45);
+    position:relative;
+    overflow:hidden;
+  }
+  /* fibrous paper texture */
+  .deed::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      repeating-linear-gradient(92deg, rgba(120,95,40,.025) 0 2px, transparent 2px 5px),
+      repeating-linear-gradient(8deg, rgba(120,95,40,.018) 0 3px, transparent 3px 9px);
+    mix-blend-mode:multiply;opacity:.6;
+  }
+  /* corner ornaments */
+  .corner{position:absolute;width:54px;height:54px;z-index:3;pointer-events:none;color:var(--line);}
+  .corner svg{width:100%;height:100%;display:block;}
+  .corner.tl{top:14px;left:14px;}
+  .corner.tr{top:14px;right:14px;transform:scaleX(-1);}
+  .corner.bl{bottom:14px;left:14px;transform:scaleY(-1);}
+  .corner.br{bottom:14px;right:14px;transform:scale(-1,-1);}
+
+  /* watermark */
+  .watermark{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .watermark .wm-letter{
+    font-family:'Playfair Display',serif;font-weight:900;
+    font-size:clamp(360px,52vw,720px);
+    color:var(--ink);opacity:.038;line-height:.8;
+    transform:translateY(2%) rotate(-8deg);
+    letter-spacing:-.04em;
+  }
+
+  .deed > *{position:relative;z-index:2;}
+
+  /* ====== MASTHEAD ====== */
+  .masthead{
+    padding:34px 60px 22px;
+    text-align:center;
+    border-bottom:3px double var(--rule);
+  }
+  .filing-row{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--faded);margin-bottom:18px;
+  }
+  .filing-row .docket{border:1px solid var(--line);padding:4px 10px;border-radius:2px;}
+  .brand-line{display:flex;align-items:center;justify-content:center;gap:18px;}
+  .mmark{
+    width:62px;height:62px;flex:none;border:2px solid var(--rule);
+    border-radius:50%;display:grid;place-items:center;
+    background:radial-gradient(circle at 35% 30%, #fff6e2, var(--paper-3));
+    box-shadow:0 0 0 4px var(--paper),0 0 0 5px var(--line-soft);
+  }
+  .mmark span{
+    font-family:'Playfair Display',serif;font-weight:900;font-size:34px;
+    color:var(--ink);line-height:1;
+  }
+  .brand-name{
+    font-family:'Cormorant SC','Playfair Display',serif;
+    font-weight:700;font-size:40px;letter-spacing:.06em;
+    color:var(--ink);line-height:1;text-transform:uppercase;
+  }
+  .tagline{
+    margin-top:10px;font-style:italic;font-size:18px;color:var(--ink-soft);
+    letter-spacing:.01em;
+  }
+  .preamble{
+    margin:18px auto 0;max-width:760px;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--faded);
+    display:flex;align-items:center;gap:14px;justify-content:center;
+  }
+  .preamble::before,.preamble::after{content:"";height:1px;flex:1;background:var(--line);}
+
+  /* ====== BODY GRID ====== */
+  .body{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:0;
+  }
+
+  /* ====== SIDEBAR / INDEX ====== */
+  .index{
+    padding:30px 26px 40px;
+    border-right:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(120,95,40,.05), transparent 40%);
+  }
+  .index-head{
+    font-family:'Cormorant SC',serif;font-weight:700;
+    font-size:15px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink);text-align:center;
+    padding-bottom:10px;margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-label{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;color:#fff;
+    background:var(--seal);
+    display:inline-block;padding:4px 10px;border-radius:2px;
+    margin:6px auto 14px;text-align:center;
+    box-shadow:0 1px 0 var(--seal-deep);
+  }
+  .toc{list-style:none;margin:0;padding:0;counter-reset:art;}
+  .toc li{counter-increment:art;}
+  .toc a{
+    display:flex;align-items:baseline;gap:10px;
+    text-decoration:none;color:var(--ink-soft);
+    padding:8px 4px;border-bottom:1px dotted var(--line-soft);
+    font-size:16.5px;transition:.18s;
+  }
+  .toc a::before{
+    content:"§ " counter(art,decimal-leading-zero);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:var(--seal);font-weight:600;flex:none;
+    letter-spacing:.04em;min-width:46px;
+  }
+  .toc a .tname{flex:1;}
+  .toc a:hover{color:var(--seal);padding-left:9px;background:rgba(140,43,31,.05);}
+  .toc a:hover .tname{text-decoration:underline;text-underline-offset:3px;}
+
+  .index-seal{
+    margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .wax{
+    width:96px;height:96px;border-radius:50%;
+    background:
+      radial-gradient(circle at 36% 30%, #b1402f, var(--seal) 55%, var(--seal-deep) 100%);
+    box-shadow:
+      0 6px 14px rgba(70,15,8,.5),
+      inset 0 2px 6px rgba(255,255,255,.25),
+      inset 0 -6px 12px rgba(0,0,0,.35);
+    display:grid;place-items:center;position:relative;
+    border:1px dashed rgba(255,220,200,.35);
+  }
+  .wax::before{
+    content:"";position:absolute;inset:7px;border-radius:50%;
+    border:1px solid rgba(255,225,205,.3);
+  }
+  .wax .wax-txt{
+    font-family:'Cormorant SC',serif;color:#fbe6da;
+    text-align:center;line-height:1.05;font-weight:700;
+  }
+  .wax .wax-txt b{font-size:26px;display:block;}
+  .wax .wax-txt small{font-size:8px;letter-spacing:.22em;display:block;margin-top:2px;}
+  .index-seal .caption{
+    font-family:'IBM Plex Mono',monospace;font-size:9px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--faded);text-align:center;
+  }
+
+  /* ====== MAIN COLUMN ====== */
+  .main{padding:32px 48px 20px;}
+
+  .salutation{
+    font-style:italic;font-size:19px;color:var(--seal);
+    letter-spacing:.02em;margin-bottom:4px;
+  }
+  .salutation::before{content:"⚜ ";font-style:normal;}
+  .headline{
+    font-family:'Playfair Display',serif;font-weight:800;
+    font-size:clamp(38px,5vw,58px);line-height:1.02;
+    color:var(--ink);margin:2px 0 14px;letter-spacing:-.015em;
+  }
+  .whereas{
+    font-size:18.5px;color:var(--ink-soft);max-width:660px;line-height:1.65;
+  }
+  .whereas .dropmark{
+    float:left;font-family:'Playfair Display',serif;font-weight:800;
+    font-size:62px;line-height:.74;color:var(--seal);
+    margin:6px 12px 0 0;
+  }
+
+  hr.rule{
+    border:0;border-top:1px solid var(--line);
+    margin:26px 0;position:relative;height:1px;
+  }
+  hr.rule::after{
+    content:"❖";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--paper);padding:0 14px;color:var(--gold);font-size:14px;
+  }
+
+  /* ====== STATS — ledger ====== */
+  .ledger{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border:1.5px solid var(--rule);
+    background:var(--paper-2);
+  }
+  .ledger .cell{
+    padding:18px 20px;border-right:1px solid var(--line);
+    position:relative;
+  }
+  .ledger .cell:last-child{border-right:0;}
+  .ledger .clause-no{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:.2em;color:var(--seal);text-transform:uppercase;
+  }
+  .ledger .val{
+    font-family:'Playfair Display',serif;font-weight:800;
+    font-size:42px;line-height:1;color:var(--ink);margin:6px 0 4px;
+  }
+  .ledger .val small{font-size:20px;font-weight:600;color:var(--faded);}
+  .ledger .lbl{
+    font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--faded);font-family:'IBM Plex Mono',monospace;
+  }
+  .ledger .sub{font-size:14px;color:var(--ink-soft);font-style:italic;margin-top:3px;}
+  .progressbar{
+    height:7px;background:var(--paper-3);border:1px solid var(--line);
+    margin-top:9px;border-radius:1px;overflow:hidden;
+  }
+  .progressbar i{
+    display:block;height:100%;width:72%;
+    background:repeating-linear-gradient(45deg,var(--seal) 0 6px,var(--seal-deep) 6px 12px);
+  }
+
+  /* ====== TWO-COLUMN CLAUSES ====== */
+  .columns{
+    display:grid;grid-template-columns:1.15fr 1fr;gap:36px;margin-top:30px;
+  }
+  .article{margin-bottom:10px;}
+  .article-head{
+    display:flex;align-items:baseline;gap:12px;
+    border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:14px;
+  }
+  .article-head .no{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;
+    color:#fff;background:var(--rule);padding:3px 9px;border-radius:2px;letter-spacing:.08em;
+    flex:none;
+  }
+  .article-head h2{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:24px;
+    margin:0;color:var(--ink);letter-spacing:-.01em;
+  }
+  .lede{font-style:italic;color:var(--ink-soft);font-size:17px;margin:0 0 14px;}
+
+  /* Exam card */
+  .exam-card{
+    border:1.5px solid var(--rule);background:var(--paper-3);
+    padding:0;position:relative;
+    box-shadow:0 6px 18px rgba(40,28,8,.16);
+  }
+  .exam-card .ec-top{
+    background:var(--rule);color:var(--paper);
+    padding:10px 18px;display:flex;justify-content:space-between;align-items:center;
+    font-family:'Cormorant SC',serif;letter-spacing:.12em;font-weight:600;font-size:18px;
+  }
+  .exam-card .ec-top .stamp{
+    font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;
+    border:1px solid var(--line);padding:3px 7px;border-radius:2px;color:var(--paper);
+  }
+  .exam-card .ec-body{padding:16px 18px 18px;}
+  .exam-card .ec-body p{margin:0 0 12px;font-style:italic;color:var(--ink-soft);}
+  .specs{list-style:none;margin:0;padding:0;display:grid;gap:0;}
+  .specs li{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:8px 0;border-bottom:1px dotted var(--line-soft);font-size:16px;
+  }
+  .specs li:last-child{border-bottom:0;}
+  .specs li .k{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--faded);
+  }
+  .specs li .v{font-family:'Playfair Display',serif;font-weight:700;color:var(--ink);}
+  .specs li .v.pass{color:var(--seal);}
+
+  /* Formula block */
+  .formula{
+    background:
+      linear-gradient(180deg, rgba(255,252,243,.6), transparent),
+      var(--paper-2);
+    border:1px solid var(--rule);border-left:4px solid var(--seal);
+    padding:14px 18px;margin:6px 0 4px;
+  }
+  .formula .ftitle{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--seal);margin-bottom:10px;
+  }
+  .formula ol{margin:0;padding:0;list-style:none;counter-reset:f;}
+  .formula ol li{
+    counter-increment:f;
+    font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--ink);
+    padding:7px 0;border-bottom:1px dotted var(--line-soft);
+    display:flex;gap:12px;align-items:baseline;
+  }
+  .formula ol li:last-child{border-bottom:0;}
+  .formula ol li::before{
+    content:"(" counter(f,lower-roman) ")";
+    color:var(--seal);font-size:12px;flex:none;min-width:30px;font-weight:600;
+  }
+  .formula sup{font-size:.72em;}
+
+  /* trap callout */
+  .trap{
+    border:1.5px solid var(--seal);background:rgba(140,43,31,.06);
+    padding:14px 18px 14px 52px;margin-top:22px;position:relative;
+  }
+  .trap::before{
+    content:"§";position:absolute;left:14px;top:12px;
+    font-family:'Playfair Display',serif;font-weight:800;font-size:30px;color:var(--seal);
+  }
+  .trap .th{
+    font-family:'Cormorant SC',serif;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;font-size:14px;color:var(--seal-deep);margin-bottom:4px;
+  }
+  .trap p{margin:0;font-size:16.5px;color:var(--ink-soft);}
+  .trap p em{font-style:italic;font-weight:600;color:var(--seal);}
+
+  /* worked example teaser */
+  .teaser{
+    margin-top:30px;border:1.5px solid var(--rule);
+    background:linear-gradient(135deg,var(--paper-3),var(--paper-2));
+    padding:22px 26px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;
+    position:relative;overflow:hidden;
+  }
+  .teaser::after{
+    content:"";position:absolute;right:-30px;bottom:-30px;width:150px;height:150px;
+    border:1px dashed var(--line);border-radius:50%;opacity:.5;
+  }
+  .teaser .tz{flex:1;min-width:260px;}
+  .teaser .exhibit{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--seal);
+  }
+  .teaser h3{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:24px;
+    margin:5px 0 6px;color:var(--ink);
+  }
+  .teaser p{margin:0;font-style:italic;color:var(--ink-soft);font-size:16px;}
+  .actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    font-family:'Cormorant SC',serif;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;font-size:15px;text-decoration:none;
+    padding:13px 26px;border-radius:2px;display:inline-block;transition:.18s;
+    cursor:pointer;border:1.5px solid var(--rule);
+  }
+  .btn.primary{
+    background:var(--seal);color:#fbe6da;border-color:var(--seal-deep);
+    box-shadow:0 4px 0 var(--seal-deep),0 6px 14px rgba(70,15,8,.35);
+  }
+  .btn.primary:hover{transform:translateY(2px);box-shadow:0 2px 0 var(--seal-deep);}
+  .btn.ghost{background:var(--paper);color:var(--ink);}
+  .btn.ghost:hover{background:var(--rule);color:var(--paper);}
+
+  /* signature / footer */
+  .attestation{
+    margin-top:34px;padding:24px 48px 30px;
+    border-top:3px double var(--rule);
+    display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;
+  }
+  .sig-block{flex:1;min-width:240px;}
+  .sig-block .sig-line{
+    border-bottom:1.5px solid var(--rule);height:38px;display:flex;align-items:flex-end;
+    font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
+    font-size:26px;color:var(--ink);padding-bottom:2px;
+  }
+  .sig-block .sig-cap{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--faded);margin-top:6px;
+  }
+  .foot-brand{text-align:right;}
+  .foot-brand .fb-name{
+    font-family:'Cormorant SC',serif;font-weight:700;font-size:20px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink);
+  }
+  .foot-brand .fb-tag{font-style:italic;color:var(--faded);font-size:15px;}
+  .foot-brand .fb-meta{
+    font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;
+    color:var(--faded);margin-top:6px;text-transform:uppercase;
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media(max-width:860px){
+    .body{grid-template-columns:1fr;}
+    .index{border-right:0;border-bottom:1px solid var(--line);}
+    .columns{grid-template-columns:1fr;gap:28px;}
+    .main{padding:28px 28px 16px;}
+    .masthead{padding:28px 26px 20px;}
+  }
+  @media(max-width:700px){
+    .deed{margin:14px;}
+    .ledger{grid-template-columns:1fr;}
+    .ledger .cell{border-right:0;border-bottom:1px solid var(--line);}
+    .ledger .cell:last-child{border-bottom:0;}
+    .filing-row{flex-direction:column;gap:8px;}
+    .brand-name{font-size:30px;}
+    .attestation{padding:22px 26px;}
+    .foot-brand{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<main class="deed">
+  <!-- corner ornaments -->
+  <div class="corner tl"><svg viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 52V12C2 6 6 2 12 2h40"/><path d="M8 46V16c0-4 3-7 7-7h31"/><circle cx="14" cy="14" r="3.5"/></svg></div>
+  <div class="corner tr"><svg viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 52V12C2 6 6 2 12 2h40"/><path d="M8 46V16c0-4 3-7 7-7h31"/><circle cx="14" cy="14" r="3.5"/></svg></div>
+  <div class="corner bl"><svg viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 52V12C2 6 6 2 12 2h40"/><path d="M8 46V16c0-4 3-7 7-7h31"/><circle cx="14" cy="14" r="3.5"/></svg></div>
+  <div class="corner br"><svg viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 52V12C2 6 6 2 12 2h40"/><path d="M8 46V16c0-4 3-7 7-7h31"/><circle cx="14" cy="14" r="3.5"/></svg></div>
+
+  <div class="watermark"><div class="wm-letter">M</div></div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="filing-row">
+      <span class="docket">Docket № FAM-2026-075</span>
+      <span>In the matter of · The Candidate's Preparation</span>
+      <span class="docket">Filed · 05 June 2026</span>
+    </div>
+    <div class="brand-line">
+      <div class="mmark"><span>M</span></div>
+      <div class="brand-name">Me&nbsp;Studing&nbsp;Stuff</div>
+    </div>
+    <div class="tagline">Study smarter. Pass exams.</div>
+    <div class="preamble">Articles of Diligent Study &amp; Examination · Society of Actuaries</div>
+  </header>
+
+  <div class="body">
+    <!-- SIDEBAR INDEX -->
+    <nav class="index">
+      <div class="index-head">Index of Articles</div>
+      <div style="text-align:center"><span class="section-label">Schedule · FAM-L / FAM-S</span></div>
+      <ol class="toc">
+        <li><a href="#"><span class="tname">Survival Models</span></a></li>
+        <li><a href="#"><span class="tname">Life Tables</span></a></li>
+        <li><a href="#"><span class="tname">Life Insurance</span></a></li>
+        <li><a href="#"><span class="tname">Life Annuities</span></a></li>
+        <li><a href="#"><span class="tname">Premiums</span></a></li>
+        <li><a href="#"><span class="tname">Policy Values</span></a></li>
+      </ol>
+
+      <div class="index-seal">
+        <div class="wax">
+          <div class="wax-txt"><b>SOA</b><small>★ Examination ★</small><small>FAM</small></div>
+        </div>
+        <div class="caption">Affixed &amp; Certified Hereto</div>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <section class="main">
+      <p class="salutation">Good evening</p>
+      <h1 class="headline">Let's get you that pass.</h1>
+      <p class="whereas">
+        <span class="dropmark">W</span>hereas the undersigned doth resolve to prevail — your focused hub for SOA Exam FAM: notes, formulas, worked problems and a plan, all in one calm place.
+      </p>
+
+      <hr class="rule">
+
+      <!-- STATS LEDGER -->
+      <div class="ledger">
+        <div class="cell">
+          <div class="clause-no">Art. I · Progress</div>
+          <div class="val">72<small>%</small></div>
+          <div class="lbl">Overall progress</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="progressbar"><i></i></div>
+        </div>
+        <div class="cell">
+          <div class="clause-no">Art. II · Term</div>
+          <div class="val">86</div>
+          <div class="lbl">Exam countdown</div>
+          <div class="sub">days remaining hereunder</div>
+        </div>
+        <div class="cell">
+          <div class="clause-no">Art. III · Mastery</div>
+          <div class="val">8</div>
+          <div class="lbl">Topics solid</div>
+          <div class="sub">deemed wholly secured</div>
+        </div>
+      </div>
+
+      <!-- TWO COLUMN CLAUSES -->
+      <div class="columns">
+        <!-- LEFT: topic + formula + trap -->
+        <div>
+          <div class="article">
+            <div class="article-head">
+              <span class="no">ART. IV</span>
+              <h2>Life Insurance Present Values</h2>
+            </div>
+            <p class="lede">On the present value of benefits payable upon the contingency of death — the heart of the matter.</p>
+            <div class="formula">
+              <div class="ftitle">Schedule of Governing Formulae</div>
+              <ol>
+                <li>A<sub>x</sub> = 1 − d·ä<sub>x</sub></li>
+                <li>Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></li>
+                <li>ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="trap">
+            <div class="th">Common Trap · Take Notice</div>
+            <p>Under UDD, multiply <em>only</em> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: exam card -->
+        <div>
+          <div class="article-head">
+            <span class="no">EXHIBIT A</span>
+            <h2>Exam FAM</h2>
+          </div>
+          <div class="exam-card">
+            <div class="ec-top">
+              <span>Exam FAM</span>
+              <span class="stamp">Registered</span>
+            </div>
+            <div class="ec-body">
+              <p>Fundamentals of Actuarial Mathematics — the principal instrument of these articles.</p>
+              <ul class="specs">
+                <li><span class="k">Full Title</span><span class="v">Fundamentals of Actuarial Mathematics</span></li>
+                <li><span class="k">Authority</span><span class="v">SOA</span></li>
+                <li><span class="k">Questions</span><span class="v">34</span></li>
+                <li><span class="k">Pass Threshold</span><span class="v pass">6 / 10</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKED EXAMPLE TEASER -->
+      <div class="teaser">
+        <div class="tz">
+          <div class="exhibit">Exhibit B · Worked Authority</div>
+          <h3>Example 1 — Whole life EPV &amp; variance</h3>
+          <p>Compute the expected present value and the variance of Z for a whole life policy, step by sworn step.</p>
+        </div>
+        <div class="actions">
+          <a href="#" class="btn primary">Start studying</a>
+          <a href="#" class="btn ghost">Resume</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ATTESTATION / FOOTER -->
+  <footer class="attestation">
+    <div class="sig-block">
+      <div class="sig-line">Me Studing Stuff</div>
+      <div class="sig-cap">In witness whereof · The Diligent Candidate</div>
+    </div>
+    <div class="foot-brand">
+      <div class="fb-name">Me Studing Stuff</div>
+      <div class="fb-tag">Study smarter. Pass exams.</div>
+      <div class="fb-meta">SOA Exam FAM · Concept № 075 · Done in calm</div>
+    </div>
+  </footer>
+</main>
+</body>
+</html>

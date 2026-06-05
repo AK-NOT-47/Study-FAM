@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Tangerine:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#2a2520;
+    --ink-soft:#5a5046;
+    --cream:#f7f1e6;
+    --cream-deep:#efe6d4;
+    --parchment:#fbf6ec;
+    --gold:#a9893f;
+    --gold-bright:#c9a44e;
+    --gold-deep:#8a6d2c;
+    --wine:#7a2f3a;
+    --wine-soft:#9b4651;
+    --rule:rgba(122,47,58,.22);
+    --gold-rule:rgba(169,137,63,.35);
+    --shadow:rgba(42,37,32,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'EB Garamond',Georgia,serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 8%, rgba(201,164,78,.10), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(122,47,58,.08), transparent 42%),
+      linear-gradient(160deg,#fbf6ec 0%, #f4ebda 55%, #efe4cf 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  /* faint paper texture via repeating hairlines */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(122,47,58,.018) 0 1px, transparent 1px 28px);
+  }
+  .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px}
+
+  /* ---------- ornaments ---------- */
+  .flourish{display:block;color:var(--gold);opacity:.85}
+  .flourish svg{display:block;width:100%;height:auto}
+  .divider{
+    display:flex;align-items:center;justify-content:center;gap:18px;
+    margin:0;color:var(--gold);
+  }
+  .divider .line{height:1px;flex:1;max-width:240px;
+    background:linear-gradient(90deg,transparent,var(--gold-rule),transparent);}
+  .divider .gem{font-size:1.1rem;letter-spacing:.4em}
+  .script{font-family:'Pinyon Script',cursive;font-weight:400;line-height:1}
+  .script-t{font-family:'Tangerine',cursive;line-height:.9}
+  .smallcaps{font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.34em;font-weight:600;font-size:.72rem;color:var(--gold-deep)}
+
+  /* ---------- top brand bar ---------- */
+  header.masthead{
+    text-align:center;padding:44px 28px 14px;position:relative;z-index:2;
+  }
+  .brand-mark{
+    width:78px;height:78px;margin:0 auto 8px;position:relative;
+    display:grid;place-items:center;
+    border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, #fff7e6, #f0e3c4 70%);
+    box-shadow:0 6px 20px var(--shadow), inset 0 0 0 1px var(--gold-rule);
+  }
+  .brand-mark::after{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    border:1px solid var(--gold-rule);
+  }
+  .brand-mark span{
+    font-family:'Pinyon Script',cursive;font-size:3.4rem;color:var(--wine);
+    margin-top:6px;text-shadow:0 1px 0 rgba(255,255,255,.6);
+  }
+  .brand-name{
+    font-family:'Tangerine',cursive;font-weight:700;
+    font-size:clamp(3.4rem,8vw,5.8rem);
+    color:var(--wine);line-height:.8;letter-spacing:.5px;
+  }
+  .brand-tag{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:clamp(1rem,2.2vw,1.35rem);color:var(--ink-soft);
+    margin-top:2px;letter-spacing:.02em;
+  }
+
+  /* ---------- navigation ---------- */
+  nav.primary{
+    margin:22px auto 0;max-width:1080px;
+    border-top:1px solid var(--gold-rule);
+    border-bottom:1px solid var(--gold-rule);
+    padding:14px 10px;position:relative;
+  }
+  nav.primary::before,nav.primary::after{
+    content:"❧";position:absolute;left:50%;transform:translateX(-50%);
+    color:var(--gold);font-size:1rem;
+  }
+  nav.primary::before{top:-11px;background:var(--parchment);padding:0 12px}
+  nav.primary::after{bottom:-11px;background:var(--parchment);padding:0 12px;transform:translateX(-50%) rotate(180deg)}
+  .nav-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+    gap:6px 30px;}
+  .nav-section{
+    font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.28em;font-size:.66rem;font-weight:600;color:#fff;
+    background:linear-gradient(180deg,var(--wine-soft),var(--wine));
+    padding:6px 14px;border-radius:30px;
+    box-shadow:0 3px 8px rgba(122,47,58,.3);
+  }
+  nav.primary a{
+    text-decoration:none;color:var(--ink);
+    font-family:'Cormorant Garamond',serif;font-weight:500;
+    font-size:1.18rem;letter-spacing:.02em;position:relative;padding:2px 0;
+    transition:color .25s;
+  }
+  nav.primary a::after{
+    content:"";position:absolute;left:50%;bottom:-3px;width:0;height:1px;
+    background:var(--gold);transition:.3s;transform:translateX(-50%);
+  }
+  nav.primary a:hover{color:var(--wine)}
+  nav.primary a:hover::after{width:100%}
+
+  /* ---------- hero ---------- */
+  .hero{padding:52px 0 30px;text-align:center;position:relative}
+  .greeting{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:1.5rem;color:var(--gold-deep);letter-spacing:.04em;margin-bottom:2px;
+  }
+  .greeting::before,.greeting::after{content:"·";color:var(--gold);margin:0 .5em;opacity:.6}
+  .hero h1{
+    font-family:'Pinyon Script',cursive;
+    font-size:clamp(3.6rem,11vw,8.2rem);
+    color:var(--ink);line-height:.86;font-weight:400;
+    margin:6px 0 4px;
+    background:linear-gradient(180deg,#3a3026 0%, #5a4632 60%, var(--gold-deep) 130%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 2px 1px rgba(255,255,255,.4));
+  }
+  .hero .lede{
+    max-width:680px;margin:14px auto 0;
+    font-size:1.22rem;color:var(--ink-soft);font-style:italic;
+    font-family:'Cormorant Garamond',serif;line-height:1.55;
+  }
+  .hero .lede b{font-style:normal;font-weight:600;color:var(--wine)}
+
+  /* ---------- stats ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+    max-width:860px;margin:38px auto 0;
+    border:1px solid var(--gold-rule);border-radius:6px;
+    background:linear-gradient(180deg, rgba(255,255,255,.45), rgba(247,241,230,.35));
+    box-shadow:0 10px 30px var(--shadow), inset 0 0 0 4px rgba(255,255,255,.3);
+    overflow:hidden;
+  }
+  .stat{padding:26px 18px;text-align:center;position:relative}
+  .stat + .stat{border-left:1px solid var(--gold-rule)}
+  .stat .num{
+    font-family:'Cormorant Garamond',serif;font-weight:600;
+    font-size:clamp(2.6rem,5vw,3.4rem);color:var(--wine);line-height:1;
+  }
+  .stat .num small{font-size:1.3rem;color:var(--gold-deep)}
+  .stat .label{
+    font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.22em;font-size:.66rem;font-weight:600;color:var(--gold-deep);
+    margin-top:8px;
+  }
+  .stat .sub{font-style:italic;font-size:.92rem;color:var(--ink-soft);margin-top:3px}
+  .stat .scriptnum{font-family:'Pinyon Script',cursive;font-size:3rem;color:var(--wine);line-height:1}
+
+  /* ---------- main grid ---------- */
+  main{padding:46px 0 20px}
+  .layout{display:grid;grid-template-columns:1.5fr 1fr;gap:30px;align-items:start}
+
+  .card{
+    background:linear-gradient(180deg,#fdfaf3,#f6efe0);
+    border:1px solid var(--gold-rule);border-radius:8px;
+    box-shadow:0 8px 26px var(--shadow);
+    position:relative;
+  }
+  .card::before{
+    content:"";position:absolute;inset:7px;border:1px solid var(--gold-rule);
+    border-radius:4px;pointer-events:none;
+  }
+  .card-pad{padding:30px 30px}
+  .eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .eyebrow .smallcaps{white-space:nowrap}
+  .eyebrow .l{height:1px;flex:1;background:linear-gradient(90deg,var(--gold-rule),transparent)}
+
+  .card h2{
+    font-family:'Pinyon Script',cursive;font-weight:400;
+    font-size:clamp(2.4rem,5vw,3.2rem);color:var(--ink);line-height:.95;margin:2px 0 6px;
+  }
+  .card .lede2{font-style:italic;color:var(--ink-soft);font-size:1.08rem;
+    font-family:'Cormorant Garamond',serif;}
+
+  /* formula block */
+  .formula{
+    margin:22px 0 6px;padding:22px 20px;text-align:center;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(201,164,78,.10), transparent 60%),
+      #fffdf7;
+    border:1px solid var(--gold-rule);border-radius:6px;
+    box-shadow:inset 0 0 0 4px rgba(255,255,255,.5);
+  }
+  .formula .ftitle{
+    font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.26em;font-size:.62rem;color:var(--gold-deep);font-weight:600;
+    margin-bottom:14px;
+  }
+  .formula .eqs{display:flex;flex-direction:column;gap:13px}
+  .eq{
+    font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--ink);
+    font-weight:500;letter-spacing:.01em;
+  }
+  .eq .v{color:var(--wine);font-style:italic}
+  .eq sup{font-size:.62em;vertical-align:top;color:var(--gold-deep)}
+  .eq sub{font-size:.62em;color:var(--gold-deep)}
+  .eq .op{color:var(--gold);margin:0 .35em;opacity:.7}
+  .eq .dot{color:var(--gold);margin:0 1.1em;font-size:.7em;vertical-align:middle}
+
+  /* trap callout */
+  .trap{
+    margin-top:24px;position:relative;
+    padding:20px 24px 20px 58px;
+    background:linear-gradient(180deg,#fbf0ee,#f7e6e3);
+    border:1px solid var(--rule);border-left:3px solid var(--wine);
+    border-radius:6px;
+  }
+  .trap .quill{
+    position:absolute;left:18px;top:50%;transform:translateY(-50%);
+    font-size:1.7rem;color:var(--wine);
+  }
+  .trap .tl{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
+    text-transform:uppercase;letter-spacing:.2em;font-size:.66rem;color:var(--wine);
+    display:block;margin-bottom:4px;
+  }
+  .trap p{font-size:1.05rem;color:var(--ink);line-height:1.5}
+  .trap b{color:var(--wine)}
+
+  /* worked example teaser */
+  .example{
+    margin-top:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    padding:18px 22px;border:1px dashed var(--gold-rule);border-radius:6px;
+    background:rgba(255,253,247,.6);
+  }
+  .example .badge{
+    width:54px;height:54px;flex:none;border-radius:50%;display:grid;place-items:center;
+    font-family:'Pinyon Script',cursive;font-size:2rem;color:#fff;
+    background:radial-gradient(circle at 38% 32%,var(--gold-bright),var(--gold-deep));
+    box-shadow:0 4px 12px rgba(138,109,44,.4),inset 0 0 0 1px rgba(255,255,255,.3);
+  }
+  .example .et small{display:block;
+    font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.24em;font-size:.6rem;color:var(--gold-deep);font-weight:600}
+  .example .et strong{font-family:'Cormorant Garamond',serif;font-weight:600;
+    font-size:1.25rem;color:var(--ink)}
+
+  /* buttons */
+  .actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .btn{
+    font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.2em;font-size:.82rem;font-weight:600;
+    padding:14px 30px;border-radius:40px;text-decoration:none;cursor:pointer;
+    border:1px solid transparent;transition:.28s;display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn.primary{
+    color:#fdf6e6;background:linear-gradient(180deg,var(--wine-soft),var(--wine));
+    box-shadow:0 6px 16px rgba(122,47,58,.35);
+  }
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(122,47,58,.45)}
+  .btn.ghost{
+    color:var(--gold-deep);background:transparent;border-color:var(--gold-rule);
+  }
+  .btn.ghost:hover{background:rgba(201,164,78,.12);color:var(--wine);border-color:var(--gold)}
+  .btn .ico{font-family:'Pinyon Script',cursive;font-size:1.3rem;letter-spacing:0}
+
+  /* ---------- sidebar ---------- */
+  .side{display:flex;flex-direction:column;gap:30px}
+
+  .exam-card{
+    background:
+      radial-gradient(circle at 80% 10%, rgba(201,164,78,.18), transparent 50%),
+      linear-gradient(165deg,#2f2620,#43352a);
+    color:#f3e7cf;border-radius:8px;padding:0;position:relative;overflow:hidden;
+    box-shadow:0 14px 34px rgba(42,37,32,.32);
+  }
+  .exam-card::before{
+    content:"";position:absolute;inset:8px;border:1px solid rgba(201,164,78,.35);
+    border-radius:5px;pointer-events:none;
+  }
+  .exam-inner{padding:30px 28px;position:relative}
+  .exam-card .crest{
+    font-family:'Pinyon Script',cursive;font-size:2.2rem;color:var(--gold-bright);
+    line-height:1;margin-bottom:2px;
+  }
+  .exam-card .ribbon{
+    font-family:'Cormorant Garamond',serif;text-transform:uppercase;
+    letter-spacing:.3em;font-size:.62rem;color:var(--gold-bright);font-weight:600;
+  }
+  .exam-card h3{
+    font-family:'Tangerine',cursive;font-weight:700;font-size:4.4rem;line-height:.7;
+    color:#fbf2dd;margin:8px 0 6px;
+  }
+  .exam-card .full{font-style:italic;color:#d9c9a6;font-size:1.02rem;
+    font-family:'Cormorant Garamond',serif;}
+  .exam-meta{
+    margin-top:20px;display:flex;flex-direction:column;gap:0;
+    border-top:1px solid rgba(201,164,78,.3);
+  }
+  .exam-meta div{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:11px 0;border-bottom:1px solid rgba(201,164,78,.18);
+    font-family:'Cormorant Garamond',serif;
+  }
+  .exam-meta .k{text-transform:uppercase;letter-spacing:.18em;font-size:.66rem;color:#c2ac82}
+  .exam-meta .vv{font-size:1.25rem;color:#fbf2dd;font-weight:600}
+  .exam-meta .vv.pass{color:var(--gold-bright);font-family:'Pinyon Script',cursive;
+    font-size:1.9rem;letter-spacing:0;font-weight:400}
+
+  /* progress ledger */
+  .ledger{padding:26px 26px}
+  .ledger .eyebrow{margin-bottom:14px}
+  .prog-line{margin-bottom:16px}
+  .prog-line:last-child{margin-bottom:0}
+  .prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .prog-top .nm{font-family:'Cormorant Garamond',serif;font-size:1.08rem;color:var(--ink)}
+  .prog-top .pc{font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--wine);font-size:1rem}
+  .track{height:7px;border-radius:6px;background:rgba(122,47,58,.1);overflow:hidden;
+    box-shadow:inset 0 1px 2px rgba(42,37,32,.12)}
+  .fill{height:100%;border-radius:6px;
+    background:linear-gradient(90deg,var(--gold-bright),var(--wine-soft));
+    position:relative;}
+  .fill::after{content:"";position:absolute;right:0;top:0;bottom:0;width:8px;
+    background:rgba(255,255,255,.45);}
+
+  /* quote / inkwell ornament strip */
+  .inkstrip{
+    grid-column:1 / -1;text-align:center;margin-top:8px;padding:26px 10px 4px;
+  }
+  .inkstrip .q{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.45rem;
+    color:var(--ink-soft);max-width:760px;margin:14px auto 0;line-height:1.5;
+  }
+  .inkstrip .q b{color:var(--wine);font-style:normal;font-weight:600}
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:46px;text-align:center;padding:40px 20px 50px;position:relative;z-index:1;
+    border-top:1px solid var(--gold-rule);
+    background:linear-gradient(180deg,transparent,rgba(122,47,58,.04));
+  }
+  footer .fmark{font-family:'Pinyon Script',cursive;font-size:2rem;color:var(--wine)}
+  footer .fname{font-family:'Tangerine',cursive;font-weight:700;font-size:2.6rem;color:var(--wine);line-height:.8}
+  footer .ftag{font-style:italic;color:var(--ink-soft);
+    font-family:'Cormorant Garamond',serif;font-size:1.05rem;margin-top:2px}
+  footer .fnav{margin-top:14px;display:flex;gap:8px 22px;justify-content:center;flex-wrap:wrap}
+  footer .fnav a{color:var(--ink-soft);text-decoration:none;font-size:.95rem;
+    font-family:'Cormorant Garamond',serif;letter-spacing:.04em}
+  footer .fnav a:hover{color:var(--wine)}
+  footer .copyright{margin-top:18px;font-size:.8rem;color:var(--ink-soft);
+    letter-spacing:.08em;opacity:.8}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:920px){
+    .layout{grid-template-columns:1fr}
+  }
+  @media (max-width:700px){
+    .wrap{padding:0 18px}
+    .stats{grid-template-columns:1fr}
+    .stat + .stat{border-left:none;border-top:1px solid var(--gold-rule)}
+    .card-pad,.exam-inner,.ledger{padding:24px 20px}
+    nav.primary a{font-size:1.05rem}
+    .nav-row{gap:6px 20px}
+    .eq{font-size:1.25rem}
+    .eq .dot{margin:0 .5em}
+  }
+</style>
+</head>
+<body>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="brand-mark"><span>M</span></div>
+    <div class="brand-name">Me Studing Stuff</div>
+    <div class="brand-tag">Study smarter. Pass exams.</div>
+
+    <nav class="primary">
+      <div class="nav-row">
+        <span class="nav-section">FAM-L / FAM-S</span>
+        <a href="#">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="greeting">Good evening</div>
+      <h1>Let&rsquo;s get you that pass.</h1>
+      <p class="lede">Your focused hub for <b>SOA Exam FAM</b> &mdash; notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="num">72<small>%</small></div>
+          <div class="label">Overall Progress</div>
+          <div class="sub">12 of 17 topics</div>
+        </div>
+        <div class="stat">
+          <div class="num">86</div>
+          <div class="label">Exam Countdown</div>
+          <div class="sub">days remaining</div>
+        </div>
+        <div class="stat">
+          <div class="scriptnum">8</div>
+          <div class="label">Topics Solid</div>
+          <div class="sub">mastered &amp; reviewed</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" style="margin:18px 0 0">
+      <span class="line"></span><span class="gem">&#10086;</span><span class="line"></span>
+    </div>
+
+    <!-- MAIN -->
+    <main>
+      <div class="layout">
+
+        <!-- LEFT: topic preview -->
+        <section class="card">
+          <div class="card-pad">
+            <div class="eyebrow">
+              <span class="smallcaps">Topic Preview</span>
+              <span class="l"></span>
+            </div>
+            <h2>Life Insurance Present Values</h2>
+            <p class="lede2">The graceful arithmetic of when a benefit is paid &mdash; discounted back to today, expectation and variance hand in hand.</p>
+
+            <div class="formula">
+              <div class="ftitle">&#10086; Three to keep close &#10086;</div>
+              <div class="eqs">
+                <div class="eq"><span class="v">A<sub>x</sub></span> = 1 &minus; <span class="v">d</span>&middot;<span class="v">&auml;<sub>x</sub></span></div>
+                <div class="eq">Var(<span class="v">Z</span>) = <sup>2</sup><span class="v">A<sub>x</sub></span> &minus; (<span class="v">A<sub>x</sub></span>)<sup>2</sup></div>
+                <div class="eq"><span class="v">&auml;<sub>x</sub></span> = (1 &minus; <span class="v">A<sub>x</sub></span>) / <span class="v">d</span></div>
+              </div>
+            </div>
+
+            <div class="trap">
+              <span class="quill">&#9998;</span>
+              <span class="tl">Common Trap</span>
+              <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/&delta;</b> &mdash; the pure endowment is never rescaled.</p>
+            </div>
+
+            <div class="example">
+              <span class="badge">1</span>
+              <div class="et">
+                <small>Worked Example</small>
+                <strong>Example 1 &mdash; Whole life EPV &amp; variance</strong>
+              </div>
+            </div>
+
+            <div class="actions">
+              <a href="#" class="btn primary"><span class="ico">&#10070;</span> Start studying</a>
+              <a href="#" class="btn ghost">Resume</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: sidebar -->
+        <aside class="side">
+
+          <div class="exam-card">
+            <div class="exam-inner">
+              <div class="crest">&#10047;</div>
+              <div class="ribbon">The Examination</div>
+              <h3>Exam FAM</h3>
+              <p class="full">Fundamentals of Actuarial Mathematics</p>
+              <div class="exam-meta">
+                <div><span class="k">Provider</span><span class="vv">SOA</span></div>
+                <div><span class="k">Questions</span><span class="vv">34</span></div>
+                <div><span class="k">Pass mark</span><span class="vv pass">6 / 10</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card ledger">
+            <div class="eyebrow">
+              <span class="smallcaps">The Ledger</span>
+              <span class="l"></span>
+            </div>
+            <div class="prog-line">
+              <div class="prog-top"><span class="nm">Life Insurance</span><span class="pc">88%</span></div>
+              <div class="track"><div class="fill" style="width:88%"></div></div>
+            </div>
+            <div class="prog-line">
+              <div class="prog-top"><span class="nm">Life Annuities</span><span class="pc">74%</span></div>
+              <div class="track"><div class="fill" style="width:74%"></div></div>
+            </div>
+            <div class="prog-line">
+              <div class="prog-top"><span class="nm">Premiums</span><span class="pc">61%</span></div>
+              <div class="track"><div class="fill" style="width:61%"></div></div>
+            </div>
+            <div class="prog-line">
+              <div class="prog-top"><span class="nm">Policy Values</span><span class="pc">45%</span></div>
+              <div class="track"><div class="fill" style="width:45%"></div></div>
+            </div>
+            <div class="prog-line">
+              <div class="prog-top"><span class="nm">Survival Models</span><span class="pc">92%</span></div>
+              <div class="track"><div class="fill" style="width:92%"></div></div>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- INKWELL QUOTE STRIP -->
+        <div class="inkstrip">
+          <div class="divider"><span class="line"></span><span class="gem">&#10086;</span><span class="line"></span></div>
+          <p class="q">Written one stroke at a time &mdash; a steady hand, a calm mind, and the pass becomes <b>inevitable</b>.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="fmark">M</div>
+    <div class="fname">Me Studing Stuff</div>
+    <div class="ftag">Study smarter. Pass exams.</div>
+    <div class="fnav">
+      <a href="#">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </div>
+    <div class="copyright">&copy; 2026 Me Studing Stuff &middot; Your focused hub for SOA Exam FAM</div>
+  </footer>
+
+</body>
+</html>

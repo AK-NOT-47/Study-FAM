@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ME STUDYING STUFF — A FAM Picture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0806;
+    --paper:#f3 e7d3;
+    --cream:#f4ecd8;
+    --gold:#e8b13a;
+    --gold-deep:#b8801f;
+    --red:#c0341f;
+    --red-deep:#8a2114;
+    --blood:#7a1d10;
+    --char:#15110d;
+    --smoke:#2a221a;
+    --line:rgba(244,236,216,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:#0a0806;
+    color:var(--cream);
+    font-family:'Oswald',sans-serif;
+    font-weight:300;
+    line-height:1.5;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ===== POSTER FRAME ===== */
+  .poster{
+    max-width:1180px;
+    margin:0 auto;
+    background:
+      radial-gradient(120% 80% at 50% -10%, #4a1a0d 0%, rgba(74,26,13,0) 55%),
+      radial-gradient(120% 90% at 50% 120%, #2a0f08 0%, rgba(42,15,8,0) 60%),
+      linear-gradient(180deg,#1a120c 0%,#120c08 40%,#0c0806 100%);
+    position:relative;
+    box-shadow:0 0 120px rgba(0,0,0,.9), inset 0 0 220px rgba(0,0,0,.6);
+    border-left:1px solid rgba(232,177,58,.14);
+    border-right:1px solid rgba(232,177,58,.14);
+    overflow:hidden;
+  }
+  /* film grain + vignette overlays */
+  .poster::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:60;
+    background:
+      radial-gradient(130% 100% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+    mix-blend-mode:multiply;
+  }
+  .poster::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:61;opacity:.05;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* ===== TOP RATING / NAV STRIP ===== */
+  .strip{
+    position:relative;z-index:10;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap;
+    padding:14px 30px;
+    border-bottom:1px solid var(--line);
+    background:rgba(8,5,3,.5);
+  }
+  .rating{
+    display:flex;align-items:center;gap:12px;
+    font-family:'Oswald';font-weight:600;letter-spacing:.18em;font-size:11px;text-transform:uppercase;
+    color:#cdbfa6;
+  }
+  .rating .box{
+    border:2px solid var(--cream);
+    padding:3px 9px;font-family:'Anton';letter-spacing:.04em;font-size:14px;color:var(--cream);
+    line-height:1;background:transparent;
+  }
+  .navtag{
+    font-family:'Bebas Neue';letter-spacing:.34em;font-size:13px;color:var(--gold);
+    text-transform:uppercase;
+  }
+  nav.top{
+    display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;
+  }
+  nav.top a{
+    font-family:'Oswald';font-weight:500;text-transform:uppercase;
+    letter-spacing:.13em;font-size:11.5px;color:#bdae93;text-decoration:none;
+    padding:4px 0;position:relative;transition:color .2s;
+  }
+  nav.top a:hover{color:var(--gold)}
+  nav.top a::after{
+    content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .25s;
+  }
+  nav.top a:hover::after{width:100%}
+  nav.top .seclabel{
+    font-family:'Anton';font-size:12px;letter-spacing:.12em;color:var(--ink);
+    background:var(--gold);padding:4px 9px;border-radius:1px;
+    text-transform:uppercase;
+  }
+
+  /* ===== BILLING / PRESENTS LINE ===== */
+  .presents{
+    text-align:center;position:relative;z-index:10;
+    padding:34px 20px 6px;
+  }
+  .presents .studio{
+    font-family:'Bebas Neue';letter-spacing:.5em;font-size:clamp(13px,1.6vw,18px);
+    color:#d9c8a6;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:16px;
+  }
+  .presents .studio::before,.presents .studio::after{
+    content:"";width:clamp(30px,8vw,90px);height:1px;background:linear-gradient(90deg,transparent,var(--gold-deep),transparent);
+    display:inline-block;
+  }
+  .mmark{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border:2px solid var(--gold);color:var(--gold);
+    font-family:'Anton';font-size:18px;line-height:1;border-radius:2px;
+    transform:translateY(-1px);margin-right:2px;
+  }
+
+  /* ===== THE TITLE ===== */
+  .titleblock{
+    position:relative;z-index:10;text-align:center;
+    padding:6px 18px 8px;
+  }
+  .greeting{
+    font-family:'Bebas Neue';letter-spacing:.42em;font-size:clamp(13px,1.8vw,17px);
+    color:var(--gold);text-transform:uppercase;margin-bottom:6px;
+  }
+  .megatitle{
+    font-family:'Anton';
+    text-transform:uppercase;
+    line-height:.82;
+    letter-spacing:-.01em;
+    font-size:clamp(46px,10.5vw,138px);
+    color:transparent;
+    background:linear-gradient(180deg,#fbe9bf 0%,#e8b13a 38%,#c0341f 78%,#7a1d10 100%);
+    -webkit-background-clip:text;background-clip:text;
+    text-shadow:0 6px 34px rgba(192,52,31,.25);
+    margin:2px 0;
+    filter:drop-shadow(0 2px 0 rgba(0,0,0,.35));
+  }
+  .megatitle .small{display:block;font-size:.62em;line-height:.86}
+  .megatitle .pass{
+    display:block;
+    color:transparent;
+    background:linear-gradient(180deg,#fff5dd,#e8b13a 60%,#b8801f);
+    -webkit-background-clip:text;background-clip:text;
+  }
+  .sub{
+    max-width:680px;margin:18px auto 0;
+    font-family:'Oswald';font-weight:300;font-size:clamp(13.5px,1.6vw,17px);
+    color:#cdbfa6;letter-spacing:.02em;line-height:1.6;
+  }
+  .sub b{color:var(--gold);font-weight:500}
+
+  /* spotlight beams behind title */
+  .beam{position:absolute;z-index:1;top:-40px;left:50%;transform:translateX(-50%);
+    width:140%;height:520px;pointer-events:none;opacity:.5;
+    background:
+      conic-gradient(from 180deg at 50% 0,
+        transparent 0deg,
+        rgba(232,177,58,.10) 8deg,
+        transparent 16deg,
+        rgba(232,177,58,.08) 24deg,
+        transparent 32deg);
+    mix-blend-mode:screen;filter:blur(2px);
+  }
+
+  /* ===== STATS — the marquee numbers ===== */
+  .marquee{
+    position:relative;z-index:10;
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:0;margin:30px 30px 8px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .stat{
+    text-align:center;padding:20px 14px;position:relative;
+  }
+  .stat + .stat{border-left:1px solid var(--line)}
+  .stat .num{
+    font-family:'Anton';font-size:clamp(38px,6vw,62px);line-height:.9;
+    color:var(--gold);letter-spacing:.01em;
+    text-shadow:0 4px 24px rgba(232,177,58,.2);
+  }
+  .stat .num small{font-size:.42em;color:#cdbfa6;vertical-align:super;letter-spacing:.05em}
+  .stat .lbl{
+    margin-top:8px;font-family:'Oswald';font-weight:500;text-transform:uppercase;
+    letter-spacing:.22em;font-size:10.5px;color:#b6a888;
+  }
+  .stat .meta{font-family:'Oswald';font-weight:300;font-size:11px;color:#8c7f68;letter-spacing:.08em;margin-top:2px}
+
+  /* ===== MAIN BILLING GRID ===== */
+  .reel{
+    position:relative;z-index:10;
+    display:grid;grid-template-columns:1.05fr 1fr;
+    gap:18px;padding:20px 30px 10px;
+  }
+  .card{
+    background:linear-gradient(180deg,rgba(28,20,13,.85),rgba(16,11,7,.9));
+    border:1px solid rgba(232,177,58,.18);
+    border-radius:3px;
+    padding:22px 24px;
+    position:relative;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 20px 50px rgba(0,0,0,.4);
+  }
+  .card .corner{position:absolute;width:14px;height:14px;border:1px solid var(--gold-deep);opacity:.6}
+  .card .corner.tl{top:8px;left:8px;border-right:0;border-bottom:0}
+  .card .corner.tr{top:8px;right:8px;border-left:0;border-bottom:0}
+  .card .corner.bl{bottom:8px;left:8px;border-right:0;border-top:0}
+  .card .corner.br{bottom:8px;right:8px;border-left:0;border-top:0}
+
+  .kicker{
+    font-family:'Bebas Neue';letter-spacing:.32em;font-size:12px;color:var(--gold);
+    text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px;
+  }
+  .kicker::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold-deep),transparent)}
+  .cardtitle{
+    font-family:'Anton';text-transform:uppercase;line-height:.92;
+    font-size:clamp(22px,3vw,34px);color:var(--cream);letter-spacing:.005em;
+  }
+
+  /* FEATURE PRESENTATION (Exam FAM card) */
+  .feature{grid-column:1 / -1;
+    display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center;
+    background:
+      linear-gradient(180deg,rgba(192,52,31,.16),rgba(122,29,16,.1)),
+      linear-gradient(180deg,rgba(28,20,13,.92),rgba(14,9,6,.95));
+    border:1px solid rgba(232,177,58,.28);
+  }
+  .ticket{
+    width:96px;height:118px;flex:none;position:relative;
+    background:linear-gradient(160deg,var(--gold) 0%,var(--gold-deep) 100%);
+    border-radius:6px;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;box-shadow:0 14px 30px rgba(0,0,0,.5);
+  }
+  .ticket::before,.ticket::after{
+    content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:var(--char);
+    left:50%;transform:translateX(-50%);
+  }
+  .ticket::before{top:-7px}.ticket::after{bottom:-7px}
+  .ticket .tk-top{font-family:'Bebas Neue';letter-spacing:.18em;font-size:11px;border-bottom:1.5px dashed rgba(10,8,6,.4);padding-bottom:6px;width:74%}
+  .ticket .tk-big{font-family:'Anton';font-size:30px;line-height:1;margin:8px 0 2px}
+  .ticket .tk-sub{font-family:'Oswald';font-weight:600;font-size:9px;letter-spacing:.16em;text-transform:uppercase}
+  .feature .fbody h3{
+    font-family:'Anton';font-size:clamp(24px,3.4vw,40px);text-transform:uppercase;line-height:.92;color:var(--cream)
+  }
+  .feature .fbody .credits{
+    margin-top:8px;font-family:'Oswald';font-weight:400;letter-spacing:.13em;
+    text-transform:uppercase;font-size:12px;color:#cdbfa6;
+    display:flex;flex-wrap:wrap;gap:8px 14px;
+  }
+  .feature .fbody .credits span{display:inline-flex;align-items:center;gap:8px}
+  .feature .fbody .credits span::before{content:"";width:5px;height:5px;background:var(--gold);transform:rotate(45deg)}
+  .pass-badge{
+    flex:none;text-align:center;
+    border:2px solid var(--gold);border-radius:50%;
+    width:96px;height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--gold);
+  }
+  .pass-badge .pb-n{font-family:'Anton';font-size:26px;line-height:1}
+  .pass-badge .pb-l{font-family:'Oswald';font-weight:600;font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-top:2px;color:#cdbfa6}
+
+  /* FORMULA card */
+  .lede{font-family:'Oswald';font-weight:300;font-size:13.5px;color:#bdae93;margin:8px 0 16px;letter-spacing:.02em}
+  .formula{
+    font-family:'Oswald';font-weight:400;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .formula .f{
+    background:linear-gradient(90deg,rgba(232,177,58,.07),rgba(232,177,58,0));
+    border-left:3px solid var(--gold);
+    padding:10px 14px;font-size:clamp(15px,1.9vw,19px);color:#f1e6cd;letter-spacing:.03em;
+    border-radius:0 3px 3px 0;
+  }
+  .formula .f b{color:var(--gold);font-weight:600}
+
+  /* TRAP callout */
+  .trap{
+    grid-column:1 / -1;
+    background:
+      repeating-linear-gradient(45deg,rgba(192,52,31,.14) 0 14px,rgba(122,29,16,.14) 14px 28px);
+    border:1px solid var(--red);
+    border-radius:3px;padding:18px 22px;display:flex;gap:18px;align-items:flex-start;
+  }
+  .trap .warn{
+    font-family:'Anton';font-size:34px;color:var(--gold);line-height:1;flex:none;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));
+  }
+  .trap .tb .tt{font-family:'Bebas Neue';letter-spacing:.28em;font-size:13px;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+  .trap .tb p{font-family:'Oswald';font-weight:300;font-size:14px;color:#f0e4cc;letter-spacing:.02em;line-height:1.55}
+  .trap .tb p b{color:var(--gold);font-weight:600;text-transform:uppercase}
+
+  /* WORKED EXAMPLE + CTA */
+  .climax{
+    grid-column:1 / -1;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;
+  }
+  .climax .ce .ck{font-family:'Bebas Neue';letter-spacing:.3em;color:var(--gold);font-size:12px;text-transform:uppercase}
+  .climax .ce h3{font-family:'Anton';text-transform:uppercase;font-size:clamp(20px,2.8vw,30px);color:var(--cream);line-height:.95;margin-top:4px}
+  .climax .ce p{font-family:'Oswald';font-weight:300;font-size:13px;color:#b6a888;margin-top:6px;letter-spacing:.03em}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{
+    font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.16em;
+    font-size:13px;padding:14px 26px;border-radius:2px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:9px;transition:transform .15s,box-shadow .2s,background .2s;
+    white-space:nowrap;
+  }
+  .btn .ico{font-size:12px}
+  .btn-primary{
+    background:linear-gradient(180deg,var(--gold),var(--gold-deep));color:var(--ink);
+    box-shadow:0 12px 28px rgba(232,177,58,.28);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(232,177,58,.4)}
+  .btn-ghost{
+    background:transparent;color:var(--cream);border:1.5px solid rgba(244,236,216,.4);
+  }
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+
+  /* ===== BOTTOM BILLING BLOCK (poster credits) ===== */
+  .billing{
+    position:relative;z-index:10;
+    margin:24px 30px 0;padding:26px 10px 22px;
+    border-top:1px solid var(--line);text-align:center;
+  }
+  .billing .tiny{
+    font-family:'Oswald';font-weight:500;text-transform:uppercase;
+    letter-spacing:.06em;font-size:clamp(8.5px,1.05vw,11px);color:#a8997d;line-height:1.7;
+    max-width:1000px;margin:0 auto;
+    word-spacing:.06em;
+  }
+  .billing .tiny b{color:#d9c8a6;font-weight:600}
+  .billing .credit-titles{
+    display:flex;justify-content:center;flex-wrap:wrap;gap:6px 22px;margin-bottom:14px;
+  }
+  .billing .ct{display:flex;flex-direction:column;align-items:center;line-height:1.1}
+  .billing .ct .role{font-family:'Oswald';font-weight:300;font-size:8px;letter-spacing:.2em;color:#7d7158;text-transform:uppercase}
+  .billing .ct .name{font-family:'Oswald';font-weight:600;font-size:11px;letter-spacing:.14em;color:#cdbfa6;text-transform:uppercase;margin-top:2px}
+
+  /* ===== FOOTER ===== */
+  footer{
+    position:relative;z-index:10;text-align:center;
+    padding:24px 20px 34px;background:rgba(6,4,2,.6);
+  }
+  footer .logo{
+    display:inline-flex;align-items:center;gap:12px;justify-content:center;
+  }
+  footer .logo .mmark{margin:0}
+  footer .logo .ftitle{font-family:'Anton';font-size:22px;letter-spacing:.04em;color:var(--cream);text-transform:uppercase}
+  footer .ftag{font-family:'Bebas Neue';letter-spacing:.34em;font-size:12px;color:var(--gold);margin-top:8px;text-transform:uppercase}
+  footer .copy{font-family:'Oswald';font-weight:300;font-size:10.5px;color:#6f6450;letter-spacing:.14em;margin-top:14px;text-transform:uppercase}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:860px){
+    .reel{grid-template-columns:1fr}
+    .feature{grid-template-columns:auto 1fr;grid-auto-rows:auto}
+    .pass-badge{grid-column:1 / -1;justify-self:start;flex-direction:row;width:auto;border-radius:40px;padding:8px 18px;gap:8px}
+    .pass-badge .pb-l{margin-top:0}
+    .climax{grid-template-columns:1fr}
+  }
+  @media(max-width:560px){
+    .strip{justify-content:center;text-align:center}
+    .marquee{grid-template-columns:1fr;margin:24px 18px 0}
+    .stat + .stat{border-left:0;border-top:1px solid var(--line)}
+    .reel{padding:18px 18px 6px}
+    .feature{grid-template-columns:1fr;text-align:center}
+    .ticket{margin:0 auto}
+  }
+</style>
+</head>
+<body>
+  <div class="poster">
+    <span class="beam"></span>
+
+    <!-- RATING + NAV STRIP -->
+    <div class="strip">
+      <div class="rating">
+        <span class="box">FAM</span>
+        <span>RATED&nbsp;P FOR&nbsp;PASS</span>
+      </div>
+      <nav class="top">
+        <span class="seclabel">FAM-L / FAM-S</span>
+        <a href="#">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+      </nav>
+      <div class="navtag">Now Showing</div>
+    </div>
+
+    <!-- PRESENTS LINE -->
+    <div class="presents">
+      <span class="studio"><span class="mmark">M</span>ME STUDYING STUFF&nbsp;PICTURES PRESENTS</span>
+    </div>
+
+    <!-- THE TITLE -->
+    <div class="titleblock">
+      <div class="greeting">Good Evening — A True Story In One Sitting</div>
+      <h1 class="megatitle">
+        <span class="small">Let's Get You</span>
+        <span class="pass">That Pass.</span>
+      </h1>
+      <p class="sub">Your focused hub for <b>SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </div>
+
+    <!-- STATS MARQUEE -->
+    <div class="marquee">
+      <div class="stat">
+        <div class="num">72<small>%</small></div>
+        <div class="lbl">Overall Progress</div>
+        <div class="meta">12 of 17 topics</div>
+      </div>
+      <div class="stat">
+        <div class="num">86</div>
+        <div class="lbl">Exam Countdown</div>
+        <div class="meta">days remaining</div>
+      </div>
+      <div class="stat">
+        <div class="num">8</div>
+        <div class="lbl">Topics Solid</div>
+        <div class="meta">locked &amp; loaded</div>
+      </div>
+    </div>
+
+    <!-- MAIN REEL -->
+    <div class="reel">
+
+      <!-- FEATURE: EXAM FAM -->
+      <div class="card feature">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="ticket">
+          <div class="tk-top">ADMIT ONE</div>
+          <div class="tk-big">FAM</div>
+          <div class="tk-sub">SOA Exam</div>
+        </div>
+        <div class="fbody">
+          <h3>Exam FAM</h3>
+          <div class="credits">
+            <span>Fundamentals of Actuarial Mathematics</span>
+            <span>SOA</span>
+            <span>34 Questions</span>
+          </div>
+        </div>
+        <div class="pass-badge">
+          <div class="pb-n">6/10</div>
+          <div class="pb-l">To Pass</div>
+        </div>
+      </div>
+
+      <!-- TOPIC PREVIEW + FORMULA -->
+      <div class="card">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="kicker">Featured Topic</div>
+        <div class="cardtitle">Life Insurance<br>Present Values</div>
+        <p class="lede">The three relations that tie EPV, annuities and variance into one elegant scene.</p>
+        <div class="formula">
+          <div class="f"><b>A<sub>x</sub></b> = 1 − d·ä<sub>x</sub></div>
+          <div class="f"><b>Var(Z)</b> = ²A<sub>x</sub> − (A<sub>x</sub>)²</div>
+          <div class="f"><b>ä<sub>x</sub></b> = (1 − A<sub>x</sub>) / d</div>
+        </div>
+      </div>
+
+      <!-- WORKED EXAMPLE TEASER (right column companion) -->
+      <div class="card">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="kicker">The Plan</div>
+        <div class="cardtitle">One Calm Hub.<br>One Clear Pass.</div>
+        <p class="lede">Notes, formulas, worked problems and a study plan — sequenced like a three-act structure so nothing surprises you on exam day.</p>
+        <div class="formula">
+          <div class="f">Act I — <b>Build the models</b> · survival &amp; life tables</div>
+          <div class="f">Act II — <b>Value the cash flows</b> · insurance &amp; annuities</div>
+          <div class="f">Act III — <b>Price &amp; reserve</b> · premiums &amp; policy values</div>
+        </div>
+      </div>
+
+      <!-- COMMON TRAP -->
+      <div class="trap">
+        <div class="warn">⚠</div>
+        <div class="tb">
+          <div class="tt">Common Trap — Plot Twist</div>
+          <p>Under UDD, multiply <b>only</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </div>
+
+      <!-- CLIMAX: WORKED EXAMPLE + CTA -->
+      <div class="card climax">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="ce">
+          <div class="ck">Worked Example · Now Playing</div>
+          <h3>Example 1 — Whole Life EPV &amp; Variance</h3>
+          <p>Roll the projector: derive A<sub>x</sub>, then ²A<sub>x</sub>, then the variance — start to finish.</p>
+        </div>
+        <div class="ctas">
+          <a href="#" class="btn btn-primary"><span class="ico">▶</span> Start Studying</a>
+          <a href="#" class="btn btn-ghost"><span class="ico">⏵⏵</span> Resume</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM BILLING BLOCK -->
+    <div class="billing">
+      <div class="credit-titles">
+        <div class="ct"><span class="role">Directed By</span><span class="name">You</span></div>
+        <div class="ct"><span class="role">Featuring</span><span class="name">Survival Models</span></div>
+        <div class="ct"><span class="role">With</span><span class="name">Life Tables</span></div>
+        <div class="ct"><span class="role">And</span><span class="name">Premiums</span></div>
+        <div class="ct"><span class="role">Co-Starring</span><span class="name">Policy Values</span></div>
+      </div>
+      <p class="tiny">
+        <b>ME STUDYING STUFF</b> PICTURES PRESENTS A SOA EXAM FAM PRODUCTION &nbsp;·&nbsp; "LET'S GET YOU THAT PASS." &nbsp;·&nbsp;
+        STARRING LIFE INSURANCE · LIFE ANNUITIES · SURVIVAL MODELS &nbsp;·&nbsp; FORMULAS BY ACTUARIAL MATHEMATICS
+        &nbsp;·&nbsp; 34 QUESTIONS · RUNTIME 86 DAYS · PASS MARK 6/10 &nbsp;·&nbsp; NO LOREM IPSUM WAS HARMED IN THE MAKING OF THIS STUDY HUB
+      </p>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="logo">
+        <span class="mmark">M</span>
+        <span class="ftitle">Me Studying Stuff</span>
+      </div>
+      <div class="ftag">Study Smarter. Pass Exams.</div>
+      <div class="copy">© 2026 Me Studying Stuff — A FAM Picture · All Rights Reserved</div>
+    </footer>
+
+  </div>
+</body>
+</html>

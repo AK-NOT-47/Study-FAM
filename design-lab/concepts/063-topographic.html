@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Topographic · SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f3ede0;        /* aged map paper */
+    --paper-2:#ece3d2;
+    --ink:#1c2b2a;          /* deep cartographic ink */
+    --ink-soft:#3f4f4b;
+    --moss:#3d6b52;         /* low elevation */
+    --moss-line:#5c8a6e;
+    --teal:#1f5d63;
+    --terra:#c2683b;        /* contour accent / high elevation */
+    --terra-2:#e08a4f;
+    --sun:#e8b24c;          /* summit tint */
+    --sea:#7fa7a9;          /* water / depression */
+    --line:rgba(28,43,42,.18);
+    --line-2:rgba(28,43,42,.10);
+    --card:#fbf7ee;
+    --shadow:0 1px 0 rgba(255,255,255,.7), 0 18px 40px -22px rgba(28,43,42,.55);
+    --mono:'Space Mono', ui-monospace, monospace;
+    --sans:'Space Grotesk', system-ui, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---------- GLOBAL CONTOUR FIELD ---------- */
+  .contour-field{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:.9;
+  }
+  .contour-field svg{width:100%;height:100%;display:block;}
+  /* paper grain + elevation tint blobs behind contours */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(60% 50% at 82% 8%, rgba(232,178,76,.20), transparent 60%),
+      radial-gradient(55% 45% at 12% 88%, rgba(31,93,99,.16), transparent 62%),
+      radial-gradient(45% 40% at 70% 95%, rgba(194,104,59,.14), transparent 60%);
+  }
+
+  .wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 26px;}
+
+  /* ---------- MONO LABEL SYSTEM ---------- */
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.18em;font-size:11px;}
+  .coord{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-soft);}
+  .tick{display:inline-flex;align-items:center;gap:7px;}
+  .tick::before{content:"";width:9px;height:9px;border:1.5px solid var(--terra);border-radius:50%;}
+
+  /* ---------- TOP BAR / NAV ---------- */
+  header.topo-head{
+    position:relative;z-index:3;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(var(--paper),rgba(243,237,224,.86));
+    backdrop-filter:blur(2px);
+  }
+  .head-inner{display:flex;align-items:center;gap:22px;padding:16px 0;}
+  .brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--ink);}
+  .mmark{
+    width:46px;height:46px;flex:none;position:relative;
+    border-radius:11px;
+    background:
+      repeating-radial-gradient(circle at 50% 58%,
+        transparent 0 4px, rgba(255,255,255,.55) 4px 5px),
+      linear-gradient(150deg,var(--teal),var(--moss));
+    display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.35), 0 10px 20px -12px rgba(31,93,99,.8);
+  }
+  .mmark span{
+    font-family:var(--mono);font-weight:700;font-size:22px;color:#fff;
+    text-shadow:0 1px 1px rgba(0,0,0,.3);
+  }
+  .brand b{font-size:17px;font-weight:700;letter-spacing:-.01em;display:block;line-height:1.05;}
+  .brand small{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--moss);text-transform:uppercase;}
+
+  .nav{margin-left:auto;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+  .nav .seclabel{
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--paper);background:var(--ink);
+    padding:6px 9px;border-radius:6px;margin-right:8px;white-space:nowrap;
+  }
+  .nav a{
+    text-decoration:none;color:var(--ink-soft);font-size:13.5px;font-weight:500;
+    padding:8px 11px;border-radius:7px;position:relative;white-space:nowrap;
+    transition:.2s;
+  }
+  .nav a:hover{color:var(--ink);background:rgba(28,43,42,.06);}
+  .nav a.active{color:var(--teal);}
+  .nav a.active::after{
+    content:"";position:absolute;left:11px;right:11px;bottom:2px;height:2px;
+    background:repeating-linear-gradient(90deg,var(--terra) 0 5px,transparent 5px 9px);
+  }
+
+  /* ---------- LAYOUT GRID ---------- */
+  .layout{display:grid;grid-template-columns:248px 1fr;gap:28px;padding:30px 0 60px;}
+
+  /* ---------- LEFT LEGEND / SIDEBAR ---------- */
+  aside.legend{position:relative;}
+  .legend-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 16px;box-shadow:var(--shadow);position:sticky;top:18px;
+  }
+  .legend-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .legend-head .mono{color:var(--moss);}
+  .compass{
+    width:34px;height:34px;border:1.5px solid var(--line);border-radius:50%;
+    display:grid;place-items:center;position:relative;color:var(--terra);
+    font-family:var(--mono);font-size:9px;
+  }
+  .compass::before{content:"N";position:absolute;top:2px;font-size:8px;color:var(--ink-soft);}
+  .needle{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:14px solid var(--terra);}
+
+  .legend ul{list-style:none;margin:0;padding:0;}
+  .legend li a{
+    display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);
+    padding:9px 9px;border-radius:9px;font-size:14px;font-weight:500;
+    transition:.18s;position:relative;
+  }
+  .legend li a:hover{background:rgba(61,107,82,.10);transform:translateX(2px);}
+  .legend li a.cur{background:linear-gradient(90deg,rgba(31,93,99,.13),transparent);}
+  .legend li a.cur .elev{background:var(--terra);color:#fff;border-color:var(--terra);}
+  .elev{
+    width:30px;flex:none;text-align:center;font-family:var(--mono);font-size:10px;
+    border:1px solid var(--line);border-radius:5px;padding:3px 0;color:var(--ink-soft);
+    background:var(--paper);
+  }
+  .seclabel-side{
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--moss);margin:16px 4px 6px;display:flex;align-items:center;gap:8px;
+  }
+  .seclabel-side::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  .legend-foot{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);}
+  .scalebar{display:flex;align-items:center;gap:0;margin-top:8px;}
+  .scalebar i{height:7px;flex:1;}
+  .scalebar i:nth-child(1){background:var(--sea);}
+  .scalebar i:nth-child(2){background:var(--moss-line);}
+  .scalebar i:nth-child(3){background:var(--sun);}
+  .scalebar i:nth-child(4){background:var(--terra);}
+  .scalebar-labels{display:flex;justify-content:space-between;margin-top:5px;}
+
+  /* ---------- MAIN ---------- */
+  main{min-width:0;}
+
+  /* HERO */
+  .hero{
+    position:relative;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:var(--card);box-shadow:var(--shadow);margin-bottom:24px;
+  }
+  .hero-inner{padding:30px 32px 34px;position:relative;z-index:2;}
+  .hero-topo{position:absolute;inset:0;z-index:1;opacity:.55;}
+  .hero-topo svg{width:100%;height:100%;}
+  .greet{display:flex;align-items:center;gap:10px;color:var(--moss);}
+  .greet .mono{color:var(--moss);}
+  .greet .dot{width:7px;height:7px;border-radius:50%;background:var(--terra);box-shadow:0 0 0 4px rgba(194,104,59,.18);}
+  h1{
+    font-size:clamp(34px,5vw,56px);line-height:1.02;margin:14px 0 14px;
+    font-weight:700;letter-spacing:-.025em;max-width:14ch;
+  }
+  h1 .hi{
+    color:var(--terra);position:relative;white-space:nowrap;
+  }
+  h1 .hi::after{
+    content:"";position:absolute;left:0;right:0;bottom:4px;height:10px;z-index:-1;
+    background:repeating-linear-gradient(90deg,rgba(232,178,76,.55) 0 6px,transparent 6px 10px);
+  }
+  .lede{max-width:60ch;font-size:16px;color:var(--ink-soft);margin:0 0 24px;}
+
+  .cta-row{display:flex;gap:13px;flex-wrap:wrap;align-items:center;}
+  .btn{
+    font-family:var(--sans);font-weight:600;font-size:15px;cursor:pointer;
+    border:none;border-radius:11px;padding:14px 22px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:9px;transition:.2s;
+  }
+  .btn-primary{
+    background:linear-gradient(150deg,var(--terra),var(--terra-2));color:#fff;
+    box-shadow:0 14px 26px -12px rgba(194,104,59,.85);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 30px -12px rgba(194,104,59,.9);}
+  .btn-ghost{
+    background:transparent;color:var(--ink);border:1.5px solid var(--line);
+  }
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal);background:rgba(31,93,99,.06);}
+  .btn .ar{font-family:var(--mono);}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+  .stat{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 18px 16px;position:relative;overflow:hidden;box-shadow:var(--shadow);
+  }
+  .stat .strip{position:absolute;top:0;left:0;right:0;height:5px;}
+  .stat.s1 .strip{background:linear-gradient(90deg,var(--moss),var(--moss-line));}
+  .stat.s2 .strip{background:linear-gradient(90deg,var(--teal),var(--sea));}
+  .stat.s3 .strip{background:linear-gradient(90deg,var(--terra),var(--sun));}
+  .stat .mono{color:var(--ink-soft);display:block;margin:6px 0 2px;}
+  .stat .big{font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1;}
+  .stat .sub{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+  .stat .ring{
+    position:absolute;right:14px;top:14px;width:50px;height:50px;border-radius:50%;
+    background:conic-gradient(var(--moss) 0 72%, rgba(28,43,42,.12) 72% 100%);
+    display:grid;place-items:center;
+  }
+  .stat .ring::after{content:"72%";font-family:var(--mono);font-size:11px;font-weight:700;
+    width:36px;height:36px;background:var(--card);border-radius:50%;display:grid;place-items:center;}
+  .progbar{height:8px;border-radius:6px;background:rgba(28,43,42,.12);margin-top:12px;overflow:hidden;position:relative;}
+  .progbar i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--moss),var(--moss-line));}
+
+  /* CONTENT GRID */
+  .cols{display:grid;grid-template-columns:1.35fr 1fr;gap:24px;}
+
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .panel-tag{
+    position:absolute;top:0;right:0;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--paper);background:var(--ink);
+    padding:5px 12px;border-bottom-left-radius:11px;
+  }
+  .panel h2{font-size:22px;margin:0 0 4px;letter-spacing:-.01em;}
+  .panel .lede-sm{font-size:14px;color:var(--ink-soft);margin:0 0 18px;}
+
+  /* EXAM CARD */
+  .exam-card{
+    background:linear-gradient(150deg,var(--teal),#16484d);color:#eafaf6;
+    border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:22px;
+    position:relative;overflow:hidden;box-shadow:var(--shadow);margin-bottom:24px;
+  }
+  .exam-card .topo-mini{position:absolute;inset:0;opacity:.28;}
+  .exam-card .topo-mini svg{width:100%;height:100%;}
+  .exam-card .inner{position:relative;z-index:2;}
+  .exam-card .mono{color:var(--sun);}
+  .exam-card h3{font-size:27px;margin:8px 0 6px;color:#fff;letter-spacing:-.01em;}
+  .exam-card p.sub{margin:0 0 16px;color:rgba(234,250,246,.8);font-size:14px;}
+  .exam-meta{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+    padding:7px 11px;border-radius:8px;color:#eafaf6;
+  }
+  .chip.pass{background:var(--sun);color:#3a2a08;border-color:var(--sun);font-weight:700;}
+
+  /* FORMULA BLOCK */
+  .formula{
+    background:
+      linear-gradient(var(--paper-2),var(--paper-2)) padding-box,
+      var(--paper-2);
+    border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0 4px;
+    position:relative;
+  }
+  .formula::before{
+    content:"f(x)";position:absolute;top:-10px;left:14px;font-family:var(--mono);font-size:10px;
+    background:var(--terra);color:#fff;padding:2px 8px;border-radius:5px;letter-spacing:.1em;
+  }
+  .formula .eq{
+    font-family:var(--mono);font-size:15px;color:var(--ink);padding:9px 4px;
+    border-bottom:1px dashed var(--line);display:flex;align-items:baseline;gap:10px;
+  }
+  .formula .eq:last-child{border-bottom:none;}
+  .formula .eq .n{color:var(--terra);font-size:11px;width:26px;flex:none;}
+  .formula .eq b{color:var(--teal);}
+
+  /* TRAP CALLOUT */
+  .trap{
+    margin-top:20px;border:1.5px solid var(--terra);border-radius:13px;
+    background:linear-gradient(180deg,rgba(194,104,59,.10),rgba(194,104,59,.04));
+    padding:16px 18px 16px 18px;position:relative;
+  }
+  .trap .hd{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+  .trap .warn{
+    width:24px;height:24px;flex:none;border-radius:6px;background:var(--terra);color:#fff;
+    display:grid;place-items:center;font-weight:700;font-family:var(--mono);font-size:14px;
+  }
+  .trap .hd .mono{color:var(--terra);}
+  .trap p{margin:0;font-size:14.5px;color:var(--ink);}
+  .trap p b{color:var(--terra);}
+
+  /* EXAMPLE TEASER */
+  .example{
+    margin-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    background:var(--paper-2);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;
+  }
+  .example .ix{
+    width:46px;height:46px;flex:none;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(150deg,var(--moss),var(--moss-line));color:#fff;
+    font-family:var(--mono);font-weight:700;font-size:18px;
+  }
+  .example .tx b{display:block;font-size:15px;}
+  .example .tx span{font-size:12.5px;color:var(--ink-soft);font-family:var(--mono);letter-spacing:.04em;}
+  .example .go{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--terra);text-decoration:none;display:inline-flex;gap:6px;align-items:center;border:1px solid var(--terra);padding:8px 12px;border-radius:8px;transition:.2s;}
+  .example .go:hover{background:var(--terra);color:#fff;}
+
+  /* RIGHT COLUMN MINI CARDS */
+  .mini{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;
+    box-shadow:var(--shadow);margin-bottom:24px;
+  }
+  .mini h4{margin:0 0 12px;font-size:13px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--moss);display:flex;align-items:center;gap:8px;}
+  .mini h4::after{content:"";flex:1;height:1px;background:var(--line);}
+  .route{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);}
+  .route:last-child{border-bottom:none;}
+  .route .pin{
+    width:26px;height:26px;flex:none;border-radius:50% 50% 50% 2px;transform:rotate(45deg);
+    display:grid;place-items:center;
+  }
+  .route .pin span{transform:rotate(-45deg);font-family:var(--mono);font-size:10px;color:#fff;font-weight:700;}
+  .route.done .pin{background:var(--moss);}
+  .route.now .pin{background:var(--terra);}
+  .route.next .pin{background:var(--sea);}
+  .route .rt{flex:1;}
+  .route .rt b{font-size:14px;display:block;}
+  .route .rt small{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);letter-spacing:.06em;}
+  .route .st{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);}
+
+  /* FOOTER */
+  footer.topo-foot{
+    position:relative;z-index:2;border-top:1px solid var(--line);
+    background:linear-gradient(rgba(243,237,224,.4),var(--paper-2));
+    margin-top:10px;
+  }
+  .foot-inner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:24px 0;}
+  .foot-inner .brand small{color:var(--moss);}
+  .foot-inner .coord{margin-left:auto;}
+  .foot-line{font-size:12.5px;color:var(--ink-soft);}
+
+  /* edge coordinate ticks ornament */
+  .edge-ticks{position:fixed;top:0;bottom:0;left:0;width:22px;z-index:1;pointer-events:none;
+    background:repeating-linear-gradient(180deg,var(--line) 0 1px,transparent 1px 44px);opacity:.5;}
+  .edge-ticks.r{left:auto;right:0;}
+
+  /* RESPONSIVE */
+  @media(max-width:980px){
+    .layout{grid-template-columns:1fr;}
+    aside.legend .legend-card{position:relative;top:0;}
+    .legend ul{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+    .cols{grid-template-columns:1fr;}
+    .nav{display:none;}
+  }
+  @media(max-width:760px){
+    .stats{grid-template-columns:1fr;}
+    .legend ul{grid-template-columns:1fr;}
+    .hero-inner{padding:24px 20px 26px;}
+    .edge-ticks{display:none;}
+    h1{font-size:34px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- GLOBAL CONTOUR FIELD -->
+<div class="contour-field" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="rgba(28,43,42,0.14)" stroke-width="1.1">
+      <path d="M-50,160 C200,60 520,260 760,150 C1000,40 1240,210 1500,120"/>
+      <path d="M-50,210 C200,120 520,310 760,205 C1000,100 1240,260 1500,180"/>
+      <path d="M-50,262 C200,185 520,360 760,262 C1000,165 1240,312 1500,242"/>
+      <path d="M-50,318 C210,250 520,410 760,322 C1010,235 1250,360 1500,308"/>
+      <path d="M-50,380 C220,320 520,462 760,388 C1020,318 1250,420 1500,378"/>
+      <path d="M-50,452 C240,400 520,520 760,460 C1030,400 1250,490 1500,455"/>
+      <path d="M-50,540 C250,495 520,590 760,545 C1040,500 1250,575 1500,548"/>
+      <path d="M-50,640 C260,600 520,675 760,640 C1050,605 1250,668 1500,648"/>
+      <path d="M-50,760 C260,720 520,790 760,762 C1050,734 1250,786 1500,766"/>
+    </g>
+    <!-- closed elevation rings (peak right) -->
+    <g fill="none" stroke="rgba(194,104,59,0.20)" stroke-width="1.1">
+      <ellipse cx="1180" cy="250" rx="230" ry="150"/>
+      <ellipse cx="1185" cy="252" rx="180" ry="116"/>
+      <ellipse cx="1190" cy="254" rx="132" ry="84"/>
+      <ellipse cx="1195" cy="256" rx="86" ry="54"/>
+      <ellipse cx="1200" cy="258" rx="44" ry="27"/>
+    </g>
+    <!-- depression (water) lower-left -->
+    <g fill="none" stroke="rgba(31,93,99,0.18)" stroke-width="1.1">
+      <ellipse cx="230" cy="710" rx="220" ry="120"/>
+      <ellipse cx="232" cy="712" rx="166" ry="90"/>
+      <ellipse cx="234" cy="714" rx="112" ry="60"/>
+      <ellipse cx="236" cy="716" rx="58" ry="31"/>
+    </g>
+  </svg>
+</div>
+<div class="edge-ticks" aria-hidden="true"></div>
+<div class="edge-ticks r" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="topo-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="#">
+      <span class="mmark"><span>M</span></span>
+      <span>
+        <b>Me Studing Stuff</b>
+        <small>Study smarter · Pass exams</small>
+      </span>
+    </a>
+    <nav class="nav">
+      <span class="seclabel">FAM-L / FAM-S</span>
+      <a href="#" class="active">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+
+    <!-- LEFT: LEGEND / SIDEBAR -->
+    <aside class="legend">
+      <div class="legend-card">
+        <div class="legend-head">
+          <span class="mono">Map Legend</span>
+          <span class="compass"><span class="needle"></span></span>
+        </div>
+
+        <div class="seclabel-side">FAM-L / FAM-S · Topics</div>
+        <ul>
+          <li><a href="#" class="cur"><span class="elev">120m</span> Survival Models</a></li>
+          <li><a href="#"><span class="elev">240m</span> Life Tables</a></li>
+          <li><a href="#"><span class="elev">360m</span> Life Insurance</a></li>
+          <li><a href="#"><span class="elev">480m</span> Life Annuities</a></li>
+          <li><a href="#"><span class="elev">600m</span> Premiums</a></li>
+          <li><a href="#"><span class="elev">720m</span> Policy Values</a></li>
+        </ul>
+
+        <div class="legend-foot">
+          <span class="mono" style="color:var(--moss)">Elevation Scale</span>
+          <div class="scalebar"><i></i><i></i><i></i><i></i></div>
+          <div class="scalebar-labels coord">
+            <span>Sea</span><span>Foothill</span><span>Ridge</span><span>Summit</span>
+          </div>
+          <div class="coord" style="margin-top:12px;">GRID 26°13′N · 50°35′E</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-topo" aria-hidden="true">
+          <svg viewBox="0 0 900 400" preserveAspectRatio="none">
+            <g fill="none" stroke="rgba(31,93,99,0.16)" stroke-width="1">
+              <path d="M0,70 C160,20 320,120 480,70 C640,20 780,110 900,60"/>
+              <path d="M0,120 C160,75 320,165 480,120 C640,75 780,155 900,110"/>
+              <path d="M0,176 C170,135 320,215 480,176 C640,135 780,205 900,166"/>
+              <path d="M0,240 C180,205 320,280 480,244 C640,205 780,270 900,236"/>
+              <path d="M0,316 C190,285 320,350 480,318 C640,285 780,344 900,312"/>
+            </g>
+            <g fill="none" stroke="rgba(194,104,59,0.18)" stroke-width="1">
+              <ellipse cx="720" cy="120" rx="150" ry="80"/>
+              <ellipse cx="724" cy="122" rx="104" ry="55"/>
+              <ellipse cx="728" cy="124" rx="58" ry="31"/>
+            </g>
+          </svg>
+        </div>
+        <div class="hero-inner">
+          <div class="greet">
+            <span class="dot"></span>
+            <span class="mono">Good evening · Explorer</span>
+          </div>
+          <h1>Let's get you that <span class="hi">pass.</span></h1>
+          <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          <div class="cta-row">
+            <a href="#" class="btn btn-primary">Start studying <span class="ar">→</span></a>
+            <a href="#" class="btn btn-ghost">Resume <span class="ar">↻</span></a>
+            <span class="coord tick" style="margin-left:6px;">Last camp · Survival Models</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat s1">
+          <div class="strip"></div>
+          <div class="ring" aria-hidden="true"></div>
+          <span class="mono">Overall progress</span>
+          <div class="big">72%</div>
+          <div class="sub">12 of 17 topics mapped</div>
+          <div class="progbar"><i></i></div>
+        </div>
+        <div class="stat s2">
+          <div class="strip"></div>
+          <span class="mono">Exam countdown</span>
+          <div class="big">86<span style="font-size:18px;font-weight:500;color:var(--ink-soft)"> days</span></div>
+          <div class="sub">Summit attempt scheduled</div>
+          <div class="coord" style="margin-top:12px;letter-spacing:.04em;">▸ ▸ ▸ ▸ ▸ ▸ ▸ ▸ ▸ ▸</div>
+        </div>
+        <div class="stat s3">
+          <div class="strip"></div>
+          <span class="mono">Topics solid</span>
+          <div class="big">8</div>
+          <div class="sub">Peaks summited &amp; secured</div>
+          <div class="coord" style="margin-top:12px;letter-spacing:.04em;">▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲</div>
+        </div>
+      </section>
+
+      <!-- TWO COLUMN CONTENT -->
+      <div class="cols">
+
+        <!-- LEFT CONTENT -->
+        <section class="panel">
+          <span class="panel-tag">Sheet 03 · Insurance</span>
+          <span class="mono tick" style="color:var(--moss)">Topic preview</span>
+          <h2 style="margin-top:8px;">Life Insurance Present Values</h2>
+          <p class="lede-sm">The terrain of EPVs — relate insurance, annuity and discount along one ridge.</p>
+
+          <div class="formula" aria-label="Formulas">
+            <div class="eq"><span class="n">01</span><span>A<sub>x</sub> = 1 − <b>d</b>·ä<sub>x</sub></span></div>
+            <div class="eq"><span class="n">02</span><span>Var(Z) = <b>²A<sub>x</sub></b> − (A<sub>x</sub>)²</span></div>
+            <div class="eq"><span class="n">03</span><span>ä<sub>x</sub> = (1 − A<sub>x</sub>) / <b>d</b></span></div>
+          </div>
+
+          <div class="trap">
+            <div class="hd">
+              <span class="warn">!</span>
+              <span class="mono">Common trap</span>
+            </div>
+            <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+          </div>
+
+          <div class="example">
+            <span class="ix">1</span>
+            <span class="tx">
+              <b>Example 1 — Whole life EPV &amp; variance</b>
+              <span>WORKED · 6 STEPS · ~9 MIN</span>
+            </span>
+            <a href="#" class="go">Open ↗</a>
+          </div>
+        </section>
+
+        <!-- RIGHT CONTENT -->
+        <div>
+          <!-- EXAM CARD -->
+          <section class="exam-card">
+            <div class="topo-mini" aria-hidden="true">
+              <svg viewBox="0 0 400 260" preserveAspectRatio="none">
+                <g fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1">
+                  <ellipse cx="200" cy="130" rx="190" ry="120"/>
+                  <ellipse cx="200" cy="130" rx="150" ry="94"/>
+                  <ellipse cx="200" cy="130" rx="110" ry="68"/>
+                  <ellipse cx="200" cy="130" rx="70" ry="42"/>
+                  <ellipse cx="200" cy="130" rx="32" ry="18"/>
+                </g>
+              </svg>
+            </div>
+            <div class="inner">
+              <span class="mono tick">Target summit</span>
+              <h3>Exam FAM</h3>
+              <p class="sub">Fundamentals of Actuarial Mathematics</p>
+              <div class="exam-meta">
+                <span class="chip">SOA</span>
+                <span class="chip">34 questions</span>
+                <span class="chip pass">PASS = 6/10</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ROUTE / PLAN MINI -->
+          <section class="mini">
+            <h4>Trail plan</h4>
+            <div class="route done">
+              <span class="pin"><span>✓</span></span>
+              <span class="rt"><b>Life Tables</b><small>120m · SECURED</small></span>
+              <span class="st">Done</span>
+            </div>
+            <div class="route now">
+              <span class="pin"><span>▲</span></span>
+              <span class="rt"><b>Life Insurance</b><small>360m · ASCENDING</small></span>
+              <span class="st">Now</span>
+            </div>
+            <div class="route next">
+              <span class="pin"><span>•</span></span>
+              <span class="rt"><b>Life Annuities</b><small>480m · PLANNED</small></span>
+              <span class="st">Next</span>
+            </div>
+          </section>
+
+          <!-- COORDS MINI -->
+          <section class="mini">
+            <h4>Field notes</h4>
+            <p style="margin:0;font-size:13.5px;color:var(--ink-soft);">
+              FAM-L and FAM-S share one base camp. Map each formula to its
+              elevation, walk the contours daily, and the summit holds steady.
+            </p>
+            <div class="coord" style="margin-top:14px;">BEARING 072° · PACE 8/wk · ETA 86d</div>
+          </section>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="topo-foot">
+  <div class="wrap foot-inner">
+    <a class="brand" href="#">
+      <span class="mmark"><span>M</span></span>
+      <span>
+        <b>Me Studing Stuff</b>
+        <small>Study smarter. Pass exams.</small>
+      </span>
+    </a>
+    <span class="foot-line">Topographic edition · SOA Exam FAM study hub</span>
+    <span class="coord">© 2026 · SHEET 063 · SCALE 1:1</span>
+  </div>
+</footer>
+
+</body>
+</html>

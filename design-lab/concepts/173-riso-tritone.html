@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ RISOGRAPH TRI-TONE ============
+     Three fluoro spot inks: Pink · Blue · Yellow
+     overprinted with multiply blend + heavy grain  */
+  :root{
+    --riso-pink:#ff2e88;
+    --riso-blue:#1f4cff;
+    --riso-yellow:#ffdd00;
+    --paper:#f4efe2;
+    --ink:#16131a;
+    --pink-soft:#ff8fbd;
+    --blue-soft:#7e9bff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ---- Grain / paper texture overlay ---- */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:9999;
+    opacity:.32;
+    mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* faint registration mis-print halo top corners */
+  body::after{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:1;
+    background:
+      radial-gradient(420px 420px at 92% -6%, var(--riso-yellow) 0%, transparent 60%),
+      radial-gradient(520px 520px at -8% 4%, var(--riso-blue) 0%, transparent 55%);
+    opacity:.16;mix-blend-mode:multiply;
+  }
+
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'DM Mono',monospace}
+
+  /* ============ FRAME / LAYOUT ============ */
+  .sheet{
+    position:relative;z-index:2;
+    max-width:1280px;margin:0 auto;
+    padding:22px clamp(16px,4vw,40px) 60px;
+  }
+
+  /* ---- Masthead ---- */
+  header.mast{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;
+    border:3px solid var(--ink);
+    background:var(--paper);
+    padding:14px 18px;
+    box-shadow:7px 7px 0 var(--riso-blue);
+    position:relative;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .mmark{
+    width:54px;height:54px;flex:0 0 auto;
+    border:3px solid var(--ink);
+    background:var(--riso-yellow);
+    display:grid;place-items:center;
+    font-family:'Archivo Black';font-size:30px;line-height:1;
+    color:var(--ink);
+    box-shadow:3px 3px 0 var(--riso-pink);
+    transform:rotate(-4deg);
+  }
+  .brand h1{
+    font-family:'Archivo Black';font-size:19px;letter-spacing:-.5px;
+    text-transform:uppercase;line-height:.95;
+  }
+  .brand .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--riso-blue);font-weight:600;margin-top:3px}
+
+  .mast-section{
+    font-family:'Archivo Black';font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;
+    background:var(--riso-pink);color:var(--paper);
+    padding:8px 14px;border:3px solid var(--ink);
+    transform:rotate(2deg);
+    box-shadow:3px 3px 0 var(--ink);
+  }
+
+  /* ---- Top nav strip ---- */
+  nav.topnav{
+    margin-top:14px;
+    display:flex;flex-wrap:wrap;gap:0;
+    border:3px solid var(--ink);
+    background:var(--ink);
+    overflow:hidden;
+  }
+  nav.topnav a{
+    flex:1 1 auto;text-align:center;
+    padding:13px 16px;
+    font-weight:700;font-size:13.5px;
+    letter-spacing:.02em;text-transform:uppercase;
+    color:var(--paper);
+    border-right:3px solid var(--ink);
+    position:relative;
+    transition:.15s;
+    background:var(--ink);
+  }
+  nav.topnav a:nth-child(1){background:var(--riso-pink);color:var(--ink)}
+  nav.topnav a:nth-child(2){background:var(--riso-blue);color:var(--paper)}
+  nav.topnav a:nth-child(3){background:var(--riso-yellow);color:var(--ink)}
+  nav.topnav a:nth-child(4){background:var(--riso-pink);color:var(--ink)}
+  nav.topnav a:nth-child(5){background:var(--riso-blue);color:var(--paper)}
+  nav.topnav a:nth-child(6){background:var(--riso-yellow);color:var(--ink)}
+  nav.topnav a:last-child{border-right:none}
+  nav.topnav a:hover{transform:translateY(-2px);filter:saturate(1.4)}
+  nav.topnav a span{display:block;font-size:9px;letter-spacing:.2em;opacity:.7;font-weight:500;margin-bottom:2px}
+
+  /* ============ HERO ============ */
+  .hero{
+    margin-top:22px;
+    display:grid;grid-template-columns:1.5fr .9fr;gap:18px;
+  }
+  .hero-main{
+    border:3px solid var(--ink);
+    background:var(--paper);
+    padding:clamp(22px,3.4vw,44px);
+    position:relative;overflow:hidden;
+    box-shadow:9px 9px 0 var(--riso-pink);
+  }
+  .hero-main::before{
+    content:"";position:absolute;right:-90px;top:-90px;
+    width:300px;height:300px;border-radius:50%;
+    background:var(--riso-blue);opacity:.85;
+    mix-blend-mode:multiply;
+  }
+  .hero-main::after{
+    content:"";position:absolute;right:-30px;top:-40px;
+    width:200px;height:200px;border-radius:50%;
+    background:var(--riso-yellow);opacity:.9;
+    mix-blend-mode:multiply;
+  }
+  .greet{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.18em;
+    border:2px solid var(--ink);padding:5px 12px;
+    background:var(--paper);position:relative;z-index:2;
+  }
+  .greet .dot{width:9px;height:9px;border-radius:50%;background:var(--riso-pink);box-shadow:0 0 0 3px var(--pink-soft)}
+  .hero-main h2{
+    font-family:'Archivo Black';
+    font-size:clamp(38px,6.2vw,72px);
+    line-height:.92;letter-spacing:-.02em;
+    margin:18px 0 14px;position:relative;z-index:2;
+    text-transform:uppercase;
+  }
+  .hero-main h2 em{
+    font-style:normal;
+    color:var(--riso-pink);
+    -webkit-text-stroke:2px var(--ink);
+    text-shadow:4px 4px 0 var(--riso-blue);
+  }
+  .hero-lede{
+    max-width:46ch;font-size:16.5px;position:relative;z-index:2;
+    color:#2a2530;
+  }
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px;position:relative;z-index:2}
+  .btn{
+    font-family:'Archivo Black';font-size:14px;letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:14px 26px;border:3px solid var(--ink);
+    cursor:pointer;transition:.13s;display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn-primary{background:var(--riso-pink);color:var(--ink);box-shadow:5px 5px 0 var(--ink)}
+  .btn-ghost{background:var(--riso-yellow);color:var(--ink);box-shadow:5px 5px 0 var(--ink)}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+  .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+
+  /* ---- Exam card (hero right) ---- */
+  .exam-card{
+    border:3px solid var(--ink);
+    background:var(--riso-blue);color:var(--paper);
+    padding:24px;position:relative;overflow:hidden;
+    box-shadow:9px 9px 0 var(--ink);
+    display:flex;flex-direction:column;
+  }
+  .exam-card .kicker{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+    color:var(--riso-yellow);
+  }
+  .exam-card h3{font-family:'Archivo Black';font-size:46px;line-height:.9;margin:6px 0 2px;text-transform:uppercase}
+  .exam-card .sub{font-size:13.5px;opacity:.92;margin-bottom:18px}
+  .exam-meta{display:flex;flex-direction:column;gap:0;margin-top:auto;border-top:2px dashed rgba(244,239,226,.5)}
+  .exam-meta .row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:9px 0;border-bottom:2px dashed rgba(244,239,226,.5);
+    font-size:13px;
+  }
+  .exam-meta .row b{font-family:'DM Mono';font-size:16px;color:var(--riso-yellow)}
+  .stamp{
+    position:absolute;top:14px;right:-30px;
+    background:var(--riso-yellow);color:var(--ink);
+    font-family:'Archivo Black';font-size:12px;letter-spacing:.1em;
+    padding:6px 40px;transform:rotate(38deg);
+    border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  }
+
+  /* ============ STATS ROW ============ */
+  .stats{
+    margin-top:18px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .stat{
+    border:3px solid var(--ink);background:var(--paper);
+    padding:22px;position:relative;overflow:hidden;
+    box-shadow:6px 6px 0 var(--ink);
+  }
+  .stat:nth-child(1){box-shadow:6px 6px 0 var(--riso-pink)}
+  .stat:nth-child(2){box-shadow:6px 6px 0 var(--riso-blue)}
+  .stat:nth-child(3){box-shadow:6px 6px 0 var(--riso-yellow)}
+  .stat .label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:#5b5560}
+  .stat .big{font-family:'Archivo Black';font-size:54px;line-height:.9;margin:8px 0 4px}
+  .stat:nth-child(1) .big{color:var(--riso-pink)}
+  .stat:nth-child(2) .big{color:var(--riso-blue)}
+  .stat:nth-child(3) .big{color:var(--ink)}
+  .stat .sub{font-size:13px;color:#48434e}
+  .stat .icn{position:absolute;top:16px;right:18px;font-size:26px;opacity:.85}
+  /* progress bar */
+  .pbar{height:12px;border:2px solid var(--ink);margin-top:12px;background:var(--paper);position:relative;overflow:hidden}
+  .pbar i{display:block;height:100%;width:72%;background:repeating-linear-gradient(45deg,var(--riso-pink) 0 8px,var(--ink) 8px 10px)}
+
+  /* ============ TWO-COLUMN BODY ============ */
+  .body-grid{margin-top:18px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+
+  .panel{border:3px solid var(--ink);background:var(--paper);padding:24px;position:relative}
+  .panel-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .chip{
+    font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+    padding:4px 10px;border:2px solid var(--ink);
+  }
+  .chip.pink{background:var(--riso-pink);color:var(--ink)}
+  .chip.blue{background:var(--riso-blue);color:var(--paper)}
+  .chip.yellow{background:var(--riso-yellow);color:var(--ink)}
+  .panel h3{font-family:'Archivo Black';font-size:26px;line-height:.95;text-transform:uppercase;letter-spacing:-.01em}
+  .panel .lede{font-size:14.5px;color:#3a3540;margin-top:6px}
+
+  /* formula block */
+  .formula{
+    margin-top:18px;border:3px solid var(--ink);
+    background:var(--ink);color:var(--paper);
+    box-shadow:6px 6px 0 var(--riso-blue);
+  }
+  .formula .fhead{
+    font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+    padding:8px 14px;background:var(--riso-yellow);color:var(--ink);
+    font-weight:700;border-bottom:3px solid var(--ink);
+    display:flex;justify-content:space-between;
+  }
+  .formula .frow{
+    font-family:'DM Mono';font-size:16.5px;
+    padding:14px 16px;display:flex;align-items:center;gap:12px;
+    border-bottom:1px dashed rgba(244,239,226,.28);
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .frow .n{
+    flex:0 0 auto;width:24px;height:24px;border-radius:50%;
+    display:grid;place-items:center;font-size:12px;font-weight:700;
+    background:var(--riso-pink);color:var(--ink);font-family:'Space Grotesk';
+  }
+  .formula .frow:nth-child(3) .n{background:var(--riso-blue);color:var(--paper)}
+  .formula .frow:nth-child(4) .n{background:var(--riso-yellow);color:var(--ink)}
+  .formula .frow code{color:var(--riso-yellow);background:none;font-size:16.5px}
+  .formula .frow:nth-child(3) code{color:var(--pink-soft)}
+  .formula .frow:nth-child(4) code{color:var(--blue-soft)}
+
+  /* common trap callout */
+  .trap{
+    margin-top:18px;border:3px solid var(--ink);
+    background:var(--riso-yellow);
+    padding:18px 20px;position:relative;
+    box-shadow:6px 6px 0 var(--ink);
+  }
+  .trap .tlabel{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Archivo Black';font-size:13px;text-transform:uppercase;letter-spacing:.06em;
+    background:var(--ink);color:var(--riso-yellow);
+    padding:6px 12px;margin-bottom:10px;
+    transform:rotate(-1.5deg);
+  }
+  .trap p{font-size:15.5px;font-weight:500;color:var(--ink)}
+  .trap p b{background:var(--riso-pink);padding:0 4px;border:1px solid var(--ink)}
+
+  /* worked example teaser */
+  .example{
+    border:3px solid var(--ink);background:var(--riso-pink);
+    padding:24px;position:relative;overflow:hidden;
+    box-shadow:8px 8px 0 var(--ink);
+    display:flex;flex-direction:column;height:100%;
+  }
+  .example::before{
+    content:"∑";position:absolute;right:-10px;bottom:-40px;
+    font-family:'Archivo Black';font-size:200px;line-height:1;
+    color:var(--ink);opacity:.1;
+  }
+  .example .ex-kick{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+  .example h3{font-family:'Archivo Black';font-size:30px;line-height:.95;margin:8px 0 12px;text-transform:uppercase;position:relative;z-index:2}
+  .example .ex-body{font-size:14.5px;color:#2a1620;position:relative;z-index:2;max-width:34ch}
+  .example .ex-cta{display:flex;gap:12px;margin-top:auto;padding-top:22px;flex-wrap:wrap;position:relative;z-index:2}
+  .example .btn-primary{background:var(--paper)}
+  .example .btn-ghost{background:var(--riso-blue);color:var(--paper)}
+
+  .topic-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .topic-tags span{
+    font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+    border:2px solid var(--ink);padding:5px 11px;background:var(--paper);
+  }
+
+  /* right rail vertical stack */
+  .rail{display:flex;flex-direction:column;gap:18px}
+
+  /* ============ FOOTER ============ */
+  footer{
+    margin-top:26px;border:3px solid var(--ink);
+    background:var(--ink);color:var(--paper);
+    padding:22px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap;
+    box-shadow:7px 7px 0 var(--riso-yellow);
+  }
+  footer .fbrand{display:flex;align-items:center;gap:12px}
+  footer .mmark{box-shadow:3px 3px 0 var(--riso-blue);transform:rotate(4deg)}
+  footer .fbrand b{font-family:'Archivo Black';font-size:17px;text-transform:uppercase}
+  footer .fbrand .ft{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--riso-yellow)}
+  footer .ftones{display:flex;gap:0}
+  footer .ftones i{width:30px;height:30px;border:2px solid var(--paper);display:block}
+  footer .ftones i:nth-child(1){background:var(--riso-pink)}
+  footer .ftones i:nth-child(2){background:var(--riso-blue);margin-left:-12px;mix-blend-mode:screen}
+  footer .ftones i:nth-child(3){background:var(--riso-yellow);margin-left:-12px;mix-blend-mode:screen}
+  footer small{font-size:12px;opacity:.7}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:980px){
+    .hero{grid-template-columns:1fr}
+    .body-grid{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    nav.topnav a{flex:1 1 40%}
+  }
+  @media(max-width:700px){
+    .hero-main h2{font-size:44px}
+    .exam-card h3{font-size:38px}
+    nav.topnav a{flex:1 1 100%;border-right:none;border-bottom:3px solid var(--ink)}
+    nav.topnav a:last-child{border-bottom:none}
+    .mast-section{transform:rotate(0)}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- MASTHEAD -->
+  <header class="mast">
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <h1>Me Studing<br>Stuff</h1>
+        <div class="tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <div class="mast-section">FAM-L / FAM-S</div>
+  </header>
+
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <a href="#"><span>01</span>Survival Models</a>
+    <a href="#"><span>02</span>Life Tables</a>
+    <a href="#"><span>03</span>Life Insurance</a>
+    <a href="#"><span>04</span>Life Annuities</a>
+    <a href="#"><span>05</span>Premiums</a>
+    <a href="#"><span>06</span>Policy Values</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-main">
+      <span class="greet"><span class="dot"></span>Good evening</span>
+      <h2>Let's get you<br>that <em>pass.</em></h2>
+      <p class="hero-lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-primary">▶ Start studying</a>
+        <a href="#" class="btn btn-ghost">↺ Resume</a>
+      </div>
+    </div>
+
+    <!-- EXAM CARD -->
+    <aside class="exam-card">
+      <div class="stamp">SOA</div>
+      <div class="kicker">Now sitting</div>
+      <h3>Exam FAM</h3>
+      <div class="sub">Fundamentals of Actuarial Mathematics</div>
+      <div class="exam-meta">
+        <div class="row"><span>Provider</span><b>SOA</b></div>
+        <div class="row"><span>Questions</span><b>34</b></div>
+        <div class="row"><span>Pass mark</span><b>6 / 10</b></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stat">
+      <div class="icn">📈</div>
+      <div class="label">Overall progress</div>
+      <div class="big">72%</div>
+      <div class="sub">12 of 17 topics</div>
+      <div class="pbar"><i></i></div>
+    </div>
+    <div class="stat">
+      <div class="icn">⏳</div>
+      <div class="label">Exam countdown</div>
+      <div class="big">86</div>
+      <div class="sub">days to go</div>
+    </div>
+    <div class="stat">
+      <div class="icn">✓</div>
+      <div class="label">Topics solid</div>
+      <div class="big">8</div>
+      <div class="sub">locked in &amp; review-ready</div>
+    </div>
+  </section>
+
+  <!-- BODY GRID -->
+  <section class="body-grid">
+
+    <!-- LEFT: topic preview + formula + trap -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip blue">Topic preview</span>
+        <span class="chip pink">Life Insurance</span>
+      </div>
+      <h3>Life Insurance<br>Present Values</h3>
+      <p class="lede">The expected present value of a benefit paid at death — the backbone of every premium and reserve you'll meet on FAM.</p>
+
+      <div class="formula">
+        <div class="fhead"><span>Core identities</span><span>EPV · variance</span></div>
+        <div class="frow"><span class="n">1</span><code>A_x = 1 − d·ä_x</code></div>
+        <div class="frow"><span class="n">2</span><code>Var(Z) = ²A_x − (A_x)²</code></div>
+        <div class="frow"><span class="n">3</span><code>ä_x = (1 − A_x) / d</code></div>
+      </div>
+
+      <div class="trap">
+        <span class="tlabel">⚠ Common trap</span>
+        <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+      </div>
+
+      <div class="topic-tags">
+        <span>EPV</span><span>Variance</span><span>Whole life</span><span>UDD</span><span>Recursions</span>
+      </div>
+    </div>
+
+    <!-- RIGHT RAIL -->
+    <div class="rail">
+      <div class="example">
+        <div class="ex-kick">Worked example · teaser</div>
+        <h3>Example 1 — Whole life EPV &amp; variance</h3>
+        <p class="ex-body">Walk through computing A_x and Var(Z) for a whole life policy step by step, then check your answer against the worked solution.</p>
+        <div class="ex-cta">
+          <a href="#" class="btn btn-primary">▶ Start studying</a>
+          <a href="#" class="btn btn-ghost">↺ Resume</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="fbrand">
+      <div class="mmark">M</div>
+      <div>
+        <b>Me Studing Stuff</b><br>
+        <span class="ft">Study smarter. Pass exams.</span>
+      </div>
+    </div>
+    <div class="ftones"><i></i><i></i><i></i></div>
+    <small>Risograph tri-tone · Fluoro pink · blue · yellow · printed for SOA Exam FAM</small>
+  </footer>
+
+</div>
+</body>
+</html>

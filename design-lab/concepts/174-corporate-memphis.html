@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#23234a;
+    --ink-soft:#5b5b86;
+    --paper:#fef7ee;
+    --cream:#fffdf9;
+    --coral:#ff7a6b;
+    --coral-deep:#f25c4c;
+    --grape:#7c5cff;
+    --grape-deep:#6342e8;
+    --teal:#2ec7c2;
+    --teal-deep:#16a8a3;
+    --sun:#ffc24b;
+    --sun-deep:#f7ad21;
+    --rose:#ff9fc4;
+    --sky:#8ecbff;
+    --mint:#bff0d6;
+    --line:#2a2a52;
+    --shadow:18px 18px 0 rgba(42,42,82,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3,h4,.brand,.nav-label,.btn,.stat-num,.greet{font-family:'Fredoka',sans-serif;}
+
+  /* ---- decorative floating blobs / memphis shapes ---- */
+  .bg-deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .deco{position:absolute;opacity:.5}
+  .d-squiggle{top:12%;right:4%;font-size:42px;color:var(--grape);animation:float 7s ease-in-out infinite}
+  .d-plus{bottom:18%;left:3%;width:40px;height:40px;animation:spin 16s linear infinite}
+  .d-ring{top:46%;left:6%;width:54px;height:54px;border:9px solid var(--teal);border-radius:50%;animation:float 9s ease-in-out infinite}
+  .d-tri{bottom:8%;right:8%;animation:float 8s ease-in-out infinite reverse}
+  .d-dotgrid{top:6%;left:34%;opacity:.4}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .wrap{position:relative;z-index:1;display:grid;grid-template-columns:288px 1fr;min-height:100vh;}
+
+  /* ================= SIDEBAR ================= */
+  .side{
+    background:var(--ink);
+    color:#fff;
+    padding:30px 24px 36px;
+    position:sticky;top:0;height:100vh;
+    overflow-y:auto;
+    border-right:4px solid var(--line);
+  }
+  .side::-webkit-scrollbar{width:8px}
+  .side::-webkit-scrollbar-thumb{background:var(--grape);border-radius:8px}
+
+  .brand{display:flex;align-items:center;gap:13px;margin-bottom:6px}
+  .m-mark{
+    width:50px;height:50px;flex:none;border-radius:16px;
+    background:linear-gradient(135deg,var(--coral),var(--rose));
+    display:grid;place-items:center;
+    box-shadow:0 6px 0 var(--coral-deep);
+    transform:rotate(-6deg);
+  }
+  .m-mark span{font-family:'Fredoka';font-weight:700;font-size:30px;color:#fff;transform:rotate(6deg)}
+  .brand-txt b{font-size:21px;font-weight:600;line-height:1;display:block;letter-spacing:.2px}
+  .brand-txt small{font-size:11.5px;color:#b9b9e6;font-weight:700;letter-spacing:.3px}
+
+  .side-illo{margin:22px 0 24px;display:grid;place-items:center}
+
+  .nav-label{
+    font-size:11px;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--sun);font-weight:600;margin:20px 6px 12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.12);border-radius:2px}
+
+  .nav a{
+    display:flex;align-items:center;gap:13px;
+    padding:11px 14px;border-radius:14px;
+    color:#e7e7ff;text-decoration:none;font-weight:700;font-size:15px;
+    margin-bottom:5px;transition:.18s;position:relative;
+  }
+  .nav a .ic{
+    width:32px;height:32px;flex:none;border-radius:10px;
+    display:grid;place-items:center;font-size:16px;
+    background:rgba(255,255,255,.09);
+  }
+  .nav a:hover{background:rgba(124,92,255,.22);transform:translateX(4px)}
+  .nav a.active{background:var(--coral);color:#fff;box-shadow:0 5px 0 var(--coral-deep)}
+  .nav a.active .ic{background:rgba(255,255,255,.25)}
+  .nav a .pill{margin-left:auto;font-size:11px;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:20px;font-weight:800}
+
+  .side-foot{margin-top:26px;background:rgba(124,92,255,.16);border-radius:18px;padding:16px;font-size:13px;color:#cfcff5}
+  .side-foot b{color:#fff;font-family:'Fredoka';font-weight:500}
+
+  /* ================= MAIN ================= */
+  .main{padding:30px 40px 60px;max-width:1180px}
+
+  .topbar{display:flex;align-items:center;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+  .search{
+    flex:1;min-width:200px;background:var(--cream);border:3px solid var(--line);
+    border-radius:40px;padding:12px 20px;font-family:'Nunito';font-weight:700;color:var(--ink-soft);
+    display:flex;align-items:center;gap:10px;box-shadow:5px 5px 0 rgba(42,42,82,.10);
+  }
+  .chip{
+    background:var(--cream);border:3px solid var(--line);border-radius:40px;
+    padding:10px 18px;font-family:'Fredoka';font-weight:500;font-size:14px;
+    display:flex;align-items:center;gap:9px;box-shadow:5px 5px 0 rgba(42,42,82,.10);
+  }
+  .chip .dot{width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(46,199,194,.25)}
+  .avatar{
+    width:50px;height:50px;border-radius:50%;flex:none;
+    background:radial-gradient(circle at 50% 38%,#ffe2c9 0 38%,transparent 39%),linear-gradient(135deg,var(--grape),var(--sky));
+    border:3px solid var(--line);position:relative;box-shadow:4px 4px 0 rgba(42,42,82,.12)
+  }
+  .avatar::after{content:"";position:absolute;left:50%;top:54%;transform:translateX(-50%);width:24px;height:18px;background:var(--coral);border-radius:0 0 14px 14px}
+
+  /* ---- HERO ---- */
+  .hero{
+    background:linear-gradient(135deg,#fff3e6 0%,#ffe9f2 55%,#ece6ff 100%);
+    border:4px solid var(--line);border-radius:34px;
+    padding:38px 42px;position:relative;overflow:hidden;
+    box-shadow:var(--shadow);margin-bottom:26px;
+    display:grid;grid-template-columns:1.35fr .9fr;gap:24px;align-items:center;
+  }
+  .hero-burst{position:absolute;right:-30px;top:-30px;width:200px;height:200px;background:
+    radial-gradient(var(--sun) 30%,transparent 31%) 0 0/26px 26px;opacity:.5}
+  .greet{display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:#fff;
+    padding:7px 16px;border-radius:30px;font-size:13px;font-weight:500;margin-bottom:16px;letter-spacing:.4px}
+  .greet .moon{font-size:15px}
+  .hero h1{font-size:clamp(34px,4.6vw,54px);font-weight:700;line-height:1.02;letter-spacing:-.5px}
+  .hero h1 .hl{position:relative;white-space:nowrap;color:var(--coral-deep)}
+  .hero h1 .hl::after{content:"";position:absolute;left:-2%;bottom:6px;width:104%;height:14px;background:var(--sun);z-index:-1;border-radius:8px;transform:rotate(-1.2deg)}
+  .hero p.lede{font-size:17px;color:var(--ink-soft);font-weight:600;max-width:46ch;margin:18px 0 26px}
+  .hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+
+  .btn{
+    font-weight:600;font-size:16px;border:3px solid var(--line);border-radius:40px;
+    padding:14px 26px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+    transition:.16s;
+  }
+  .btn-primary{background:var(--coral);color:#fff;box-shadow:0 6px 0 var(--coral-deep)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--coral-deep)}
+  .btn-primary:active{transform:translateY(3px);box-shadow:0 2px 0 var(--coral-deep)}
+  .btn-ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 rgba(42,42,82,.18)}
+  .btn-ghost:hover{transform:translateY(-3px);box-shadow:0 9px 0 rgba(42,42,82,.18)}
+
+  /* ---- blob person illustration (CSS/SVG) ---- */
+  .hero-art{display:grid;place-items:center;position:relative}
+
+  /* ---- STATS ---- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:26px}
+  .stat{
+    background:var(--cream);border:4px solid var(--line);border-radius:26px;
+    padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .stat .badge{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;margin-bottom:14px;border:3px solid var(--line)}
+  .s1 .badge{background:var(--mint)} .s2 .badge{background:var(--rose)} .s3 .badge{background:var(--sky)}
+  .stat-num{font-size:44px;font-weight:700;line-height:1;letter-spacing:-1px}
+  .stat-lab{font-weight:800;font-size:14px;margin-top:6px}
+  .stat-sub{font-size:13px;color:var(--ink-soft);font-weight:700;margin-top:2px}
+  .ring-prog{position:absolute;right:18px;top:18px;width:54px;height:54px}
+  .progbar{height:12px;border-radius:20px;background:#efe6da;border:2px solid var(--line);margin-top:14px;overflow:hidden}
+  .progbar i{display:block;height:100%;width:72%;background:repeating-linear-gradient(45deg,var(--teal) 0 9px,var(--teal-deep) 9px 18px)}
+
+  /* ---- CONTENT GRID ---- */
+  .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:26px;margin-bottom:26px}
+  .card{
+    background:var(--cream);border:4px solid var(--line);border-radius:28px;
+    padding:28px;box-shadow:var(--shadow);position:relative;
+  }
+  .card-tag{
+    display:inline-flex;align-items:center;gap:8px;font-family:'Fredoka';font-weight:500;
+    font-size:12.5px;letter-spacing:.5px;text-transform:uppercase;
+    background:var(--grape);color:#fff;padding:6px 14px;border-radius:30px;margin-bottom:16px;border:2px solid var(--line)
+  }
+  .card h2{font-size:27px;font-weight:600;letter-spacing:-.3px;line-height:1.1}
+  .card h3{font-size:21px;font-weight:600;margin-bottom:6px}
+  .card .lede2{color:var(--ink-soft);font-weight:600;font-size:15.5px;margin:8px 0 20px}
+
+  .formula{
+    background:var(--ink);border-radius:20px;padding:6px;display:grid;gap:6px;border:3px solid var(--line);
+  }
+  .frow{
+    background:#2e2e5e;border-radius:14px;padding:15px 18px;display:flex;align-items:center;gap:14px;
+    font-family:'Fredoka';font-weight:400;
+  }
+  .frow .k{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:600;color:var(--ink);flex:none}
+  .frow:nth-child(1) .k{background:var(--sun)} .frow:nth-child(2) .k{background:var(--rose)} .frow:nth-child(3) .k{background:var(--teal)}
+  .frow .eq{font-size:18px;color:#fff;font-family:'Fredoka';letter-spacing:.4px}
+  .frow .eq sub,.frow .eq sup{font-size:.62em}
+  .frow .eq .op{color:var(--sun);font-weight:600}
+
+  /* exam card */
+  .exam{background:linear-gradient(150deg,#ece6ff,#fff0f6);position:relative;overflow:hidden}
+  .exam .ribbon{position:absolute;top:18px;right:-42px;background:var(--coral);color:#fff;font-family:'Fredoka';font-weight:500;font-size:12px;padding:6px 50px;transform:rotate(38deg);border:2px solid var(--line)}
+  .exam h3{font-size:24px}
+  .exam .sub{color:var(--ink-soft);font-weight:700;font-size:14px;margin-top:4px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .meta span{background:#fff;border:3px solid var(--line);border-radius:30px;padding:8px 14px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:7px;box-shadow:3px 3px 0 rgba(42,42,82,.12)}
+  .pass-badge{margin-top:20px;background:var(--ink);color:#fff;border-radius:18px;padding:16px 20px;display:flex;align-items:center;gap:16px}
+  .pass-badge .big{font-family:'Fredoka';font-weight:700;font-size:34px;color:var(--sun);line-height:1}
+
+  /* trap callout */
+  .trap{
+    background:var(--sun);border:4px solid var(--line);border-radius:24px;padding:22px 24px 22px;
+    box-shadow:var(--shadow);position:relative;display:flex;gap:18px;align-items:flex-start;margin-bottom:26px;
+  }
+  .trap .icon{width:54px;height:54px;flex:none;border-radius:16px;background:var(--coral);border:3px solid var(--line);display:grid;place-items:center;font-size:28px;box-shadow:0 5px 0 var(--coral-deep);transform:rotate(-5deg)}
+  .trap h4{font-family:'Fredoka';font-weight:600;font-size:18px;letter-spacing:.3px;margin-bottom:4px}
+  .trap p{font-weight:700;font-size:15.5px;color:#3a2f12}
+  .trap p b{background:#fff;padding:1px 7px;border-radius:7px;border:2px solid var(--line)}
+
+  /* worked example teaser */
+  .example{
+    background:var(--teal);color:#fff;border:4px solid var(--line);border-radius:28px;
+    padding:28px 30px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+  }
+  .example .ex-tag{background:#fff;color:var(--teal-deep);font-family:'Fredoka';font-weight:600;font-size:12px;letter-spacing:.6px;text-transform:uppercase;padding:6px 14px;border-radius:30px;border:2px solid var(--line);display:inline-block;margin-bottom:12px}
+  .example h3{font-size:26px;font-weight:600;letter-spacing:-.3px;color:#fff}
+  .example p{font-weight:700;margin-top:8px;color:#d6fffd;max-width:48ch}
+  .example .btns{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap}
+  .example .btn-primary{background:var(--coral)}
+  .ex-illo{flex:none}
+
+  /* footer */
+  footer{
+    margin-top:10px;border-top:3px dashed var(--line);padding-top:24px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--ink-soft);font-weight:700;font-size:14px
+  }
+  .foot-brand{display:flex;align-items:center;gap:11px}
+  .foot-brand .mini{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--coral),var(--rose));display:grid;place-items:center;border:2px solid var(--line);transform:rotate(-6deg)}
+  .foot-brand .mini span{font-family:'Fredoka';font-weight:700;color:#fff;transform:rotate(6deg)}
+  .foot-brand b{font-family:'Fredoka';font-weight:600;color:var(--ink);font-size:17px;display:block;line-height:1}
+  .foot-dots{display:flex;gap:8px}
+  .foot-dots i{width:13px;height:13px;border-radius:50%;border:2px solid var(--line)}
+
+  /* responsive */
+  @media(max-width:1080px){
+    .grid{grid-template-columns:1fr}
+    .hero{grid-template-columns:1fr}
+    .hero-art{order:-1}
+  }
+  @media(max-width:860px){
+    .wrap{grid-template-columns:1fr}
+    .side{position:static;height:auto;border-right:none;border-bottom:4px solid var(--line)}
+    .side-illo{display:none}
+  }
+  @media(max-width:760px){
+    .main{padding:22px 18px 40px}
+    .stats{grid-template-columns:1fr}
+    .hero{padding:28px 22px}
+    .example{grid-template-columns:1fr}
+    .ex-illo{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- floating memphis ornaments -->
+<div class="bg-deco" aria-hidden="true">
+  <svg class="deco d-squiggle" width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 11C7 2 13 2 18 11s11 9 16 0 11-9 16 0 9 9 8 9" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+  <svg class="deco d-plus" viewBox="0 0 40 40" fill="none"><path d="M20 4v32M4 20h32" stroke="#ff7a6b" stroke-width="7" stroke-linecap="round"/></svg>
+  <div class="deco d-ring"></div>
+  <svg class="deco d-tri" width="56" height="50" viewBox="0 0 56 50"><path d="M28 2 54 48H2Z" fill="#ffc24b" stroke="#2a2a52" stroke-width="3"/></svg>
+  <svg class="deco d-dotgrid" width="120" height="60"><g fill="#7c5cff"><circle cx="8" cy="8" r="5"/><circle cx="38" cy="8" r="5"/><circle cx="68" cy="8" r="5"/><circle cx="98" cy="8" r="5"/><circle cx="8" cy="38" r="5"/><circle cx="38" cy="38" r="5"/><circle cx="68" cy="38" r="5"/><circle cx="98" cy="38" r="5"/></g></svg>
+</div>
+
+<div class="wrap">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="side">
+    <div class="brand">
+      <div class="m-mark"><span>M</span></div>
+      <div class="brand-txt">
+        <b>Me Studing Stuff</b>
+        <small>STUDY SMARTER. PASS EXAMS.</small>
+      </div>
+    </div>
+
+    <!-- blob person reading -->
+    <div class="side-illo">
+      <svg width="180" height="150" viewBox="0 0 180 150" fill="none" aria-hidden="true">
+        <ellipse cx="90" cy="138" rx="62" ry="9" fill="#000" opacity=".18"/>
+        <!-- body blob -->
+        <path d="M52 120c-6-34 9-58 38-58s44 24 38 58Z" fill="#7c5cff"/>
+        <!-- arm -->
+        <path d="M58 96c-12 6-18 16-16 28" stroke="#6342e8" stroke-width="11" stroke-linecap="round"/>
+        <path d="M122 96c12 6 18 16 16 28" stroke="#6342e8" stroke-width="11" stroke-linecap="round"/>
+        <!-- head -->
+        <circle cx="90" cy="46" r="26" fill="#ffd9b8"/>
+        <path d="M64 44c-2-22 16-32 26-32s28 10 26 32c-8-8-16-10-26-10s-18 2-26 10Z" fill="#23234a"/>
+        <circle cx="81" cy="48" r="3.4" fill="#23234a"/>
+        <circle cx="99" cy="48" r="3.4" fill="#23234a"/>
+        <path d="M83 58c4 4 10 4 14 0" stroke="#23234a" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="74" cy="55" r="4" fill="#ff9fc4" opacity=".7"/>
+        <circle cx="106" cy="55" r="4" fill="#ff9fc4" opacity=".7"/>
+        <!-- book -->
+        <path d="M62 104h56l-6 22H68Z" fill="#2ec7c2" stroke="#23234a" stroke-width="3"/>
+        <path d="M90 104v22" stroke="#23234a" stroke-width="3"/>
+        <!-- sparkle -->
+        <path d="M140 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#ffc24b"/>
+      </svg>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label">FAM-L / FAM-S</div>
+      <a href="#" class="active"><span class="ic">🩺</span> Survival Models <span class="pill">core</span></a>
+      <a href="#"><span class="ic">📋</span> Life Tables</a>
+      <a href="#"><span class="ic">🛡️</span> Life Insurance <span class="pill">now</span></a>
+      <a href="#"><span class="ic">💸</span> Life Annuities</a>
+      <a href="#"><span class="ic">🧮</span> Premiums</a>
+      <a href="#"><span class="ic">📈</span> Policy Values</a>
+
+      <div class="nav-label">My stuff</div>
+      <a href="#"><span class="ic">🗂️</span> Notes &amp; Formulas</a>
+      <a href="#"><span class="ic">🎯</span> Study Plan</a>
+    </nav>
+
+    <div class="side-foot">
+      Keep it calm, keep it consistent.<br>
+      <b>You're on a 6-day streak 🔥</b>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <div class="topbar">
+      <div class="search">🔎 Search notes, formulas, problems…</div>
+      <div class="chip"><span class="dot"></span> FAM mode</div>
+      <div class="avatar" title="You"></div>
+    </div>
+
+    <!-- HERO / DASHBOARD -->
+    <section class="hero">
+      <div class="hero-burst"></div>
+      <div>
+        <div class="greet"><span class="moon">🌙</span> Good evening</div>
+        <h1>Let's get you that <span class="hl">pass.</span></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="hero-btns">
+          <a href="#" class="btn btn-primary">▶ Start studying</a>
+          <a href="#" class="btn btn-ghost">↺ Resume</a>
+        </div>
+      </div>
+
+      <!-- big waving blob person -->
+      <div class="hero-art">
+        <svg width="260" height="240" viewBox="0 0 260 240" fill="none" aria-hidden="true">
+          <ellipse cx="130" cy="222" rx="86" ry="12" fill="#000" opacity=".10"/>
+          <!-- shapes behind -->
+          <circle cx="40" cy="60" r="16" fill="#ff9fc4"/>
+          <path d="M222 40l4 9 9 4-9 4-4 9-4-9-9-4 9-4Z" fill="#ffc24b"/>
+          <rect x="206" y="150" width="26" height="26" rx="7" fill="#2ec7c2" stroke="#23234a" stroke-width="3" transform="rotate(15 219 163)"/>
+          <!-- legs -->
+          <path d="M104 196v22M156 196v22" stroke="#23234a" stroke-width="13" stroke-linecap="round"/>
+          <!-- body -->
+          <path d="M78 196c-10-50 14-86 52-86s62 36 52 86Z" fill="#ff7a6b"/>
+          <!-- belt -->
+          <path d="M86 168h88" stroke="#f25c4c" stroke-width="7"/>
+          <!-- waving arm -->
+          <path d="M92 132C70 120 58 96 64 74" stroke="#f25c4c" stroke-width="15" stroke-linecap="round"/>
+          <circle cx="62" cy="68" r="11" fill="#ffd9b8"/>
+          <!-- resting arm -->
+          <path d="M168 132c20 8 30 26 28 46" stroke="#f25c4c" stroke-width="15" stroke-linecap="round"/>
+          <!-- head -->
+          <circle cx="130" cy="78" r="34" fill="#ffd9b8"/>
+          <path d="M96 76c-2-30 22-44 34-44s36 14 34 44c-10-12-20-14-34-14s-24 2-34 14Z" fill="#23234a"/>
+          <circle cx="118" cy="80" r="4.4" fill="#23234a"/>
+          <circle cx="142" cy="80" r="4.4" fill="#23234a"/>
+          <path d="M120 94c6 6 14 6 20 0" stroke="#23234a" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="107" cy="88" r="5.5" fill="#ff9fc4" opacity=".75"/>
+          <circle cx="153" cy="88" r="5.5" fill="#ff9fc4" opacity=".75"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat s1">
+        <svg class="ring-prog" viewBox="0 0 36 36"><path d="M18 2a16 16 0 1 1 0 32 16 16 0 0 1 0-32" fill="none" stroke="#efe6da" stroke-width="4"/><path d="M18 2a16 16 0 0 1 0 32" fill="none" stroke="#2ec7c2" stroke-width="4" stroke-linecap="round" stroke-dasharray="72 100" pathLength="100" transform="rotate(-90 18 18)"/></svg>
+        <div class="badge">📊</div>
+        <div class="stat-num">72%</div>
+        <div class="stat-lab">Overall progress</div>
+        <div class="stat-sub">12 of 17 topics</div>
+        <div class="progbar"><i></i></div>
+      </div>
+      <div class="stat s2">
+        <div class="badge">⏳</div>
+        <div class="stat-num">86</div>
+        <div class="stat-lab">Exam countdown</div>
+        <div class="stat-sub">days to go — you've got this</div>
+      </div>
+      <div class="stat s3">
+        <div class="badge">✅</div>
+        <div class="stat-num">8</div>
+        <div class="stat-lab">Topics solid</div>
+        <div class="stat-sub">locked in &amp; confident</div>
+      </div>
+    </section>
+
+    <!-- TOPIC PREVIEW + EXAM CARD -->
+    <section class="grid">
+      <!-- topic preview with formula -->
+      <div class="card">
+        <span class="card-tag">📘 Topic preview · Life Insurance</span>
+        <h2>Life Insurance Present Values</h2>
+        <p class="lede2">The benefit is paid at death — so we discount each possible payout by how likely and how far away it is.</p>
+
+        <div class="formula" role="img" aria-label="Key life-insurance present-value formulas">
+          <div class="frow"><span class="k">1</span><span class="eq">A<sub>x</sub> <span class="op">=</span> 1 <span class="op">−</span> d·ä<sub>x</sub></span></div>
+          <div class="frow"><span class="k">2</span><span class="eq">Var(Z) <span class="op">=</span> ²A<sub>x</sub> <span class="op">−</span> (A<sub>x</sub>)²</span></div>
+          <div class="frow"><span class="k">3</span><span class="eq">ä<sub>x</sub> <span class="op">=</span> (1 <span class="op">−</span> A<sub>x</sub>) / d</span></div>
+        </div>
+      </div>
+
+      <!-- exam card -->
+      <div class="card exam">
+        <div class="ribbon">SOA</div>
+        <span class="card-tag" style="background:var(--coral)">🎓 Exam</span>
+        <h3>Exam FAM</h3>
+        <div class="sub">Fundamentals of Actuarial Mathematics</div>
+        <div class="meta">
+          <span>🏛️ SOA</span>
+          <span>📝 34 questions</span>
+        </div>
+        <div class="pass-badge">
+          <div class="big">6/10</div>
+          <div style="font-weight:800;font-size:13.5px;line-height:1.3">Pass mark<br><span style="color:#cfcff5;font-weight:700">aim above it, every set</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMON TRAP -->
+    <section class="trap">
+      <div class="icon">⚠️</div>
+      <div>
+        <h4>Common trap</h4>
+        <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+      </div>
+    </section>
+
+    <!-- WORKED EXAMPLE TEASER -->
+    <section class="example">
+      <div>
+        <span class="ex-tag">Worked example</span>
+        <h3>Example 1 — Whole life EPV &amp; variance</h3>
+        <p>Walk through computing E[Z] and Var(Z) for a whole life insurance, step by step, then check it against the shortcut formulas above.</p>
+        <div class="btns">
+          <a href="#" class="btn btn-primary">▶ Start studying</a>
+          <a href="#" class="btn btn-ghost">↺ Resume</a>
+        </div>
+      </div>
+      <div class="ex-illo">
+        <!-- blob person at chalkboard -->
+        <svg width="170" height="170" viewBox="0 0 170 170" fill="none" aria-hidden="true">
+          <rect x="14" y="20" width="142" height="92" rx="12" fill="#23234a" stroke="#fff" stroke-width="4"/>
+          <text x="34" y="58" fill="#ffc24b" font-family="Fredoka, sans-serif" font-size="22" font-weight="600">A<tspan font-size="13" dy="6">x</tspan></text>
+          <text x="70" y="58" fill="#fff" font-family="Fredoka, sans-serif" font-size="20">= E[Z]</text>
+          <path d="M34 78c10 6 20 6 30 0s20-6 30 0 20 6 30 0" stroke="#2ec7c2" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- pointer person -->
+          <path d="M108 162v-18" stroke="#23234a" stroke-width="12" stroke-linecap="round"/>
+          <path d="M132 162v-18" stroke="#23234a" stroke-width="12" stroke-linecap="round"/>
+          <path d="M96 146c-6-26 8-44 24-44s30 18 24 44Z" fill="#ffc24b"/>
+          <path d="M138 112c14 2 20-6 20-18" stroke="#f7ad21" stroke-width="11" stroke-linecap="round"/>
+          <circle cx="120" cy="92" r="20" fill="#ffd9b8"/>
+          <path d="M101 90c-1-18 13-26 19-26s20 8 19 26c-6-7-12-8-19-8s-13 1-19 8Z" fill="#23234a"/>
+          <circle cx="113" cy="92" r="2.8" fill="#23234a"/>
+          <circle cx="127" cy="92" r="2.8" fill="#23234a"/>
+          <path d="M114 100c4 3 8 3 12 0" stroke="#23234a" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="foot-brand">
+        <div class="mini"><span>M</span></div>
+        <div>
+          <b>Me Studing Stuff</b>
+          <span style="font-size:12.5px">Study smarter. Pass exams. © 2026</span>
+        </div>
+      </div>
+      <div class="foot-dots">
+        <i style="background:var(--coral)"></i>
+        <i style="background:var(--sun)"></i>
+        <i style="background:var(--teal)"></i>
+        <i style="background:var(--grape)"></i>
+        <i style="background:var(--rose)"></i>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

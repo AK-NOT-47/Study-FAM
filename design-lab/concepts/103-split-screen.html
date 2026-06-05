@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* DARK half */
+    --ink:#0c0e14;
+    --ink-2:#13161f;
+    --ink-line:rgba(255,255,255,.10);
+    --ink-txt:#f4f1e9;
+    --ink-dim:#9aa0ad;
+    /* LIGHT half */
+    --bone:#f4f1e9;
+    --bone-2:#ece7da;
+    --bone-line:rgba(12,14,20,.12);
+    --bone-txt:#0c0e14;
+    --bone-dim:#5d5a50;
+    /* accents — the two sides each own one */
+    --acid:#d6ff3f;   /* electric lime, lives on dark */
+    --flame:#ff4d2e;   /* vermilion, lives on light */
+    --plum:#6a4cff;
+    --seam:#0c0e14;
+    --r:18px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background:var(--ink);
+    color:var(--ink-txt);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ====== THE SPLIT ====== */
+  .split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:100vh;
+    position:relative;
+  }
+  /* the seam line down the middle */
+  .split::before{
+    content:"";
+    position:absolute;
+    left:50%;top:0;bottom:0;
+    width:2px;
+    background:linear-gradient(180deg,transparent,var(--acid) 12%,var(--flame) 88%,transparent);
+    transform:translateX(-1px);
+    z-index:5;
+    box-shadow:0 0 30px rgba(214,255,63,.35);
+  }
+  /* the slash badge sitting on the seam */
+  .seam-badge{
+    position:absolute;
+    left:50%;top:0;
+    transform:translateX(-50%);
+    z-index:6;
+    display:flex;align-items:center;
+    gap:0;
+  }
+  .seam-badge .vbit{
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    padding:14px 4px;
+    background:var(--ink);
+    color:var(--acid);
+    border:1px solid var(--ink-line);
+    border-top:none;
+    border-radius:0 0 10px 10px;
+  }
+
+  .half{
+    padding:38px clamp(26px,4vw,64px) 56px;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    position:relative;
+  }
+  /* DARK left */
+  .left{
+    background:
+      radial-gradient(900px 500px at -10% 0%, rgba(106,76,255,.18), transparent 60%),
+      radial-gradient(700px 600px at 0% 110%, rgba(214,255,63,.10), transparent 55%),
+      var(--ink);
+    color:var(--ink-txt);
+  }
+  /* LIGHT right */
+  .right{
+    background:
+      radial-gradient(800px 500px at 110% 0%, rgba(255,77,46,.12), transparent 60%),
+      linear-gradient(180deg,var(--bone),var(--bone-2));
+    color:var(--bone-txt);
+  }
+
+  /* halftone dot texture on dark */
+  .left::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.4px);
+    background-size:16px 16px;
+    -webkit-mask:linear-gradient(180deg,transparent,#000 30%);
+            mask:linear-gradient(180deg,transparent,#000 30%);
+  }
+  /* diagonal hatch on light */
+  .right::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;
+    background-image:repeating-linear-gradient(-45deg,rgba(12,14,20,.05) 0 1px,transparent 1px 11px);
+    -webkit-mask:linear-gradient(180deg,transparent,#000 40%);
+            mask:linear-gradient(180deg,transparent,#000 40%);
+  }
+
+  /* ====== MASTHEAD (top of each half) ====== */
+  .mast{display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:2}
+  .brand{display:flex;align-items:center;gap:12px}
+  .mark{
+    width:46px;height:46px;flex:none;border-radius:13px;
+    display:grid;place-items:center;
+    font-family:'Fraunces',serif;font-weight:900;font-size:26px;line-height:1;
+    position:relative;overflow:hidden;
+  }
+  .left .mark{background:var(--acid);color:var(--ink);box-shadow:0 0 0 1px rgba(255,255,255,.1),0 10px 30px rgba(214,255,63,.25)}
+  .left .mark::after{content:"";position:absolute;top:0;right:0;bottom:0;width:50%;background:rgba(12,14,20,.14)}
+  .right .mark{background:var(--ink);color:var(--flame);box-shadow:0 10px 30px rgba(12,14,20,.18)}
+  .right .mark::after{content:"";position:absolute;top:0;right:0;bottom:0;width:50%;background:rgba(255,255,255,.08)}
+
+  .brand b{font-family:'Fraunces',serif;font-weight:900;font-size:18px;letter-spacing:-.01em;display:block;line-height:1}
+  .brand small{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;display:block;margin-top:4px}
+
+  .pillnav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .pillnav a{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    padding:8px 12px;border-radius:999px;transition:.18s;
+  }
+  .left .pillnav a{border:1px solid var(--ink-line);color:var(--ink-dim)}
+  .left .pillnav a:hover{border-color:var(--acid);color:var(--acid)}
+  .right .pillnav a{border:1px solid var(--bone-line);color:var(--bone-dim)}
+  .right .pillnav a:hover{border-color:var(--flame);color:var(--flame)}
+
+  /* ====== SECTION KICKERS ====== */
+  .kick{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+    display:flex;align-items:center;gap:12px;margin:34px 0 18px;position:relative;z-index:2;
+  }
+  .kick::before{content:"";width:26px;height:2px}
+  .left .kick{color:var(--acid)} .left .kick::before{background:var(--acid)}
+  .right .kick{color:var(--flame)} .right .kick::before{background:var(--flame)}
+
+  /* ====== LEFT: NAV + HERO ====== */
+  .topics{display:flex;flex-direction:column;gap:2px;position:relative;z-index:2}
+  .topics .grp{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--ink-dim);margin:8px 0 4px;
+  }
+  .topics a{
+    display:flex;align-items:center;gap:14px;
+    padding:11px 14px;border-radius:12px;border:1px solid transparent;
+    font-size:15px;font-weight:500;transition:.16s;color:var(--ink-txt);
+  }
+  .topics a .num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);width:22px}
+  .topics a .dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--ink-line)}
+  .topics a.done .dot{background:var(--acid);box-shadow:0 0 10px rgba(214,255,63,.6)}
+  .topics a:hover{background:var(--ink-2);border-color:var(--ink-line);transform:translateX(4px)}
+  .topics a.active{background:linear-gradient(90deg,rgba(214,255,63,.14),transparent);border-color:rgba(214,255,63,.4)}
+  .topics a.active .num{color:var(--acid)}
+
+  .hero{margin-top:auto;padding-top:40px;position:relative;z-index:2}
+  .greet{
+    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-dim);
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  }
+  .greet .moon{font-size:15px}
+  .hero h1{
+    font-family:'Fraunces',serif;font-weight:900;
+    font-size:clamp(42px,6.4vw,82px);line-height:.92;letter-spacing:-.025em;
+    margin-bottom:18px;
+  }
+  .hero h1 em{font-style:italic;color:var(--acid)}
+  .hero p{font-size:15.5px;line-height:1.6;color:var(--ink-dim);max-width:46ch}
+
+  /* ====== RIGHT: DASHBOARD ====== */
+  .right .col{display:flex;flex-direction:column;position:relative;z-index:2;height:100%}
+
+  /* stats trio */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+  .stat{
+    border:1px solid var(--bone-line);border-radius:var(--r);
+    padding:16px 14px;background:rgba(255,255,255,.45);
+    position:relative;overflow:hidden;
+  }
+  .stat .big{font-family:'Fraunces',serif;font-weight:900;font-size:34px;line-height:1;letter-spacing:-.02em}
+  .stat .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-dim);margin-top:8px}
+  .stat .sub{font-size:11.5px;color:var(--bone-dim);margin-top:3px}
+  .stat.flame .big{color:var(--flame)}
+  .stat .bar{height:5px;border-radius:99px;background:var(--bone-line);margin-top:10px;overflow:hidden}
+  .stat .bar i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--flame),var(--plum));border-radius:99px}
+
+  .cards{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+
+  .card{
+    border:1px solid var(--bone-line);border-radius:var(--r);
+    background:rgba(255,255,255,.62);padding:18px;position:relative;
+  }
+  .card .ctag{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--flame);display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  }
+  .card h3{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.01em;margin-bottom:6px}
+  .card .lede{font-size:13.5px;line-height:1.55;color:var(--bone-dim)}
+
+  /* exam meta chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    padding:6px 11px;border-radius:999px;border:1px solid var(--bone-line);
+    background:var(--bone);color:var(--bone-txt);
+  }
+  .chip b{color:var(--flame)}
+
+  /* formula block — inverted, lives bold on light side */
+  .formula{
+    margin-top:14px;border-radius:14px;overflow:hidden;
+    background:var(--ink);color:var(--ink-txt);
+    box-shadow:0 16px 40px rgba(12,14,20,.22);
+  }
+  .formula .fhead{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 16px;border-bottom:1px solid var(--ink-line);
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim);
+  }
+  .formula .fhead .dots{display:flex;gap:6px}
+  .formula .fhead .dots i{width:9px;height:9px;border-radius:50%;background:var(--ink-line);display:block}
+  .formula .fhead .dots i:first-child{background:var(--acid)}
+  .formula .frow{
+    font-family:'JetBrains Mono',monospace;font-size:14.5px;
+    padding:13px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--ink-line);
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .frow .fx{color:var(--acid);font-weight:700;white-space:nowrap}
+  .formula .frow .eq{color:var(--ink-txt)}
+  .formula sup{font-size:.72em}
+
+  /* common trap callout */
+  .trap{
+    margin-top:14px;border-radius:14px;padding:16px 18px;
+    background:linear-gradient(135deg,rgba(255,77,46,.12),rgba(255,77,46,.04));
+    border:1px solid rgba(255,77,46,.4);position:relative;
+  }
+  .trap .th{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--flame);display:flex;align-items:center;gap:9px;margin-bottom:8px;font-weight:700;
+  }
+  .trap p{font-size:13.5px;line-height:1.55;color:var(--bone-txt)}
+  .trap p b{background:rgba(255,77,46,.18);padding:0 4px;border-radius:4px}
+
+  /* worked example + CTA */
+  .work{
+    margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    border:1px dashed var(--bone-line);border-radius:14px;padding:14px 16px;
+    background:rgba(255,255,255,.4);
+  }
+  .work .wi{
+    width:42px;height:42px;border-radius:11px;flex:none;display:grid;place-items:center;
+    background:var(--ink);color:var(--acid);font-family:'Fraunces',serif;font-weight:900;font-size:19px;
+  }
+  .work .wt b{font-family:'Fraunces',serif;font-weight:600;font-size:15px;display:block;letter-spacing:-.01em}
+  .work .wt span{font-size:12px;color:var(--bone-dim)}
+
+  .ctas{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14.5px;
+    padding:14px 22px;border-radius:13px;cursor:pointer;border:none;
+    display:inline-flex;align-items:center;gap:9px;transition:.16s;
+  }
+  .btn.primary{background:var(--ink);color:var(--acid);box-shadow:0 10px 26px rgba(12,14,20,.25)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--bone-txt);border:1.5px solid var(--bone-txt)}
+  .btn.ghost:hover{background:var(--flame);border-color:var(--flame);color:#fff;transform:translateY(-2px)}
+  .btn .arr{font-size:16px}
+
+  /* footers per half */
+  .foot{
+    margin-top:auto;padding-top:30px;display:flex;align-items:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;position:relative;z-index:2;
+  }
+  .left .foot{color:var(--ink-dim);border-top:1px solid var(--ink-line);margin-top:30px}
+  .right .foot{color:var(--bone-dim);border-top:1px solid var(--bone-line);margin-top:30px}
+  .foot .dotm{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.6}
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width:880px){
+    .split{grid-template-columns:1fr}
+    .split::before{display:none}
+    .seam-badge{display:none}
+    .left{order:1} .right{order:2}
+    .right::after,.left::after{-webkit-mask:none;mask:none}
+    .hero{padding-top:30px}
+  }
+  @media (max-width:520px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stats .stat:last-child{grid-column:1/-1}
+    .pillnav{display:none}
+    .formula .frow{font-size:12.5px;flex-wrap:wrap}
+  }
+</style>
+</head>
+<body>
+  <main class="split">
+    <div class="seam-badge"><span class="vbit">FAM-L / FAM-S · DUALITY</span></div>
+
+    <!-- ========== DARK HALF ========== -->
+    <section class="half left">
+      <header class="mast">
+        <div class="brand">
+          <div class="mark">M</div>
+          <div>
+            <b>Me Studing Stuff</b>
+            <small>Study smarter. Pass exams.</small>
+          </div>
+        </div>
+        <nav class="pillnav">
+          <a href="#">Notes</a>
+          <a href="#">Formulas</a>
+          <a href="#">Plan</a>
+        </nav>
+      </header>
+
+      <div class="kick">Navigate · FAM-L / FAM-S</div>
+      <nav class="topics">
+        <div class="grp">Core syllabus</div>
+        <a href="#" class="active"><span class="num">01</span> Survival Models <span class="dot"></span></a>
+        <a href="#" class="done"><span class="num">02</span> Life Tables <span class="dot"></span></a>
+        <a href="#" class="done"><span class="num">03</span> Life Insurance <span class="dot"></span></a>
+        <a href="#"><span class="num">04</span> Life Annuities <span class="dot"></span></a>
+        <a href="#"><span class="num">05</span> Premiums <span class="dot"></span></a>
+        <a href="#"><span class="num">06</span> Policy Values <span class="dot"></span></a>
+      </nav>
+
+      <div class="hero">
+        <div class="greet"><span class="moon">🌙</span> Good evening</div>
+        <h1>Let's get you<br>that <em>pass.</em></h1>
+        <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      </div>
+
+      <footer class="foot">
+        <span class="dotm"></span> Me Studing Stuff © 2026 — the dark side: deep work.
+      </footer>
+    </section>
+
+    <!-- ========== LIGHT HALF ========== -->
+    <section class="half right">
+      <div class="col">
+        <header class="mast">
+          <div class="brand">
+            <div class="mark">M</div>
+            <div>
+              <b>Dashboard</b>
+              <small>Good evening · keep the streak</small>
+            </div>
+          </div>
+          <nav class="pillnav">
+            <a href="#">Topics</a>
+            <a href="#">Calendar</a>
+            <a href="#">Account</a>
+          </nav>
+        </header>
+
+        <div class="kick">Your progress today</div>
+        <div class="stats">
+          <div class="stat flame">
+            <div class="big">72%</div>
+            <div class="lbl">Overall progress</div>
+            <div class="sub">12 of 17 topics</div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="stat">
+            <div class="big">86</div>
+            <div class="lbl">Days countdown</div>
+            <div class="sub">until exam day</div>
+          </div>
+          <div class="stat">
+            <div class="big">8</div>
+            <div class="lbl">Topics solid</div>
+            <div class="sub">mastered & reviewed</div>
+          </div>
+        </div>
+
+        <div class="cards">
+
+          <!-- Exam card -->
+          <div class="card">
+            <div class="ctag">◆ The target</div>
+            <h3>Exam FAM</h3>
+            <p class="lede">Fundamentals of Actuarial Mathematics — the gateway to your associateship.</p>
+            <div class="chips">
+              <span class="chip">SOA</span>
+              <span class="chip"><b>34</b> questions</span>
+              <span class="chip">pass = <b>6/10</b></span>
+            </div>
+          </div>
+
+          <!-- Topic preview + formula -->
+          <div class="card">
+            <div class="ctag">▶ Topic preview</div>
+            <h3>Life Insurance Present Values</h3>
+            <p class="lede">The actuarial present value of a benefit, and how its variance falls right out of the second moment.</p>
+
+            <div class="formula">
+              <div class="fhead">
+                <span>key relations</span>
+                <span class="dots"><i></i><i></i><i></i></span>
+              </div>
+              <div class="frow"><span class="fx">A<sub>x</sub></span><span class="eq">= 1 − d·ä<sub>x</sub></span></div>
+              <div class="frow"><span class="fx">Var(Z)</span><span class="eq">= <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)²</span></div>
+              <div class="frow"><span class="fx">ä<sub>x</sub></span><span class="eq">= (1 − A<sub>x</sub>) / d</span></div>
+            </div>
+
+            <!-- Common trap -->
+            <div class="trap">
+              <div class="th">⚠ Common trap</div>
+              <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+            </div>
+
+            <!-- Worked example -->
+            <div class="work">
+              <div class="wi">1</div>
+              <div class="wt">
+                <b>Example 1 — Whole life EPV &amp; variance</b>
+                <span>Compute A&#8339;, then Var(Z) using the second moment.</span>
+              </div>
+            </div>
+
+            <div class="ctas">
+              <button class="btn primary">Start studying <span class="arr">→</span></button>
+              <button class="btn ghost">Resume</button>
+            </div>
+          </div>
+
+        </div>
+
+        <footer class="foot">
+          <span class="dotm"></span> Me Studing Stuff — the light side: clear answers. Study smarter. Pass exams.
+        </footer>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

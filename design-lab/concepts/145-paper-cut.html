@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* Paper palette — warm, matte, layered */
+    --paper-0:#f7efe2;   /* base canvas */
+    --paper-1:#fcf6ec;   /* lightest sheet */
+    --cream:#fffaf2;
+    --coral:#ef6f5b;
+    --coral-deep:#d9543f;
+    --marigold:#f4b740;
+    --teal:#2f8f86;
+    --teal-deep:#236a63;
+    --plum:#7d4f9e;
+    --navy:#2b2a3d;
+    --ink:#322c26;
+    --ink-soft:#6a6056;
+    --line:#e6d8c4;
+
+    /* Soft cut-paper shadow: layered, no hard edges */
+    --cut: 0 1px 0 rgba(255,255,255,.7),
+           0 6px 14px -6px rgba(80,55,30,.28),
+           0 18px 36px -18px rgba(80,55,30,.30);
+    --cut-sm: 0 1px 0 rgba(255,255,255,.6),
+              0 4px 10px -5px rgba(80,55,30,.30),
+              0 10px 22px -12px rgba(80,55,30,.26);
+    --cut-lift: 0 2px 0 rgba(255,255,255,.7),
+                0 12px 24px -10px rgba(80,55,30,.34),
+                0 30px 60px -26px rgba(80,55,30,.38);
+    --r:22px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper-0);
+    /* faint paper grain via layered gradients */
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(244,183,64,.10), transparent 30%),
+      radial-gradient(circle at 88% 8%, rgba(47,143,134,.10), transparent 34%),
+      radial-gradient(circle at 78% 92%, rgba(239,111,91,.10), transparent 36%);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;line-height:1.04;letter-spacing:-.01em}
+  a{color:inherit;text-decoration:none}
+
+  /* ============ paper texture helper ============ */
+  .grain::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    opacity:.5;mix-blend-mode:multiply;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.015) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.012) 0 1px, transparent 1px 4px);
+  }
+
+  /* torn / cut top edge using clip is heavy; use a subtle scalloped strip */
+  .layout{
+    display:grid;
+    grid-template-columns:288px 1fr;
+    gap:30px;
+    max-width:1340px;
+    margin:0 auto;
+    padding:26px clamp(16px,3vw,38px) 40px;
+    min-height:100vh;
+  }
+
+  /* =================== SIDEBAR (stacked paper) =================== */
+  .side{position:relative}
+  .side-inner{
+    position:sticky;top:26px;
+    background:var(--cream);
+    border-radius:26px;
+    padding:24px 22px 26px;
+    box-shadow:var(--cut);
+    border:1px solid #fff;
+  }
+  .brand{display:flex;align-items:center;gap:13px;margin-bottom:6px}
+  .mmark{
+    position:relative;width:52px;height:52px;flex:none;border-radius:16px;
+    background:var(--coral);
+    box-shadow:var(--cut-sm), inset 0 0 0 4px rgba(255,255,255,.35);
+    display:grid;place-items:center;
+    transform:rotate(-4deg);
+  }
+  .mmark span{
+    font-family:'Fraunces';font-weight:900;font-size:30px;color:var(--cream);
+    transform:rotate(4deg);line-height:1;
+    text-shadow:0 2px 0 rgba(0,0,0,.12);
+  }
+  /* little cut-paper corner peel */
+  .mmark::after{
+    content:"";position:absolute;right:-6px;bottom:-6px;width:18px;height:18px;
+    background:var(--marigold);border-radius:6px 4px 8px 4px;transform:rotate(18deg);
+    box-shadow:var(--cut-sm);
+  }
+  .brand-txt b{font-family:'Fraunces';font-weight:700;font-size:18px;display:block;letter-spacing:-.02em}
+  .brand-txt small{font-size:11.5px;color:var(--ink-soft);font-weight:600;letter-spacing:.02em}
+
+  .nav-label{
+    font-family:'Plus Jakarta Sans';font-size:10.5px;font-weight:800;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ink-soft);
+    margin:26px 4px 12px;display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::after{content:"";flex:1;height:2px;border-radius:2px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 11px)}
+
+  /* FAM section chips as stacked colored paper tabs */
+  .fam-tabs{display:flex;gap:8px;margin:0 2px 6px}
+  .fam-tabs .tab{
+    flex:1;text-align:center;font-weight:800;font-size:12px;letter-spacing:.04em;
+    padding:9px 6px;border-radius:13px;color:#fff;box-shadow:var(--cut-sm);
+    position:relative;
+  }
+  .fam-tabs .tab.l{background:var(--teal);transform:rotate(-1.5deg)}
+  .fam-tabs .tab.s{background:var(--plum);transform:rotate(1.5deg)}
+
+  nav ul{list-style:none}
+  .nav-item{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 13px;border-radius:14px;margin:5px 0;
+    font-weight:600;font-size:14.5px;color:var(--ink);
+    position:relative;transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    cursor:pointer;
+  }
+  .nav-item .dot{
+    width:13px;height:13px;border-radius:4px;flex:none;
+    box-shadow:0 2px 4px rgba(80,55,30,.3), inset 0 0 0 2px rgba(255,255,255,.4);
+    transform:rotate(8deg);
+  }
+  .nav-item .meta{margin-left:auto;font-size:11px;font-weight:700;color:var(--ink-soft)}
+  .nav-item:hover{background:var(--paper-1);transform:translateX(3px);box-shadow:var(--cut-sm)}
+  .nav-item.active{
+    background:var(--ink);color:var(--cream);transform:translateX(0) rotate(-.4deg);
+    box-shadow:var(--cut);
+  }
+  .nav-item.active .meta{color:rgba(255,255,255,.7)}
+  .nav-item.active .dot{box-shadow:0 2px 4px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.25)}
+
+  .c1{background:var(--coral)} .c2{background:var(--marigold)}
+  .c3{background:var(--teal)}  .c4{background:var(--plum)}
+  .c5{background:var(--teal-deep)} .c6{background:var(--coral-deep)}
+
+  .side-foot{
+    margin-top:22px;padding:14px;border-radius:16px;
+    background:var(--marigold);color:var(--ink);
+    box-shadow:var(--cut-sm);position:relative;overflow:hidden;
+  }
+  .side-foot b{font-family:'Fraunces';font-weight:700;font-size:14px;display:block}
+  .side-foot p{font-size:12px;font-weight:600;color:#7a5b1c;margin-top:2px}
+  .side-foot .pill{
+    margin-top:10px;display:inline-block;background:var(--ink);color:var(--cream);
+    font-size:11px;font-weight:800;padding:6px 12px;border-radius:20px;letter-spacing:.03em;
+  }
+
+  /* =================== MAIN =================== */
+  main{min-width:0;display:flex;flex-direction:column;gap:26px}
+
+  /* top strip */
+  .topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .greet-pill{
+    display:inline-flex;align-items:center;gap:9px;
+    background:var(--cream);padding:9px 16px;border-radius:30px;
+    box-shadow:var(--cut-sm);font-weight:700;font-size:13.5px;
+  }
+  .greet-pill .moon{font-size:15px}
+  .top-spacer{flex:1}
+  .search{
+    flex:1;min-width:180px;max-width:340px;
+    background:var(--cream);border-radius:30px;box-shadow:var(--cut-sm);
+    padding:10px 18px;font-weight:600;font-size:13px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:10px;
+  }
+  .av{
+    width:42px;height:42px;border-radius:14px;background:var(--teal);
+    display:grid;place-items:center;color:#fff;font-weight:800;
+    box-shadow:var(--cut-sm);transform:rotate(3deg);flex:none;
+    font-family:'Fraunces';
+  }
+
+  /* HERO — big layered paper card */
+  .hero{
+    position:relative;border-radius:30px;overflow:hidden;
+    background:var(--coral);
+    box-shadow:var(--cut-lift);
+    padding:clamp(26px,3.4vw,46px);
+    color:#fff;
+    isolation:isolate;
+  }
+  /* stacked paper planes behind text */
+  .hero .plane{position:absolute;border-radius:24px;z-index:-1}
+  .hero .p1{inset:auto -90px -120px auto;width:340px;height:340px;background:var(--coral-deep);transform:rotate(12deg);border-radius:40px}
+  .hero .p2{top:-70px;right:120px;width:200px;height:200px;background:var(--marigold);transform:rotate(-10deg);box-shadow:var(--cut)}
+  .hero .p3{bottom:-60px;right:240px;width:130px;height:130px;background:var(--teal);transform:rotate(16deg);box-shadow:var(--cut)}
+  .hero .p4{top:30px;right:-40px;width:120px;height:120px;background:var(--plum);border-radius:50%;transform:rotate(0)}
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:11.5px;
+    letter-spacing:.16em;text-transform:uppercase;
+    background:rgba(255,255,255,.18);padding:6px 14px;border-radius:20px;
+    backdrop-filter:blur(2px);
+  }
+  .hero h1{
+    font-size:clamp(34px,5.3vw,62px);font-weight:900;margin:18px 0 12px;
+    max-width:13ch;text-shadow:0 3px 0 rgba(0,0,0,.10);
+  }
+  .hero .sub{
+    max-width:54ch;font-size:clamp(14.5px,1.5vw,17px);font-weight:500;
+    color:rgba(255,255,255,.94);line-height:1.55;
+  }
+  .hero-cta{display:flex;gap:13px;flex-wrap:wrap;margin-top:24px}
+  .btn{
+    border:none;cursor:pointer;font-family:'Plus Jakarta Sans';font-weight:800;
+    font-size:14.5px;padding:14px 26px;border-radius:16px;letter-spacing:.01em;
+    box-shadow:var(--cut);transition:transform .16s ease, box-shadow .16s ease;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn:hover{transform:translateY(-3px);box-shadow:var(--cut-lift)}
+  .btn:active{transform:translateY(-1px)}
+  .btn-primary{background:var(--ink);color:var(--cream)}
+  .btn-ghost{background:var(--cream);color:var(--ink)}
+
+  /* STATS row — three colored paper chips */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{
+    position:relative;border-radius:var(--r);padding:20px 22px;
+    background:var(--cream);box-shadow:var(--cut);overflow:hidden;
+  }
+  .stat .tag{font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .stat .big{font-family:'Fraunces';font-weight:900;font-size:clamp(30px,4vw,44px);line-height:1;margin:8px 0 2px}
+  .stat .sm{font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+  .stat .corner{
+    position:absolute;top:0;right:0;width:0;height:0;
+    border-style:solid;border-width:0 40px 40px 0;
+    border-color:transparent var(--marigold) transparent transparent;
+    filter:drop-shadow(-2px 2px 2px rgba(80,55,30,.25));
+  }
+  .stat.s1 .corner{border-color:transparent var(--coral) transparent transparent}
+  .stat.s2 .corner{border-color:transparent var(--teal) transparent transparent}
+  .stat.s3 .corner{border-color:transparent var(--plum) transparent transparent}
+  .stat.s1 .big{color:var(--coral-deep)}
+  .stat.s2 .big{color:var(--teal-deep)}
+  .stat.s3 .big{color:var(--plum)}
+  /* progress paper bar */
+  .pbar{height:9px;border-radius:6px;background:#ece0cf;margin-top:12px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(80,55,30,.2)}
+  .pbar i{display:block;height:100%;width:72%;border-radius:6px;background:linear-gradient(90deg,var(--coral),var(--marigold))}
+  .dots-row{display:flex;gap:5px;margin-top:12px;flex-wrap:wrap}
+  .dots-row b{width:13px;height:13px;border-radius:4px;background:#ece0cf;transform:rotate(8deg)}
+  .dots-row b.on{background:var(--teal)}
+
+  /* CONTENT GRID */
+  .grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:24px}
+
+  .card{
+    position:relative;border-radius:var(--r);background:var(--cream);
+    box-shadow:var(--cut);padding:26px;overflow:hidden;
+  }
+  .card-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .ribbon{
+    font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:#fff;background:var(--teal);padding:5px 13px;border-radius:8px 8px 8px 2px;
+    box-shadow:var(--cut-sm);
+  }
+  .ribbon.plum{background:var(--plum)} .ribbon.coral{background:var(--coral)}
+  .card h2{font-size:clamp(21px,2.5vw,28px);font-weight:700;margin:6px 0 4px}
+  .lede{font-size:14px;color:var(--ink-soft);font-weight:500;max-width:48ch}
+
+  /* FORMULA paper plaque */
+  .formula{
+    margin-top:18px;border-radius:18px;padding:20px 22px;
+    background:var(--navy);color:#f3ecff;box-shadow:var(--cut);
+    position:relative;overflow:hidden;
+  }
+  .formula::before{
+    content:"ƒ";position:absolute;right:14px;top:6px;font-family:'Fraunces';
+    font-size:80px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;
+  }
+  .formula .frow{
+    font-family:'Fraunces';font-weight:600;font-size:clamp(15px,1.9vw,20px);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:7px 0;
+  }
+  .formula .frow + .frow{border-top:1px dashed rgba(255,255,255,.16)}
+  .formula .sep{color:var(--marigold);font-weight:900}
+  .formula var{font-style:italic;color:#ffd98a}
+  .formula sup{font-size:.7em}
+
+  /* TRAP callout — torn warning slip */
+  .trap{
+    margin-top:18px;display:flex;gap:14px;align-items:flex-start;
+    background:var(--marigold);border-radius:16px;padding:16px 18px;
+    box-shadow:var(--cut);position:relative;
+  }
+  .trap .ic{
+    width:38px;height:38px;border-radius:11px;flex:none;background:var(--ink);
+    display:grid;place-items:center;font-size:19px;transform:rotate(-6deg);box-shadow:var(--cut-sm);
+  }
+  .trap b{font-family:'Fraunces';font-weight:700;font-size:14px;display:block;margin-bottom:2px;color:var(--ink)}
+  .trap p{font-size:13.5px;font-weight:600;color:#6b4f12;line-height:1.5}
+
+  /* EXAM card (right column) — colored paper stack */
+  .exam{
+    background:var(--teal);color:#eafdfa;
+  }
+  .exam .ribbon{background:var(--ink)}
+  .exam h2{color:#fff;margin-top:8px}
+  .exam .examline{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .exam .examline span{
+    background:rgba(255,255,255,.16);border-radius:20px;padding:7px 14px;
+    font-weight:700;font-size:12.5px;letter-spacing:.01em;
+  }
+  .exam .ring-wrap{display:flex;align-items:center;gap:18px;margin-top:20px}
+  .ring{
+    width:96px;height:96px;border-radius:50%;flex:none;
+    background:
+      conic-gradient(var(--marigold) 0 72%, rgba(255,255,255,.22) 72% 100%);
+    display:grid;place-items:center;box-shadow:var(--cut);
+  }
+  .ring i{
+    width:70px;height:70px;border-radius:50%;background:var(--teal-deep);
+    display:grid;place-items:center;font-family:'Fraunces';font-weight:900;
+    font-size:23px;color:#fff;box-shadow:inset 0 2px 6px rgba(0,0,0,.3);
+  }
+  .exam .ring-wrap p{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
+  .exam .ring-wrap p b{display:block;font-family:'Fraunces';font-size:17px;color:#fff;font-weight:700}
+
+  /* worked example teaser */
+  .example{
+    margin-top:18px;background:var(--paper-1);border-radius:16px;padding:16px 18px;
+    box-shadow:inset 0 0 0 1px var(--line), var(--cut-sm);
+    display:flex;align-items:center;gap:14px;
+  }
+  .example .num{
+    width:46px;height:46px;border-radius:13px;flex:none;background:var(--plum);color:#fff;
+    display:grid;place-items:center;font-family:'Fraunces';font-weight:900;font-size:20px;
+    transform:rotate(-4deg);box-shadow:var(--cut-sm);
+  }
+  .example b{font-family:'Fraunces';font-size:15px;display:block}
+  .example small{font-size:12px;color:var(--ink-soft);font-weight:600}
+  .example .go{margin-left:auto;font-size:22px;color:var(--coral)}
+
+  /* footer */
+  footer{
+    margin-top:6px;border-radius:var(--r);background:var(--ink);color:var(--cream);
+    padding:22px 26px;box-shadow:var(--cut);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  footer .fmark{
+    width:40px;height:40px;border-radius:12px;background:var(--coral);display:grid;place-items:center;
+    font-family:'Fraunces';font-weight:900;color:var(--cream);transform:rotate(-4deg);box-shadow:var(--cut-sm);
+  }
+  footer b{font-family:'Fraunces';font-weight:700;font-size:16px}
+  footer small{color:rgba(255,255,255,.6);font-weight:600;font-size:12.5px}
+  footer .fspace{flex:1}
+  footer .ftag{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.75)}
+
+  /* =================== RESPONSIVE =================== */
+  @media(max-width:1040px){
+    .layout{grid-template-columns:1fr;gap:24px}
+    .side-inner{position:static}
+    .side nav ul{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+    .nav-item{margin:0}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media(max-width:700px){
+    .stats{grid-template-columns:1fr}
+    .side nav ul{grid-template-columns:1fr}
+    .hero h1{font-size:34px}
+    .topbar .search{order:3;max-width:100%}
+    .hero .p2,.hero .p3{display:none}
+  }
+</style>
+</head>
+<body>
+  <div class="layout">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="side">
+      <div class="side-inner grain">
+        <div class="brand">
+          <div class="mmark"><span>M</span></div>
+          <div class="brand-txt">
+            <b>Me Studing Stuff</b>
+            <small>Study smarter. Pass exams.</small>
+          </div>
+        </div>
+
+        <div class="nav-label">FAM-L / FAM-S</div>
+        <div class="fam-tabs">
+          <div class="tab l">FAM-L</div>
+          <div class="tab s">FAM-S</div>
+        </div>
+
+        <div class="nav-label">Topics</div>
+        <nav>
+          <ul>
+            <li class="nav-item active"><span class="dot c1"></span> Survival Models <span class="meta">core</span></li>
+            <li class="nav-item"><span class="dot c2"></span> Life Tables <span class="meta">2/3</span></li>
+            <li class="nav-item"><span class="dot c3"></span> Life Insurance <span class="meta">now</span></li>
+            <li class="nav-item"><span class="dot c4"></span> Life Annuities <span class="meta">3/4</span></li>
+            <li class="nav-item"><span class="dot c5"></span> Premiums <span class="meta">1/5</span></li>
+            <li class="nav-item"><span class="dot c6"></span> Policy Values <span class="meta">soon</span></li>
+          </ul>
+        </nav>
+
+        <div class="side-foot grain">
+          <b>Keep the streak</b>
+          <p>5 days in a row. One topic today keeps you on plan.</p>
+          <span class="pill">Today's plan →</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN ===================== -->
+    <main>
+
+      <!-- top bar -->
+      <div class="topbar">
+        <div class="greet-pill"><span class="moon">🌙</span> Good evening</div>
+        <div class="search">🔎 Search notes, formulas, problems…</div>
+        <div class="top-spacer"></div>
+        <div class="av">M</div>
+      </div>
+
+      <!-- HERO -->
+      <section class="hero grain">
+        <span class="plane p1"></span>
+        <span class="plane p2"></span>
+        <span class="plane p3"></span>
+        <span class="plane p4"></span>
+        <span class="eyebrow">✦ Your study hub</span>
+        <h1>Let's get you that pass.</h1>
+        <p class="sub">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary">▶ Start studying</button>
+          <button class="btn btn-ghost">↻ Resume</button>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat s1 grain">
+          <span class="corner"></span>
+          <div class="tag">Overall progress</div>
+          <div class="big">72%</div>
+          <div class="sm">12 of 17 topics</div>
+          <div class="pbar"><i></i></div>
+        </div>
+        <div class="stat s2 grain">
+          <span class="corner"></span>
+          <div class="tag">Exam countdown</div>
+          <div class="big">86<small style="font-size:18px;font-weight:700"> days</small></div>
+          <div class="sm">Keep the daily plan going.</div>
+        </div>
+        <div class="stat s3 grain">
+          <span class="corner"></span>
+          <div class="tag">Topics solid</div>
+          <div class="big">8</div>
+          <div class="sm">Locked in &amp; review-ready</div>
+          <div class="dots-row">
+            <b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b>
+            <b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b>
+            <b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENT GRID -->
+      <section class="grid2">
+
+        <!-- LEFT: topic preview + formula + trap -->
+        <div class="card grain">
+          <div class="card-head">
+            <span class="ribbon">Topic preview</span>
+            <span class="ribbon plum">Life Insurance</span>
+          </div>
+          <h2>Life Insurance Present Values</h2>
+          <p class="lede">The building blocks: relate the EPV of a benefit, its variance, and the annuity it pays for.</p>
+
+          <div class="formula">
+            <div class="frow"><var>A</var><sub>x</sub> = 1 − <var>d</var>·<var>ä</var><sub>x</sub></div>
+            <div class="frow">Var(<var>Z</var>) = <sup>2</sup><var>A</var><sub>x</sub> − (<var>A</var><sub>x</sub>)<sup>2</sup></div>
+            <div class="frow"><var>ä</var><sub>x</sub> = (1 − <var>A</var><sub>x</sub>) / <var>d</var></div>
+          </div>
+
+          <div class="trap">
+            <div class="ic">⚠️</div>
+            <div>
+              <b>Common trap</b>
+              <p>Under UDD, multiply ONLY the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="num">1</div>
+            <div>
+              <b>Example 1 — Whole life EPV &amp; variance</b>
+              <small>Worked walkthrough · ~6 min</small>
+            </div>
+            <div class="go">→</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: exam card -->
+        <div class="card exam grain">
+          <div class="card-head">
+            <span class="ribbon">Exam FAM</span>
+          </div>
+          <h2>Fundamentals of Actuarial Mathematics</h2>
+          <div class="examline">
+            <span>SOA</span>
+            <span>34 questions</span>
+            <span>Pass = 6/10</span>
+          </div>
+
+          <div class="ring-wrap">
+            <div class="ring"><i>72%</i></div>
+            <p>
+              You're on track.
+              <b>5 topics to go</b>
+              Solid foundations build fast.
+            </p>
+          </div>
+
+          <div class="example" style="background:rgba(255,255,255,.12);box-shadow:none;color:#eafdfa">
+            <div class="num" style="background:var(--marigold);color:var(--ink)">★</div>
+            <div>
+              <b style="color:#fff">Next best step</b>
+              <small style="color:rgba(255,255,255,.85)">Finish Life Insurance present values</small>
+            </div>
+            <div class="go" style="color:var(--marigold)">→</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="fmark">M</div>
+        <div>
+          <b>Me Studing Stuff</b><br>
+          <small>Study smarter. Pass exams.</small>
+        </div>
+        <div class="fspace"></div>
+        <div class="ftag">SOA Exam FAM · notes · formulas · worked problems · plan</div>
+      </footer>
+
+    </main>
+  </div>
+</body>
+</html>

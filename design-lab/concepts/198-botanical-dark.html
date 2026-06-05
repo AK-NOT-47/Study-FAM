@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Dark Botanical · SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --night:#08130d;
+    --night-2:#0c1a12;
+    --moss:#102218;
+    --panel:#0f2017;
+    --panel-2:#13291d;
+    --line:#234634;
+    --line-soft:#1c3a2a;
+    --gold:#d8b463;
+    --gold-bright:#f0d493;
+    --gold-deep:#b08a3d;
+    --leaf:#7fae7f;
+    --leaf-dim:#5e8a64;
+    --cream:#eef2e6;
+    --muted:#9db3a0;
+    --muted-2:#7c9384;
+    --shadow:0 30px 60px -25px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 700px at 85% -5%, rgba(216,180,99,.10), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(127,174,127,.08), transparent 55%),
+      linear-gradient(160deg, var(--night) 0%, var(--night-2) 45%, var(--moss) 100%);
+    color:var(--cream);
+    font-family:'Jost',sans-serif;
+    line-height:1.6;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ornamental botanical sprig (reusable svg styling) */
+  .sprig{display:block;color:var(--gold);opacity:.85;}
+  .sprig path,.sprig line,.sprig circle{vector-effect:non-scaling-stroke;}
+
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- shell ---------- */
+  .frame{
+    max-width:1320px;
+    margin:0 auto;
+    padding:26px clamp(16px,3vw,40px) 60px;
+    position:relative;
+  }
+  /* faint vine border behind everything */
+  .vine-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  }
+  .vine-bg svg{position:absolute;color:var(--gold);opacity:.07;}
+  .vine-tl{top:-40px;left:-60px;width:420px;height:420px;}
+  .vine-br{bottom:-60px;right:-70px;width:520px;height:520px;transform:rotate(180deg);}
+
+  .frame > *{position:relative;z-index:1;}
+
+  /* ---------- top bar ---------- */
+  header.bar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:24px;padding:14px 22px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:linear-gradient(180deg, rgba(19,41,29,.7), rgba(12,26,18,.55));
+    backdrop-filter:blur(6px);
+    box-shadow:var(--shadow);
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .mark{
+    width:46px;height:46px;border-radius:14px;flex:0 0 auto;
+    display:grid;place-items:center;
+    background:radial-gradient(120% 120% at 30% 20%, #1c3b29, #0c1c13);
+    border:1px solid var(--gold-deep);
+    box-shadow:inset 0 0 18px rgba(216,180,99,.18),0 6px 16px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .mark span{
+    font-family:'Fraunces',serif;font-weight:600;font-size:26px;
+    color:var(--gold-bright);line-height:1;
+    text-shadow:0 2px 8px rgba(216,180,99,.35);
+  }
+  .mark::after{
+    content:"";position:absolute;inset:5px;border-radius:10px;
+    border:1px solid rgba(216,180,99,.25);
+  }
+  .brand .txt b{
+    font-family:'Fraunces',serif;font-weight:500;font-size:19px;letter-spacing:.3px;
+    color:var(--cream);display:block;line-height:1.1;
+  }
+  .brand .txt small{
+    font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);
+  }
+
+  nav.top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  nav.top a{
+    font-size:13px;letter-spacing:.6px;color:var(--muted);
+    padding:8px 13px;border-radius:10px;transition:.2s;
+  }
+  nav.top a:hover{color:var(--cream);background:rgba(216,180,99,.07);}
+  nav.top a.active{color:var(--gold-bright);}
+  .cta{
+    font-family:'Jost';font-size:13px;letter-spacing:.8px;text-transform:uppercase;
+    padding:11px 20px;border-radius:11px;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    color:#231803;font-weight:600;
+    box-shadow:0 10px 24px -8px rgba(216,180,99,.6);
+    border:1px solid var(--gold-bright);
+  }
+
+  /* ---------- layout grid ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:clamp(16px,2vw,28px);
+    margin-top:26px;
+    align-items:start;
+  }
+
+  /* ---------- sidebar ---------- */
+  aside{
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:linear-gradient(180deg, rgba(15,32,23,.85), rgba(8,19,13,.85));
+    box-shadow:var(--shadow);
+    padding:22px 18px;
+    position:sticky;top:26px;
+    overflow:hidden;
+  }
+  aside::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6;
+  }
+  .side-head{
+    display:flex;align-items:center;gap:10px;margin-bottom:6px;
+  }
+  .side-head .sprig{width:24px;height:24px;}
+  .side-label{
+    font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);
+    margin:22px 4px 10px;display:flex;align-items:center;gap:9px;
+  }
+  .side-label:first-of-type{margin-top:10px;}
+  .side-label .ln{flex:1;height:1px;background:linear-gradient(90deg,var(--gold-deep),transparent);opacity:.5;}
+
+  .nav-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;}
+  .nav-list a{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 12px;border-radius:11px;
+    font-size:14px;color:var(--cream);letter-spacing:.3px;
+    border:1px solid transparent;transition:.2s;position:relative;
+  }
+  .nav-list a .dot{
+    width:7px;height:7px;border-radius:50%;flex:0 0 auto;
+    border:1px solid var(--leaf-dim);background:transparent;transition:.2s;
+  }
+  .nav-list a .num{margin-left:auto;font-size:11px;color:var(--muted-2);letter-spacing:1px;}
+  .nav-list a:hover{
+    background:rgba(216,180,99,.06);border-color:var(--line-soft);
+  }
+  .nav-list a:hover .dot{background:var(--leaf);border-color:var(--leaf);}
+  .nav-list a.done .dot{background:var(--gold);border-color:var(--gold-bright);box-shadow:0 0 8px rgba(216,180,99,.6);}
+  .nav-list a.current{
+    background:linear-gradient(180deg,rgba(216,180,99,.14),rgba(216,180,99,.05));
+    border-color:var(--gold-deep);color:var(--gold-bright);
+  }
+  .nav-list a.current .dot{background:var(--gold-bright);border-color:var(--gold-bright);}
+
+  .side-foot{
+    margin-top:26px;padding-top:18px;border-top:1px solid var(--line-soft);
+    display:flex;align-items:center;gap:12px;
+  }
+  .side-foot .sprig{width:34px;height:34px;opacity:.6;}
+  .side-foot p{margin:0;font-size:11px;color:var(--muted-2);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:14px;}
+
+  /* ---------- main ---------- */
+  main{display:flex;flex-direction:column;gap:24px;min-width:0;}
+
+  /* hero */
+  .hero{
+    border:1px solid var(--line);
+    border-radius:24px;
+    background:
+      radial-gradient(700px 380px at 90% 0%, rgba(216,180,99,.10), transparent 60%),
+      linear-gradient(180deg, rgba(16,34,24,.9), rgba(9,20,14,.92));
+    box-shadow:var(--shadow);
+    padding:clamp(26px,3.4vw,44px);
+    position:relative;overflow:hidden;
+  }
+  .hero .corner-sprig{
+    position:absolute;top:-20px;right:-10px;width:280px;height:280px;opacity:.5;
+    color:var(--gold);
+  }
+  .greet{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);
+    margin-bottom:18px;
+  }
+  .greet .moon{font-size:15px;filter:saturate(.7);}
+  .hero h1{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(34px,5.4vw,60px);
+    line-height:1.02;margin:0 0 16px;
+    color:var(--cream);letter-spacing:-.5px;max-width:14ch;
+  }
+  .hero h1 em{font-style:italic;color:var(--gold-bright);}
+  .hero p.lede{
+    font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.1vw,23px);
+    color:var(--muted);max-width:54ch;margin:0;line-height:1.5;
+  }
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px;}
+  .btn{
+    font-family:'Jost';font-size:14px;letter-spacing:1px;
+    padding:14px 26px;border-radius:13px;cursor:pointer;transition:.2s;
+    display:inline-flex;align-items:center;gap:10px;border:1px solid transparent;
+  }
+  .btn-gold{
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    color:#231803;font-weight:600;
+    box-shadow:0 14px 30px -10px rgba(216,180,99,.6);
+    border-color:var(--gold-bright);
+  }
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 18px 36px -10px rgba(216,180,99,.7);}
+  .btn-ghost{
+    background:rgba(216,180,99,.04);color:var(--gold-bright);
+    border:1px solid var(--gold-deep);
+  }
+  .btn-ghost:hover{background:rgba(216,180,99,.12);transform:translateY(-2px);}
+
+  /* stats */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px;
+  }
+  .stat{
+    border:1px solid var(--line-soft);border-radius:16px;
+    background:linear-gradient(180deg,rgba(19,41,29,.6),rgba(10,22,15,.6));
+    padding:20px 20px 18px;position:relative;overflow:hidden;
+  }
+  .stat .sprig{position:absolute;bottom:-14px;right:-10px;width:74px;height:74px;opacity:.22;}
+  .stat .k{
+    font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);
+    margin-bottom:8px;
+  }
+  .stat .v{
+    font-family:'Fraunces',serif;font-weight:500;font-size:clamp(28px,3.6vw,40px);
+    line-height:1;color:var(--cream);
+  }
+  .stat .v small{font-size:15px;color:var(--leaf);font-family:'Jost';letter-spacing:.5px;}
+  .stat .sub{font-size:12.5px;color:var(--muted-2);margin-top:7px;letter-spacing:.4px;}
+  .ring{
+    --p:72;
+    width:54px;height:54px;border-radius:50%;position:absolute;top:18px;right:18px;
+    background:
+      conic-gradient(var(--gold) calc(var(--p)*1%), rgba(255,255,255,.06) 0);
+    display:grid;place-items:center;
+    box-shadow:0 0 18px rgba(216,180,99,.25);
+  }
+  .ring::after{
+    content:attr(data-p);position:absolute;
+    width:40px;height:40px;border-radius:50%;background:var(--panel);
+    display:grid;place-items:center;font-size:12px;color:var(--gold-bright);
+    font-family:'Fraunces',serif;
+  }
+
+  /* two-column content row */
+  .content-row{
+    display:grid;grid-template-columns:1.4fr 1fr;gap:24px;
+  }
+
+  .card{
+    border:1px solid var(--line);border-radius:20px;
+    background:linear-gradient(180deg,rgba(15,32,23,.85),rgba(9,20,14,.88));
+    box-shadow:var(--shadow);padding:26px;position:relative;overflow:hidden;
+  }
+  .card-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:6px;
+  }
+  .card-head .sprig{width:22px;height:22px;}
+  .eyebrow{
+    font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);
+  }
+  .card h2{
+    font-family:'Fraunces',serif;font-weight:500;font-size:26px;margin:6px 0 8px;
+    color:var(--cream);letter-spacing:-.3px;
+  }
+  .card .lead{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--muted);margin:0 0 18px;line-height:1.45;}
+
+  /* formula block */
+  .formula{
+    border:1px solid var(--gold-deep);border-radius:14px;
+    background:
+      radial-gradient(400px 200px at 100% 0,rgba(216,180,99,.08),transparent),
+      linear-gradient(180deg,rgba(8,19,13,.9),rgba(12,26,18,.7));
+    padding:20px;margin:6px 0 0;position:relative;
+  }
+  .formula::before{
+    content:"ƒ";position:absolute;top:-15px;left:18px;
+    width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+    background:var(--night);border:1px solid var(--gold-deep);
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold-bright);
+    font-size:18px;
+  }
+  .formula .eq{
+    font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2vw,21px);
+    color:var(--gold-bright);letter-spacing:.4px;
+    padding:9px 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;
+    border-bottom:1px dashed var(--line-soft);
+  }
+  .formula .eq:last-child{border-bottom:none;}
+  .formula .eq .label{
+    font-family:'Jost';font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--muted-2);margin-left:auto;
+  }
+  .formula sub{font-size:.7em;}
+  .formula sup{font-size:.7em;}
+
+  /* trap callout */
+  .trap{
+    margin-top:22px;border-radius:14px;padding:18px 20px 18px 22px;
+    border:1px solid #5a4420;
+    background:linear-gradient(180deg,rgba(70,48,12,.35),rgba(40,28,8,.25));
+    position:relative;
+  }
+  .trap::before{
+    content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+  }
+  .trap .t-head{
+    display:flex;align-items:center;gap:9px;
+    font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-bright);
+    margin-bottom:7px;font-weight:500;
+  }
+  .trap p{margin:0;font-size:14.5px;color:var(--cream);line-height:1.55;}
+  .trap p b{color:var(--gold-bright);font-weight:600;}
+
+  /* exam card (right column) */
+  .exam-card{
+    border:1px solid var(--gold-deep);
+    background:
+      radial-gradient(500px 300px at 50% -20%,rgba(216,180,99,.14),transparent 60%),
+      linear-gradient(180deg,rgba(18,38,27,.95),rgba(8,18,12,.95));
+  }
+  .exam-card .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--night);
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    padding:6px 13px;border-radius:30px;font-weight:600;margin-bottom:16px;
+  }
+  .exam-card h2{font-size:30px;margin:4px 0 4px;}
+  .exam-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--leaf);margin:0 0 18px;}
+  .exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+  .exam-item{
+    border:1px solid var(--line-soft);border-radius:12px;padding:13px 14px;
+    background:rgba(8,19,13,.5);
+  }
+  .exam-item .ek{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-2);margin-bottom:5px;}
+  .exam-item .ev{font-family:'Fraunces',serif;font-size:20px;color:var(--gold-bright);}
+  .exam-item .ev small{font-family:'Jost';font-size:12px;color:var(--muted);letter-spacing:.5px;}
+  .exam-divider{
+    display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--gold-deep);
+  }
+  .exam-divider .ln{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);}
+  .exam-divider .sprig{width:26px;height:26px;}
+
+  /* worked example teaser */
+  .teaser{
+    border:1px dashed var(--line);border-radius:14px;padding:16px 18px;
+    background:rgba(216,180,99,.03);display:flex;align-items:center;gap:14px;
+  }
+  .teaser .num{
+    width:42px;height:42px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;
+    background:radial-gradient(120% 120% at 30% 20%,#1c3b29,#0c1c13);
+    border:1px solid var(--gold-deep);
+    font-family:'Fraunces',serif;font-size:18px;color:var(--gold-bright);
+  }
+  .teaser .tx b{display:block;font-size:14px;color:var(--cream);letter-spacing:.3px;font-weight:500;}
+  .teaser .tx span{font-size:12.5px;color:var(--muted-2);}
+  .teaser .go{margin-left:auto;color:var(--gold);font-size:20px;}
+
+  /* footer */
+  footer{
+    margin-top:40px;padding:30px 26px;
+    border:1px solid var(--line);border-radius:20px;
+    background:linear-gradient(180deg,rgba(12,26,18,.7),rgba(8,16,11,.7));
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    box-shadow:var(--shadow);
+  }
+  footer .brand .txt b{font-size:17px;}
+  footer .f-right{display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+  footer .f-right a{font-size:12.5px;color:var(--muted);letter-spacing:.5px;}
+  footer .f-right a:hover{color:var(--gold-bright);}
+  footer .copy{font-size:11.5px;color:var(--muted-2);letter-spacing:.5px;width:100%;border-top:1px solid var(--line-soft);padding-top:16px;margin-top:6px;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:14px;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .layout{grid-template-columns:1fr;}
+    aside{position:static;}
+    .content-row{grid-template-columns:1fr;}
+    nav.top{display:none;}
+  }
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr;}
+    .exam-grid{grid-template-columns:1fr;}
+    header.bar{flex-wrap:wrap;gap:14px;}
+    .hero h1{font-size:clamp(30px,9vw,44px);}
+  }
+</style>
+</head>
+<body>
+
+<!-- background vines -->
+<div class="vine-bg" aria-hidden="true">
+  <svg class="vine-tl" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.4">
+    <path d="M10 10 C60 40 70 90 110 120 S170 150 190 190" />
+    <path d="M40 30 q10 -18 26 -10 q-4 16 -26 10Z" fill="currentColor" stroke="none" opacity=".5"/>
+    <path d="M75 70 q12 -18 28 -8 q-6 16 -28 8Z" fill="currentColor" stroke="none" opacity=".5"/>
+    <path d="M115 120 q14 -16 30 -4 q-8 15 -30 4Z" fill="currentColor" stroke="none" opacity=".5"/>
+    <circle cx="190" cy="190" r="4" fill="currentColor" stroke="none"/>
+  </svg>
+  <svg class="vine-br" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.4">
+    <path d="M10 10 C60 40 70 90 110 120 S170 150 190 190" />
+    <path d="M40 30 q10 -18 26 -10 q-4 16 -26 10Z" fill="currentColor" stroke="none" opacity=".5"/>
+    <path d="M95 95 q12 -18 28 -8 q-6 16 -28 8Z" fill="currentColor" stroke="none" opacity=".5"/>
+  </svg>
+</div>
+
+<div class="frame">
+
+  <!-- top bar -->
+  <header class="bar">
+    <div class="brand">
+      <div class="mark"><span>M</span></div>
+      <div class="txt">
+        <b>Me Studing Stuff</b>
+        <small>Study smarter · Pass exams</small>
+      </div>
+    </div>
+    <nav class="top">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Topics</a>
+      <a href="#">Formulas</a>
+      <a href="#">Problems</a>
+      <a href="#">Plan</a>
+    </nav>
+    <a href="#" class="cta">Resume study</a>
+  </header>
+
+  <div class="layout">
+
+    <!-- sidebar -->
+    <aside>
+      <div class="side-head">
+        <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M12 22 V6"/>
+          <path d="M12 12 C8 10 6 6 7 3 C10 4 12 7 12 11"/>
+          <path d="M12 15 C16 13 18 9 17 6 C14 7 12 10 12 14"/>
+        </svg>
+        <span style="font-family:'Fraunces',serif;font-size:15px;color:var(--gold-bright);letter-spacing:.5px;">Your garden</span>
+      </div>
+
+      <div class="side-label">FAM-L / FAM-S <span class="ln"></span></div>
+      <ul class="nav-list">
+        <li><a href="#" class="done"><span class="dot"></span>Survival Models<span class="num">✓</span></a></li>
+        <li><a href="#" class="done"><span class="dot"></span>Life Tables<span class="num">✓</span></a></li>
+        <li><a href="#" class="current"><span class="dot"></span>Life Insurance<span class="num">now</span></a></li>
+        <li><a href="#"><span class="dot"></span>Life Annuities<span class="num">3</span></a></li>
+        <li><a href="#"><span class="dot"></span>Premiums<span class="num">4</span></a></li>
+        <li><a href="#"><span class="dot"></span>Policy Values<span class="num">5</span></a></li>
+      </ul>
+
+      <div class="side-label">Also growing <span class="ln"></span></div>
+      <ul class="nav-list">
+        <li><a href="#"><span class="dot"></span>Multiple Decrements<span class="num">·</span></a></li>
+        <li><a href="#"><span class="dot"></span>Loss Distributions<span class="num">·</span></a></li>
+        <li><a href="#"><span class="dot"></span>Credibility<span class="num">·</span></a></li>
+      </ul>
+
+      <div class="side-foot">
+        <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M12 21 V8"/>
+          <path d="M12 14 C7 13 5 8 6 4 C11 5 12 9 12 14"/>
+          <circle cx="12" cy="6" r="2.4"/>
+        </svg>
+        <p>Tend a little each night.<br/>It blooms by exam day.</p>
+      </div>
+    </aside>
+
+    <!-- main -->
+    <main>
+
+      <!-- hero -->
+      <section class="hero">
+        <svg class="corner-sprig" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+          <path d="M100 190 C100 130 100 90 100 40"/>
+          <path d="M100 120 C70 110 55 80 60 50 C92 60 100 90 100 120"/>
+          <path d="M100 95 C130 85 145 55 140 25 C108 35 100 65 100 95"/>
+          <path d="M100 150 C75 142 62 118 66 95 C92 103 100 125 100 150"/>
+          <path d="M100 40 q-8 -14 4 -24 q12 8 -4 24Z" fill="currentColor" stroke="none" opacity=".6"/>
+          <circle cx="60" cy="50" r="3" fill="currentColor" stroke="none"/>
+          <circle cx="140" cy="25" r="3" fill="currentColor" stroke="none"/>
+        </svg>
+
+        <div class="greet"><span class="moon">🌙</span> Good evening</div>
+        <h1>Let's get you that <em>pass.</em></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+        <div class="hero-actions">
+          <a href="#" class="btn btn-gold">Start studying →</a>
+          <a href="#" class="btn btn-ghost">Resume</a>
+        </div>
+
+        <!-- stats -->
+        <div class="stats">
+          <div class="stat">
+            <div class="ring" data-p="72%" style="--p:72"></div>
+            <div class="k">Overall progress</div>
+            <div class="v">72<small>%</small></div>
+            <div class="sub">12 of 17 topics</div>
+            <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22V8"/><path d="M12 14C8 12 6 8 7 4C11 5 12 9 12 14"/></svg>
+          </div>
+          <div class="stat">
+            <div class="k">Exam countdown</div>
+            <div class="v">86<small> days</small></div>
+            <div class="sub">Stay on the plan</div>
+            <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22V6"/><path d="M12 13C16 11 18 7 17 4C13 5 12 9 12 13"/></svg>
+          </div>
+          <div class="stat">
+            <div class="k">Topics solid</div>
+            <div class="v">8<small> / 17</small></div>
+            <div class="sub">Roots gone deep</div>
+            <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22V8"/><circle cx="12" cy="6" r="2.4"/><path d="M12 14C7 13 5 8 6 4C11 5 12 9 12 14"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- content row -->
+      <div class="content-row">
+
+        <!-- topic preview + formula + trap -->
+        <section class="card">
+          <div class="card-head">
+            <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22V8"/><path d="M12 14C8 12 6 8 7 4C11 5 12 9 12 14"/><path d="M12 16C16 14 18 10 17 7C13 8 12 12 12 16"/></svg>
+            <span class="eyebrow">Topic preview · Life Insurance</span>
+          </div>
+          <h2>Life Insurance Present Values</h2>
+          <p class="lead">The expected present value of a benefit, and how its variance falls right out of the second moment.</p>
+
+          <div class="formula">
+            <div class="eq"><span>A<sub>x</sub> = 1 − d·ä<sub>x</sub></span><span class="label">EPV ↔ annuity</span></div>
+            <div class="eq"><span>Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></span><span class="label">Variance</span></div>
+            <div class="eq"><span>ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</span><span class="label">Annuity ↔ EPV</span></div>
+          </div>
+
+          <div class="trap">
+            <div class="t-head">⚠ Common trap</div>
+            <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+          </div>
+        </section>
+
+        <!-- exam card + teaser -->
+        <section class="card exam-card">
+          <span class="badge">📜 Exam FAM</span>
+          <h2>Fundamentals of Actuarial Mathematics</h2>
+          <p class="exam-sub">Society of Actuaries</p>
+
+          <div class="exam-grid">
+            <div class="exam-item"><div class="ek">Format</div><div class="ev">34 <small>questions</small></div></div>
+            <div class="exam-item"><div class="ek">Pass mark</div><div class="ev">6 <small>/ 10</small></div></div>
+            <div class="exam-item"><div class="ek">Sponsor</div><div class="ev">SOA</div></div>
+            <div class="exam-item"><div class="ek">Tracks</div><div class="ev">FAM-L <small>+ S</small></div></div>
+          </div>
+
+          <div class="exam-divider">
+            <span class="ln"></span>
+            <svg class="sprig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 20V10"/><path d="M12 14C9 13 7 10 8 7C11 8 12 11 12 14"/><path d="M12 14C15 13 17 10 16 7C13 8 12 11 12 14"/></svg>
+            <span class="ln"></span>
+          </div>
+
+          <div class="card-head" style="margin-bottom:12px;">
+            <span class="eyebrow">Worked example</span>
+          </div>
+          <div class="teaser">
+            <div class="num">1</div>
+            <div class="tx">
+              <b>Example 1 — Whole life EPV &amp; variance</b>
+              <span>Compute A<sub>x</sub>, then Var(Z) from the second moment.</span>
+            </div>
+            <div class="go">→</div>
+          </div>
+
+          <div class="hero-actions" style="margin-top:20px;">
+            <a href="#" class="btn btn-gold">Start studying</a>
+            <a href="#" class="btn btn-ghost">Resume</a>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- footer -->
+      <footer>
+        <div class="brand">
+          <div class="mark"><span>M</span></div>
+          <div class="txt">
+            <b>Me Studing Stuff</b>
+            <small>Study smarter · Pass exams</small>
+          </div>
+        </div>
+        <div class="f-right">
+          <a href="#">Topics</a>
+          <a href="#">Formulas</a>
+          <a href="#">Worked problems</a>
+          <a href="#">Study plan</a>
+        </div>
+        <div class="copy">A calm, dark garden for SOA Exam FAM · grown one evening at a time · © 2026 Me Studing Stuff.</div>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+</body>
+</html>

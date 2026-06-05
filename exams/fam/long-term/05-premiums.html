@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Calculation · FAM-L · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="lt-05" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Long-Term · Topic 5</div>
+      <h1>Premium Calculation</h1>
+      <p class="lede">Set the premium so the insurer breaks even on average — then build the loss random variable $L_0$ and everything from variance to percentile premiums follows.</p>
+      <div class="meta-row">
+        <span class="chip">📖 DHW · Ch. 6</span>
+        <span class="chip">⏱️ ~3–4 hrs</span>
+        <span class="chip">🔑 equivalence principle · $L_0$ · net &amp; gross premiums</span>
+        <span class="chip">📈 variance · percentiles · portfolio premium</span>
+        <span class="chip">🧩 semi-continuous · m-thly · refund of premiums</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After mastering this topic, you should be able to:</p>
+        <ul>
+          <li>Define the <strong>present value of net future loss at issue</strong> random variable $L_0$ (and the gross version $L_0^g$): write it in terms of present-value random variables, and compute its <strong>expectation</strong> and <strong>variance</strong>.</li>
+          <li>State and apply the <strong>equivalence principle</strong> to compute <strong>net (benefit) premiums</strong> for whole life, term, and endowment insurances — <strong>fully continuous</strong>, <strong>fully discrete</strong>, and <strong>semi-continuous</strong>.</li>
+          <li>Express each net premium three equivalent ways: $\dfrac{A}{\ddot a}$ (core), in terms of $A$'s only, and in terms of $\ddot a$'s only.</li>
+          <li>Compute net premiums funded by <strong>annual</strong>, <strong>m-thly</strong>, and <strong>continuous</strong> premium streams, and handle <strong>limited-pay</strong>, <strong>term</strong>, and <strong>deferred-annuity</strong> products plus the <strong>return-of-premium</strong> feature.</li>
+          <li>Compute <strong>gross (expense-loaded) premiums</strong> that incorporate <strong>per-premium</strong>, <strong>per-policy</strong>, <strong>per-1000-of-face</strong>, and <strong>settlement</strong> expenses, with different first-year and renewal levels, and find the <strong>variance of the gross loss</strong>.</li>
+          <li>Compute <strong>percentiles and probabilities of $L_0$</strong> for a single policy, and apply the <strong>portfolio percentile premium principle</strong> to a block of independent policies using the Normal approximation.</li>
+          <li>Price <strong>substandard (extra-risk) lives</strong> by adjusting the mortality basis three standard ways — <strong>age rating</strong>, a <strong>constant addition</strong> to the force of mortality ($\mu_x+c$), and a <strong>constant multiple</strong> of the mortality rate ($k\,q_x$).</li>
+        </ul>
+        <p>These map to the SOA FAM-L learning outcomes on premium calculation and the loss random variable, following <em>Actuarial Mathematics for Life Contingent Risks</em> (Dickson, Hardy &amp; Waters, "DHW"), Chapter 6.</p>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. Why premiums exist — the loss random variable</h3>
+      <p>When an insurer issues a policy, it promises a benefit (paid at death or maturity) in exchange for premiums. Both sides are random because the timing of death is random. The fundamental object is the <strong>present value of net future loss at issue</strong> ("net" means expenses are excluded):</p>
+      <div class="formula">
+        <span class="formula-label">Present value of net future loss at issue</span>
+        $$L_0 = \text{PV}_0(\text{future benefits}) - \text{PV}_0(\text{future premiums}).$$</div>
+      <p>$L_0 > 0$ means the policy lost money (in PV terms); $L_0 < 0$ means it made money. The insurer wants this to be <strong>zero on average</strong> (the equivalence principle) or, more conservatively, to be positive only with small probability (percentile premiums).</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Exam notation for the loss random variable</div>
+        <p>The SOA may write the present-value-of-future-loss as $L$, ${}_0L$, or $L_0$ for loss <strong>at issue</strong>, and ${}_tL$ or $L_t$ for loss <strong>$t$ years after issue</strong> (the reserve work in the next topic). Superscripts such as $L_0^g$ flag the <strong>gross</strong> version. When the bare symbol $L$ appears, the question text defines exactly what it means — read the definition.</p>
+      </div>
+
+      <h3>2. The equivalence principle</h3>
+      <p>The <strong>equivalence principle</strong> sets the premium so that the <strong>expected</strong> present value of loss is zero:</p>
+      <div class="formula">
+        <span class="formula-label">Equivalence principle (expected loss is zero)</span>
+        $$E[L_0] = 0 \quad\Longleftrightarrow\quad \text{EPV(benefits + expenses)} = \text{EPV(premiums)}.$$</div>
+      <p>For a <strong>net</strong> premium we ignore expenses; for a <strong>gross</strong> premium we include them. Build the equation of value, solve for the premium.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">What "net premium" silently tells you</div>
+        <p>The moment a question says <strong>"net premium"</strong>, three things are automatically true and should fire in your head: (1) the <strong>equivalence principle is assumed</strong>, (2) <strong>expenses are ignored</strong> (even if some are stated), and (3) therefore $E[L_0]=0$, i.e. $\text{EPV(premiums)} = \text{EPV(benefits)}$. The same object was called the <strong>benefit premium</strong> on older exams — that term is retired but you may meet it in old problems. By default, unless expenses are explicitly given, "loss at issue" means <em>net</em> loss and "premium by the equivalence principle" means the <em>net</em> premium.</p>
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Why annuities-due, not -immediate?</div>
+        <p>In practice premiums are paid <strong>in advance</strong>, the first one at issue. This stops a policyholder from getting cover without having paid for it. So the EPV of premiums uses an <strong>annuity-due</strong> ($\ddot a$, or $\bar a$ in the continuous case) for the premium-paying period — never an annuity-immediate.</p>
+      </div>
+
+      <h3>3. Net premiums for the standard contracts</h3>
+      <p>Every net premium has the same shape — and this is the single most reused idea in the course:</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The master recipe</div>
+        $$\boxed{\;\text{Net premium} = \frac{\text{EPV(benefit)}}{\text{EPV(annuity for the premium-paying period)}}\;}$$
+        <p>Benefit EPV on top; the EPV of a life annuity over <em>exactly the years premiums are actually paid</em> on the bottom.</p>
+      </div>
+      <ul>
+        <li><strong>Whole life</strong> (benefit 1 at death, premiums for life): $P = A_x / \ddot a_x$.</li>
+        <li><strong>n-year term</strong> (benefit 1 if death within n, premiums for at most n years): $P = A^{\,1}_{x:\overline{n}|} / \ddot a_{x:\overline{n}|}$.</li>
+        <li><strong>n-year endowment</strong> (benefit 1 on death within n OR survival to n, premiums for at most n years): $P = A_{x:\overline{n}|} / \ddot a_{x:\overline{n}|}$.</li>
+      </ul>
+      <p>The <strong>premium-paying period</strong> and the <strong>benefit period</strong> need not coincide. A whole life with premiums limited to $h$ years (an "$h$-pay") has $P = A_x / \ddot a_{x:\overline{h}|}$ — full benefit on top, but only the $h$-year annuity below. Always match the denominator to the actual premium pattern.</p>
+
+      <h3>4. Continuous, m-thly, and semi-continuous premiums</h3>
+      <ul>
+        <li><strong>Fully continuous</strong> (continuous benefit $\bar A$, continuous premium): $\bar P(\bar A_x) = \bar A_x / \bar a_x$.</li>
+        <li><strong>Fully discrete</strong> (benefit at end of year of death, annual premiums): $P_x = A_x / \ddot a_x$.</li>
+        <li><strong>Semi-continuous</strong> (death benefit at the <strong>moment</strong> of death, but premiums paid <strong>annually</strong>): $P = \bar A_x / \ddot a_x$. The benefit is continuous ($\bar A$) while the premium annuity is discrete ($\ddot a$) — mix and match.</li>
+        <li><strong>m-thly</strong> premiums (paid $m$ times per year): denominator becomes $\ddot a_x^{(m)}$. So $P^{(m)} = A_x / \ddot a_x^{(m)}$ is the <strong>annualized</strong> premium; each installment is $P^{(m)}/m$.</li>
+      </ul>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">The m-thly factor-of-m rule</div>
+        <p>If a question gives you the <strong>m-thly</strong> premium $P$, the <strong>annualized</strong> premium is $mP$, and the EPV of premiums is $mP\,\ddot a_x^{(m)}$. Going the other way, divide the annualized premium by $m$. Forgetting the $\times m$ (e.g. writing $P\,\ddot a_x^{(4)}$ instead of $4P\,\ddot a_x^{(4)}$ for quarterly premiums of $P$) is a classic slip.</p>
+      </div>
+      <p>A common exam shortcut uses the <strong>Woolhouse</strong> (2-term) relationships to get $\ddot a_x^{(m)}$ and $\bar a_x$ from $\ddot a_x$ (see Formulas).</p>
+
+      <h3>5. Other products — term, n-pay, deferred annuities, special</h3>
+      <p>For anything beyond the three standard contracts, fall back on the master recipe: set EPV(premiums) = EPV(benefits) and solve.</p>
+      <ul>
+        <li><strong>Term &amp; n-pay whole life:</strong> built above — only the annuity in the denominator changes (it is the temporary annuity $\ddot a_{x:\overline n|}$).</li>
+        <li><strong>Deferred whole life annuity:</strong> the policyholder pays premiums <strong>only during the deferral period</strong> (you don't pay in while collecting). For an $n$-year deferred annuity, $P\,\ddot a_{x:\overline n|} = {}_{n|}\ddot a_x$, so $P = {}_{n|}\ddot a_x / \ddot a_{x:\overline n|}$.</li>
+        <li><strong>Special insurance:</strong> a policy with <strong>non-level benefits and/or non-level premiums</strong> — the non-level pattern is spelled out in the question. If a policy is <em>not</em> called "special," assume benefits and premiums are level.</li>
+        <li><strong>Return (refund) of premiums:</strong> if death triggers a refund of premiums paid (usually without interest), the refund is itself a benefit — model it as an arithmetically <strong>increasing</strong> term insurance $P(IA)_{x:\overline n|}^{\,1}$ and add it to the benefit side (see Worked Examples).</li>
+      </ul>
+
+      <h3>6. Gross premiums and expenses</h3>
+      <p>A <strong>gross premium</strong> is the premium the insurer actually charges; it must cover <strong>expenses</strong> as well as benefits. Expenses come in four flavors, and most are heavier in the <strong>first year</strong> (acquisition) than at <strong>renewal</strong>:</p>
+      <ul>
+        <li><strong>Per-premium</strong> (percentage): a percent of the gross premium — e.g. commissions, 40% year 1 then 5%. These <strong>scale with $G$</strong>.</li>
+        <li><strong>Per-policy</strong>: a flat dollar amount each year regardless of size — e.g. \$50 issue, \$10 renewal.</li>
+        <li><strong>Per-face (per-1000)</strong>: a dollar amount per \$1000 of face — multiply by $S/1000$.</li>
+        <li><strong>Settlement (termination)</strong> expense $E$: incurred when the claim is paid; it rides <strong>on top of the death benefit</strong>, so it behaves like a small addition to the benefit amount $b$.</li>
+      </ul>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">The two SOA expense default assumptions</div>
+        <p>Unless a question says otherwise, the SOA tells you to assume both of the following:</p>
+        <ol>
+          <li><strong>Expenses are payable at the START of each period</strong> (the same advance timing as premiums — hence they ride the annuity-<strong>due</strong>, and the first year's expenses fall at $t=0$).</li>
+          <li><strong>Percent-of-premium expenses are payable only while premiums are payable</strong> — they begin with the first premium and <strong>stop the moment premiums stop</strong>. So for an $h$-pay or limited-pay policy, commissions run over the $h$-year annuity $\ddot a_{x:\overline h|}$, never the full $\ddot a_x$. (Per-policy and per-1000 expenses are <em>not</em> automatically tied to the premium period — read the question for when those end.)</li>
+        </ol>
+      </div>
+      <p>Conceptually expenses sort into <strong>initial/acquisition</strong> (commissions, underwriting — at issue), <strong>renewal/maintenance</strong> (each later premium), and <strong>termination/settlement</strong> (at claim). The gross equation of value is:</p>
+      <div class="formula">
+        <span class="formula-label">Gross equation of value</span>
+        $$\text{EPV(benefits)} + \text{EPV(expenses)} = \text{EPV(gross premiums)} = G\,\ddot a.$$</div>
+      <p>Because per-premium expenses are multiples of $G$, you typically <strong>move them across</strong> to the premium side and divide.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Gross premium ≠ "equivalence" automatically</div>
+        <p>Unlike "net premium," the word <strong>"gross premium" does NOT imply the equivalence principle.</strong> Insurers often charge more than breakeven (e.g. 110% of the equivalence gross premium) for profit. Only assume equivalence if the question says <em>"gross premium calculated using the equivalence principle."</em> A tell-tale sign the equivalence principle was <em>not</em> used: $E[L_0^g] \neq 0$.</p>
+      </div>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">The renewal-level + first-year-excess trick</div>
+        <p>Instead of carrying "$e_1$ in year 1, $e$ thereafter," charge the <strong>renewal level $e$ for every year</strong> via the full annuity $e\,\ddot a$, then add the <strong>excess</strong> $(e_1 - e)$ <em>once</em> at $t=0$. This lets you use the annuity-<strong>due</strong> values straight off the Standard Ultimate Life Table (which tabulates $\ddot a$, not $a$) and kills most first-year double-counting errors. The same trick applies to percentage commissions: $e\,\ddot a$ becomes $r\,G\,\ddot a + (r_1-r)G$.</p>
+      </div>
+
+      <h3>7. The variance of $L_0$ and the "annuity-trick"</h3>
+      <p>For <strong>fully continuous whole life</strong> with annual rate of premium $P$, write $L_0$ in terms of the single PV random variable $Z = v^{T_x}$. Using $\bar a_{\overline{T}|} = (1 - v^{T})/\delta$:</p>
+      <div class="formula">
+        <span class="formula-label">$L_0$ as an affine function of $Z=v^T$ (fully continuous whole life)</span>
+        $$L_0 = v^{T} - P\,\bar a_{\overline{T}|} = \Big(1 + \frac{P}{\delta}\Big)v^{T} - \frac{P}{\delta}.$$</div>
+      <p>So $L_0$ is a <strong>linear (affine) function of $Z = v^T$</strong>, hence</p>
+      <div class="formula">
+        <span class="formula-label">Variance via the affine form</span>
+        $$\mathrm{Var}(L_0) = \Big(1 + \frac{P}{\delta}\Big)^2 \mathrm{Var}(Z) = \Big(1 + \frac{P}{\delta}\Big)^2\big({}^2\bar A_x - (\bar A_x)^2\big).$$</div>
+      <p>The discrete version uses $d$ in place of $\delta$ and $A_x$ in place of $\bar A_x$. This "express $L_0$ as $a + b\cdot Z$" technique is the key to <em>every</em> variance problem on this topic, and it works for endowment insurance too because the endowment PV $v^{\min(K+1,\,n)}$ is also a single $Z$. It does <strong>not</strong> work for term insurance (see Traps).</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Two variance formulas — know when each is legal</div>
+        <p>The <strong>general</strong> form $\mathrm{Var}[L_0] = (b+\tfrac{P}{d})^2[{}^2A_x-(A_x)^2]$ works for <em>any</em> premium $P$ — equivalence or not. The <strong>shortcut</strong> $\mathrm{Var}[L_0] = b^2\dfrac{{}^2A_x-(A_x)^2}{(1-A_x)^2}$ is <em>only</em> valid when $P$ is the equivalence-principle premium. On the exam the general form is usually the safer default.</p>
+      </div>
+
+      <h3>8. Percentile premiums and the portfolio principle</h3>
+      <p>The equivalence principle gives roughly a 50% chance of loss. Two more prudent rules:</p>
+      <ul>
+        <li><strong>Single-policy percentile premium:</strong> choose $P$ so that $\Pr(L_0 > 0) = \alpha$ for some small $\alpha$. Because $L_0$ is monotonic in $T_x$, find the relevant percentile of $T_x$ and set $L_0 = 0$ at that lifetime.</li>
+        <li><strong>Portfolio percentile premium principle:</strong> for $N$ <strong>independent, identical</strong> policies, choose $P$ so that the <strong>aggregate</strong> loss $S = \sum L_{0,i}$ satisfies $\Pr(S > 0) = \alpha$ (equivalently $\Pr(S<0)=1-\alpha$, the insurer's "probability of profit"). Apply the Central Limit Theorem: $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$, $S \approx \text{Normal}$, and solve $E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0$. As $N \to \infty$ the loading per policy shrinks toward the equivalence premium.</li>
+      </ul>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">$\Pr[S<0]$ vs. $\Pr[S>0]$ — don't get turned around</div>
+        <p>$S$ is the <strong>loss</strong>. $S<0$ is a <strong>profit</strong> (good), so the insurer wants $\Pr[S<0]$ <em>large</em> — 90%, 95%, 99%. $S>0$ is a real loss (bad), so $\Pr[S>0]$ should be <em>small</em> — 1%, 5%, 10%. They are complements: $\Pr[S<0] = 1 - \Pr[S>0]$.</p>
+      </div>
+
+      <h3>9. Modelling substandard (extra-risk) lives</h3>
+      <p>An applicant whose mortality is heavier than the standard table — a smoker, a hazardous occupation, an existing health condition — is <strong>substandard (rated)</strong>. The insurer charges more by feeding a <strong>worse mortality basis</strong> into the <em>same</em> equivalence-principle machinery: nothing about the premium formula changes, only the $A$'s and $\ddot a$'s (or $\mu$) you plug in. There are <strong>three standard ways</strong> to model the extra risk:</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Three ways to model extra/substandard mortality</div>
+        <ul>
+          <li><strong>(a) Age rating (rate-up).</strong> Treat the life as if it were <strong>older</strong> by a fixed number of years $j$: evaluate every function at age $x+j$. So a rated $(45)$ with a "+5 year" rating is priced as a standard $(50)$ — use $A_{x+j}$, $\ddot a_{x+j}$, ${}_tp_{x+j}$ throughout. The simplest to apply with a table.</li>
+          <li><strong>(b) Constant addition to the force of mortality.</strong> Add a constant $c$ at every age: $\mu^{\,*}_{x+t} = \mu_{x+t} + c$. Survival is then scaled by an exponential: ${}_tp^{\,*}_x = {}_tp_x\,e^{-ct}$. In an EPV integral this multiplies the discount by an extra $e^{-ct}$, i.e. it acts <strong>exactly like adding $c$ to the force of interest $\delta$</strong> in the survival part.</li>
+          <li><strong>(c) Constant multiple of the mortality rate.</strong> Multiply the standard rate by a factor $k\gt 1$: $q^{\,*}_{x+t} = k\,q_{x+t}$ (cap at 1). A "200% of standard" or "rating factor 2" table means $k=2$. Rebuild ${}_tp^{\,*}_x = \prod(1-k\,q_{x+t})$ from the rated $q$'s, then compute the EPVs as usual.</li>
+        </ul>
+        <p>Whichever you use, the recipe is unchanged: $\text{premium} = \dfrac{\text{EPV(benefit)}}{\text{EPV(annuity)}}$, with <strong>every</strong> EPV computed on the rated basis. A heavier basis raises $A$ and lowers $\ddot a$, so the rated premium is higher — as it should be.</p>
+      </div>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Constant-force shortcut for method (b)</div>
+        <p>If the <em>standard</em> force is constant at $\mu$, adding $c$ gives a constant rated force $\mu^{\,*}=\mu+c$. Then fully continuous whole life has $\bar A^{\,*}_x = \dfrac{\mu^{\,*}}{\mu^{\,*}+\delta}$ and $\bar a^{\,*}_x = \dfrac{1}{\mu^{\,*}+\delta}$, so the net premium rate is simply $\;P = b\,\dfrac{\bar A^{\,*}_x}{\bar a^{\,*}_x} = b\,\mu^{\,*}.$ Under a constant force the continuous whole-life net premium rate equals the benefit times the force of mortality (see Example 15).</p>
+      </div>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation reminder</div>
+        <p>$v = 1/(1+i)$, $d = iv = 1 - v$, $\delta = \ln(1+i)$. $T_x$ is the future lifetime of $(x)$; $K_x = \lfloor T_x\rfloor$ is the curtate future lifetime. $A$'s are insurance EPVs, $\ddot a$'s annuity-due EPVs, $\bar a$ continuous-annuity EPVs. A leading superscript "2" (e.g. ${}^2A_x$) means the EPV computed at <strong>double the force of interest</strong>, i.e. using $i^* = 2i + i^2$ (equivalently $v^2$, $\delta^* = 2\delta$).</p>
+      </div>
+
+      <h3>Net premiums (equivalence principle)</h3>
+      <p>Discrete (annual) premiums, benefit 1 — the standard symbols you may see on the exam:</p>
+      <div class="formula">
+        <span class="formula-label">Whole life · $n$-year term · pure endowment · endowment insurance</span>
+        $$P_x = \frac{A_x}{\ddot a_x}, \qquad P^{\,1}_{x:\overline{n}|} = \frac{A^{\,1}_{x:\overline{n}|}}{\ddot a_{x:\overline{n}|}}, \qquad P_{x:\overline{n}|}^{\;\;1} = \frac{A_{x:\overline{n}|}^{\;\;1}}{\ddot a_{x:\overline{n}|}}, \qquad P_{x:\overline{n}|} = \frac{A_{x:\overline{n}|}}{\ddot a_{x:\overline{n}|}}.$$</div>
+      <ul>
+        <li>$A_x$: EPV of whole life insurance of 1 on $(x)$, paid end of year of death.</li>
+        <li>$A^{\,1}_{x:\overline{n}|}$: EPV of $n$-year term insurance (death benefit only); $A_{x:\overline{n}|}^{\;\;1} = {}_nE_x$ is the pure endowment.</li>
+        <li>$A_{x:\overline{n}|} = A^{\,1}_{x:\overline{n}|} + {}_nE_x$: EPV of $n$-year endowment insurance; ${}_nE_x = v^n\,{}_np_x$.</li>
+        <li>If $P$ is not one of these symbols, the question defines it in its text.</li>
+      </ul>
+      <p>Limited / $h$-pay whole life: $\;{}_hP_x = A_x / \ddot a_{x:\overline{h}|}$. Deferred annuity (pay during deferral only): $\;P = {}_{n|}\ddot a_x / \ddot a_{x:\overline{n}|}$.</p>
+      <p>Each premium has three equivalent algebraic faces (core, $A$-only, $\ddot a$-only). For whole life, using $A_x = 1 - d\,\ddot a_x$:</p>
+      <div class="formula">
+        <span class="formula-label">Whole life — three equivalent forms (core · $\ddot a$-only · $A$-only)</span>
+        $$P_x = \frac{A_x}{\ddot a_x} = \frac{1}{\ddot a_x} - d = \frac{d\,A_x}{1 - A_x}.$$</div>
+      <p>Endowment (same identities with the $x:\overline n|$ subscript): $\;P_{x:\overline{n}|} = \dfrac{A_{x:\overline{n}|}}{\ddot a_{x:\overline{n}|}} = \dfrac{1}{\ddot a_{x:\overline{n}|}} - d = \dfrac{d\,A_{x:\overline{n}|}}{1-A_{x:\overline{n}|}}.$</p>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Memorize one, derive the rest</div>
+        <p>The core form $A/\ddot a$ is the one to truly know; the $A$-only and $\ddot a$-only versions are just $A = 1 - d\,\ddot a$ substituted in. Less to memorize, fewer ways to slip.</p>
+      </div>
+
+      <h3>Continuous, semi-continuous, and m-thly</h3>
+      <div class="formula">
+        <span class="formula-label">Fully continuous whole life — three equivalent forms</span>
+        $$\bar P(\bar A_x) = \frac{\bar A_x}{\bar a_x} = \frac{1}{\bar a_x} - \delta = \frac{\delta\,\bar A_x}{1 - \bar A_x}, \qquad \bar A_x = 1 - \delta\,\bar a_x.$$
+        <span class="formula-label">Semi-continuous and $m$-thly premiums</span>
+        $$P^{\text{semi}} = \frac{\bar A_x}{\ddot a_x}\;\;(\text{continuous benefit, annual premiums}), \qquad P^{(m)}_x = \frac{A_x}{\ddot a_x^{(m)}}\;\;(\text{annualized}); \quad \text{each installment} = \frac{P^{(m)}_x}{m}.$$
+      </div>
+      <p>Conversion (Woolhouse, 2-term — exam standard):</p>
+      <div class="formula">
+        <span class="formula-label">Woolhouse (2-term) annuity conversions</span>
+        $$\ddot a_x^{(m)} \approx \ddot a_x - \frac{m-1}{2m}, \qquad \bar a_x \approx \ddot a_x - \tfrac12.$$</div>
+      <p>Conversion (UDD): $\;\ddot a_x^{(m)} = \alpha(m)\,\ddot a_x - \beta(m)$, and $\bar A_x = \dfrac{i}{\delta}A_x$, $\;A_x^{(m)} = \dfrac{i}{i^{(m)}}A_x$.</p>
+
+      <h3>Gross (expense-loaded) premium $G$</h3>
+      <p>Let benefit face amount be $S$ (per-1000 expenses use $S/1000$). General equation of value:</p>
+      <div class="formula">
+        <span class="formula-label">General equation of value (face $S$)</span>
+        $$\underbrace{S\cdot A}_{\text{benefits}} + \underbrace{\text{EPV expenses}}_{E} = G\,\ddot a.$$</div>
+      <p>With first-year per-premium rate $r_1$, renewal $r$; first-year per-policy $e_1$, renewal $e$; first-year per-1000 $f_1$, renewal $f$ (using the renewal-level + first-year-excess trick):</p>
+      <div class="formula">
+        <span class="formula-label">Expanded equation with first-year and renewal expense levels</span>
+        $$G\,\ddot a = S\cdot A \;+\; \underbrace{\big[e\,\ddot a + (e_1 - e)\big]}_{\text{per-policy}} \;+\; \underbrace{\Big[f\tfrac{S}{1000}\ddot a + (f_1 - f)\tfrac{S}{1000}\Big]}_{\text{per-1000}} \;+\; \underbrace{\big[rG\,\ddot a + (r_1 - r)G\big]}_{\text{per-premium}}.$$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Gross premium master formula</div>
+        $$\boxed{\;G = \frac{S\cdot A + e\,\ddot a + (e_1-e) + f\frac{S}{1000}\ddot a + (f_1-f)\frac{S}{1000}}{\ddot a - \big[r\,\ddot a + (r_1 - r)\big]} = \frac{\text{EPV benefits} + \text{EPV expenses (ex per-premium)}}{\ddot a - \text{EPV of per-premium factor}}\;}$$
+        <p>In practice: put <strong>everything that is a multiple of $G$</strong> (the per-premium expenses) on the premium side, then divide.</p>
+      </div>
+
+      <h3>Loss-at-issue random variable $L_0$ (benefit $b$)</h3>
+      <p>Fully continuous whole life, premium rate $P$:</p>
+      <div class="formula">
+        <span class="formula-label">$L_0$ and its mean (fully continuous whole life)</span>
+        $$L_0 = b\,v^{T_x} - P\,\bar a_{\overline{T_x}|} = \Big(b+\frac{P}{\delta}\Big)v^{T_x} - \frac{P}{\delta}, \qquad E[L_0] = b\,\bar A_x - P\,\bar a_x.$$
+        <span class="formula-label">Variance of $L_0$</span>
+        $$\mathrm{Var}[L_0] = \Big(b+\frac{P}{\delta}\Big)^2\Big({}^2\bar A_x - (\bar A_x)^2\Big).$$
+      </div>
+      <p>Fully discrete whole life, annual premium $P$:</p>
+      <div class="formula">
+        <span class="formula-label">$L_0$ and its mean (fully discrete whole life)</span>
+        $$L_0 = b\,v^{K_x+1} - P\,\ddot a_{\overline{K_x+1}|} = \Big(b+\frac{P}{d}\Big)v^{K_x+1} - \frac{P}{d}, \qquad E[L_0]=b\,A_x - P\,\ddot a_x.$$
+        <span class="formula-label">Variance of $L_0$</span>
+        $$\mathrm{Var}[L_0] = \Big(b+\frac{P}{d}\Big)^2\Big({}^2A_x - (A_x)^2\Big).$$
+      </div>
+      <p>Fully discrete $n$-year <strong>endowment</strong> (PV is still a single $Z = v^{\min(K_x+1,\,n)}$):</p>
+      <div class="formula">
+        <span class="formula-label">Variance of $L_0$ (fully discrete $n$-year endowment)</span>
+        $$\mathrm{Var}[L_0] = \Big(b+\frac{P}{d}\Big)^2\Big({}^2A_{x:\overline{n}|} - (A_{x:\overline{n}|})^2\Big).$$</div>
+      <p>Under the <strong>equivalence-principle</strong> premium only, the clean shortcut is:</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Equivalence-principle variance shortcut</div>
+        $$\mathrm{Var}[L_0]\Big|_{\text{equiv}} = b^2\,\frac{{}^2A_x - (A_x)^2}{(1 - A_x)^2} = b^2\,\frac{{}^2A_x - (A_x)^2}{(d\,\ddot a_x)^2}.$$
+        <p>(Endowment: replace $A_x$ by $A_{x:\overline{n}|}$ throughout. Continuous: replace $A$ by $\bar A$, $d$ by $\delta$.) Valid <strong>only</strong> when $P$ is the equivalence premium.</p>
+      </div>
+
+      <h3>Gross loss $L_0^g$ and its variance</h3>
+      <p>Let $e_i$ = initial (year-1) expense, $e_r$ = renewal expense, $b$ = benefit, $E$ = settlement expense, $G$ = gross premium. For fully discrete whole life:</p>
+      <div class="formula">
+        <span class="formula-label">Gross loss $L_0^g$ (fully discrete whole life)</span>
+        $$L_0^g = (b+E)v^{K_x+1} + \big[e_r\,\ddot a_{\overline{K_x+1}|} + (e_i - e_r)\big] - G\,\ddot a_{\overline{K_x+1}|} = \Big(b+E+\frac{G-e_r}{d}\Big)v^{K_x+1} - \frac{G-e_r}{d} + (e_i - e_r).$$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Gross variance shortcut (whole life / endowment only)</div>
+        $$\mathrm{Var}[L_0^g] = \Big(b + E + \frac{G - e_r}{d}\Big)^2\big({}^2A_x - (A_x)^2\big).$$
+        <p>Endowment: use $A_{x:\overline n|}$. Continuous: replace $d\to\delta$ and the $A$'s with $\bar A$'s. <strong>The initial expense $e_i$ vanishes from the variance</strong> — it is a known constant incurred at issue, and a constant has zero variance.</p>
+      </div>
+
+      <h3>Percentile and portfolio premiums</h3>
+      <p><strong>Single-policy percentile.</strong> The $100p$th percentile $\pi_p$ of $L_0$ satisfies $\Pr[L_0 \le \pi_p] = p$. Because $L_0$ <em>decreases</em> in $T_x$ (longer life ⇒ smaller loss), graph $L_0$ vs. $T_x$, find the lifetime $h$ with $\Pr[T_x > h] = {}_hp_x = p$, then evaluate $L_0$ at $T_x = h$.</p>
+      <p><strong>Probability $\Pr[L_0 > X]$ (single policy).</strong> Write $L_0$ with the only unknown being $v^{T_x}$ or $v^{K_x+1}$, solve the inequality for $T_x$ (or $K_x$), then read off a survival/death probability from the life table.</p>
+      <p><strong>Portfolio</strong> ($N$ independent identical policies), aggregate loss $S = \sum_{i=1}^N L_{0,i}$:</p>
+      <div class="formula">
+        <span class="formula-label">Portfolio percentile premium condition (Normal approximation)</span>
+        $$\Pr(S > 0) = \alpha \;\Rightarrow\; \frac{0 - E[S]}{\sqrt{\mathrm{Var}[S]}} = \Phi^{-1}(1-\alpha) \;\Rightarrow\; E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0,$$</div>
+      <p>with $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$, and $\Phi^{-1}(0.95)=1.645$. Substitute $E[L]$ and $\mathrm{Var}[L]$ as functions of the premium and solve. Per-policy form: $E[L] = -\,\Phi^{-1}(1-\alpha)\,\sqrt{\mathrm{Var}[L]}/\sqrt N$.</p>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Net annual premium, whole life, with variance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully discrete whole life insurance of \$100,000 is issued to $(40)$. You are given $i = 0.05$, $A_{40} = 0.20$, ${}^2A_{40} = 0.06$. Find (a) the annual net premium and (b) the standard deviation of $L_0$.</p>
+          <p><strong>Solution.</strong><br>
+          First $\ddot a_{40} = (1 - A_{40})/d$ with $d = 0.05/1.05 = 0.047619$.<br>
+          $\ddot a_{40} = (1 - 0.20)/0.047619 = 0.80/0.047619 = 16.80$.</p>
+          <p><strong>(a)</strong> $P = 100000 \cdot A_{40}/\ddot a_{40} = 100000 \cdot 0.20/16.80 = 1190.48$.</p>
+          <p><strong>(b)</strong> Equivalence-principle variance, scaled by face 100000:<br>
+          $\mathrm{Var}[L_0] = (100000)^2 \cdot \dfrac{{}^2A_{40} - (A_{40})^2}{(1 - A_{40})^2}$.<br>
+          Numerator $0.06 - 0.04 = 0.02$; denominator $(0.80)^2 = 0.64$; ratio $= 0.03125$.<br>
+          $\mathrm{Var}[L_0] = 10^{10}\cdot 0.03125 = 3.125\times 10^{8}$, so $\mathrm{SD} = 17677$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $P = \$1{,}190.48$ per year. (b) $\mathrm{SD}(L_0) \approx \$17{,}677$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> SD of $L$ — equivalence premium from $A$'s only <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[MLC-S07:4 style] For a fully discrete whole life insurance of \$150,000 on $(x)$: ${}^2A_x = 0.0143$, $A_x = 0.0653$, premium by the equivalence principle. Find $\mathrm{SD}(L)$.</p>
+          <p><strong>Solution.</strong> Use the equivalence shortcut directly — no annuity needed:</p>
+          $$\mathrm{Var}[L] = b^2\,\frac{{}^2A_x - (A_x)^2}{(1 - A_x)^2} = 150000^2\cdot\frac{0.0143 - 0.0653^2}{(1-0.0653)^2} = 258{,}460{,}863.$$
+          <p>$\mathrm{SD}(L) = \sqrt{258{,}460{,}863} = 16{,}076.72$.</p>
+          <p><em>Check (general form):</em> $P = 150000\,\dfrac{dA_x}{1-A_x}$, then $\mathrm{Var}[L] = \big(150000 + \tfrac{P}{d}\big)^2[{}^2A_x-(A_x)^2]$ gives the same number — the shortcut is just this with $P$ substituted.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\mathrm{SD}(L) \approx \$16{,}076.72$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Fully continuous WL with a mixed mortality density <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[SOA Sample 6.31] Fully continuous whole life of \$100,000 on $(35)$. The newborn future-lifetime density is $f(t)=0.01e^{-0.01t}$ for $0\le t<70$ (constant force $\mu=0.01$ over that range) and arbitrary after; $\delta=0.05$, $\bar A_{70}=0.51791$. Find the annual net premium rate.</p>
+          <p><strong>Solution.</strong> "Net premium" ⇒ equivalence, no expenses: $P = 100000\,\bar A_{35}/\bar a_{35}$.<br>
+          Split the whole life into a 35-year term plus a deferred piece. With constant force $\mu=0.01$ to age 70, $\bar A_{35:\overline{35}|}^{\,1} = \dfrac{\mu}{\mu+\delta}\big(1-e^{-(\mu+\delta)(35)}\big)$ and ${}_{35}E_{35}=e^{-(\mu+\delta)(35)}$:</p>
+          $$\bar A_{35} = \frac{0.01}{0.06}\big(1-e^{-0.06\cdot 35}\big) + e^{-0.06\cdot 35}(0.51791) = 0.20968.$$
+          <p>$\bar a_{35} = (1-\bar A_{35})/\delta = (1-0.20968)/0.05 = 15.8064$, so</p>
+          $$P = 100000\cdot\frac{0.20968}{15.8064} = 1{,}326.55.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$P \approx \$1{,}326.55$ per year.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Recover $\pi$ from two variances <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[SOA MLC 228] Fully continuous whole life of 1 on $(x)$: $\bar A_x = 1/3$, $\delta = 0.10$. With the equivalence premium, $\mathrm{Var}[L]=1/5$; with premium $\pi$, $\mathrm{Var}[L']=16/45$. Find $\pi$.</p>
+          <p><strong>Solution.</strong> Equivalence premium $P = \dfrac{\delta\bar A_x}{1-\bar A_x} = \dfrac{0.10/3}{2/3} = 0.05$. Both variances share the factor $[{}^2\bar A_x-(\bar A_x)^2]$, so dividing kills it:</p>
+          $$\frac{\mathrm{Var}[L']}{\mathrm{Var}[L]} = \left(\frac{1+\pi/0.10}{1+0.05/0.10}\right)^2 = \frac{16/45}{1/5} = \frac{16}{9} \;\Rightarrow\; \frac{1+10\pi}{1.5} = \frac{4}{3} \;\Rightarrow\; \pi = 0.10.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\pi = 0.10$. The ratio trick avoids ever computing ${}^2\bar A_x$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> 3-year term: variance from first principles <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Adam, $(21)$, buys a fully discrete 3-year term of \$200,000, $i=0.05$, with $p_{21}=0.96,\;p_{22}=0.94,\;p_{23}=0.92$. Find the net premium and the mean &amp; variance of $L$.</p>
+          <p><strong>Premium.</strong> $v=1/1.05$. Death-benefit EPV $=200000\big[v(0.04)+v^2(0.96)(0.06)+v^3(0.96)(0.94)(0.08)\big]$; premium annuity $\ddot a_{21:\overline 3|}=1+v(0.96)+v^2(0.96)(0.94)$.<br>
+          $P = 200000\,A^{\,1}_{21:\overline 3|}/\ddot a_{21:\overline 3|} = 11{,}175.56$.</p>
+          <p><strong>Why no shortcut?</strong> Term insurance PV is <em>not</em> a single $Z$ (survivors pay nothing), so we tabulate $L$ outcome by outcome:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Year of death</th><th>$L$</th><th>Probability</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>$200000v - P = 179{,}300.63$</td><td>$0.04$</td></tr>
+              <tr><td>2</td><td>$200000v^2 - P(1+v) = 159{,}586.94$</td><td>$0.96(0.06)=0.0576$</td></tr>
+              <tr><td>3</td><td>$200000v^3 - P(1+v+v^2) = 140{,}811.99$</td><td>$0.96(0.94)(0.08)=0.072192$</td></tr>
+              <tr><td>4+</td><td>$-P(1+v+v^2) = -31{,}955.52$</td><td>$0.96(0.94)(0.92)=0.830208$</td></tr>
+            </tbody>
+          </table></div>
+          <p>$E[L]=\sum L\cdot\Pr = 0$ (it must, by the equivalence principle — a built-in check). Second moment $E[L^2]=\sum L^2\cdot\Pr = 5{,}032{,}100{,}621$, so $\mathrm{Var}[L]=E[L^2]-0^2$ and $\mathrm{SD}(L)=\sqrt{5{,}032{,}100{,}621}=70{,}937.30$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$P=\$11{,}175.56$; $E[L]=0$; $\mathrm{SD}(L)\approx\$70{,}937$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Return of premiums without interest <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[Refund feature] A special fully discrete 10-pay whole life on $(30)$ with level net premium $\pi$. The death benefit is \$1,000 <strong>plus a refund, without interest, of all net premiums paid.</strong> Given $A_{30}=0.102$, ${}_{10|}A_{30}=0.088$, $(IA)^{\,1}_{30:\overline{10}|}=0.078$, $\ddot a_{30:\overline{10}|}=7.747$. Find $\pi$.</p>
+          <p><strong>Solution.</strong> "Net premium" ⇒ EPV(premiums) = EPV(benefits), where benefits = death benefit + refund.</p>
+          <p>EPV(premiums) $= \pi\,\ddot a_{30:\overline{10}|} = 7.747\pi$.<br>
+          EPV(\$1,000 death benefit) $= 1000\,A_{30} = 102$.<br>
+          <strong>Refund:</strong> die in year $k\le 10$ ⇒ refund $k\pi$; this is an increasing term insurance of $\pi$ for 10 years, then a level $10\pi$ whole life beyond year 10:</p>
+          $$\text{EPV(refund)} = \pi\,(IA)^{\,1}_{30:\overline{10}|} + 10\pi\,{}_{10|}A_{30} = \pi\big[0.078 + 10(0.088)\big] = 0.958\pi.$$
+          <p>Equation of value: $7.747\pi = 102 + 0.958\pi \Rightarrow 6.789\pi = 102 \Rightarrow \pi = 15.02$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\pi \approx 15.02$. Treat any return-of-premium as an extra increasing-insurance benefit and add it to the benefit side.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Gross premium, 5-pay whole life, mixed expenses <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[SOA Sample 6.28] Fully discrete 5-pay whole life of \$1,000 on $(40)$. Year 1: commission 20% of premium, per-policy \$10. Years 2–5: commission 5%, per-policy \$5. No expenses after year 5. SULT mortality, $i=0.05$. Gross premium $G$ by the equivalence principle.</p>
+          <p><strong>Solution.</strong> Use renewal-level + excess. Annuity $\ddot a_{40:\overline 5|}=\ddot a_{40}-{}_5E_{40}\,\ddot a_{45}=18.4578-0.78113(17.8162)=4.5410$, and $1000A_{40}=121.06$.</p>
+          <p>EPV(premiums) $= G\,\ddot a_{40:\overline 5|} = 4.5410G$.<br>
+          EPV(commissions) $= 0.05G\,\ddot a_{40:\overline 5|} + (0.20-0.05)G = 0.05G(4.5410)+0.15G$.<br>
+          EPV(per-policy) $= 5\,\ddot a_{40:\overline 5|} + (10-5) = 5(4.5410)+5$.</p>
+          $$4.5410G = 121.06 + \big[0.05G(4.5410)+0.15G\big] + \big[5(4.5410)+5\big] \;\Rightarrow\; G = 35.73.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G \approx \$35.73$. Note the commission EPV uses the <em>5-pay</em> annuity (commissions stop when premiums stop).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Gross premium with first-year and renewal expenses <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully discrete whole life of \$50,000 on $(50)$. Expenses — First year: 40% of premium + \$100 per policy + \$3.00 per 1000 of face. Renewal: 5% of premium + \$25 per policy + \$1.00 per 1000. Given $A_{50}=0.25$, $\ddot a_{50}=15.00$, $i=0.05$ ($d=0.047619$). Find $G$ by the equivalence principle.</p>
+          <p><strong>Solution.</strong> Face $S=50000$, so $S/1000=50$.</p>
+          <p>EPV benefits $=50000(0.25)=12500$.<br>
+          Per-policy: $25\,\ddot a_{50}+ (100-25) = 25(15)+75 = 450$.<br>
+          Per-1000: $1.00(50)\,\ddot a_{50} + (3.00-1.00)(50) = 50(15)+100 = 850$.<br>
+          Per-premium: $0.05G\,\ddot a_{50} + (0.40-0.05)G = 0.75G+0.35G = 1.10G$.</p>
+          $$15G = 12500 + 450 + 850 + 1.10G \;\Rightarrow\; 13.90G = 13800 \;\Rightarrow\; G = 992.81.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G = \$992.81$ per year.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Variance of the gross loss — shortcut formula <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[SOA Sample 6.30] Fully discrete whole life of \$100 on $(x)$. First-year expense 10% of premium, later years 5%. Equivalence gross premium $G=2.338$, $i=0.04$, $\ddot a_x=16.50$, ${}^2A_x=0.17$. Find $\mathrm{Var}[L_0^g]$.</p>
+          <p><strong>Solution.</strong> Here $b=100$, $E=0$, $e_r=0.05(2.338)=0.1169$, $d=0.04/1.04$. First get $A_x = 1 - d\,\ddot a_x = 1 - \tfrac{0.04}{1.04}(16.50) = 0.36538$. Then the gross variance shortcut:</p>
+          $$\mathrm{Var}[L_0^g] = \Big(b + E + \frac{G - e_r}{d}\Big)^2\big({}^2A_x - (A_x)^2\big) = \Big(100 + \frac{2.338 - 0.1169}{0.04/1.04}\Big)^2\big(0.17 - 0.36538^2\big) = 908.14.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\mathrm{Var}[L_0^g] \approx 908.14$. The first-year expense never enters the variance — it is a known constant.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Portfolio percentile premium (Normal approximation) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[S12:25 style] An insurer issues fully discrete whole life of \$100,000 to lives age 40, independent lifetimes. Issue expense 20% of first premium; renewal 6% of each premium from year 2. $A_{40}=0.161$, ${}^2A_{40}=0.048$, $\ddot a_{40}=14.822$, $i=0.06$. Find $G$ so that $\Pr[\text{portfolio loss}>0]=5\%$ over $N=40{,}000$ policies.</p>
+          <p><strong>Per-policy mean.</strong> Renewal-level + excess on commissions ($e_r$ here is $0.06G$, first-year excess $0.14G$):</p>
+          $$E[L] = 100000A_{40} + \big[0.06G\,\ddot a_{40} + 0.14G\big] - G\,\ddot a_{40} = 16100 - 13.79268G.$$
+          <p><strong>Per-policy variance</strong> (gross shortcut, $b=100000$, $E=0$, $e_r=0.06G$, $d=0.06/1.06$):</p>
+          $$\mathrm{Var}[L] = \Big(100000 + \frac{G-0.06G}{0.06/1.06}\Big)^2(0.048 - 0.161^2) = (100000 + 16.61G)^2(0.022079).$$
+          <p><strong>Portfolio condition</strong> $\Pr[S>0]=0.05$ with $E[S]=40000\,E[L]$, $\mathrm{Var}[S]=40000\,\mathrm{Var}[L]$:</p>
+          $$E[S] + 1.64485\sqrt{\mathrm{Var}[S]} = 0 \;\Rightarrow\; 40000(16100 - 13.79268G) + 1.64485\sqrt{40000}\,(100000+16.61G)\sqrt{0.022079} = 0.$$
+          <p>Solving the (linear-in-$G$) equation gives $G = 1{,}177.88$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G \approx \$1{,}177.88$ per policy. The $\sqrt N$ makes the loading small relative to the equivalence premium.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> 75th percentile of $L_0$ (graph + life table) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[S-17:8] Fully continuous whole life of \$100,000 on $(35)$, premium rate \$926/yr, $i=0.06$, deaths UDD, with $l_{35}=9{,}420{,}657$, $l_{67}=7{,}201{,}635$, $l_{68}=7{,}018{,}432$. Find the 75th percentile of $L_0$.</p>
+          <p><strong>Solution.</strong> $L_0 = 100000v^{T_{35}} - 926\,\bar a_{\overline{T_{35}}|}$ is <strong>decreasing</strong> in $T_{35}$. So $\Pr[L_0 \le \pi_{0.75}] = 0.75 = \Pr[T_{35} > h] = {}_hp_{35}$ at the boundary lifetime $h$.</p>
+          <p>Solve ${}_hp_{35}=0.75$: $l_{35+h} = 0.75\,l_{35} = 7{,}065{,}493$. Since $l_{68} < 7{,}065{,}493 < l_{67}$, interpolate (UDD): $7{,}065{,}493 = (1-k)l_{67}+k\,l_{68} \Rightarrow k=0.743$, so $35+h = 67.743$, $h=32.743$.</p>
+          <p>Evaluate $L_0$ at $T_{35}=h$: $\bar a_{\overline{h}|} = (1-(1.06)^{-h})/\ln 1.06$, giving</p>
+          $$\pi_{0.75} = 100000(1.06)^{-32.743} - 926\cdot\frac{1-(1.06)^{-32.743}}{\ln 1.06} = 1{,}306.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\pi_{0.75} \approx \$1{,}306$. A higher percentile of $L_0$ corresponds to an <em>earlier</em> boundary lifetime — draw the graph to keep the direction straight.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> $\Pr[L_0 > 0]$ for a single policy <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Fully discrete whole life of \$100,000 on $(40)$, SULT mortality, $i=0.05$, annual premium \$1,980. Find $\Pr[L_0 > 0]$. (Use $l_{40}=99{,}338.3$, $l_{65}=94{,}579.7$.)</p>
+          <p><strong>Solution.</strong> Reduce $L_0$ to a single unknown $v^{K_{40}+1}$:</p>
+          $$L_0 = 100000v^{K_{40}+1} - 1980\,\ddot a_{\overline{K_{40}+1}|} = 100000v^{K_{40}+1} - 1980\frac{1-v^{K_{40}+1}}{0.05/1.05} = 141580\,v^{K_{40}+1} - 41580.$$
+          <p>Then $L_0 > 0 \Leftrightarrow v^{K_{40}+1} > 0.29369 \Leftrightarrow (1.05)^{-(K_{40}+1)} > 0.29369 \Leftrightarrow K_{40}+1 < 25.11 \Leftrightarrow K_{40} \le 24$.</p>
+          $$\Pr[L_0>0] = \Pr[K_{40}\le 24] = {}_{25}q_{40} = 1 - \frac{l_{65}}{l_{40}} = 1 - \frac{94{,}579.7}{99{,}338.3} = 0.0479.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\Pr[L_0>0] \approx 0.0479$. An early death (small $K$) makes a loss; the policy profits if $(40)$ survives at least 25 years.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Quarterly net premium via Woolhouse <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[S14:9 style] Fully discrete whole life of \$1,000 on $(x)$, net premiums payable <strong>quarterly</strong>, $i=0.06$, $\ddot a_x=3.4611$. Find (i) the annualized and (ii) the quarterly net premium (2-term Woolhouse).</p>
+          <p><strong>Solution.</strong> $A_x = 1 - d\,\ddot a_x = 1 - \tfrac{0.06}{1.06}(3.4611) = 0.8041$. Woolhouse: $\ddot a_x^{(4)} = \ddot a_x - \tfrac{4-1}{2(4)} = 3.4611 - 0.375 = 3.0861$.</p>
+          $$P_{\text{annual}} = \frac{1000A_x}{\ddot a_x^{(4)}} = \frac{1000(0.8041)}{3.0861} = 260.55, \qquad P_{\text{quarterly}} = \frac{260.55}{4} = 65.14.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(i) \$260.55 annualized; (ii) \$65.14 per quarter. Always divide the annualized premium by $m$ to get the installment.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> Back-solve $G$ from a loss outcome, then confirm equivalence was NOT used <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>[SOA Sample 6.13] A fully discrete whole life of \$10,000 on $(45)$. Commissions are 80% of the first-year premium and 10% of every later premium; no other expenses. SULT mortality, $i=0.05$, so $A_{45}=0.15161$ and $\ddot a_{45}=17.8162$. You are told that <strong>if $T_{45}=10.5$ then $L_0^g = 4{,}953$</strong>. Find the gross premium $G$, then compute $E[L_0^g]$ and say whether the equivalence principle was used.</p>
+          <p><strong>Solution.</strong> Expenses are given, so "loss at issue" means the <em>gross</em> loss. Using the renewal-level + first-year-excess trick (10% every year, plus an $80\%-10\%=70\%$ excess once at issue), the gross loss is</p>
+          $$L_0^g = 10000\,v^{K_{45}+1} + \big(0.7 + 0.1\,\ddot a_{\overline{K_{45}+1}|}\big)G - G\,\ddot a_{\overline{K_{45}+1}|} = 10000\,v^{K_{45}+1} + 0.7G - 0.9G\,\ddot a_{\overline{K_{45}+1}|}.$$
+          <p><strong>Pin down the lifetime.</strong> $K_{45}=\lfloor T_{45}\rfloor = \lfloor 10.5\rfloor = 10$, so $K_{45}+1 = 11$. With $v^{11}=(1.05)^{-11}=0.584679$ and $\ddot a_{\overline{11}|}=\dfrac{1-v^{11}}{d}=\dfrac{1-0.584679}{0.05/1.05}=8.72173$:</p>
+          $$4953 = 10000(0.584679) + 0.7G - 0.9G(8.72173) \;\Rightarrow\; 4953 = 5846.79 - 7.14956\,G \;\Rightarrow\; G = 125.01.$$
+          <p><strong>Now the expected gross loss.</strong> Take expectations of $L_0^g$, replacing $v^{K_{45}+1}\to A_{45}$ and $\ddot a_{\overline{K_{45}+1}|}\to\ddot a_{45}$:</p>
+          $$E[L_0^g] = 10000\,A_{45} + 0.7G - 0.9G\,\ddot a_{45} = 10000(0.15161) + 0.7(125.01) - 0.9(125.01)(17.8162) = -400.87.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G = \$125.01$ and $E[L_0^g] \approx -\$400.87$. Because $E[L_0^g]\neq 0$, the gross premium was <strong>not</strong> set by the equivalence principle — the question never said it was, so you cannot assume it. (Had equivalence been used, $E[L_0^g]$ would be exactly $0$.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 15</span> Substandard whole life — constant addition to the force $\mu+0.02$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully continuous whole life of \$100,000 is issued to $(x)$. Standard mortality has a <strong>constant force</strong> $\mu_x = 0.02$ at all ages; $\delta = 0.04$. Because $(x)$ is substandard, the insurer models the extra risk as a <strong>constant addition</strong> $c = 0.02$ to the force, i.e. $\mu^{\,*}=\mu+c$. Find (a) the standard net annual premium rate and (b) the substandard net annual premium rate.</p>
+          <p><strong>Solution.</strong> Under a constant force, fully continuous whole life satisfies $\bar A_x = \dfrac{\mu}{\mu+\delta}$ and $\bar a_x = \dfrac{1}{\mu+\delta} = \dfrac{1-\bar A_x}{\delta}$. "Net premium" ⇒ equivalence, no expenses, so $P = 100000\,\bar A_x/\bar a_x$.</p>
+          <p><strong>(a) Standard</strong> ($\mu=0.02$): $\;\bar A_x = \dfrac{0.02}{0.02+0.04} = 0.33333,\quad \bar a_x = \dfrac{1-0.33333}{0.04} = 16.6667,$</p>
+          $$P_{\text{std}} = 100000\cdot\frac{0.33333}{16.6667} = 2{,}000.$$
+          <p><strong>(b) Substandard</strong> ($\mu^{\,*}=0.02+0.02=0.04$): $\;\bar A^{\,*}_x = \dfrac{0.04}{0.04+0.04} = 0.5,\quad \bar a^{\,*}_x = \dfrac{1-0.5}{0.04} = 12.5,$</p>
+          $$P_{\text{sub}} = 100000\cdot\frac{0.5}{12.5} = 4{,}000.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) \$2,000/yr standard; (b) \$4,000/yr substandard. Same equivalence machinery, worse basis. Notice the constant-force shortcut on the rated basis: $P = b\cdot\dfrac{\bar A^{\,*}_x}{\bar a^{\,*}_x} = b\,(\mu^{\,*}+\delta)\cdot\dfrac{\mu^{\,*}}{\mu^{\,*}+\delta} = b\,\mu^{\,*}$, so the rated premium rate is just $100000(0.04)=4{,}000$ — the benefit times the rated force.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Using an immediate annuity in the denominator.</strong> Discrete premiums are paid in <strong>advance</strong>, so the denominator is an annuity-<strong>due</strong> $\ddot a$, never $a$. For continuous premiums use $\bar a$. (The SULT only tabulates $\ddot a$ — another reason to stay due.)</li>
+          <li><strong>Mismatching the premium period and benefit period.</strong> A limited-pay, term-funded, or deferred-annuity policy uses the annuity over the <em>actual</em> premium-paying years ($\ddot a_{x:\overline{h}|}$ or $\ddot a_{x:\overline{n}|}$), not $\ddot a_x$.</li>
+          <li><strong>Percent-of-premium expenses must stop when premiums stop.</strong> By SOA default, percent-of-premium expenses (commissions) are payable <em>only while premiums are payable</em>. On an $h$-pay policy their EPV uses the $h$-year annuity $\ddot a_{x:\overline h|}$, never the full $\ddot a_x$ — even though the benefit (and any per-policy/per-1000 expense) may run for life. Forgetting to cut the commissions off at year $h$ overstates expenses and the premium.</li>
+          <li><strong>The variance shortcut requires a single $Z$.</strong> The clean forms ($\mathrm{Var}[L_0] = (b+P/d)^2[{}^2A - A^2]$ and its equivalence version) only hold for <strong>whole life and endowment</strong>, where the benefit PV is one random variable. For <strong>term</strong> (or any "other" product) the survival-to-$n$ outcome pays nothing, so $L_0$ is not affine in one $Z$ — build it outcome-by-outcome and use $\mathrm{Var}=E[L_0^2]-(E[L_0])^2$.</li>
+          <li><strong>Equivalence-only shortcut used on a non-equivalence premium.</strong> $\mathrm{Var}=b^2\frac{{}^2A-A^2}{(1-A)^2}$ is valid <em>only</em> at the equivalence premium. With any other premium, fall back to the general $(b+P/d)^2[{}^2A-A^2]$.</li>
+          <li><strong>Assuming "gross premium" means equivalence.</strong> "Net premium" implies equivalence; "gross premium" does <em>not</em>. Only use the equivalence equation for a gross premium if the question says so. If $E[L_0^g]\neq 0$, the equivalence principle was not used.</li>
+          <li><strong>Using $d$ where $\delta$ belongs (or vice versa).</strong> Discrete: factor $1+P/d$. Continuous: $1+P/\delta$. The "double-force" ${}^2A$ uses $i^*=2i+i^2$ (discrete) or $\delta^*=2\delta$ (continuous) — never just double $A$.</li>
+          <li><strong>Mixing per-policy and per-1000 expenses.</strong> Per-policy is a flat \$ amount regardless of face; per-1000 scales with $S/1000$. And the <strong>settlement</strong> expense $E$ rides on the benefit ($b+E$), not the annuity.</li>
+          <li><strong>Putting per-premium expenses on the wrong side.</strong> Percentage-of-premium expenses are multiples of $G$, so subtract them from $G\ddot a$ (move to the premium side) before dividing — don't lump them with the benefit EPV.</li>
+          <li><strong>First-year expense double counting.</strong> Charge the <strong>renewal</strong> rate for ALL years via the full annuity, then add the <strong>excess</strong> $(e_1-e)$ once at $t=0$.</li>
+          <li><strong>Forgetting the $\times m$ on m-thly premiums.</strong> If $P$ is the m-thly premium, the annual EPV of premiums is $mP\,\ddot a_x^{(m)}$ — not $P\,\ddot a_x^{(m)}$.</li>
+          <li><strong>Return-of-premium forgotten as a benefit.</strong> A refund of premiums on death is an extra <em>benefit</em> — model it as an increasing term insurance $P(IA)^{\,1}_{x:\overline n|}$ and add it to the benefit side before solving for $P$.</li>
+          <li><strong>Portfolio percentile sign / $\sqrt N$ error.</strong> You need $\Pr[S>0]=\alpha$ small, forcing $E[L]<0$ (expected profit). Use $E[S]+\Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]}=0$ — mind the $\sqrt N$ inside $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$. Also keep $\Pr[S<0]$ (profit, large) vs. $\Pr[S>0]$ (loss, small) straight.</li>
+          <li><strong>Percentile-of-$L_0$ direction.</strong> $L_0$ <em>decreases</em> in $T_x$, so a high percentile of $L_0$ matches an early boundary lifetime and the <strong>survival</strong> probability ${}_hp_x$. Draw the graph every time.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>When a question says "net premium," what three things are you allowed to assume immediately?</summary>
+        <div class="qa-answer">(1) The <strong>equivalence principle</strong> is used; (2) <strong>expenses are ignored</strong> (even if stated); (3) hence $E[L_0]=0$, i.e. $\text{EPV(premiums)}=\text{EPV(benefits)}$. (Older exams called this the <em>benefit premium</em>.)</div>
+      </details>
+      <details class="qa"><summary>Why does the EPV of premiums use an annuity-<strong>due</strong> rather than an annuity-immediate?</summary>
+        <div class="qa-answer">Premiums are paid in advance (first one at issue), so a policyholder can't get coverage before paying. The advance pattern is exactly an annuity-due. (Bonus: the SULT tabulates $\ddot a$, not $a$.)</div>
+      </details>
+      <details class="qa"><summary>Write the net premium for (a) semi-continuous whole life and (b) an $n$-year deferred whole life annuity, and say over what period premiums are paid in (b).</summary>
+        <div class="qa-answer">(a) $P=\bar A_x/\ddot a_x$ — continuous death benefit, annual premiums. (b) $P={}_{n|}\ddot a_x/\ddot a_{x:\overline n|}$; premiums are payable <strong>only during the $n$-year deferral period</strong> (you don't pay while collecting).</div>
+      </details>
+      <details class="qa"><summary>Write the equivalence-principle net annual premium for an $n$-year endowment of 1 on $(x)$, in all three equivalent forms.</summary>
+        <div class="qa-answer">$P_{x:\overline{n}|} = \dfrac{A_{x:\overline{n}|}}{\ddot a_{x:\overline{n}|}} = \dfrac{1}{\ddot a_{x:\overline{n}|}} - d = \dfrac{d\,A_{x:\overline{n}|}}{1-A_{x:\overline{n}|}}$, using $A_{x:\overline{n}|}=1-d\,\ddot a_{x:\overline{n}|}$.</div>
+      </details>
+      <details class="qa"><summary>For fully discrete whole life with annual net premium $P$, express $L_0$ as a linear function of $Z=v^{K_x+1}$ and state $\mathrm{Var}[L_0]$.</summary>
+        <div class="qa-answer">$L_0 = \big(b+\tfrac{P}{d}\big)v^{K_x+1} - \tfrac{P}{d}$, so $\mathrm{Var}[L_0] = \big(b+\tfrac{P}{d}\big)^2\big({}^2A_x - (A_x)^2\big)$. (Continuous: replace $d$ by $\delta$, $A$ by $\bar A$, $K_x+1$ by $T_x$.)</div>
+      </details>
+      <details class="qa"><summary>Which variance formula may you use with <em>any</em> premium, and which only with the equivalence premium?</summary>
+        <div class="qa-answer">General — works for any $P$: $\mathrm{Var}[L_0]=(b+\tfrac{P}{d})^2[{}^2A-A^2]$. Equivalence-only: $\mathrm{Var}[L_0]=b^2\dfrac{{}^2A-A^2}{(1-A)^2}$ (it bakes in the equivalence $P$). On the exam the general form is the safer default.</div>
+      </details>
+      <details class="qa"><summary>Why can you NOT use the shortcut $\mathrm{Var}[L_0]=(b+P/d)^2[{}^2A^{\,1}_{x:\overline n|}-(A^{\,1}_{x:\overline n|})^2]$ for a pure term insurance?</summary>
+        <div class="qa-answer">A term insurance's benefit PV is <strong>not</strong> a single random variable $Z$: survivors to time $n$ get nothing (PV 0) while deaths pay $v^{K+1}$, so $L_0$ is not affine in one $Z$ and the linear-in-$Z$ derivation collapses. Compute $\mathrm{Var}=E[L_0^2]-(E[L_0])^2$ outcome by outcome.</div>
+      </details>
+      <details class="qa"><summary>Does the word "gross premium" imply the equivalence principle? How can you tell from a computed $E[L_0^g]$?</summary>
+        <div class="qa-answer">No — unlike "net premium," "gross premium" carries no equivalence assumption (insurers often load for profit). Only assume it if the question says "gross premium calculated using the equivalence principle." If $E[L_0^g]\neq 0$, the equivalence principle was <strong>not</strong> used.</div>
+      </details>
+      <details class="qa"><summary>In the gross-loss variance $\mathrm{Var}[L_0^g]=(b+E+\tfrac{G-e_r}{d})^2[{}^2A_x-(A_x)^2]$, why does the initial expense $e_i$ not appear?</summary>
+        <div class="qa-answer">$L_0^g$ captures only <em>future</em> (renewal) expenses; $e_i$ is known and incurred at issue, i.e. a constant — and a constant has zero variance. (Settlement $E$ does appear, riding on the benefit as $b+E$.)</div>
+      </details>
+      <details class="qa"><summary>An insurer's renewal per-premium expense is 6% and first-year is 50%, with $\ddot a_x=12$. What is the EPV (as a multiple of $G$) of all per-premium expenses?</summary>
+        <div class="qa-answer">Renewal 6% every year: $0.06G\ddot a_x=0.72G$. First-year excess $(0.50-0.06)=0.44$ once: $0.44G$. Total $=1.16G$.</div>
+      </details>
+      <details class="qa"><summary>A death benefit refunds all net premiums paid, without interest. How do you incorporate this when solving for the net premium $P$?</summary>
+        <div class="qa-answer">The refund is an extra benefit equal to an arithmetically increasing term insurance: EPV $=P(IA)^{\,1}_{x:\overline n|}$ (plus, if applicable, level $n\cdot P\cdot {}_{n|}A_x$ after the pay period). Add it to the benefit side, then solve $P\,\ddot a = \text{death-benefit EPV} + \text{refund EPV}$ for $P$.</div>
+      </details>
+      <details class="qa"><summary>If quarterly premiums of $P$ are payable for life, what is the EPV of premiums, and what is the most common mistake?</summary>
+        <div class="qa-answer">EPV $= 4P\,\ddot a_x^{(4)}$. The classic error is writing $P\,\ddot a_x^{(4)}$ — forgetting that $P$ is the quarterly amount and must be multiplied by $m=4$ to annualize.</div>
+      </details>
+      <details class="qa"><summary>To find the 75th percentile of $L_0$ for fully continuous whole life, why do you set $0.75={}_hp_x$ (a survival probability)?</summary>
+        <div class="qa-answer">$L_0$ is <strong>decreasing</strong> in $T_x$, so $\{L_0\le \pi_{0.75}\}$ is the event $\{T_x > h\}$ for the boundary lifetime $h$. Thus $\Pr[L_0\le\pi_{0.75}]=\Pr[T_x>h]={}_hp_x=0.75$. Solve for $h$, then plug $T_x=h$ into $L_0$.</div>
+      </details>
+      <details class="qa"><summary>Distinguish $\Pr[S<0]$ from $\Pr[S>0]$ in the portfolio principle, and write the equation you actually solve.</summary>
+        <div class="qa-answer">$S$ is total loss: $S<0$ is profit (insurer wants this large, e.g. 95%); $S>0$ is loss (kept small, e.g. 5%); they are complements. With the Normal approximation you solve $E[S]+\Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]}=0$, where $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$.</div>
+      </details>
+      <details class="qa"><summary>In the portfolio percentile principle, what happens to the per-policy premium loading (above the equivalence premium) as $N\to\infty$, and why?</summary>
+        <div class="qa-answer">It shrinks to <strong>zero</strong>; the premium tends to the equivalence premium. The loading is $\propto \Phi^{-1}(1-\alpha)\,\mathrm{SD}(L)/\sqrt N$, and the $\sqrt N$ drives it to 0 — diversification makes the relative risk of the average loss vanish.</div>
+      </details>
+      <details class="qa"><summary>Name the three standard ways to model substandard (extra-risk) mortality, and write the survival adjustment for each.</summary>
+        <div class="qa-answer">(a) <strong>Age rating</strong>: price at age $x+j$ — use $A_{x+j}$, $\ddot a_{x+j}$, ${}_tp_{x+j}$. (b) <strong>Constant addition to the force</strong>: $\mu^{\,*}=\mu+c$, giving ${}_tp^{\,*}_x = {}_tp_x\,e^{-ct}$ (acts like adding $c$ to $\delta$). (c) <strong>Constant multiple of the rate</strong>: $q^{\,*}=k\,q$, so ${}_tp^{\,*}_x=\prod(1-k\,q_{x+t})$. In every case the premium recipe $\text{EPV(benefit)}/\text{EPV(annuity)}$ is unchanged — only the basis differs.</div>
+      </details>
+      <details class="qa"><summary>Standard mortality is a constant force $\mu=0.03$; a substandard life adds $c=0.01$. For fully continuous whole life with $\delta=0.04$ and benefit $b$, what is the substandard net premium rate?</summary>
+        <div class="qa-answer">Rated force $\mu^{\,*}=0.04$. Then $\bar A^{\,*}_x=\dfrac{0.04}{0.04+0.04}=0.5$, $\bar a^{\,*}_x=\dfrac{1}{0.08}=12.5$, so $P=b\cdot\dfrac{0.5}{12.5}=0.04\,b = b\,\mu^{\,*}$. (Under a constant force the continuous whole-life net premium rate is just the benefit times the force.)</div>
+      </details>
+      <details class="qa"><summary>You are given that at a specific $T_x$ the gross loss equals a known dollar value, and asked for $E[L_0^g]$. Outline the two-step method and the check at the end.</summary>
+        <div class="qa-answer"><strong>Step 1 — back-solve $G$:</strong> write $L_0^g$ with $K_x+1=\lfloor T_x\rfloor+1$ a known integer, so every PV is a number; set it equal to the given loss and solve the (linear) equation for $G$. <strong>Step 2 — take the expectation:</strong> replace $v^{K_x+1}\to A_x$ and $\ddot a_{\overline{K_x+1}|}\to\ddot a_x$ in $L_0^g$ and plug in $G$. <strong>Check:</strong> if $E[L_0^g]\neq 0$, the gross premium was <em>not</em> set by the equivalence principle (which you must not assume unless told). See Example 14.</div>
+      </details>
+      <details class="qa"><summary>State the two SOA default assumptions about expenses, and the consequence of the second for an $h$-pay policy.</summary>
+        <div class="qa-answer">(1) Expenses are payable at the <strong>start</strong> of each period (advance timing, on the annuity-due). (2) Percent-of-premium expenses are payable <strong>only while premiums are payable</strong>. Consequence: on an $h$-pay policy, commissions use $\ddot a_{x:\overline h|}$ and stop at year $h$, even though the benefit may run for life.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

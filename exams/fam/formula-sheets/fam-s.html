@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAM-S Formula Sheet · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="fs-s" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Formula Sheet · FAM-S</div>
+      <h1>FAM-S One-Stop Formula Sheet</h1>
+      <p class="lede">Every short-term formula you need — severity, frequency, aggregate models, credibility, ratemaking, reserving, and option pricing — condensed onto one page.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models · ASM/Coaching Actuaries</span>
+        <span class="chip">⏱️ ~2 hrs to review</span>
+        <span class="chip">🔑 severity · frequency · aggregate · credibility · ratemaking</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <p>$X$ = severity (loss size), $N$ = frequency (claim count), $S$ = aggregate loss, $E[\cdot]$ expectation, $\mathrm{Var}$ variance, $F$ cdf, $f$ pdf/pf, $S(x)=1-F(x)$ survival, $h(x)=f(x)/S(x)$ hazard.</p>
+      </div>
+
+      <h2>1. Severity Distributions &amp; Moments</h2>
+
+      <h3>Raw &amp; central moments</h3>
+      <div class="formula">
+        $$E[X]=\int_0^\infty x f(x)\,dx,\qquad E[X^k]=\int_0^\infty x^k f(x)\,dx$$
+        $$\mathrm{Var}(X)=E[X^2]-(E[X])^2,\quad \mathrm{CV}=\frac{\sigma_X}{E[X]},\quad \text{skew}=\frac{E[(X-\mu)^3]}{\sigma^3}$$
+        <p>Survival form (nonneg $X$): $\;E[X]=\int_0^\infty S(x)\,dx,\quad E[X^k]=\int_0^\infty k x^{k-1}S(x)\,dx.$</p>
+      </div>
+
+      <h3>Common parametric severities (mean / variance)</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Dist</th><th>$E[X]$</th><th>$\mathrm{Var}(X)$</th></tr></thead>
+        <tbody>
+          <tr><td>Exponential($\theta$)</td><td>$\theta$</td><td>$\theta^2$</td></tr>
+          <tr><td>Gamma($\alpha,\theta$)</td><td>$\alpha\theta$</td><td>$\alpha\theta^2$</td></tr>
+          <tr><td>Pareto($\alpha,\theta$)</td><td>$\dfrac{\theta}{\alpha-1}$</td><td>$\dfrac{\alpha\theta^2}{(\alpha-1)^2(\alpha-2)}$</td></tr>
+          <tr><td>Lognormal($\mu,\sigma$)</td><td>$e^{\mu+\sigma^2/2}$</td><td>$(e^{\sigma^2}-1)e^{2\mu+\sigma^2}$</td></tr>
+          <tr><td>Uniform$(a,b)$</td><td>$\frac{a+b}{2}$</td><td>$\frac{(b-a)^2}{12}$</td></tr>
+          <tr><td>Weibull($\tau,\theta$)</td><td>$\theta\,\Gamma(1+1/\tau)$</td><td>$\theta^2[\Gamma(1+2/\tau)-\Gamma(1+1/\tau)^2]$</td></tr>
+          <tr><td>Single-param Pareto($\alpha,\theta$), $x>\theta$</td><td>$\dfrac{\alpha\theta}{\alpha-1}$</td><td>$\dfrac{\alpha\theta^2}{(\alpha-1)^2(\alpha-2)}$</td></tr>
+        </tbody>
+      </table></div>
+      <div class="formula">
+        <p>Pareto moments: $E[X^k]=\dfrac{\theta^k k!}{(\alpha-1)\cdots(\alpha-k)}$ (for $\alpha>k$).</p>
+        <p>Lognormal: $E[X^k]=\exp\!\big(k\mu+\tfrac12 k^2\sigma^2\big)$.</p>
+      </div>
+
+      <h3>Distribution transforms</h3>
+      <ul>
+        <li><strong>Multiplication / inflation</strong> $Y=cX$: scale param $\theta\to c\theta$; $E[Y^k]=c^k E[X^k]$.</li>
+        <li><strong>Lognormal:</strong> $\ln X\sim N(\mu,\sigma^2)$; $F(x)=\Phi\!\big(\tfrac{\ln x-\mu}{\sigma}\big)$.</li>
+      </ul>
+
+      <h2>2. Frequency Distributions — (a,b,0) and (a,b,1)</h2>
+
+      <h3>$(a,b,0)$ recursion</h3>
+      <div class="formula">
+        $$\frac{p_k}{p_{k-1}}=a+\frac{b}{k},\qquad k=1,2,\dots$$
+      </div>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Dist</th><th>$p_0$</th><th>$a$</th><th>$b$</th><th>$E[N]$</th><th>$\mathrm{Var}(N)$</th></tr></thead>
+        <tbody>
+          <tr><td>Poisson($\lambda$)</td><td>$e^{-\lambda}$</td><td>$0$</td><td>$\lambda$</td><td>$\lambda$</td><td>$\lambda$</td></tr>
+          <tr><td>Binomial($m,q$)</td><td>$(1-q)^m$</td><td>$\dfrac{-q}{1-q}$</td><td>$\dfrac{(m+1)q}{1-q}$</td><td>$mq$</td><td>$mq(1-q)$</td></tr>
+          <tr><td>Neg. Bin.($r,\beta$)</td><td>$(1+\beta)^{-r}$</td><td>$\dfrac{\beta}{1+\beta}$</td><td>$\dfrac{(r-1)\beta}{1+\beta}$</td><td>$r\beta$</td><td>$r\beta(1+\beta)$</td></tr>
+          <tr><td>Geometric($\beta$)</td><td>$\dfrac{1}{1+\beta}$</td><td>$\dfrac{\beta}{1+\beta}$</td><td>$0$</td><td>$\beta$</td><td>$\beta(1+\beta)$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Variance test: Poisson $\sigma^2=\mu$; Binomial $\sigma^2<\mu$; Neg.Bin/Geom $\sigma^2>\mu$.</p>
+
+      <h3>$(a,b,1)$ — zero-truncated / zero-modified</h3>
+      <p>Same recursion for $k\ge2$; start from $p_1$.</p>
+      <div class="formula">
+        $$p_k^M=\frac{1-p_0^M}{1-p_0}\,p_k\;(k\ge1),\qquad p_k^T=\frac{p_k}{1-p_0}\;(k\ge1)$$
+        $$E[N^M]=\frac{1-p_0^M}{1-p_0}E[N],\quad E[(N^M)^2]=\frac{1-p_0^M}{1-p_0}E[N^2]$$
+        <p>(Set $p_0^M=0$ to recover the truncated case.)</p>
+      </div>
+
+      <h3>PGF</h3>
+      <div class="formula">
+        $$P_N(z)=E[z^N],\quad E[N]=P'_N(1),\quad E[N(N-1)]=P''_N(1).$$
+        <p>Poisson $P(z)=e^{\lambda(z-1)}$; Neg.Bin $P(z)=[1-\beta(z-1)]^{-r}$; Binomial $P(z)=[1+q(z-1)]^m$.</p>
+      </div>
+
+      <h2>3. Aggregate / Compound Models</h2>
+      <p>$S=X_1+\cdots+X_N$ (i.i.d. $X_i$ independent of $N$).</p>
+
+      <h3>Compound moments</h3>
+      <div class="formula">
+        $$E[S]=E[N]\,E[X]$$
+        $$\mathrm{Var}(S)=E[N]\,\mathrm{Var}(X)+\mathrm{Var}(N)\,(E[X])^2$$
+        <p><strong>Compound Poisson</strong> ($N\sim$ Poisson $\lambda$): $\;E[S]=\lambda E[X],\;\mathrm{Var}(S)=\lambda E[X^2].$</p>
+        <p>PGF/MGF: $P_S(z)=P_N(P_X(z))$, $\;M_S(t)=P_N(M_X(t))$.</p>
+      </div>
+
+      <h3>Conditional (mixing) variance</h3>
+      <div class="formula">
+        $$\mathrm{Var}(S)=E[\mathrm{Var}(S\mid\Theta)]+\mathrm{Var}(E[S\mid\Theta])$$
+        <p>(Total variance / "law of total variance" — also basis for Bühlmann.)</p>
+      </div>
+
+      <h3>Panjer recursion (discrete $X$ on $0,1,2,\dots$; $N$ is $(a,b,0/1)$)</h3>
+      <div class="formula">
+        $$f_S(s)=\frac{[p_1-(a+b)p_0]f_X(s)+\sum_{j=1}^{s}\big(a+\tfrac{bj}{s}\big)f_X(j)f_S(s-j)}{1-a f_X(0)}$$
+        <p>$(a,b,0)$ start: $f_S(0)=P_N(f_X(0))$.</p>
+      </div>
+
+      <h3>Individual risk model</h3>
+      <p>$S=\sum_{i=1}^n X_i$ (fixed $n$, indep, not identical): $E[S]=\sum E[X_i]$, $\mathrm{Var}(S)=\sum\mathrm{Var}(X_i)$.</p>
+
+      <h2>4. Stop-Loss &amp; Limited Expected Value</h2>
+
+      <h3>Limited expected value (LEV) — payment under limit $d$</h3>
+      <div class="formula">
+        $$E[X\wedge d]=\int_0^d S(x)\,dx=\int_0^d x f(x)dx + d\,S(d)$$
+        $$E[(X\wedge d)^2]=\int_0^d 2x\,S(x)\,dx$$
+      </div>
+
+      <h3>Stop-loss / excess</h3>
+      <div class="formula">
+        $$E[(X-d)_+]=\int_d^\infty S(x)\,dx=E[X]-E[X\wedge d]$$
+        $$E[(X-d)_+]=\int_d^\infty (x-d)f(x)\,dx$$
+        <p>Net stop-loss premium for aggregate: $E[(S-d)_+]=E[S]-E[S\wedge d]$.</p>
+        <p>Recursion (discrete, step $h$): $E[(S-(d+h))_+]=E[(S-d)_+]-h\,[1-F_S(d)]$.</p>
+        <p>Mean residual life (mean excess): $\;e(d)=E[X-d\mid X>d]=\dfrac{E[(X-d)_+]}{S(d)}.$</p>
+      </div>
+
+      <h3>Mean-excess $e(d)$ shortcuts (memorize)</h3>
+      <p>For these distributions $X-d\mid X\gt d$ has a clean form, so $e(d)$ is closed-form:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Dist of $X$</th><th>$X-d\mid X\gt d$ is…</th><th>$e(d)$</th></tr></thead>
+        <tbody>
+          <tr><td>Exponential($\theta$)</td><td>Exponential($\theta$) (memoryless)</td><td>$\theta$</td></tr>
+          <tr><td>Uniform$(0,b)$, $d\lt b$</td><td>Uniform$(0,b-d)$</td><td>$\dfrac{b-d}{2}$</td></tr>
+          <tr><td>Pareto($\alpha,\theta$)</td><td>Pareto($\alpha,\theta+d$)</td><td>$\dfrac{\theta+d}{\alpha-1}\;(\alpha\gt1)$</td></tr>
+          <tr><td>Single-param Pareto($\alpha,\theta$), $d\gt\theta$</td><td>—</td><td>$\dfrac{d}{\alpha-1}\;(\alpha\gt1)$</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Risk Measures (VaR &amp; TVaR)</h2>
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">What a risk measure does</div>
+        <p>A risk measure $\rho(X)$ maps a loss $X$ to a single number that quantifies its risk — used for solvency/capital. The two on the exam are <strong>Value-at-Risk</strong> (a quantile) and <strong>Tail-Value-at-Risk</strong> (the average loss beyond that quantile).</p>
+      </div>
+
+      <h3>Value-at-Risk (VaR)</h3>
+      <div class="formula">
+        $$\mathrm{VaR}_p(X)=\pi_p=F_X^{-1}(p)\qquad(\text{the }100p\text{th percentile}).$$
+        <p>It is the loss exceeded with probability $1-p$. The exam table gives $\mathrm{VaR}_p$ (percentile) for most distributions, so you rarely invert the cdf by hand.</p>
+        <p>Lognormal: $\;\mathrm{VaR}_p(X)=e^{\mu+\sigma z_p}$, where $z_p=\Phi^{-1}(p)$.</p>
+      </div>
+
+      <h3>Tail-Value-at-Risk (TVaR / CTE)</h3>
+      <div class="formula">
+        <span class="formula-label">Definition &amp; mean-excess shortcut</span>
+        $$\mathrm{TVaR}_p(X)=E[X\mid X\gt \mathrm{VaR}_p(X)]=\mathrm{VaR}_p(X)+e\big(\mathrm{VaR}_p(X)\big)$$
+        $$\mathrm{TVaR}_p(X)=\mathrm{VaR}_p(X)+\frac{E[X]-E[X\wedge \mathrm{VaR}_p(X)]}{1-p}=\frac{1}{1-p}\int_p^1 \mathrm{VaR}_u(X)\,du.$$
+        <p>The mean-excess form (using the $e(d)$ table above) avoids integration when the table gives $\mathrm{VaR}_p$. Always $\mathrm{TVaR}_p\ge\mathrm{VaR}_p$.</p>
+      </div>
+      <div class="formula">
+        <span class="formula-label">Closed forms — Normal &amp; Lognormal (not all on the exam table)</span>
+        $$\textbf{Normal}(\mu,\sigma^2):\quad \mathrm{TVaR}_p(X)=\mu+\sigma\,\frac{\phi(z_p)}{1-p},\qquad \phi(z)=\tfrac{1}{\sqrt{2\pi}}e^{-z^2/2}.$$
+        $$\textbf{Lognormal}(\mu,\sigma):\quad \mathrm{TVaR}_p(X)=e^{\mu+\sigma^2/2}\,\frac{\Phi(\sigma-z_p)}{1-p}=E[X]\cdot\frac{\Phi(\sigma-z_p)}{1-p}.$$
+        <p>Here $z_p=\Phi^{-1}(p)$; $\phi$ is the standard-normal pdf, $\Phi$ its cdf. The lognormal form needs only $E[X]$ and $z_p$ — no $\mathrm{VaR}_p$.</p>
+      </div>
+
+      <h3>Coherence</h3>
+      <p>$\rho$ is <strong>coherent</strong> if it satisfies all four properties. VaR fails subadditivity (so it can penalize diversification); TVaR satisfies all four.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Property</th><th>Definition</th><th>$\mathrm{VaR}_p$</th><th>$\mathrm{TVaR}_p$</th></tr></thead>
+        <tbody>
+          <tr><td>Translation invariance</td><td>$\rho(X+c)=\rho(X)+c$</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Positive homogeneity</td><td>$\rho(cX)=c\,\rho(X),\;c\gt0$</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Subadditivity</td><td>$\rho(X+Y)\le\rho(X)+\rho(Y)$</td><td>✗</td><td>✓</td></tr>
+          <tr><td>Monotonicity</td><td>$\Pr(X\le Y)=1\Rightarrow\rho(X)\le\rho(Y)$</td><td>✓</td><td>✓</td></tr>
+          <tr><td><strong>Coherent?</strong></td><td></td><td><strong>No</strong></td><td><strong>Yes</strong></td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">VaR is not coherent</div>
+        <p>VaR violates <strong>subadditivity</strong> only. Counterexample: i.i.d. $X,Y$ with $\Pr(=0)=0.6,\Pr(=100)=0.4$, $p=0.5$ gives $\mathrm{VaR}_{0.5}(X)=\mathrm{VaR}_{0.5}(Y)=0$ but $\mathrm{VaR}_{0.5}(X+Y)=100\gt0$.</p>
+      </div>
+
+      <details class="example">
+        <summary><span class="tag">Example 1</span> TVaR from a CDF / LEV table <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X$ has $F(2415)=0.85$, $E[X\wedge 2415]=925$, and $E[X]=1500$. Find $\mathrm{TVaR}_{0.85}(X)$.</p>
+          <p>$\mathrm{VaR}_{0.85}(X)=F^{-1}(0.85)=2415$. Use the mean-excess form:</p>
+          $$\mathrm{TVaR}_{0.85}(X)=2415+\frac{1500-925}{1-0.85}=2415+\frac{575}{0.15}=2415+3833.33.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\mathrm{TVaR}_{0.85}(X)=6248.33$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Lognormal TVaR closed form <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X\sim$ Lognormal$(\mu=2,\sigma^2=9)$, so $\sigma=3$. Find $\mathrm{TVaR}_{0.85}(X)$.</p>
+          <p>$E[X]=e^{2+9/2}=e^{6.5}=665.142$; $z_{0.85}=\Phi^{-1}(0.85)=1.03643$.</p>
+          $$\mathrm{TVaR}_{0.85}=665.142\cdot\frac{\Phi(3-1.03643)}{1-0.85}=665.142\cdot\frac{\Phi(1.96357)}{0.15}=665.142\cdot\frac{0.97521}{0.15}.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\mathrm{TVaR}_{0.85}(X)=4324.35$.</div>
+        </div>
+      </details>
+
+      <h2>5. Coverage Modifications</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>Ordinary deductible $d$, policy limit (max payment) $u$, max covered loss $u^{*}=d+u$, coinsurance $\alpha$, inflation factor $1+r$.</p>
+      </div>
+
+      <h3>Per-loss payment (cost per loss), ground-up loss $X$</h3>
+      <p>Ordinary deductible: $Y^L=(X-d)_+$, so $E[Y^L]=E[X]-E[X\wedge d]$.</p>
+      <div class="formula">
+        <span class="formula-label">Increased Limit Factor (ratio of LEVs)</span>
+        $$\mathrm{ILF}(u)=\frac{E[X\wedge u]}{E[X\wedge b]}\qquad(b=\text{original limit},\;u=\text{increased limit}).$$
+      </div>
+      <div class="formula">
+        <span class="formula-label">Full structure (coinsurance, deductible, max covered loss $u$)</span>
+        $$Y^L=\alpha\big[(X\wedge u)-(X\wedge d)\big],\qquad E[Y^L]=\alpha\big(E[X\wedge u]-E[X\wedge d]\big)$$
+        <span class="formula-label">With inflation $1+r$ applied to $X$</span>
+        $$E[Y^L]=\alpha(1+r)\Big(E\big[X\wedge \tfrac{u}{1+r}\big]-E\big[X\wedge \tfrac{d}{1+r}\big]\Big)$$
+      </div>
+
+      <h3>Per-payment (cost per payment) — condition on a payment ($X>d$)</h3>
+      <div class="formula">
+        $$E[Y^P]=\frac{E[Y^L]}{S(d)}=\frac{E[X]-E[X\wedge d]}{1-F(d)}$$
+        <p>General: $\;E[Y^P]=\dfrac{E[Y^L]}{1-F(d)}$ (divide the per-loss result by $S(d)$).</p>
+      </div>
+
+      <h3>Franchise deductible</h3>
+      <div class="formula">
+        <p>Pays full $X$ if $X>d$ (not $X-d$): $\;E[Y^L]=E[X]-E[X\wedge d]+d\,S(d).$</p>
+        <p>Per payment: $\;E[Y^P]=E[Y^L_{\text{ordinary}}]/S(d)+d=e(d)+d.$ (Franchise = ordinary mean-excess shifted up by $d$.)</p>
+      </div>
+
+      <h3>Loss Elimination Ratio</h3>
+      <div class="formula">
+        $$\mathrm{LER}(d)=\frac{E[X\wedge d]}{E[X]}=\frac{\text{losses eliminated by deductible}}{\text{total losses}}$$
+      </div>
+
+      <h3>Frequency under deductible</h3>
+      <p>With deductible, expected #payments scales: $E[N^P]=v\,E[N]$ where $v=S(d)=$ Pr(loss exceeds $d$).</p>
+      <ul>
+        <li>Poisson($\lambda$): payments $\sim$ Poisson($\lambda v$).</li>
+        <li>Neg.Bin($r,\beta$): payments $\sim$ Neg.Bin($r,\beta v$).</li>
+        <li>Binomial($m,q$): payments $\sim$ Binomial($m,qv$).</li>
+      </ul>
+
+      <h2>6. Estimation — Empirical, MLE, K-M, Nelson-Aalen</h2>
+
+      <h3>Empirical (complete, individual data, $n$ obs)</h3>
+      <div class="formula">
+        $$\hat F_n(x)=\frac{\#\{x_i\le x\}}{n},\qquad \hat S_n(x)=1-\hat F_n(x)$$
+        <p>Empirical mean $=\bar x$; empirical variance $=\frac1n\sum(x_i-\bar x)^2$.</p>
+      </div>
+
+      <h3>Maximum Likelihood</h3>
+      <div class="formula">
+        $$L(\theta)=\prod_i (\text{contribution}_i),\qquad \ell=\ln L,\qquad \frac{\partial \ell}{\partial\theta}=0$$
+        <p>Contribution by data type: complete $f(x_i)$; right-censored at $u$: $S(u)$; left-truncated at $d$: divide by $S(d)$, i.e. $f(x)/S(d)$ or $S(u)/S(d)$.</p>
+      </div>
+      <p>Key closed-form MLEs:</p>
+      <ul>
+        <li>Exponential, complete: $\hat\theta=\bar x$.</li>
+        <li>Exponential w/ censoring/truncation: $\hat\theta=\dfrac{\sum(\text{observed losses, shifted by trunc})}{\#\text{uncensored}}=\dfrac{\sum(x_i-d_i)}{\text{# deaths}}$.</li>
+        <li>Poisson: $\hat\lambda=\bar x$. Binomial (known $m$): $\hat q=\bar x/m$. Neg.Bin: $\hat\beta=\bar x/r$ (or method of moments for $r,\beta$).</li>
+        <li>Lognormal: $\hat\mu=\frac1n\sum\ln x_i$, $\hat\sigma^2=\frac1n\sum(\ln x_i-\hat\mu)^2$.</li>
+      </ul>
+      <div class="formula">
+        <span class="formula-label">Asymptotic variance</span>
+        <p>$\mathrm{Var}(\hat\theta)\approx \dfrac{1}{I(\theta)}$, where Fisher info $I(\theta)=-E\!\big[\tfrac{\partial^2\ell}{\partial\theta^2}\big]$ (or observed info $-\tfrac{\partial^2\ell}{\partial\theta^2}$). Delta method: $\mathrm{Var}(g(\hat\theta))\approx[g'(\theta)]^2\mathrm{Var}(\hat\theta)$.</p>
+      </div>
+
+      <h3>Kaplan-Meier (product-limit) — survival w/ censoring</h3>
+      <p>At distinct death times $y_1\lt y_2<\cdots$, with $r_j$ at risk and $s_j$ deaths:</p>
+      <div class="formula">
+        $$\hat S(t)=\prod_{j:\,y_j\le t}\Big(1-\frac{s_j}{r_j}\Big)$$
+        <p>Risk set: $r_j = (\text{# with } d_i\lt y_j \le x_i)$ accounting for left-truncation $d_i$ and right-censor/death $x_i$.</p>
+      </div>
+
+      <h3>Nelson-Aalen — cumulative hazard</h3>
+      <div class="formula">
+        $$\hat H(t)=\sum_{j:\,y_j\le t}\frac{s_j}{r_j},\qquad \hat S(t)=e^{-\hat H(t)}$$
+      </div>
+      <div class="formula">
+        <span class="formula-label">Greenwood's formula (var of K-M)</span>
+        $$\widehat{\mathrm{Var}}[\hat S(t)]=\hat S(t)^2\sum_{j:\,y_j\le t}\frac{s_j}{r_j(r_j-s_j)}$$
+        <p>N-A variance: $\;\widehat{\mathrm{Var}}[\hat H(t)]=\sum_{y_j\le t}\dfrac{s_j}{r_j^2}$ (or $\sum\frac{s_j(r_j-s_j)}{r_j^3}$).</p>
+        <p>Linear (log-transformed) CIs use these variances.</p>
+      </div>
+
+      <h2>7. Credibility</h2>
+
+      <h3>Limited-fluctuation (classical)</h3>
+      <p>Full credibility standard for number of claims (for the mean within $\pm k$ with prob $p$):</p>
+      <div class="formula">
+        $$\lambda_0=\Big(\frac{z_{(1+p)/2}}{k}\Big)^2$$
+      </div>
+      <ul>
+        <li>Claim count full-cred: $n_F=\lambda_0$ (Poisson) or $\lambda_0\cdot\dfrac{\sigma_N^2}{\mu_N}$ in general.</li>
+        <li>Aggregate/pure-premium exposures (Poisson freq): $n_F=\lambda_0\Big(1+\dfrac{\sigma_X^2}{\mu_X^2}\Big)=\lambda_0\big(1+\mathrm{CV}_X^2\big)$.</li>
+        <li>Partial credibility: $Z=\sqrt{n/n_F}\le1$.</li>
+        <li>Credibility premium: $P_c=Z\bar X+(1-Z)M$ ($M$ = manual/prior).</li>
+      </ul>
+
+      <h3>Bühlmann</h3>
+      <p>For risk parameter $\Theta$:</p>
+      <ul>
+        <li>Hypothetical mean $\mu(\theta)=E[X\mid\Theta=\theta]$; process variance $v(\theta)=\mathrm{Var}(X\mid\Theta=\theta)$.</li>
+      </ul>
+      <div class="formula">
+        $$\mu=E[\mu(\Theta)] \text{ (collective mean)}$$
+        $$v=E[v(\Theta)]=\text{Expected Process Variance (EPV)}$$
+        $$a=\mathrm{Var}[\mu(\Theta)]=\text{Variance of Hypothetical Means (VHM)}$$
+        $$k=\frac{v}{a},\qquad Z=\frac{n}{n+k},\qquad P_c=Z\bar X+(1-Z)\mu$$
+      </div>
+
+      <h3>Bühlmann-Straub (varying exposures $m_i$, total $m=\sum m_i$)</h3>
+      <div class="formula">
+        $$Z=\frac{m}{m+k},\qquad k=\frac{v}{a},\qquad \bar X=\frac{\sum m_i \bar X_i}{m}$$
+      </div>
+
+      <h3>Bayesian / structural</h3>
+      <p>Unbiasedness: $E[P_c]=\mu$. Bühlmann is the best <strong>linear</strong> approximation to the Bayesian premium; for conjugate pairs (Poisson-Gamma, Binomial-Beta, Normal-Normal, Exp-Inv.Gamma) Bühlmann = Bayes exactly.</p>
+      <div class="formula">
+        <span class="formula-label">Empirical Bayes (nonparametric), $r$ groups, $n$ each</span>
+        $$\hat\mu=\bar X,\quad \hat v=\frac{1}{r(n-1)}\sum_i\sum_j (X_{ij}-\bar X_i)^2,$$
+        $$\hat a=\frac{1}{r-1}\sum_i(\bar X_i-\bar X)^2-\frac{\hat v}{n}$$
+      </div>
+
+      <h2>8. Ratemaking</h2>
+
+      <h3>Loss ratio (experience) method</h3>
+      <div class="formula">
+        $$\text{Loss Ratio}=\frac{\text{Losses}+\text{LAE}}{\text{Earned Premium}}$$
+        $$\text{Indicated rate change}=\frac{\text{Experience LR}+\text{Fixed expense ratio}}{1-\text{Variable expense \%}-\text{Profit \%}}-1$$
+        <p>Target/permissible LR $=1-V-Q$ (V = variable expense, Q = profit &amp; contingencies).</p>
+      </div>
+
+      <h3>Pure premium method</h3>
+      <div class="formula">
+        $$\text{Pure Premium}=\frac{\text{Losses}+\text{LAE}}{\text{Exposures}}$$
+        $$\text{Gross (indicated) rate}=\frac{\text{Pure Premium}+\text{Fixed expense per exposure}}{1-V-Q}$$
+      </div>
+
+      <h3>Loss development &amp; trend</h3>
+      <p>Ultimate losses $=$ (reported)$\times$(LDF)$\times$(trend factor). Trend: $(1+t)^{n}$ over $n$ years to projected period.</p>
+
+      <h3>On-leveling premium — parallelogram method</h3>
+      <p>Adjust historical EP to current rate level by weighting rate-level periods by area (earned-exposure fraction).</p>
+      <div class="formula">
+        $$\text{On-level factor}=\frac{\text{current rate level}}{\text{avg rate level for the period}}$$
+        <p>Extension-of-exposures = re-rate each policy at current rates (exact).</p>
+      </div>
+
+      <h3>Credibility in ratemaking</h3>
+      <div class="formula">
+        $$\text{Rate}=Z(\text{indicated})+(1-Z)(\text{current/complement})$$
+      </div>
+
+      <h2>9. Reserving (Loss Development)</h2>
+      <p>Setup: cumulative claims triangle, accident years (AY) $i$, development lags $j$.</p>
+
+      <h3>Age-to-age (link) factors — Chain Ladder</h3>
+      <div class="formula">
+        $$f_j=\frac{\sum_i C_{i,j+1}}{\sum_i C_{i,j}}\quad(\text{volume-weighted})$$
+        <p>Cumulative development factor (CDF) to ultimate: $\;\text{CDF}_j=f_j f_{j+1}\cdots f_{n-1}$.</p>
+        $$\hat C_{i,\text{ult}}=C_{i,\text{latest}}\times \text{CDF},\qquad \text{Reserve}_i=\hat C_{i,\text{ult}}-C_{i,\text{latest}}$$
+        <p>Percent reported at lag $j$: $\;p_j=1/\text{CDF}_j$.</p>
+      </div>
+
+      <h3>Bornhuetter-Ferguson</h3>
+      <p>Uses an a-priori expected ultimate $\hat C_i^{(0)}$ (= premium $\times$ expected LR):</p>
+      <div class="formula">
+        $$\hat C_i^{BF}=C_{i,\text{latest}}+\hat C_i^{(0)}\big(1-1/\text{CDF}_i\big)=C_{i,\text{latest}}+\hat C_i^{(0)}(1-p_i)$$
+        $$\text{Reserve}_i^{BF}=\hat C_i^{(0)}(1-p_i)$$
+        <p>BF = credibility blend of chain-ladder (weight $p_i$) and expected-loss (weight $1-p_i$):</p>
+        $$\hat C_i^{BF}=p_i\,\hat C_i^{CL}+(1-p_i)\,\hat C_i^{(0)}.$$
+      </div>
+
+      <h3>Expected loss ratio (Cape Cod relatives) method</h3>
+      <p>Pure expected: $\hat C_i^{(0)}=\text{Premium}_i\times \text{ELR}$; reserve $=\hat C_i^{(0)}(1-p_i)$.</p>
+
+      <h2>10. Option Pricing</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$S_0$ spot, $K$ strike, $r$ cont. risk-free, $\delta$ cont. dividend yield, $T$ maturity, $\sigma$ volatility, $C/P$ call/put prices.</p>
+      </div>
+
+      <h3>Put-Call Parity (European, continuous dividends)</h3>
+      <div class="formula">
+        $$C - P = S_0 e^{-\delta T} - K e^{-rT}$$
+        <p>With discrete dividends (PV $D$): $\;C-P=S_0-D-Ke^{-rT}.$</p>
+        <p>Currency option ($r_f$ = foreign rate, $x_0$ = exchange rate): replace $\delta\to r_f$, $S_0\to x_0$.</p>
+        <p>Bounds: $\;\max(0,\,S_0e^{-\delta T}-Ke^{-rT})\le C\le S_0e^{-\delta T}.$</p>
+      </div>
+
+      <h3>One-period Binomial</h3>
+      <p>Up/down factors with volatility (forward-tree): $u=e^{(r-\delta)h+\sigma\sqrt h}$, $d=e^{(r-\delta)h-\sigma\sqrt h}$.</p>
+      <div class="formula">
+        <span class="formula-label">Risk-neutral probability</span>
+        $$p^\*=\frac{e^{(r-\delta)h}-d}{u-d}$$
+        <span class="formula-label">Replicating portfolio ($\Delta$ shares + $B$ bonds)</span>
+        $$\Delta=e^{-\delta h}\frac{C_u-C_d}{S_0(u-d)},\qquad B=e^{-rh}\frac{uC_d-dC_u}{u-d}$$
+        $$C=\Delta S_0+B=e^{-rh}\big[p^\* C_u+(1-p^\*)C_d\big]$$
+        <p>Multi-period: work backward node by node; American = $\max(\text{exercise},\text{hold})$ at each node.</p>
+      </div>
+
+      <h3>Black-Scholes (European)</h3>
+      <div class="formula">
+        $$C=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2)$$
+        $$P=Ke^{-rT}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1)$$
+        $$d_1=\frac{\ln(S_0/K)+(r-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},\qquad d_2=d_1-\sigma\sqrt T$$
+        <span class="formula-label">Greeks</span>
+        <p>Greeks (call): $\Delta=e^{-\delta T}\Phi(d_1)$; put $\Delta=-e^{-\delta T}\Phi(-d_1)$. $\Gamma=\dfrac{e^{-\delta T}\phi(d_1)}{S_0\sigma\sqrt T}$ (same call &amp; put); Vega $=S_0 e^{-\delta T}\phi(d_1)\sqrt T$.</p>
+      </div>
+
+      <h3>Forwards / prepaid forwards</h3>
+      <div class="formula">
+        $$F^P_{0,T}(S)=S_0 e^{-\delta T},\qquad F_{0,T}=S_0 e^{(r-\delta)T}$$
+        <p>Prepaid forward w/ discrete divs: $F^P=S_0-\text{PV(divs)}$.</p>
+      </div>
+
+      <h2>Quick reference — key identities</h2>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Identities to have on instant recall</div>
+        <ul>
+          <li>$E[X]=E[X\wedge d]+E[(X-d)_+]$</li>
+          <li>$\mathrm{Var}(S)=E[N]\mathrm{Var}(X)+\mathrm{Var}(N)E[X]^2$ (compound)</li>
+          <li>Compound Poisson: $\mathrm{Var}(S)=\lambda E[X^2]$</li>
+          <li>$Z_{B\ddot uhlmann}=\frac{n}{n+k},\;k=v/a=\mathrm{EPV}/\mathrm{VHM}$</li>
+          <li>$Z_{classical}=\sqrt{n/n_F}$</li>
+          <li>BF reserve $=$ a-priori$\times(1-1/\text{CDF})$</li>
+          <li>$C-P=S_0e^{-\delta T}-Ke^{-rT}$</li>
+          <li>$p^\*=\dfrac{e^{(r-\delta)h}-d}{u-d}$</li>
+          <li>$\mathrm{TVaR}_p=\mathrm{VaR}_p+\dfrac{E[X]-E[X\wedge \mathrm{VaR}_p]}{1-p}$ (VaR not coherent; TVaR coherent)</li>
+        </ul>
+      </div>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Memphis Mono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --paper:#ffffff;
+    --line:3px;
+    --shadow:8px 8px 0 var(--ink);
+    --shadow-sm:5px 5px 0 var(--ink);
+    --dot:#0a0a0a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .mono{font-family:"Space Mono",monospace}
+
+  /* ===== Decorative shape primitives (B/W Memphis) ===== */
+  .shape{position:absolute;pointer-events:none;z-index:0}
+  .sq-zig{
+    width:120px;height:18px;
+    background:repeating-linear-gradient(135deg,var(--ink) 0 8px,transparent 8px 16px);
+  }
+  .ring{
+    width:74px;height:74px;border-radius:50%;
+    border:var(--line) solid var(--ink);
+  }
+  .ring-half{
+    width:90px;height:45px;border-radius:90px 90px 0 0;
+    border:var(--line) solid var(--ink);border-bottom:none;
+  }
+  .tri{
+    width:0;height:0;
+    border-left:34px solid transparent;border-right:34px solid transparent;
+    border-bottom:58px solid var(--ink);
+  }
+  .grid-dots{
+    width:120px;height:80px;
+    background-image:radial-gradient(var(--dot) 2px,transparent 2.5px);
+    background-size:16px 16px;
+  }
+  .squig{
+    width:140px;height:34px;
+    background:
+      radial-gradient(circle at 18px -6px,transparent 16px,var(--ink) 16px 19px,transparent 20px) 0 0/34px 34px repeat-x;
+  }
+  .plus{position:relative;width:42px;height:42px}
+  .plus::before,.plus::after{content:"";position:absolute;background:var(--ink)}
+  .plus::before{left:50%;top:0;width:var(--line);height:100%;transform:translateX(-50%)}
+  .plus::after{top:50%;left:0;height:var(--line);width:100%;transform:translateY(-50%)}
+
+  /* ===== Layout shell ===== */
+  .frame{
+    max-width:1320px;margin:0 auto;padding:22px clamp(14px,3vw,34px);
+    position:relative;z-index:2;
+  }
+
+  /* ===== Top bar ===== */
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap;
+    border:var(--line) solid var(--ink);
+    background:var(--paper);
+    box-shadow:var(--shadow);
+    padding:14px 20px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .mmark{
+    width:54px;height:54px;flex:none;
+    border:var(--line) solid var(--ink);
+    display:grid;place-items:center;
+    background:var(--ink);color:var(--paper);
+    font-weight:700;font-size:30px;font-family:"Space Mono",monospace;
+    box-shadow:var(--shadow-sm);
+    position:relative;
+  }
+  .mmark::after{
+    content:"";position:absolute;inset:-3px -3px auto auto;
+    width:14px;height:14px;background:var(--paper);
+    border:var(--line) solid var(--ink);border-radius:50%;
+    transform:translate(50%,-50%);
+  }
+  .brand h1{font-size:19px;letter-spacing:-.5px;line-height:1}
+  .brand .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-top:4px;color:var(--ink)}
+
+  nav.topnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  nav.topnav a{
+    font-family:"Space Mono",monospace;font-size:12px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;
+    text-decoration:none;color:var(--ink);
+    padding:8px 12px;border:var(--line) solid var(--ink);
+    background:var(--paper);transition:.12s;
+  }
+  nav.topnav a:hover{background:var(--ink);color:var(--paper);transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--ink)}
+  nav.topnav a.active{background:var(--ink);color:var(--paper)}
+
+  /* ===== Main grid ===== */
+  .stage{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:22px;margin-top:22px;align-items:start;
+  }
+
+  /* ===== Sidebar ===== */
+  aside.side{
+    border:var(--line) solid var(--ink);
+    box-shadow:var(--shadow);
+    background:var(--paper);
+    position:relative;overflow:hidden;
+  }
+  .side-label{
+    background:var(--ink);color:var(--paper);
+    font-family:"Space Mono",monospace;font-weight:700;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    padding:12px 16px;display:flex;align-items:center;gap:8px;
+  }
+  .side-label .dotrow{display:flex;gap:5px;margin-left:auto}
+  .side-label .dotrow i{width:9px;height:9px;border-radius:50%;background:var(--paper);display:block}
+  .side-label .dotrow i:nth-child(2){border-radius:0}
+  .side-label .dotrow i:nth-child(3){border-radius:0;transform:rotate(45deg)}
+  .nav-section{padding:10px 0 14px}
+  .nav-cap{
+    font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink);opacity:.55;
+    padding:12px 18px 6px;
+  }
+  ul.topics{list-style:none}
+  ul.topics li a{
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:var(--ink);
+    padding:11px 18px;font-weight:600;font-size:14.5px;
+    border-top:var(--line) solid var(--ink);transition:.12s;
+  }
+  ul.topics li:first-child a{border-top:none}
+  ul.topics li a .num{
+    font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    width:24px;height:24px;flex:none;display:grid;place-items:center;
+    border:2px solid var(--ink);border-radius:50%;
+  }
+  ul.topics li a:hover{background:var(--ink);color:var(--paper)}
+  ul.topics li a:hover .num{border-color:var(--paper)}
+  ul.topics li a.on{background:var(--ink);color:var(--paper)}
+  ul.topics li a.on .num{border-color:var(--paper);background:var(--paper);color:var(--ink)}
+  ul.topics li a .chk{margin-left:auto;font-family:"Space Mono",monospace;font-size:13px;font-weight:700}
+
+  .side-foot{
+    border-top:var(--line) solid var(--ink);
+    padding:16px 18px;position:relative;
+  }
+  .side-foot .grid-dots{position:absolute;right:-10px;bottom:-10px;opacity:.5;width:90px;height:60px}
+  .side-foot p{font-family:"Space Mono",monospace;font-size:11px;line-height:1.7}
+  .side-foot strong{display:block;font-size:13px;margin-bottom:4px}
+
+  /* ===== Content column ===== */
+  .content{display:flex;flex-direction:column;gap:22px}
+
+  /* Hero */
+  .hero{
+    border:var(--line) solid var(--ink);
+    box-shadow:var(--shadow);
+    background:var(--paper);
+    padding:clamp(22px,3.4vw,40px);
+    position:relative;overflow:hidden;
+  }
+  .hero .ring{position:absolute;right:36px;top:30px;opacity:.9}
+  .hero .tri{position:absolute;right:120px;bottom:-8px;opacity:.85}
+  .hero .sq-zig{position:absolute;right:-20px;bottom:80px;transform:rotate(90deg);opacity:.8}
+  .greet{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:"Space Mono",monospace;font-size:13px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;
+    border:var(--line) solid var(--ink);padding:7px 14px;
+    background:var(--paper);box-shadow:3px 3px 0 var(--ink);
+  }
+  .greet .moon{font-size:15px}
+  .hero h2{
+    font-size:clamp(34px,5.6vw,62px);line-height:.98;
+    letter-spacing:-2px;margin:20px 0 14px;font-weight:700;max-width:13ch;
+  }
+  .hero h2 em{
+    font-style:normal;position:relative;
+    background:var(--ink);color:var(--paper);padding:0 10px;
+    display:inline-block;transform:rotate(-1.5deg);
+  }
+  .hero .lede{font-size:clamp(15px,1.8vw,18px);max-width:54ch;line-height:1.6;position:relative;z-index:1}
+
+  /* Stats row */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{
+    border:var(--line) solid var(--ink);
+    box-shadow:var(--shadow-sm);
+    background:var(--paper);padding:18px;position:relative;overflow:hidden;
+  }
+  .stat:nth-child(1){background:var(--ink);color:var(--paper)}
+  .stat .k{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.8}
+  .stat .v{font-size:clamp(30px,4.2vw,46px);font-weight:700;line-height:1;margin:8px 0 6px;letter-spacing:-1px}
+  .stat .sub{font-family:"Space Mono",monospace;font-size:11px}
+  .stat .bar{height:12px;border:2px solid currentColor;margin-top:12px;position:relative;background:transparent}
+  .stat .bar i{position:absolute;inset:2px auto 2px 2px;width:calc(72% - 4px);background:var(--paper);display:block}
+  .stat .grid-dots{position:absolute;right:-14px;top:-14px;width:70px;height:50px;opacity:.25}
+  .stat:nth-child(1) .grid-dots{background-image:radial-gradient(#fff 2px,transparent 2.5px)}
+
+  /* Two-col cards */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  .card{
+    border:var(--line) solid var(--ink);
+    box-shadow:var(--shadow);background:var(--paper);
+    position:relative;overflow:hidden;
+  }
+  .card-head{
+    display:flex;align-items:center;gap:10px;
+    border-bottom:var(--line) solid var(--ink);
+    padding:13px 18px;font-family:"Space Mono",monospace;
+    font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .card-head .blip{width:14px;height:14px;background:var(--ink);border-radius:50%}
+  .card-head .blip.sq{border-radius:0}
+  .card-body{padding:18px}
+
+  /* Exam FAM card */
+  .exam .big{font-size:clamp(26px,3.6vw,40px);font-weight:700;letter-spacing:-1.2px;line-height:1}
+  .exam .meta{
+    display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;
+  }
+  .chip{
+    font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    border:2px solid var(--ink);padding:6px 10px;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--paper);
+  }
+  .chip.fill{background:var(--ink);color:var(--paper)}
+  .exam .ring-half{position:absolute;right:18px;top:54px;opacity:.85}
+
+  /* Topic + formula */
+  .topic .lede{font-size:14.5px;line-height:1.55;margin-bottom:14px}
+  .formula{
+    border:var(--line) solid var(--ink);
+    background:var(--paper);position:relative;
+    box-shadow:inset 0 0 0 0 transparent;
+    margin-top:4px;
+  }
+  .formula .ftab{
+    position:absolute;top:-13px;left:14px;
+    background:var(--ink);color:var(--paper);
+    font-family:"Space Mono",monospace;font-size:10px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;padding:3px 9px;
+  }
+  .formula ul{list-style:none;padding:20px 16px 16px}
+  .formula li{
+    font-family:"Space Mono",monospace;font-size:14.5px;font-weight:700;
+    padding:11px 12px;border-bottom:2px dashed var(--ink);
+    display:flex;align-items:center;gap:10px;
+  }
+  .formula li:last-child{border-bottom:none}
+  .formula li::before{content:"›";font-size:18px;opacity:.7}
+  .formula sub{font-size:.72em}
+  .formula sup{font-size:.72em}
+
+  /* Trap callout */
+  .trap{
+    border:var(--line) solid var(--ink);
+    background:var(--ink);color:var(--paper);
+    box-shadow:var(--shadow);
+    padding:20px 22px;position:relative;overflow:hidden;
+    display:flex;gap:18px;align-items:flex-start;
+  }
+  .trap .bang{
+    flex:none;width:58px;height:58px;border:var(--line) solid var(--paper);
+    border-radius:50%;display:grid;place-items:center;
+    font-family:"Space Mono",monospace;font-weight:700;font-size:30px;
+  }
+  .trap .tlabel{
+    font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    letter-spacing:.2em;text-transform:uppercase;opacity:.85;margin-bottom:6px;
+  }
+  .trap p{font-size:15px;line-height:1.55;max-width:62ch}
+  .trap p b{background:var(--paper);color:var(--ink);padding:0 4px}
+  .trap .sq-zig{position:absolute;right:-10px;top:14px;background:repeating-linear-gradient(135deg,var(--paper) 0 8px,transparent 8px 16px);opacity:.5}
+
+  /* Worked example / CTA */
+  .work{
+    border:var(--line) solid var(--ink);
+    box-shadow:var(--shadow);background:var(--paper);
+    padding:clamp(20px,3vw,30px);position:relative;overflow:hidden;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:22px;
+  }
+  .work .grid-dots{position:absolute;left:-16px;bottom:-16px;opacity:.4}
+  .work .wtxt{position:relative;z-index:1;max-width:46ch}
+  .work .etag{
+    display:inline-block;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;
+    border:2px solid var(--ink);padding:4px 9px;margin-bottom:12px;
+  }
+  .work h3{font-size:clamp(20px,2.6vw,28px);letter-spacing:-.6px;line-height:1.05}
+  .work .wsub{font-family:"Space Mono",monospace;font-size:12px;margin-top:8px}
+  .btns{display:flex;gap:14px;flex-wrap:wrap;position:relative;z-index:1}
+  .btn{
+    font-family:"Space Mono",monospace;font-weight:700;font-size:14px;
+    text-transform:uppercase;letter-spacing:.06em;text-decoration:none;
+    padding:14px 22px;border:var(--line) solid var(--ink);cursor:pointer;
+    background:var(--paper);color:var(--ink);box-shadow:var(--shadow-sm);
+    transition:.12s;display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn .ar{font-size:16px}
+  .btn.solid{background:var(--ink);color:var(--paper)}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+  .btn.solid:hover{box-shadow:8px 8px 0 var(--ink)}
+
+  /* Footer */
+  footer.foot{
+    margin-top:26px;border-top:var(--line) solid var(--ink);
+    padding:22px 4px 14px;display:flex;align-items:center;
+    justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  footer .fbrand{display:flex;align-items:center;gap:12px;font-weight:700}
+  footer .fmark{
+    width:34px;height:34px;background:var(--ink);color:var(--paper);
+    font-family:"Space Mono",monospace;font-weight:700;font-size:19px;
+    display:grid;place-items:center;
+  }
+  footer .fbits{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+  footer .fshapes{display:flex;gap:10px;align-items:center}
+  footer .fshapes span{width:16px;height:16px;border:2px solid var(--ink);display:block}
+  footer .fshapes span:nth-child(2){border-radius:50%}
+  footer .fshapes span:nth-child(3){transform:rotate(45deg)}
+
+  /* big background ornaments */
+  .bg-ornaments .ring{top:7%;left:-40px;width:160px;height:160px;opacity:.16}
+  .bg-ornaments .grid-dots{top:42%;right:-30px;width:200px;height:160px;opacity:.18}
+  .bg-ornaments .tri{bottom:6%;left:3%;opacity:.12;transform:scale(1.6) rotate(12deg)}
+
+  /* ===== Responsive ===== */
+  @media (max-width:980px){
+    .stage{grid-template-columns:1fr}
+    aside.side{order:2}
+    .duo{grid-template-columns:1fr}
+  }
+  @media (max-width:700px){
+    .stats{grid-template-columns:1fr}
+    nav.topnav a{padding:7px 9px;font-size:11px}
+    .hero .ring,.hero .tri,.hero .sq-zig{display:none}
+    .work{flex-direction:column;align-items:flex-start}
+    .btn{flex:1;justify-content:center}
+  }
+</style>
+</head>
+<body>
+
+<div class="shape bg-ornaments">
+  <span class="shape ring"></span>
+  <span class="shape grid-dots"></span>
+  <span class="shape tri"></span>
+</div>
+
+<div class="frame">
+
+  <!-- TOP BAR -->
+  <header class="top">
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <div class="tag mono">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Notes</a>
+      <a href="#">Formulas</a>
+      <a href="#">Problems</a>
+      <a href="#">Plan</a>
+    </nav>
+  </header>
+
+  <div class="stage">
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="side-label mono">
+        FAM-L / FAM-S
+        <span class="dotrow"><i></i><i></i><i></i></span>
+      </div>
+      <div class="nav-section">
+        <div class="nav-cap">Core Topics</div>
+        <ul class="topics">
+          <li><a href="#" class="on"><span class="num">01</span>Survival Models<span class="chk mono">●</span></a></li>
+          <li><a href="#"><span class="num">02</span>Life Tables<span class="chk mono">✓</span></a></li>
+          <li><a href="#"><span class="num">03</span>Life Insurance<span class="chk mono">✓</span></a></li>
+          <li><a href="#"><span class="num">04</span>Life Annuities<span class="chk mono">✓</span></a></li>
+          <li><a href="#"><span class="num">05</span>Premiums<span class="chk mono">○</span></a></li>
+          <li><a href="#"><span class="num">06</span>Policy Values<span class="chk mono">○</span></a></li>
+        </ul>
+      </div>
+      <div class="side-foot">
+        <span class="shape grid-dots"></span>
+        <p class="mono"><strong>8 / 17 solid</strong>Keep the streak. One topic a day clears the board before exam day.</p>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- HERO -->
+      <section class="hero">
+        <span class="shape ring"></span>
+        <span class="shape tri"></span>
+        <span class="shape sq-zig"></span>
+        <div class="greet mono"><span class="moon">☾</span> Good evening</div>
+        <h2>Let's get you <em>that pass.</em></h2>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat">
+          <span class="shape grid-dots"></span>
+          <div class="k mono">Overall Progress</div>
+          <div class="v">72%</div>
+          <div class="sub mono">12 of 17 topics</div>
+          <div class="bar"><i></i></div>
+        </div>
+        <div class="stat">
+          <span class="shape grid-dots"></span>
+          <div class="k mono">Exam Countdown</div>
+          <div class="v">86</div>
+          <div class="sub mono">days remaining</div>
+        </div>
+        <div class="stat">
+          <span class="shape grid-dots"></span>
+          <div class="k mono">Topics Solid</div>
+          <div class="v">8</div>
+          <div class="sub mono">locked & loaded</div>
+        </div>
+      </section>
+
+      <!-- DUO: EXAM CARD + TOPIC/FORMULA -->
+      <section class="duo">
+
+        <div class="card exam">
+          <div class="card-head mono"><span class="blip"></span> Exam FAM</div>
+          <div class="card-body">
+            <span class="shape ring-half"></span>
+            <div class="big">Fundamentals of Actuarial Mathematics</div>
+            <div class="meta">
+              <span class="chip fill">SOA</span>
+              <span class="chip">34 questions</span>
+              <span class="chip">Pass = 6/10</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card topic">
+          <div class="card-head mono"><span class="blip sq"></span> Life Insurance Present Values</div>
+          <div class="card-body">
+            <p class="lede">Tie the death benefit to the annuity — every present value falls out of one tidy identity.</p>
+            <div class="formula">
+              <span class="ftab mono">Key Identities</span>
+              <ul>
+                <li class="mono">A<sub>x</sub> = 1 − d·ä<sub>x</sub></li>
+                <li class="mono">Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²</li>
+                <li class="mono">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TRAP -->
+      <section class="trap">
+        <span class="shape sq-zig"></span>
+        <div class="bang">!</div>
+        <div>
+          <div class="tlabel mono">Common trap</div>
+          <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </section>
+
+      <!-- WORKED EXAMPLE / CTA -->
+      <section class="work">
+        <span class="shape grid-dots"></span>
+        <div class="wtxt">
+          <span class="etag mono">Worked Example</span>
+          <h3>Example 1 — Whole life EPV &amp; variance</h3>
+          <div class="wsub mono">Build A_x from first principles, then variance. ~12 min.</div>
+        </div>
+        <div class="btns">
+          <a href="#" class="btn solid"><span class="ar">▸</span> Start studying</a>
+          <a href="#" class="btn"><span class="ar">↻</span> Resume</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="fbrand">
+      <span class="fmark mono">M</span>
+      <div>
+        Me Studing Stuff
+        <div class="fbits mono">Study smarter. Pass exams. · SOA Exam FAM</div>
+      </div>
+    </div>
+    <div class="fshapes">
+      <span></span><span></span><span></span>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

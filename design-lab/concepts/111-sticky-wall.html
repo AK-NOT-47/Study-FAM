@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Sticky Wall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Caveat:wght@500;600;700&family=Patrick+Hand&family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cork:#c9a06a;
+    --cork-d:#b08850;
+    --ink:#2b2622;
+    --yellow:#ffe14d;
+    --pink:#ff9ec4;
+    --mint:#a6f0c6;
+    --blue:#9ad7ff;
+    --orange:#ffb866;
+    --lilac:#cdb4ff;
+    --paper:#fffef7;
+    --tape:rgba(255,255,255,.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Patrick Hand',cursive;
+    color:var(--ink);
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 18%, rgba(255,255,255,.12), transparent 40%),
+      radial-gradient(circle at 82% 70%, rgba(0,0,0,.10), transparent 45%),
+      repeating-radial-gradient(circle at 50% 50%, var(--cork) 0, var(--cork) 2px, var(--cork-d) 2px, var(--cork-d) 3px) 0 0 / 7px 7px,
+      var(--cork);
+    background-blend-mode:normal,multiply,soft-light,normal;
+    padding:clamp(14px,2.4vw,34px);
+  }
+  /* cork frame */
+  .frame{
+    max-width:1320px;margin:0 auto;
+    border:14px solid #7c5a32;
+    border-radius:10px;
+    box-shadow:inset 0 0 0 3px #5e431f, inset 0 0 60px rgba(0,0,0,.35), 0 30px 60px rgba(0,0,0,.4);
+    padding:clamp(16px,2.6vw,38px);
+    position:relative;
+  }
+  .frame::before{
+    content:"";position:absolute;inset:-14px;border-radius:10px;pointer-events:none;
+    background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 30%,rgba(0,0,0,.2));
+    mix-blend-mode:overlay;border:14px solid transparent;
+  }
+
+  /* ---- shared sticky note ---- */
+  .note{
+    position:relative;
+    padding:22px 22px 26px;
+    box-shadow:4px 7px 14px rgba(0,0,0,.28);
+    transition:transform .18s ease, box-shadow .18s ease;
+    background:var(--yellow);
+  }
+  .note::after{ /* tape */
+    content:"";position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-3deg);
+    width:84px;height:26px;background:var(--tape);
+    box-shadow:0 2px 5px rgba(0,0,0,.15);
+    border-left:1px dashed rgba(0,0,0,.08);border-right:1px dashed rgba(0,0,0,.08);
+  }
+  .note:hover{transform:rotate(0deg) translateY(-4px) scale(1.012);box-shadow:8px 14px 26px rgba(0,0,0,.34);z-index:5}
+  .pin{
+    position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    width:20px;height:20px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff 0 12%, #e23b3b 13% 60%, #9c1717 61%);
+    box-shadow:0 4px 6px rgba(0,0,0,.4);z-index:6;
+  }
+  .pin.blue{background:radial-gradient(circle at 35% 30%, #fff 0 12%, #3b7be2 13% 60%, #173c9c 61%)}
+  .pin.green{background:radial-gradient(circle at 35% 30%, #fff 0 12%, #2faf63 13% 60%, #146a37 61%)}
+  .y{background:var(--yellow)} .p{background:var(--pink)} .m{background:var(--mint)}
+  .b{background:var(--blue)} .o{background:var(--orange)} .l{background:var(--lilac)}
+
+  /* ===== HEADER ===== */
+  header.wall-head{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:18px;margin-bottom:26px;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .logo-note{
+    width:62px;height:62px;background:var(--pink);
+    display:grid;place-items:center;transform:rotate(-6deg);
+    box-shadow:3px 5px 10px rgba(0,0,0,.3);position:relative;
+  }
+  .logo-note span{font-family:'Permanent Marker';font-size:38px;color:var(--ink);line-height:1}
+  .brand h1{font-family:'Permanent Marker';font-size:clamp(22px,2.4vw,30px);color:#fffef7;text-shadow:2px 2px 0 #5e431f,4px 4px 5px rgba(0,0,0,.4);letter-spacing:.5px}
+  .brand p{font-family:'Caveat';font-size:18px;color:#ffeec2;text-shadow:1px 1px 2px rgba(0,0,0,.4)}
+
+  /* top nav as a strip of little tabs */
+  nav.tabs{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .tab{
+    font-family:'Architivo','Archivo',sans-serif;font-weight:700;font-family:'Patrick Hand';
+    font-size:16px;text-decoration:none;color:var(--ink);
+    padding:8px 14px;background:var(--paper);
+    box-shadow:2px 3px 6px rgba(0,0,0,.28);
+    transform:rotate(var(--r,-2deg));transition:transform .15s,box-shadow .15s;
+    white-space:nowrap;border-bottom:3px solid rgba(0,0,0,.12);
+  }
+  .tab:nth-child(even){--r:2deg}
+  .tab:hover{transform:rotate(0) translateY(-3px);box-shadow:4px 7px 12px rgba(0,0,0,.32)}
+  .tab.section{
+    background:var(--ink);color:var(--yellow);font-family:'Permanent Marker';font-size:13px;
+    letter-spacing:1px;border-bottom-color:rgba(255,255,255,.2);
+  }
+
+  /* ===== MASONRY-ish WALL ===== */
+  .wall{
+    column-count:4;column-gap:22px;
+  }
+  .wall > *{break-inside:avoid;margin-bottom:24px;display:block}
+  @media(max-width:1150px){.wall{column-count:3}}
+  @media(max-width:880px){.wall{column-count:2}}
+  @media(max-width:560px){.wall{column-count:1}}
+
+  .rot1{transform:rotate(-2deg)} .rot2{transform:rotate(1.6deg)}
+  .rot3{transform:rotate(-1deg)} .rot4{transform:rotate(2.2deg)}
+  .rot0{transform:rotate(0)}
+
+  .kicker{font-family:'Permanent Marker';font-size:13px;letter-spacing:1px;text-transform:uppercase;opacity:.8;margin-bottom:6px}
+
+  /* HERO note (big, spans two cols feel) */
+  .hero{padding:30px 28px 34px}
+  .hero .greet{font-family:'Caveat';font-size:26px;color:#c0392b;transform:rotate(-2deg);display:inline-block;margin-bottom:2px}
+  .hero h2{font-family:'Permanent Marker';font-size:clamp(30px,3.6vw,46px);line-height:1.04;margin:4px 0 12px;color:var(--ink)}
+  .hero .lede{font-size:21px;line-height:1.4}
+  .hero .underline{display:inline-block;border-bottom:4px solid #c0392b;padding-bottom:1px}
+
+  /* stats mini-notes */
+  .stat{padding:18px 16px 22px;text-align:center}
+  .stat .num{font-family:'Permanent Marker';font-size:46px;line-height:1;color:var(--ink)}
+  .stat .lbl{font-size:18px;margin-top:6px}
+  .stat .sub{font-family:'Caveat';font-size:17px;opacity:.8}
+  .statwrap{display:flex;flex-direction:column;gap:18px}
+
+  /* progress scribble bar */
+  .bar{height:16px;background:rgba(0,0,0,.12);border-radius:10px;margin-top:10px;overflow:hidden;border:1px dashed rgba(0,0,0,.25)}
+  .bar > i{display:block;height:100%;width:72%;background:repeating-linear-gradient(45deg,#c0392b 0 8px,#e2553f 8px 16px)}
+
+  /* exam card */
+  .exam .meta{font-size:17px;line-height:1.7;margin-top:8px}
+  .exam .meta b{font-family:'Caveat';font-size:22px;color:#1d6b3f}
+  .chip{display:inline-block;font-family:'Patrick Hand';font-size:14px;background:var(--ink);color:#fff;padding:3px 10px;border-radius:20px;margin:3px 4px 0 0}
+
+  /* formula block */
+  .formula h3{font-family:'Permanent Marker';font-size:20px;margin-bottom:8px}
+  .formula .lede{font-size:18px;margin-bottom:14px;font-family:'Caveat';font-size:21px}
+  .fbox{
+    background:#fffdf0;border:2px dashed var(--ink);padding:14px 14px;
+    font-family:'Cambria Math','Caveat',serif;display:flex;flex-direction:column;gap:11px;
+    box-shadow:inset 0 0 0 6px rgba(255,255,255,.6);
+  }
+  .fline{font-family:'Caveat';font-size:24px;font-weight:700;line-height:1;letter-spacing:.3px}
+  .fline sub{font-size:.62em}
+  .fbox .div{height:0;border-top:2px dotted rgba(0,0,0,.3)}
+
+  /* trap callout */
+  .trap{padding:20px 20px 24px}
+  .trap .tag{font-family:'Permanent Marker';font-size:16px;color:#a01818;display:flex;align-items:center;gap:8px}
+  .trap p{font-size:19px;line-height:1.4;margin-top:8px}
+  .trap p u{text-decoration-color:#a01818;text-decoration-thickness:3px}
+
+  /* example teaser */
+  .ex h3{font-family:'Permanent Marker';font-size:18px;margin-bottom:6px}
+  .ex p{font-size:18px;line-height:1.4}
+  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+  .btn{
+    font-family:'Permanent Marker';font-size:16px;letter-spacing:.5px;text-decoration:none;
+    padding:11px 18px;color:var(--ink);cursor:pointer;border:none;
+    box-shadow:3px 4px 0 var(--ink);transform:rotate(-1.5deg);transition:transform .12s,box-shadow .12s;
+  }
+  .btn:hover{transform:rotate(0) translateY(-2px);box-shadow:5px 7px 0 var(--ink)}
+  .btn:active{transform:translateY(2px);box-shadow:1px 2px 0 var(--ink)}
+  .btn.go{background:var(--mint)}
+  .btn.resume{background:var(--blue);transform:rotate(1.5deg)}
+
+  /* doodle list note */
+  .todo ul{list-style:none;margin-top:8px}
+  .todo li{font-size:18px;padding:5px 0 5px 30px;position:relative;line-height:1.3}
+  .todo li::before{content:"";position:absolute;left:0;top:5px;width:18px;height:18px;border:2px solid var(--ink);border-radius:4px}
+  .todo li.done{opacity:.6;text-decoration:line-through wavy rgba(0,0,0,.5)}
+  .todo li.done::before{content:"✓";display:grid;place-items:center;font-size:15px;background:var(--ink);color:var(--mint)}
+
+  /* footer */
+  footer{
+    margin-top:30px;text-align:center;color:#fffef7;
+    font-family:'Caveat';font-size:20px;text-shadow:1px 1px 2px rgba(0,0,0,.5);
+  }
+  footer .fbrand{font-family:'Permanent Marker';font-size:18px}
+  .scrawl{font-family:'Caveat';font-size:18px;color:#5e431f;transform:rotate(-3deg);display:inline-block}
+
+  .smallnote{font-family:'Caveat';font-size:19px;line-height:1.35}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <header class="wall-head">
+    <div class="brand">
+      <div class="logo-note"><span>M</span><span class="pin"></span></div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <p>Study smarter. Pass exams.</p>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Topics">
+      <a class="tab section" href="#">FAM-L / FAM-S</a>
+      <a class="tab" href="#">Survival Models</a>
+      <a class="tab" href="#">Life Tables</a>
+      <a class="tab" href="#">Life Insurance</a>
+      <a class="tab" href="#">Life Annuities</a>
+      <a class="tab" href="#">Premiums</a>
+      <a class="tab" href="#">Policy Values</a>
+    </nav>
+  </header>
+
+  <main class="wall">
+
+    <!-- HERO -->
+    <section class="note p hero rot1">
+      <span class="pin"></span>
+      <span class="greet">Good evening ☕</span>
+      <h2>Let's get you<br>that <span class="underline">pass.</span></h2>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- STATS column -->
+    <div class="statwrap">
+      <section class="note y stat rot3">
+        <span class="pin green"></span>
+        <div class="kicker">Overall progress</div>
+        <div class="num">72%</div>
+        <div class="sub">12 of 17 topics</div>
+        <div class="bar"><i></i></div>
+      </section>
+      <section class="note b stat rot2">
+        <span class="pin blue"></span>
+        <div class="num">86</div>
+        <div class="lbl">days to exam ⏳</div>
+      </section>
+      <section class="note m stat rot4">
+        <span class="pin green"></span>
+        <div class="num">8</div>
+        <div class="lbl">topics solid ✔</div>
+      </section>
+    </div>
+
+    <!-- EXAM CARD -->
+    <section class="note o exam rot2">
+      <span class="pin"></span>
+      <div class="kicker">The big one</div>
+      <h2 style="font-family:'Permanent Marker';font-size:28px;margin-top:2px">Exam FAM</h2>
+      <p class="smallnote" style="margin-top:4px">Fundamentals of Actuarial Mathematics</p>
+      <div style="margin-top:8px">
+        <span class="chip">SOA</span>
+        <span class="chip">34 questions</span>
+        <span class="chip">pass = 6/10</span>
+      </div>
+    </section>
+
+    <!-- FORMULA -->
+    <section class="note y formula rot3">
+      <span class="pin"></span>
+      <div class="kicker">Topic preview</div>
+      <h3>Life Insurance Present Values</h3>
+      <p class="lede">EPV, variance & the annuity bridge — the three relations you'll use everywhere.</p>
+      <div class="fbox">
+        <div class="fline">A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+        <div class="div"></div>
+        <div class="fline">Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²</div>
+        <div class="div"></div>
+        <div class="fline">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+      </div>
+    </section>
+
+    <!-- TRAP -->
+    <section class="note p trap rot1">
+      <span class="pin"></span>
+      <div class="tag">⚠ Common trap</div>
+      <p>Under UDD, multiply <u>ONLY</u> the term/death piece by <b>i/δ</b> — the pure endowment is <u>never</u> rescaled.</p>
+    </section>
+
+    <!-- EXAMPLE TEASER -->
+    <section class="note l ex rot4">
+      <span class="pin blue"></span>
+      <div class="kicker">Worked example</div>
+      <h3>Example 1 — Whole life<br>EPV &amp; variance</h3>
+      <p>Walk it line by line, then check your number against the wall.</p>
+      <div class="btns">
+        <a class="btn go" href="#">Start studying →</a>
+        <a class="btn resume" href="#">Resume ⟳</a>
+      </div>
+    </section>
+
+    <!-- DOODLE TO-DO for atmosphere -->
+    <section class="note m todo rot2">
+      <span class="pin green"></span>
+      <div class="kicker">Tonight's plan</div>
+      <ul>
+        <li class="done">Survival Models recap</li>
+        <li class="done">Life Tables drills</li>
+        <li>Life Insurance EPVs</li>
+        <li>Premiums: net vs gross</li>
+        <li>Policy Values — 5 problems</li>
+      </ul>
+    </section>
+
+    <!-- little scrap note -->
+    <section class="note b rot3" style="padding:18px">
+      <span class="pin"></span>
+      <p class="smallnote" style="font-size:22px">"Slow is smooth,<br>smooth is fast."<br><span style="opacity:.7">— keep showing up.</span></p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="fbrand">Me Studing Stuff</span> · Study smarter. Pass exams.<br>
+    <span class="scrawl">made on a wall of sticky notes — you've got this ♡</span>
+  </footer>
+
+</div>
+</body>
+</html>

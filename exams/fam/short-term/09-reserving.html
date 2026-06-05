@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loss Reserving · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-09" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 9</div>
+      <h1>Loss Reserving for Short-Term Insurance</h1>
+      <p class="lede">A claim incurred today may not be paid for years — reserving is the discipline of estimating those future payments from a development triangle.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Reserving · Chain-Ladder &amp; BF</span>
+        <span class="chip">⏱️ ~3 hrs</span>
+        <span class="chip">🔑 CDF · IBNR · ELR · BF · Cape Cod</span>
+        <span class="chip">🔁 BF = weighted avg of CL &amp; ELR</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>By the end of this topic, the SOA expects you to be able to:</p>
+        <ul>
+          <li>Define <strong>paid losses</strong>, <strong>case reserve</strong>, and <strong>incurred (reported) loss</strong>, and trace a single claim's loss-development history through time.</li>
+          <li>Distinguish between <strong>case reserves</strong>, <strong>IBNR</strong> (Incurred But Not Reported), and the <strong>total loss reserve</strong>, and list the four components that make up the gross IBNR (bulk) reserve.</li>
+          <li>Construct and interpret a <strong>loss development (run-off) triangle</strong> — reading its <strong>rows</strong> (accident year), <strong>columns</strong> (development year), and <strong>diagonals</strong> (calendar year) — and convert between <strong>incremental</strong> and <strong>cumulative</strong> losses.</li>
+          <li>Estimate ultimate losses and reserves using:
+            <ul>
+              <li>The <strong>Expected Loss Ratio (Expected Claims) Method</strong></li>
+              <li>The <strong>Chain-Ladder (Development) Method</strong></li>
+              <li>The <strong>Bornhuetter-Ferguson (BF) Method</strong> — both the standard form and the weighted-average form</li>
+              <li>The <strong>Cape Cod (Stanard-Bühlmann) Method</strong></li>
+              <li>The <strong>Frequency-Severity Method</strong></li>
+            </ul>
+          </li>
+          <li>Compute <strong>age-to-age (link-ratio) factors</strong> and <strong>age-to-ultimate / cumulative development factors (CDFs)</strong>, and select them using the <strong>simple average</strong>, <strong>n-year average</strong>, and <strong>volume-weighted average</strong> models.</li>
+          <li>Develop <strong>paid</strong> losses with paid factors (→ loss reserve) and <strong>incurred</strong> losses with incurred factors (→ IBNR reserve), and incorporate a <strong>tail factor</strong> for development beyond the observed triangle.</li>
+          <li>Compare methods and recognize when each is most appropriate (mature vs. immature years, stable vs. volatile experience, new lines with thin data).</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>The vocabulary of a claim</h3>
+      <p>Before any method, nail the three building-block terms:</p>
+      <ul>
+        <li><strong>Paid losses</strong> — amounts already paid to claimants.</li>
+        <li><strong>Case reserve</strong> — an adjuster's estimate of the <em>remaining</em> money needed to settle a <em>known</em> claim.</li>
+        <li><strong>Incurred (reported) loss</strong> — paid losses <em>plus</em> the current case reserve: $\text{Incurred} = \text{Paid} + \text{Case Reserve}$.</li>
+        <li><strong>Ultimate losses</strong> — the total amount the insurer eventually pays to fully close the claim.</li>
+      </ul>
+      <p>Watch how a single claim evolves: the loss event occurs, then is reported (often months later), a case reserve is set, partial payments are made, the reserve is revised up or down as facts emerge, and finally the claim closes. At closure, incurred = paid (the case reserve drops to zero). The table below traces one such claim through three year-end valuations — note the case reserve absorbing uncertainty until the final settlement:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Valuation date</th><th>Incurred-to-Date</th><th>Paid-to-Date</th><th>Case Reserve</th></tr></thead>
+        <tbody>
+          <tr><td>12/31/CY2</td><td>200,000</td><td>0</td><td>200,000</td></tr>
+          <tr><td>12/31/CY3</td><td>335,000</td><td>35,000</td><td>300,000</td></tr>
+          <tr><td>12/31/CY4 (closed)</td><td>285,000</td><td>285,000</td><td>0</td></tr>
+        </tbody>
+      </table></div>
+      <p>The <strong>ultimate</strong> here is 285,000 — the final settled amount that both paid and incurred converge to.</p>
+
+      <h3>Why reserve at all? Case reserves vs. IBNR</h3>
+      <p>Summing case reserves over all known claims is not enough — it misses claims the insurer doesn't yet know about and future development on the ones it does. So actuaries add a <strong>gross IBNR reserve</strong> (a.k.a. <strong>bulk reserve</strong>) with four components:</p>
+      <ol>
+        <li><strong>Future development on known claims</strong> — adjustments (usually upward) to existing case reserves (this piece is <strong>IBNER</strong>: Incurred But Not Enough Reported).</li>
+        <li><strong>Reopened claims</strong> — files closed but that may reopen (e.g., workers' compensation).</li>
+        <li><strong>Pure IBNR</strong> — claims incurred but not yet reported to the insurer at all.</li>
+        <li><strong>RBNR</strong> — claims reported but not yet recorded in the system.</li>
+      </ol>
+      <div class="formula"><span class="formula-label">Loss reserve decomposition</span>$$\text{Loss Reserve} = \text{Case Reserve} + \text{IBNR Reserve}$$</div>
+      <p>Every method below shares the same engine — project ultimate losses, then strip out what's already been paid:</p>
+      <div class="formula">$$\text{Loss Reserve} = \text{Estimated Ultimate Losses} - \text{Losses Paid-to-Date}$$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Three reserves, one diagram</div>
+        <p>The <strong>base you subtract</strong> decides which reserve you get:</p>
+        <ul>
+          <li>$\text{Loss Reserve} = \hat L^{ult} - L^{P}$ &nbsp;(subtract <strong>paid</strong>-to-date)</li>
+          <li>$\text{IBNR Reserve} = \hat L^{ult} - L^{I}$ &nbsp;(subtract <strong>incurred</strong>-to-date)</li>
+          <li>$\text{Loss Reserve} - \text{IBNR Reserve} = L^{I} - L^{P} = \text{Case Reserve}$</li>
+        </ul>
+      </div>
+
+      <h3>The development (run-off) triangle</h3>
+      <p>Losses are grouped by <strong>accident year (AY)</strong> — the year the loss event occurred (rows) — and tracked as they develop over <strong>development years (DY)</strong> — how many years after the accident year we are observing (columns). Because recent accident years have had fewer years to develop, the data forms a <strong>triangle</strong>:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>AY \ DY</th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>
+        <tbody>
+          <tr><td>2022</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>2023</td><td>✓</td><td>✓</td><td>✓</td><td></td></tr>
+          <tr><td>2024</td><td>✓</td><td>✓</td><td></td><td></td></tr>
+          <tr><td>2025</td><td>✓</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p>The <strong>diagonal</strong> (lower-right edge) is the most recent valuation date — what we know today. The chain-ladder method fills in the missing lower-right corner.</p>
+
+      <h4>Reading the three dimensions</h4>
+      <p>Denote a single cell $l_{i,k}$ (incremental) or $L_{i,k}$ (cumulative), where $i$ = accident year and $k$ = development year:</p>
+      <ul>
+        <li><strong>Row = accident year.</strong> Summing a full row gives all payments on that AY's claims (even though those payments were spread across many later calendar years).</li>
+        <li><strong>Column = development year (age).</strong> Column 0 is paid in the accident year itself; column 1 the next calendar year, etc. $l_{2014,3}$ is paid in DY 3 on AY-2014 claims.</li>
+        <li><strong>Upward-sloping diagonal = calendar year.</strong> All cells with $i + k = \text{CY}$ were paid in the same calendar year. For example, $l_{2013,0}$, $l_{2012,1}$, and $l_{2011,2}$ are all CY-2013 payments.</li>
+      </ul>
+      <div class="callout note" data-icon="🧾">
+        <p>Triangles can be <strong>cumulative</strong> (running totals, used for chain-ladder) or <strong>incremental</strong> (period-by-period payments). Chain-ladder factors need <strong>cumulative</strong> data — if you're handed incrementals, accumulate each row first: $L_{i,k} = \sum_{j=0}^{k} l_{i,j}$.</p>
+      </div>
+
+      <h3>The Expected Loss Ratio (Expected Claims) Method — intuition</h3>
+      <p>Ignore the actual reported losses entirely. Set ultimate equal to an <strong>a priori expectation</strong>: earned premium × expected loss ratio (ELR), or exposure × pure premium. The loss ratio is simply losses ÷ premium — the slice of premium the insurer pays out in losses; the ELR comes from analyzing historical loss ratios.</p>
+      <ul>
+        <li><strong>Strength:</strong> Stable; immune to noisy early development. Often the <em>only</em> option for a brand-new line with no claims history, and a handy sanity check on fancier methods.</li>
+        <li><strong>Weakness:</strong> Ignores actual emerging experience, and the ELR is easy to manipulate — so it can produce illogical or insufficient reserves if the year is genuinely off.</li>
+      </ul>
+
+      <h3>The Chain-Ladder (Development) Method — intuition</h3>
+      <p>Also called the <strong>loss development method</strong> or <strong>loss triangle method</strong>. Assume each accident year develops in the <strong>same proportional pattern</strong>. If, historically, cumulative losses grow by a factor of 1.5 from age 0 to age 1, we apply 1.5 to the latest year too. Multiply the current diagonal value by all the future age-to-age factors to reach <strong>ultimate</strong>.</p>
+      <ul>
+        <li><strong>Strength:</strong> Purely data-driven; great for <strong>mature</strong> years with stable patterns.</li>
+        <li><strong>Weakness:</strong> Extremely sensitive to the latest diagonal for <strong>immature</strong> years — a small reported amount times a large CDF produces a wildly leveraged (and unstable) ultimate. A few outliers can swing the result, and structural changes (e.g., management deciding to settle claims faster mid-study) inflate recent age-to-age factors and over-state the reserve. Actuarial judgment is needed before trusting the data.</li>
+      </ul>
+
+      <h4>Selecting age-to-age factors</h4>
+      <p>Each cell of the factor triangle is $f_{i,k} = L_{i,k}/L_{i,k-1}$. You then <strong>select</strong> one factor per column. Three standard models:</p>
+      <ul>
+        <li><strong>Simple (straight) average</strong> — arithmetic mean of all individual factors in the column.</li>
+        <li><strong>n-year average</strong> — arithmetic mean of only the <em>n most recent</em> factors in the column (responsive to recent experience; common when older years aren't representative).</li>
+        <li><strong>Volume-weighted average (a.k.a. "mean")</strong> — sum of the later cumulative losses ÷ sum of the earlier cumulative losses, over the AYs that have <em>both</em> entries.</li>
+      </ul>
+
+      <h3>The Bornhuetter-Ferguson Method — the compromise</h3>
+      <p>BF <strong>blends</strong> chain-ladder and expected loss ratio. The key insight: trust actual reported losses for the portion <strong>already developed</strong>, and use the a priori expectation for the <strong>unreported</strong> portion. From chain-ladder, $L^P/\hat L^{ult} = 1/f^{ult}$ is the proportion <em>paid</em>, so $1 - 1/f^{ult}$ is the proportion <em>unpaid</em>. BF applies that unpaid proportion to the <em>expected</em> (ELR) ultimate:</p>
+      <div class="formula">$$R_{BF} = \hat L^{ult}_{LR}\left(1 - \frac{1}{f^{ult}_{CL}}\right), \qquad \hat L^{ult}_{LR} = P^E \times \text{ELR}$$</div>
+      <p>As a year matures ($f^{ult} \to 1$), BF converges to the chain-ladder; for green years (large $f^{ult}$), BF leans on the expected claims. This is why BF is the workhorse for recent accident years.</p>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">BF = a credibility weighting of CL and ELR</div>
+        <p>The BF reserve is exactly a weighted average of the two parent reserves, with the weight equal to the proportion already developed:</p>
+        $$R_{BF} = w\,R_{CL} + (1-w)\,R_{LR}, \qquad w = \frac{1}{f^{ult}_{CL}}$$
+        <p>The more mature the year (small $f^{ult}$, so $w \to 1$), the more weight chain-ladder gets — because more actual data is available. Brand-new years lean on the expected-loss-ratio reserve.</p>
+      </div>
+
+      <h3>The Cape Cod (Stanard-Bühlmann) Method</h3>
+      <p>Cape Cod is BF but with the <strong>expected loss ratio estimated from the triangle itself</strong> rather than assumed externally. It computes a single ELR for all years:</p>
+      <div class="formula">$$\text{ELR} = \frac{\sum \text{Reported Losses}}{\sum (\text{Premium} \times \%\text{ reported})}$$</div>
+      <p>The denominator is the <strong>"used-up premium"</strong> — premium weighted by how developed each year is. Then it applies the BF formula using this fitted ELR. Cape Cod is more <strong>responsive</strong> than pure BF (it lets the data set the loss ratio) but more <strong>stable</strong> than chain-ladder (it pools across years).</p>
+
+      <h3>The Frequency-Severity Method</h3>
+      <p>Estimate <strong>ultimate claim counts</strong> (frequency) and <strong>ultimate average severity</strong> separately, then multiply:</p>
+      <div class="formula">$$\text{Ultimate Losses} = \text{Ultimate Counts} \times \text{Ultimate Severity}$$</div>
+      <p>Each component can be developed with its own triangle. Useful when counts develop more stably than dollars, or for trending severity with inflation.</p>
+
+      <h3>Paid vs. incurred triangles, and tail factors</h3>
+      <p>In theory paid and incurred losses converge to the same ultimate (both reach the final settlement amount), but <strong>in practice they don't</strong> — so never assume they're equal unless told. The rule: develop <strong>paid</strong> losses only with <strong>paid</strong> factors, and <strong>incurred</strong> losses only with <strong>incurred</strong> factors. Subtract paid-to-date for the loss reserve; subtract incurred-to-date for the IBNR reserve.</p>
+      <p>The triangle only shows development up to the oldest available age. If losses keep developing <strong>beyond</strong> that (e.g., long-tail liability), multiply the last cumulative development factor by a <strong>tail factor</strong> &gt; 1.0 to capture development past the observed window.</p>
+
+      <h2>Formulas</h2>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$L_{i,k}$ = cumulative reported (paid or incurred) loss for accident year $i$ at development age $k$; $l_{i,k}$ = the corresponding <em>incremental</em> loss; $f_k$ = selected age-to-age (link-ratio) factor from age $k-1$ to age $k$; $f^{ult}$ (a.k.a. $\text{CDF}$) = age-to-ultimate / cumulative development factor; $t$ = age of claims at valuation; $\hat L^{ult}_i$ = estimated ultimate loss for AY $i$; $P^E$ = earned premium; $\text{ELR}$ = expected loss ratio; $L^P$ = losses paid-to-date; $L^I$ = losses incurred-to-date.</p>
+      </div>
+
+      <h3>Reserve identities</h3>
+      <div class="formula">
+        $$\text{Loss Reserve} = \text{Case Reserve} + \text{IBNR Reserve}$$
+        $$R = \hat L^{ult} - L^{P}, \qquad \text{IBNR} = \hat L^{ult} - L^{I}, \qquad R - \text{IBNR} = L^{I} - L^{P} = \text{Case Reserve}$$
+      </div>
+
+      <h3>Age-to-age (link ratio) factors</h3>
+      <p>For a single cell, $f_{i,k} = L_{i,k}/L_{i,k-1}$. The three selection models:</p>
+      <div class="formula">
+        <span class="formula-label">Simple average</span>
+        $$f_k = \frac{1}{n}\sum_i \frac{L_{i,k}}{L_{i,k-1}}$$
+        <span class="formula-label">n-year average (most recent $n$ factors)</span>
+        $$f_k = \frac{1}{n}\sum_{i \in \text{last } n} \frac{L_{i,k}}{L_{i,k-1}}$$
+        <span class="formula-label">Volume-weighted average ("mean")</span>
+        $$f_k = \frac{\sum_i L_{i,k}}{\sum_i L_{i,k-1}}$$
+      </div>
+      <p>Volume-weighted is the most common chain-ladder default; in every model sum only over accident years $i$ that have <strong>both</strong> $L_{i,k-1}$ and $L_{i,k}$ available.</p>
+
+      <h3>Age-to-ultimate factor (CDF) and projecting ultimate</h3>
+      <div class="formula">
+        $$f^{ult}_i = \prod_{k=t+1}^{\infty} f_k \;=\; f_{t+1}\, f_{t+2}\cdots f_{n}\, f_{\text{tail}}$$
+        $$\hat L^{ult}_i = L_{i,t}\cdot f^{ult}_i, \qquad L^P_i = L_{i,t}$$
+      </div>
+      <p>$f_{\text{tail}}$ = tail factor (use 1.0 if no tail development). If the triangle assumes no development past DY $n$, then $f_{n+1}=f_{n+2}=\cdots=1$, so the product stops at $f_n$.</p>
+
+      <h3>Percent reported (developed)</h3>
+      <div class="formula">
+        $$\%\text{ reported at age } t = \frac{1}{f^{ult}_t}, \qquad \%\text{ unreported at age } t = 1 - \frac{1}{f^{ult}_t}$$
+      </div>
+
+      <h3>Expected Loss Ratio Method</h3>
+      <div class="formula">
+        $$\hat L^{ult}_i = P^E_i \times \text{ELR}_i \quad(\text{or}\quad \text{Exposure}_i \times \text{Pure Premium})$$
+        $$R_i = \hat L^{ult}_i - L^P_i$$
+      </div>
+
+      <h3>Chain-Ladder (Development) Method</h3>
+      <div class="formula">
+        $$\hat L^{ult}_i = L_{i,t}\cdot f^{ult}_i, \qquad R_i = \hat L^{ult}_i - L^P_i$$
+      </div>
+
+      <h3>Bornhuetter-Ferguson Method</h3>
+      <div class="formula">
+        <span class="formula-label">Standard form</span>
+        $$R_{BF} = \hat L^{ult}_{LR}\left(1 - \frac{1}{f^{ult}_{CL}}\right), \qquad \hat L^{ult}_{LR} = P^E\times\text{ELR}$$
+        <span class="formula-label">BF ultimate (do NOT use $P^E\times\text{ELR}$ as the BF ultimate)</span>
+        $$\hat L^{ult}_{BF} = L^P + R_{BF}$$
+        <span class="formula-label">Weighted-average form</span>
+        $$R_{BF} = w\,R_{CL} + (1-w)\,R_{LR}, \qquad w = \frac{1}{f^{ult}_{CL}}$$
+      </div>
+      <p>Use the <strong>paid</strong> age-to-ultimate factor to get the total loss reserve; use the <strong>incurred</strong> age-to-ultimate factor to get the IBNR reserve.</p>
+
+      <h3>Cape Cod (Stanard-Bühlmann) Method</h3>
+      <p>Fitted expected loss ratio, then BF with this single pooled ELR:</p>
+      <div class="formula">
+        $$\widehat{\text{ELR}} = \frac{\sum_i L_{i,t}}{\sum_i P^E_i \cdot \dfrac{1}{f^{ult}_i}}, \qquad \hat L^{ult}_i = L_{i,t} + P^E_i\,\widehat{\text{ELR}}\left(1 - \frac{1}{f^{ult}_i}\right)$$
+      </div>
+      <p>The denominator term $P^E_i / f^{ult}_i$ is the <strong>used-up (earned-developed) premium</strong> for AY $i$.</p>
+
+      <h3>Frequency-Severity Method</h3>
+      <div class="formula">$$\hat L^{ult}_i = \hat N_i \times \hat S_i$$</div>
+      <ul>
+        <li>$\hat N_i$ = ultimate claim count for AY $i$ (developed from a count triangle).</li>
+        <li>$\hat S_i$ = ultimate average severity (developed from a severity triangle, possibly trended for inflation).</li>
+      </ul>
+
+      <h3>Total reserve</h3>
+      <div class="formula">$$\text{Total Reserve} = \sum_i \left(\hat L^{ult}_i - L^P_i\right)$$</div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Expected Loss Ratio Method (multi-year) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For one line of business aggregated by accident year:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Earned Premium</th><th>ELR</th><th>Paid-to-Date</th></tr></thead>
+            <tbody>
+              <tr><td>AY1</td><td>1,150</td><td>0.74</td><td>810</td></tr>
+              <tr><td>AY2</td><td>1,250</td><td>0.71</td><td>710</td></tr>
+              <tr><td>AY3</td><td>1,200</td><td>0.72</td><td>620</td></tr>
+              <tr><td>AY4</td><td>1,500</td><td>0.69</td><td>410</td></tr>
+            </tbody>
+          </table></div>
+          <p>Estimate the total loss reserve at the end of AY4.</p>
+          <p><strong>Step 1 — Ultimate = Premium × ELR; Step 2 — Reserve = Ultimate − Paid.</strong></p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Ultimate</th><th>Paid</th><th>Reserve</th></tr></thead>
+            <tbody>
+              <tr><td>AY1</td><td>$1{,}150(0.74)=851$</td><td>810</td><td>41</td></tr>
+              <tr><td>AY2</td><td>$1{,}250(0.71)=888$</td><td>710</td><td>178</td></tr>
+              <tr><td>AY3</td><td>$1{,}200(0.72)=864$</td><td>620</td><td>244</td></tr>
+              <tr><td>AY4</td><td>$1{,}500(0.69)=1{,}035$</td><td>410</td><td>625</td></tr>
+            </tbody>
+          </table></div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total reserve $= 41+178+244+625 = $ <strong>1,088</strong>.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Chain-Ladder Ultimate and Reserve <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given the following <strong>cumulative paid loss</strong> triangle (\$000s):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY \ DY</th><th>0</th><th>1</th><th>2</th></tr></thead>
+            <tbody>
+              <tr><td>2023</td><td>1,000</td><td>1,500</td><td>1,650</td></tr>
+              <tr><td>2024</td><td>1,200</td><td>1,800</td><td></td></tr>
+              <tr><td>2025</td><td>1,100</td><td></td><td></td></tr>
+            </tbody>
+          </table></div>
+          <p>Find the estimated reserve for all accident years combined using the chain-ladder method (no tail).</p>
+          <p><strong>Step 1 — Volume-weighted age-to-age factors.</strong></p>
+          <p>Age 0→1: years 2023 and 2024 have both columns.</p>
+          $$f_1 = \frac{1{,}500 + 1{,}800}{1{,}000 + 1{,}200} = \frac{3{,}300}{2{,}200} = 1.500$$
+          <p>Age 1→2: only 2023 has both columns.</p>
+          $$f_2 = \frac{1{,}650}{1{,}500} = 1.100$$
+          <p><strong>Step 2 — Age-to-ultimate factors.</strong></p>
+          <ul>
+            <li>At age 1: $f^{ult} = f_2 = 1.100$</li>
+            <li>At age 0: $f^{ult} = f_1 \times f_2 = 1.500 \times 1.100 = 1.650$</li>
+          </ul>
+          <p><strong>Step 3 — Develop each diagonal to ultimate.</strong></p>
+          <ul>
+            <li>2023 (at age 2, fully mature): $U = 1{,}650 \times 1.000 = 1{,}650$</li>
+            <li>2024 (at age 1): $U = 1{,}800 \times 1.100 = 1{,}980$</li>
+            <li>2025 (at age 0): $U = 1{,}100 \times 1.650 = 1{,}815$</li>
+          </ul>
+          <p><strong>Step 4 — Reserve = Ultimate − Paid to date.</strong></p>
+          <ul>
+            <li>2023: $1{,}650 - 1{,}650 = 0$</li>
+            <li>2024: $1{,}980 - 1{,}800 = 180$</li>
+            <li>2025: $1{,}815 - 1{,}100 = 715$</li>
+          </ul>
+          <p>Total reserve $= 0 + 180 + 715 = 895$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total estimated reserve = <strong>\$895,000</strong>.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Chain-Ladder with the <em>average</em> factor model <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Cumulative paid losses (no development beyond DY 3). Use the <strong>simple-average</strong> factor model.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY \ DY</th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>
+            <tbody>
+              <tr><td>AY1</td><td>340</td><td>570</td><td>670</td><td>810</td></tr>
+              <tr><td>AY2</td><td>360</td><td>580</td><td>710</td><td></td></tr>
+              <tr><td>AY3</td><td>360</td><td>620</td><td></td><td></td></tr>
+              <tr><td>AY4</td><td>410</td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 1 — Individual link ratios, then column averages.</strong></p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>$f_1$</th><th>$f_2$</th><th>$f_3$</th></tr></thead>
+            <tbody>
+              <tr><td>AY1</td><td>1.676</td><td>1.175</td><td>1.209</td></tr>
+              <tr><td>AY2</td><td>1.611</td><td>1.224</td><td></td></tr>
+              <tr><td>AY3</td><td>1.722</td><td></td><td></td></tr>
+              <tr><td><strong>Selected (avg)</strong></td><td><strong>1.670</strong></td><td><strong>1.200</strong></td><td><strong>1.209</strong></td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 2 — Ultimate losses</strong> (AY1 fully developed, no reserve):</p>
+          <ul>
+            <li>$\hat L^{ult}_{AY2} = 710(1.209) = 858$</li>
+            <li>$\hat L^{ult}_{AY3} = 620(1.200)(1.209) = 899$</li>
+            <li>$\hat L^{ult}_{AY4} = 410(1.670)(1.200)(1.209) = 993$</li>
+          </ul>
+          <p><strong>Step 3 — Reserves:</strong> $858-710=148$, $899-620=279$, $993-410=583$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total reserve $= 148+279+583 = $ <strong>1,011</strong>.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4a</span> Reading a triangle: row sum, diagonal sum, accumulating &amp; factor selection <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A quick drill on the three dimensions before any projection. Given this <strong>incremental</strong> paid-loss triangle (\$000s):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY \ DY</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+            <tbody>
+              <tr><td>2011</td><td>590</td><td>490</td><td>380</td><td>200</td><td>70</td><td>70</td></tr>
+              <tr><td>2012</td><td>590</td><td>370</td><td>260</td><td>90</td><td>40</td><td></td></tr>
+              <tr><td>2013</td><td>690</td><td>750</td><td>430</td><td>270</td><td></td><td></td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>(a) Accident-year row sum.</strong> Sum across a full row to get all payments on that AY's claims (spread across many calendar years):</p>
+          $$\sum_k l_{2012,k} = 590+370+260+90+40 = 1{,}350$$
+          <p><strong>(b) Calendar-year diagonal sum.</strong> Cells with $i+k=\text{CY}$ were all paid in the same calendar year. For CY-2013, take $l_{2013,0}$, $l_{2012,1}$, $l_{2011,2}$:</p>
+          $$\sum_{i+k=2013} l_{i,k} = 690 + 370 + 380 = 1{,}440$$
+          <p><strong>(c) Accumulate a row to cumulative.</strong> Chain-ladder needs cumulative data, so running-total each row, $L_{i,k}=\sum_{j=0}^{k} l_{i,j}$. For AY-2012:</p>
+          $$590,\; 960,\; 1{,}220,\; 1{,}310,\; 1{,}350$$
+          <p><strong>(d) Factor-selection contrast (all-year vs. 3-year average).</strong> Suppose the column-0→1 individual link ratios (from a larger triangle) are $1.831,\,1.627,\,2.087,\,1.772,\,1.880,\,2.039$ (oldest→newest). The <em>all-year</em> simple average is</p>
+          $$f_1^{\text{all}} = \tfrac{1}{6}(1.831+1.627+2.087+1.772+1.880+2.039) = 1.873,$$
+          <p>while the <em>3-year</em> average uses only the three most recent ($1.772,\,1.880,\,2.039$):</p>
+          $$f_1^{\text{3yr}} = \tfrac{1}{3}(1.772+1.880+2.039) = 1.897.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) <strong>1,350</strong>; (b) <strong>1,440</strong>; (c) cumulative row <strong>590, 960, 1,220, 1,310, 1,350</strong>; (d) all-year $f_1=\mathbf{1.873}$ vs. 3-year $f_1=\mathbf{1.897}$ — the 3-year is higher here because it drops the two low older ratios. The selection model can move the reserve, so always use the one the question names.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Age-to-ultimate factors given directly <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For AY4 claims, losses paid-to-date as of 12/31/AY7 is \$100,000. You're given age-to-ultimate factors: age 0 = 2.189, age 1 = 1.600, age 2 = 1.243, <strong>age 3 = 1.108</strong>, age 4 = 1.044, age 5 = 1.016. Find the chain-ladder unpaid-loss estimate for AY4.</p>
+          <p>AY4 claims are <strong>age 3</strong> at the end of AY7 (AY7 − AY4 = 3). Apply the age-3 factor:</p>
+          $$\hat L^{ult} = 100{,}000(1.108) = 110{,}800 \quad\Rightarrow\quad R = 110{,}800 - 100{,}000 = 10{,}800$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Unpaid losses (reserve) = <strong>\$10,800</strong>. (Trap: match the AY to its <em>age</em>, not its calendar position.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4c</span> Sub-annual (half-year) incurred chain-ladder, age in months <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Triangles need not be annual. Here data is grouped by <strong>accident half-year</strong> and tracked at <strong>ages in months</strong> (6, 12, 18, 24). The mechanics are identical — only the labels change. Cumulative <strong>incurred</strong> losses (\$000s), with paid-to-date as of 12/31/2015 in the last column:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Accident half-year</th><th>6 mo</th><th>12 mo</th><th>18 mo</th><th>24 mo</th><th>Paid-to-date</th></tr></thead>
+            <tbody>
+              <tr><td>2014-1</td><td>2,893</td><td>3,782</td><td>4,144</td><td>4,227</td><td>4,227</td></tr>
+              <tr><td>2014-2</td><td>2,937</td><td>3,869</td><td>4,255</td><td></td><td>3,627</td></tr>
+              <tr><td>2015-1</td><td>3,068</td><td>3,876</td><td></td><td></td><td>3,379</td></tr>
+              <tr><td>2015-2</td><td>3,285</td><td></td><td></td><td></td><td>2,601</td></tr>
+            </tbody>
+          </table></div>
+          <p>Use <strong>volume-weighted</strong> factors, no development past 24 months.</p>
+          <p><strong>Step 1 — Volume-weighted age-to-age factors</strong> (sum the later column ÷ sum of the earlier column, over rows with both entries):</p>
+          $$f_{6\to12} = \frac{3{,}782+3{,}869+3{,}876}{2{,}893+2{,}937+3{,}068} = \frac{11{,}527}{8{,}898} = 1.295$$
+          $$f_{12\to18} = \frac{4{,}144+4{,}255}{3{,}782+3{,}869} = \frac{8{,}399}{7{,}651} = 1.098$$
+          $$f_{18\to24} = \frac{4{,}227}{4{,}144} = 1.020$$
+          <p><strong>Step 2 — Develop each half-year's incurred diagonal to ultimate.</strong> The age at 12/31/2015 is the number of months since the midpoint of each accident half-year:</p>
+          <ul>
+            <li>2014-1 (age 24 mo, fully developed): $U = 4{,}227$</li>
+            <li>2014-2 (age 18 mo): $U = 4{,}255(1.020) = 4{,}340$</li>
+            <li>2015-1 (age 12 mo): $U = 3{,}876(1.098)(1.020) = 4{,}340$</li>
+            <li>2015-2 (age 6 mo): $U = 3{,}285(1.295)(1.098)(1.020) = 4{,}765$</li>
+          </ul>
+          <p><strong>Step 3 — Loss reserve = ultimate − paid-to-date</strong> (we develop incurred losses but subtract <em>paid</em> for the loss reserve):</p>
+          <ul>
+            <li>2014-2: $4{,}340 - 3{,}627 = 713$</li>
+            <li>2015-1: $4{,}340 - 3{,}379 = 961$</li>
+            <li>2015-2: $4{,}765 - 2{,}601 = 2{,}164$</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total loss reserve $= 713 + 961 + 2{,}164 = $ <strong>\$3,838K</strong> (≈ 3,839 with rounding). Sub-annual triangles work exactly like annual ones — just match each cohort to its <em>age</em> (in months) and apply the factors from that age onward.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Bornhuetter-Ferguson <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Cumulative paid losses (no development past DY 3), volume-weighted factors:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY \ DY</th><th>0</th><th>1</th><th>2</th><th>3</th><th>Premium</th><th>ELR</th></tr></thead>
+            <tbody>
+              <tr><td>AY4</td><td>1,400</td><td>2,550</td><td>3,650</td><td>3,800</td><td>6,000</td><td>0.64</td></tr>
+              <tr><td>AY5</td><td>1,550</td><td>2,750</td><td>3,350</td><td></td><td>5,400</td><td>0.65</td></tr>
+              <tr><td>AY6</td><td>1,650</td><td>2,900</td><td></td><td></td><td>7,300</td><td>0.55</td></tr>
+              <tr><td>AY7</td><td>1,850</td><td></td><td></td><td></td><td>7,700</td><td>0.59</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 1 — ELR ultimates</strong> ($\hat L^{ult}_{LR}=P^E\times\text{ELR}$): AY4 $=3{,}840$, AY5 $=3{,}510$, AY6 $=4{,}015$, AY7 $=4{,}543$.</p>
+          <p><strong>Step 2 — Volume-weighted link ratios &amp; age-to-ultimate factors.</strong></p>
+          $$f_1 = \frac{2{,}550+2{,}750+2{,}900}{1{,}400+1{,}550+1{,}650} = 1.783,\quad f_2 = \frac{3{,}650+3{,}350}{2{,}550+2{,}750}=1.321,\quad f_3 = \frac{3{,}800}{3{,}650}=1.041$$
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Age</th><th>$f^{ult}$</th></tr></thead>
+            <tbody>
+              <tr><td>AY4</td><td>3</td><td>1.000</td></tr>
+              <tr><td>AY5</td><td>2</td><td>1.041</td></tr>
+              <tr><td>AY6</td><td>1</td><td>$1.321(1.041)=1.375$</td></tr>
+              <tr><td>AY7</td><td>0</td><td>$1.783(1.321)(1.041)=2.451$</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 3 — BF reserve</strong> $= \hat L^{ult}_{LR}\,(1 - 1/f^{ult})$:</p>
+          <ul>
+            <li>AY5: $3{,}510(1 - 1/1.041) = 139$</li>
+            <li>AY6: $4{,}015(1 - 1/1.375) = 1{,}095$</li>
+            <li>AY7: $4{,}543(1 - 1/2.451) = 2{,}690$</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total BF reserve $= 139 + 1{,}095 + 2{,}690 = $ <strong>3,923</strong>.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> BF as a weighted average of CL and ELR reserves <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Same data as Example 5. Confirm the BF reserves via $R_{BF} = w\,R_{CL} + (1-w)\,R_{LR}$, with $w = 1/f^{ult}$.</p>
+          <p>Chain-ladder ultimates use the paid diagonal × $f^{ult}$ (e.g., AY7 $= 1{,}850 \times 2.451 = 4{,}535$), giving CL reserves; ELR reserves are Premium×ELR − paid.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>$w=1/f^{ult}$</th><th>$R_{CL}$</th><th>$R_{LR}$</th><th>$R_{BF}=wR_{CL}+(1-w)R_{LR}$</th></tr></thead>
+            <tbody>
+              <tr><td>AY4</td><td>1.000</td><td>0</td><td>40</td><td>0</td></tr>
+              <tr><td>AY5</td><td>0.961</td><td>138</td><td>160</td><td>$0.961(138)+0.039(160)=139$</td></tr>
+              <tr><td>AY6</td><td>0.727</td><td>1,088</td><td>1,115</td><td>$0.727(1088)+0.273(1115)=1{,}095$</td></tr>
+              <tr><td>AY7</td><td>0.408</td><td>2,685</td><td>2,693</td><td>$0.408(2685)+0.592(2693)=2{,}690$</td></tr>
+            </tbody>
+          </table></div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Identical to Example 5 (total <strong>3,923</strong>). Notice $w$ rises toward 1 as the year matures — more weight to actual experience ($R_{CL}$) for older years.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6b</span> BF with age-to-ultimate factors given directly (no triangle) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Many exam BF problems skip the triangle entirely and <strong>hand you the age-to-ultimate factors</strong> by age, plus premiums and ELRs by accident year. You just match each AY to its age and plug into the BF formula. No link ratios to compute.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Age</th><th>Age-to-Ultimate Factor $f^{ult}$</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>2.422</td></tr>
+              <tr><td>1</td><td>1.450</td></tr>
+              <tr><td>2</td><td>1.209</td></tr>
+              <tr><td>3</td><td>1.000</td></tr>
+            </tbody>
+          </table></div>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Earned Premium</th><th>ELR</th><th>Age at 12/31/AY4</th></tr></thead>
+            <tbody>
+              <tr><td>AY1</td><td>1,150</td><td>0.74</td><td>3</td></tr>
+              <tr><td>AY2</td><td>1,250</td><td>0.71</td><td>2</td></tr>
+              <tr><td>AY3</td><td>1,200</td><td>0.72</td><td>1</td></tr>
+              <tr><td>AY4</td><td>1,500</td><td>0.69</td><td>0</td></tr>
+            </tbody>
+          </table></div>
+          <p>Estimate the total BF loss reserve at the end of AY4. Apply $R_{BF} = (P^E\times\text{ELR})\left(1 - \tfrac{1}{f^{ult}}\right)$ to each year, reading $f^{ult}$ from the age table:</p>
+          <ul>
+            <li>AY1 (age 3, $f^{ult}=1.000$): $1{,}150(0.74)\left(1 - \tfrac{1}{1.000}\right) = 0$</li>
+            <li>AY2 (age 2, $f^{ult}=1.209$): $1{,}250(0.71)\left(1 - \tfrac{1}{1.209}\right) = 887.5(0.17287) = 153$</li>
+            <li>AY3 (age 1, $f^{ult}=1.450$): $1{,}200(0.72)\left(1 - \tfrac{1}{1.450}\right) = 864(0.31034) = 268$</li>
+            <li>AY4 (age 0, $f^{ult}=2.422$): $1{,}500(0.69)\left(1 - \tfrac{1}{2.422}\right) = 1{,}035(0.58712) = 608$</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total BF reserve $= 0 + 153 + 268 + 608 = $ <strong>1,029</strong>. The mature year (AY1, $f^{ult}=1$) carries no reserve — fully developed means nothing unreported. Trap: match each AY to its <em>age</em>, then read the corresponding $f^{ult}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Back-solving for the chain-ladder reserve <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given: BF reserve $=77{,}900$, ELR reserve $=78{,}600$, earned premium $=250{,}000$, ELR $=0.65$. Find the chain-ladder reserve.</p>
+          <p><strong>Step 1 — Recover $f^{ult}$ from the BF formula.</strong></p>
+          $$77{,}900 = 250{,}000(0.65)\left(1 - \frac{1}{f^{ult}}\right) \;\Rightarrow\; f^{ult} = 1.9208$$
+          <p><strong>Step 2 — Recover paid-to-date from the ELR reserve.</strong></p>
+          $$78{,}600 = 250{,}000(0.65) - L^P \;\Rightarrow\; L^P = 83{,}900$$
+          <p><strong>Step 3 — Chain-ladder ultimate and reserve.</strong></p>
+          $$\hat L^{ult}_{CL} = 83{,}900(1.9208) = 161{,}155 \;\Rightarrow\; R_{CL} = 161{,}155 - 83{,}900 = 77{,}255$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$R_{CL} = $ <strong>77,255</strong>. (Cross-check via $R_{BF}=wR_{CL}+(1-w)R_{LR}$ with $w=1/1.9208$ gives the same value.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Cape Cod (Stanard-Bühlmann) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Premiums 2,500 and 2,400; reported diagonals 1,800 (AY 2024, age 1) and 1,100 (AY 2025, age 0); age-to-ultimate factors 1.100 and 1.650.</p>
+          <p><strong>Step 1 — Used-up premium = Premium / $f^{ult}$.</strong></p>
+          <ul>
+            <li>2024: $2{,}500 / 1.100 = 2{,}272.7$</li>
+            <li>2025: $2{,}400 / 1.650 = 1{,}454.5$</li>
+            <li>Total $= 3{,}727.2$</li>
+          </ul>
+          <p><strong>Step 2 — Sum of reported losses:</strong> $1{,}800 + 1{,}100 = 2{,}900$.</p>
+          <p><strong>Step 3 — Fitted ELR:</strong> $\widehat{\text{ELR}} = 2{,}900 / 3{,}727.2 = 0.7780$.</p>
+          <p><strong>Step 4 — Cape Cod ultimate for 2025:</strong></p>
+          $$1{,}100 + 2{,}400(0.7780)(1 - 1/1.650) = 1{,}100 + 735.4 = 1{,}835.4$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Cape Cod ELR ≈ <strong>0.778</strong>; 2025 ultimate ≈ <strong>&#36;1,835.4K</strong>, reserve ≈ <strong>&#36;735.4K</strong>.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Cumulative vs. incremental confusion.</strong> Chain-ladder factors require <strong>cumulative</strong> triangles. If the problem gives incremental payments, accumulate the rows first. This is the #1 error.</li>
+          <li><strong>Match the AY to its age, not its row position.</strong> An accident year's age at valuation is (valuation year − accident year). Apply the age-to-ultimate factor for <em>that</em> age (see Example 4).</li>
+          <li><strong>Wrong entries in the volume-weighted average.</strong> Numerator and denominator must have the <strong>same number of entries</strong> — only include AYs that have both adjacent columns. Including a year missing the next column understates the denominator.</li>
+          <li><strong>Forgetting the tail factor.</strong> A given tail factor multiplies into <strong>every</strong> CDF, even the oldest "fully developed" year — so a mature year can still carry a reserve.</li>
+          <li><strong>$P^E\times\text{ELR}$ is NOT the BF ultimate.</strong> It's only the <em>expected</em> ultimate used inside the unreported term. The BF ultimate is $\hat L^{ult}_{BF} = L^P + R_{BF}$, and the first piece of any BF figure is <strong>actual reported losses</strong>, not the chain-ladder ultimate.</li>
+          <li><strong>$1/f^{ult}$ (reported) vs. $1 - 1/f^{ult}$ (unreported).</strong> BF and Cape Cod multiply <strong>expected</strong> losses by the <strong>unreported</strong> fraction; Cape Cod's used-up premium uses the <strong>reported</strong> fraction $1/f^{ult}$; the BF weight is $w = 1/f^{ult}$.</li>
+          <li><strong>Reserve vs. ultimate vs. IBNR.</strong> Subtract <strong>paid</strong>-to-date for the loss reserve, <strong>incurred</strong>-to-date for IBNR. The question may ask for any of the three — read carefully.</li>
+          <li><strong>Don't mix paid and incurred development.</strong> Develop paid losses with paid factors and incurred losses with incurred factors. Never assume paid ultimate = incurred ultimate unless told.</li>
+          <li><strong>Cape Cod uses a single pooled ELR</strong>, not a per-year ELR — total reported ÷ total used-up premium across all years.</li>
+          <li><strong>n-year vs. all-year average.</strong> A "3-year average" uses only the three most recent link ratios per column — don't average the whole column.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Define paid losses, case reserve, and incurred (reported) loss, and give the relationship between them.</summary>
+        <div class="qa-answer"><strong>Paid losses</strong> are amounts already paid to claimants. <strong>Case reserve</strong> is an adjuster's estimate of the remaining money needed to settle a known claim. <strong>Incurred (reported) loss</strong> = paid losses + current case reserve. At final settlement the case reserve goes to zero, so incurred = paid = ultimate.</div>
+      </details>
+      <details class="qa"><summary>Name the four components of the gross IBNR (bulk) reserve.</summary>
+        <div class="qa-answer">(1) Future development on known claims (IBNER — adjustments to case reserves); (2) reopened claims (closed files that may reopen, e.g., workers' comp); (3) pure IBNR (claims incurred but not yet reported); (4) RBNR (claims reported but not yet recorded). Together: $\text{Loss Reserve} = \text{Case Reserve} + \text{IBNR}$.</div>
+      </details>
+      <details class="qa"><summary>If you subtract losses-incurred-to-date from estimated ultimate, which reserve do you get? What about subtracting paid-to-date?</summary>
+        <div class="qa-answer">Subtracting <strong>incurred</strong>-to-date gives the <strong>IBNR reserve</strong>. Subtracting <strong>paid</strong>-to-date gives the <strong>loss reserve</strong>. Their difference, $L^I - L^P$, is the <strong>case reserve</strong>.</div>
+      </details>
+      <details class="qa"><summary>In a loss triangle, how are accident year, development year, and calendar year related to a cell $L_{i,k}$?</summary>
+        <div class="qa-answer">The <strong>row</strong> $i$ is the accident year (when the loss occurred), the <strong>column</strong> $k$ is the development year (age of the claim), and the upward-sloping <strong>diagonal</strong> is the calendar year $i+k$ (when the payment was actually made).</div>
+      </details>
+      <details class="qa"><summary>Name the three age-to-age factor selection models and how each is computed.</summary>
+        <div class="qa-answer"><strong>Simple average</strong>: arithmetic mean of all link ratios in the column. <strong>n-year average</strong>: arithmetic mean of only the $n$ most recent link ratios. <strong>Volume-weighted average</strong>: $\sum L_{i,k} / \sum L_{i,k-1}$ over AYs with both columns.</div>
+      </details>
+      <details class="qa"><summary>Can ultimate losses be estimated from paid losses, incurred losses, or both? Any rules?</summary>
+        <div class="qa-answer">Both. In theory they converge to the same ultimate, but in practice they differ — so don't assume they're equal. Rule: develop <strong>paid</strong> losses only with paid factors and <strong>incurred</strong> losses only with incurred factors.</div>
+      </details>
+      <details class="qa"><summary>Write the BF reserve formula and state what each term represents.</summary>
+        <div class="qa-answer">$R_{BF} = \hat L^{ult}_{LR}\,(1 - 1/f^{ult}_{CL})$ where $\hat L^{ult}_{LR} = P^E\times\text{ELR}$ is the a-priori expected ultimate and $1 - 1/f^{ult}$ is the chain-ladder estimate of the <strong>unreported</strong> proportion. The BF ultimate is $L^P + R_{BF}$.</div>
+      </details>
+      <details class="qa"><summary>Write the weighted-average form of the BF reserve. Which factor sets the weight, and what does that imply for mature years?</summary>
+        <div class="qa-answer">$R_{BF} = w\,R_{CL} + (1-w)\,R_{LR}$ with $w = 1/f^{ult}_{CL}$. As a year matures, $f^{ult}\to 1$ so $w\to 1$ — more weight to the chain-ladder (actual-experience) reserve, because more real data is available.</div>
+      </details>
+      <details class="qa"><summary>A cumulative paid triangle shows AY 2024 at \$4,000 at age 1, age-1-to-ultimate CDF 1.25. Chain-ladder ultimate and reserve?</summary>
+        <div class="qa-answer">Ultimate $= 4{,}000 \times 1.25 = 5{,}000$. Reserve $= 5{,}000 - 4{,}000 = 1{,}000$.</div>
+      </details>
+      <details class="qa"><summary>How does Cape Cod differ from a standard BF application?</summary>
+        <div class="qa-answer">Cape Cod <strong>estimates the ELR from the triangle itself</strong> (total reported losses ÷ total used-up premium) instead of using an externally assumed a-priori ELR, then plugs that single fitted ELR into the BF formula. More responsive than pure BF, more stable than chain-ladder.</div>
+      </details>
+      <details class="qa"><summary>When is the expected loss ratio method the best (or only) choice, and what is its main weakness?</summary>
+        <div class="qa-answer">Best when there's little or no claims data (a new line of business) or as a reasonableness check on more sophisticated methods. Weakness: it relies entirely on the ELR — which is easy to manipulate and ignores actual emerging experience — so it can give illogical or insufficient reserves.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

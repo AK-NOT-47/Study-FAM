@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Tabbed Binder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f6f1e7;
+    --paper-2:#fbf8f1;
+    --line:#cfd9e8;
+    --line-strong:#b9c6da;
+    --ink:#2b2a26;
+    --ink-soft:#5c5a52;
+    --board:#7d5a3c;       /* leather/cork board */
+    --board-d:#5e4126;
+    --ring:#c9ccd2;
+    --ring-d:#8a8f99;
+    --red:#c0392b;
+    --margin:#e6a3a3;      /* binder margin line */
+    --t-blue:#2f6fb0;
+    --t-green:#3f8f6b;
+    --t-amber:#d39a2d;
+    --t-rose:#c45d77;
+    --t-purple:#7a5ea8;
+    --t-teal:#2f9c93;
+    --shadow:0 18px 40px rgba(40,28,16,.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #8d674a 0%, transparent 60%),
+      repeating-linear-gradient(45deg, rgba(0,0,0,.04) 0 6px, transparent 6px 12px),
+      linear-gradient(160deg, var(--board) 0%, var(--board-d) 100%);
+    padding:28px 20px 60px;
+  }
+
+  /* ---------- BINDER SHELL ---------- */
+  .binder{
+    max-width:1180px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:78px 1fr;
+    position:relative;
+    filter:drop-shadow(0 22px 36px rgba(0,0,0,.4));
+  }
+
+  /* spine + rings column */
+  .spine{
+    background:linear-gradient(90deg,#2c2c30 0%, #3c3c42 45%, #242427 100%);
+    border-radius:18px 0 0 18px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-around;
+    padding:34px 0;
+    box-shadow:inset -6px 0 10px rgba(0,0,0,.45);
+  }
+  .ring{
+    width:46px;height:46px;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 30%, #fff 0%, var(--ring) 35%, var(--ring-d) 75%, #5b5f66 100%);
+    box-shadow:
+      0 3px 5px rgba(0,0,0,.5),
+      inset 0 0 0 7px #e9ebee,
+      inset 0 0 0 12px #5b5f66;
+    position:relative;
+    z-index:3;
+  }
+  .ring::after{
+    /* the punched hole the ring passes through, on the page side */
+    content:"";
+    position:absolute;
+    right:-26px;top:50%;
+    transform:translateY(-50%);
+    width:16px;height:16px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #d9d2c4, #b7ad99);
+    box-shadow:inset 1px 1px 2px rgba(0,0,0,.5);
+    z-index:1;
+  }
+
+  /* the page stack */
+  .pages{
+    background:var(--paper);
+    border-radius:0 18px 18px 0;
+    position:relative;
+    padding:30px 34px 36px 54px;
+    background-image:
+      linear-gradient(var(--paper-2), var(--paper-2));
+    box-shadow:
+      inset 0 0 0 1px rgba(0,0,0,.06),
+      6px 0 0 #ece5d6, 6px 0 0 1px #d9cfb8,   /* second sheet */
+      12px 0 0 #e4dccb, 12px 0 0 1px #cfc4ab;  /* third sheet */
+  }
+  /* faint ruled lines */
+  .pages::before{
+    content:"";
+    position:absolute;inset:0;
+    border-radius:0 18px 18px 0;
+    background:
+      linear-gradient(var(--margin),var(--margin)) 40px 0/2px 100% no-repeat,
+      repeating-linear-gradient(transparent 0 31px, var(--line) 31px 32px);
+    opacity:.5;
+    pointer-events:none;
+  }
+  /* punched holes down the left margin */
+  .holes{
+    position:absolute;left:14px;top:0;bottom:0;
+    display:flex;flex-direction:column;justify-content:space-around;
+    padding:60px 0;z-index:2;
+  }
+  .holes span{
+    width:18px;height:18px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #cdc4b0, #a99c80);
+    box-shadow:inset 1px 1px 3px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.6);
+  }
+
+  .content{position:relative;z-index:3;}
+
+  /* ---------- TABS NAV ---------- */
+  .tabstrip{
+    display:flex;flex-wrap:wrap;gap:6px;
+    margin:-30px -34px 22px 0;
+    padding-left:6px;
+    position:relative;
+  }
+  .tab{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:13.5px;
+    letter-spacing:.2px;
+    color:#fff;
+    padding:14px 16px 18px;
+    border-radius:12px 12px 0 0;
+    position:relative;
+    box-shadow:0 -3px 8px rgba(0,0,0,.18) inset, 0 4px 6px rgba(0,0,0,.12);
+    text-decoration:none;
+    transform:translateY(8px);
+    transition:transform .15s ease;
+    display:flex;align-items:center;gap:7px;
+    border-top:2px solid rgba(255,255,255,.35);
+  }
+  .tab .ic{font-size:14px;line-height:1;}
+  .tab:hover{transform:translateY(2px);}
+  .tab.active{transform:translateY(0);box-shadow:0 -2px 0 rgba(255,255,255,.4) inset, 0 8px 14px rgba(0,0,0,.2);}
+  .tab.active::after{
+    content:"";position:absolute;left:0;right:0;bottom:-8px;height:10px;background:inherit;
+  }
+  .t1{background:var(--t-blue);}
+  .t2{background:var(--t-green);}
+  .t3{background:var(--t-amber);}
+  .t4{background:var(--t-rose);}
+  .t5{background:var(--t-purple);}
+  .t6{background:var(--t-teal);}
+  .section-label{
+    margin-left:auto;align-self:center;transform:translateY(2px);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;font-weight:600;letter-spacing:1px;
+    color:#fff;background:#33312d;
+    padding:6px 12px;border-radius:20px;
+    border:1px dashed rgba(255,255,255,.4);
+  }
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead{
+    display:flex;align-items:center;gap:16px;
+    padding-bottom:16px;margin-bottom:22px;
+    border-bottom:2px dashed var(--line-strong);
+  }
+  .mmark{
+    width:54px;height:54px;flex:none;border-radius:14px;
+    background:linear-gradient(150deg,#33312d,#56524a);
+    color:#f6f1e7;display:grid;place-items:center;
+    font-family:'Fraunces',serif;font-weight:900;font-size:30px;
+    box-shadow:0 6px 14px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.25);
+    transform:rotate(-4deg);
+  }
+  .brand h1{font-family:'Fraunces',serif;font-size:21px;margin:0;font-weight:900;letter-spacing:.2px;}
+  .brand p{margin:2px 0 0;font-size:12.5px;color:var(--ink-soft);font-weight:500;}
+  .clip{
+    margin-left:auto;align-self:flex-start;
+    font-family:'Caveat',cursive;font-size:21px;color:var(--red);
+    transform:rotate(4deg);
+    background:#fff7d6;
+    padding:8px 16px;
+    border:1px solid #e9d98a;
+    box-shadow:2px 3px 6px rgba(0,0,0,.15);
+    position:relative;
+  }
+  .clip::before{
+    content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+    width:34px;height:14px;border:3px solid #9aa3ad;border-bottom:none;border-radius:8px 8px 0 0;
+    background:transparent;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{margin-bottom:24px;}
+  .greet{
+    font-family:'Caveat',cursive;font-size:26px;color:var(--t-blue);
+    margin:0 0 2px;font-weight:700;
+  }
+  .hero h2{
+    font-family:'Fraunces',serif;font-weight:900;
+    font-size:clamp(34px,5.2vw,52px);line-height:1.02;
+    margin:0 0 12px;letter-spacing:-.5px;
+    color:var(--ink);
+  }
+  .hero h2 .u{
+    background:linear-gradient(transparent 62%, #ffe08a 62% 92%, transparent 92%);
+    padding:0 2px;
+  }
+  .hero .lede{
+    max-width:620px;font-size:15.5px;line-height:1.6;color:var(--ink-soft);font-weight:500;margin:0;
+  }
+
+  /* ---------- STATS ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0;
+  }
+  .stat{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:16px 16px 18px;position:relative;overflow:hidden;
+    box-shadow:0 6px 14px rgba(60,45,25,.12);
+  }
+  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent,var(--t-blue));}
+  .stat .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);font-weight:600;}
+  .stat .v{font-family:'Fraunces',serif;font-weight:900;font-size:38px;line-height:1;margin:8px 0 4px;}
+  .stat .s{font-size:12px;color:var(--ink-soft);}
+  .stat.s1{--accent:var(--t-green);}
+  .stat.s2{--accent:var(--red);}
+  .stat.s3{--accent:var(--t-amber);}
+  .bar{height:8px;border-radius:5px;background:#e7e1d3;margin-top:10px;overflow:hidden;}
+  .bar i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--t-green),#79c79b);border-radius:5px;}
+
+  /* ---------- MAIN GRID ---------- */
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;}
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+    box-shadow:0 8px 18px rgba(60,45,25,.13);position:relative;
+  }
+  .card h3{
+    font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;font-weight:900;display:flex;align-items:center;gap:8px;
+  }
+  .card .lede{font-size:13px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
+  .pill{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.5px;
+    color:#fff;background:var(--t-purple);padding:3px 9px;border-radius:20px;
+  }
+
+  /* exam card */
+  .exam{
+    background:linear-gradient(150deg,#33312d,#46433c);color:#f6f1e7;border:none;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .exam h3{color:#fff;}
+  .exam .code{
+    font-family:'Fraunces',serif;font-weight:900;font-size:46px;line-height:.95;letter-spacing:-1px;
+    color:#ffd98a;
+  }
+  .exam .meta{display:flex;flex-wrap:wrap;gap:8px;}
+  .exam .chip{
+    font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+    padding:5px 10px;border-radius:8px;
+  }
+  .exam .chip b{color:#9fe2bd;}
+  .exam .perf{
+    margin-top:auto;font-size:12.5px;color:#d8d2c5;border-top:1px solid rgba(255,255,255,.15);padding-top:12px;
+  }
+  .exam .perf b{color:#fff;}
+
+  /* formula block */
+  .formula-card .label{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+    color:var(--t-blue);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;
+  }
+  .formula{
+    background:#0f1822;border-radius:12px;padding:16px 18px;
+    display:flex;flex-direction:column;gap:12px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), 0 4px 10px rgba(0,0,0,.2);
+  }
+  .formula .row{
+    font-family:'JetBrains Mono',monospace;font-size:15px;color:#e9eef5;
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .formula .row .n{color:#6b9bd1;font-size:11px;}
+  .formula .row .eq{color:#ffd98a;}
+  .formula .row + .row{border-top:1px dashed rgba(255,255,255,.12);padding-top:12px;}
+
+  /* trap callout */
+  .trap{
+    grid-column:1 / -1;
+    background:repeating-linear-gradient(135deg,#fff4f2 0 14px,#ffe9e6 14px 28px);
+    border:1px solid #f0b9b1;border-left:8px solid var(--red);border-radius:14px;
+    padding:16px 20px;display:flex;gap:14px;align-items:flex-start;
+    box-shadow:0 6px 14px rgba(150,40,30,.12);
+  }
+  .trap .warn{font-size:30px;line-height:1;flex:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2));}
+  .trap .tl{font-family:'Fraunces',serif;font-weight:900;font-size:16px;color:var(--red);margin:0 0 3px;}
+  .trap p{margin:0;font-size:14px;line-height:1.55;color:#5a322c;font-weight:500;}
+  .trap b{color:var(--red);}
+
+  /* worked example footer band */
+  .band{
+    grid-column:1 / -1;
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 22px;
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    box-shadow:0 8px 18px rgba(60,45,25,.13);
+    position:relative;overflow:hidden;
+  }
+  .band::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--t-teal);}
+  .band .ex-tag{
+    font-family:'Caveat',cursive;color:var(--t-teal);font-size:20px;font-weight:700;
+  }
+  .band .ex-title{font-family:'Fraunces',serif;font-weight:900;font-size:18px;margin:1px 0 0;}
+  .band .ex-sub{font-size:12px;color:var(--ink-soft);}
+  .actions{display:flex;gap:10px;margin-left:auto;}
+  .btn{
+    font-family:'Inter',sans-serif;font-weight:700;font-size:13.5px;
+    padding:12px 22px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn.primary{background:var(--red);color:#fff;box-shadow:0 6px 14px rgba(192,57,43,.35);}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-strong);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.primary:hover{box-shadow:0 9px 18px rgba(192,57,43,.45);}
+
+  /* ---------- FOOTER ---------- */
+  .foot{
+    margin-top:26px;padding-top:16px;border-top:2px dashed var(--line-strong);
+    display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft);flex-wrap:wrap;
+  }
+  .foot .fm{
+    width:26px;height:26px;border-radius:7px;background:#33312d;color:#f6f1e7;
+    display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:900;font-size:15px;
+  }
+  .foot b{color:var(--ink);font-family:'Fraunces',serif;}
+  .foot .dot{opacity:.4;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:860px){
+    .grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+  }
+  @media (max-width:700px){
+    body{padding:14px 8px 40px;}
+    .binder{grid-template-columns:54px 1fr;}
+    .ring{width:34px;height:34px;box-shadow:0 2px 4px rgba(0,0,0,.5), inset 0 0 0 5px #e9ebee, inset 0 0 0 9px #5b5f66;}
+    .ring::after{display:none;}
+    .pages{padding:24px 16px 28px 34px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06), 5px 0 0 #ece5d6, 5px 0 0 1px #d9cfb8;}
+    .holes{left:8px;}.holes span{width:13px;height:13px;}
+    .tabstrip{margin-right:-16px;}
+    .tab{font-size:12px;padding:11px 11px 15px;}
+    .section-label{margin-left:0;width:100%;text-align:center;justify-content:center;}
+    .masthead{flex-wrap:wrap;}
+    .clip{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+  <div class="binder">
+    <!-- SPINE + RINGS -->
+    <div class="spine" aria-hidden="true">
+      <span class="ring"></span>
+      <span class="ring"></span>
+      <span class="ring"></span>
+    </div>
+
+    <!-- PAGE STACK -->
+    <div class="pages">
+      <div class="holes" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+
+      <div class="content">
+
+        <!-- TABS -->
+        <nav class="tabstrip" aria-label="Primary">
+          <a class="tab t1 active" href="#"><span class="ic">📈</span>Survival Models</a>
+          <a class="tab t2" href="#"><span class="ic">📋</span>Life Tables</a>
+          <a class="tab t3" href="#"><span class="ic">🛡️</span>Life Insurance</a>
+          <a class="tab t4" href="#"><span class="ic">💗</span>Life Annuities</a>
+          <a class="tab t5" href="#"><span class="ic">💵</span>Premiums</a>
+          <a class="tab t6" href="#"><span class="ic">📊</span>Policy Values</a>
+          <span class="section-label">DIVIDER · FAM-L / FAM-S</span>
+        </nav>
+
+        <!-- MASTHEAD -->
+        <header class="masthead">
+          <div class="mmark">M</div>
+          <div class="brand">
+            <h1>Me Studing Stuff</h1>
+            <p>Study smarter. Pass exams.</p>
+          </div>
+          <div class="clip">Section A · FAM</div>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+          <p class="greet">Good evening 👋</p>
+          <h2>Let's get you that <span class="u">pass.</span></h2>
+          <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        </section>
+
+        <!-- STATS -->
+        <section class="stats" aria-label="Your progress">
+          <div class="stat s1">
+            <div class="k">Overall progress</div>
+            <div class="v">72%</div>
+            <div class="s">12 of 17 topics</div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="stat s2">
+            <div class="k">Exam countdown</div>
+            <div class="v">86<span style="font-size:18px;font-family:Inter;font-weight:700;"> days</span></div>
+            <div class="s">until your sitting</div>
+          </div>
+          <div class="stat s3">
+            <div class="k">Topics solid</div>
+            <div class="v">8</div>
+            <div class="s">mastered &amp; review-ready</div>
+          </div>
+        </section>
+
+        <!-- MAIN GRID -->
+        <section class="grid">
+
+          <!-- TOPIC PREVIEW + FORMULA -->
+          <div class="card formula-card">
+            <h3>🛡️ Life Insurance Present Values</h3>
+            <p class="lede">The EPV of a benefit paid on death — and how its variance falls straight out of the second moment.</p>
+            <div class="label">📐 Formula sheet — divider C3</div>
+            <div class="formula">
+              <div class="row"><span class="n">01</span><span>A<sub>x</sub> <span class="eq">=</span> 1 − d·ä<sub>x</sub></span></div>
+              <div class="row"><span class="n">02</span><span>Var(Z) <span class="eq">=</span> ²A<sub>x</sub> − (A<sub>x</sub>)²</span></div>
+              <div class="row"><span class="n">03</span><span>ä<sub>x</sub> <span class="eq">=</span> (1 − A<sub>x</sub>) / d</span></div>
+            </div>
+          </div>
+
+          <!-- EXAM CARD -->
+          <div class="card exam">
+            <span class="pill" style="align-self:flex-start;background:#ffd98a;color:#33312d;">SOA · OFFICIAL</span>
+            <h3>Exam FAM</h3>
+            <div class="code">FAM</div>
+            <div style="font-size:13px;color:#d8d2c5;margin-top:-4px;">Fundamentals of Actuarial Mathematics</div>
+            <div class="meta">
+              <span class="chip">SOA</span>
+              <span class="chip"><b>34</b> questions</span>
+              <span class="chip">pass = <b>6/10</b></span>
+            </div>
+            <div class="perf">Tracks <b>FAM-L</b> &amp; <b>FAM-S</b> across all six binder tabs.</div>
+          </div>
+
+          <!-- COMMON TRAP -->
+          <div class="trap">
+            <div class="warn">⚠️</div>
+            <div>
+              <p class="tl">Common trap</p>
+              <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+            </div>
+          </div>
+
+          <!-- WORKED EXAMPLE BAND -->
+          <div class="band">
+            <div>
+              <div class="ex-tag">Worked example ✎</div>
+              <div class="ex-title">Example 1 — Whole life EPV &amp; variance</div>
+              <div class="ex-sub">Compute A_x and Var(Z) from a given mortality basis, step by step.</div>
+            </div>
+            <div class="actions">
+              <a class="btn primary" href="#">▶ Start studying</a>
+              <a class="btn ghost" href="#">↺ Resume</a>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="foot">
+          <span class="fm">M</span>
+          <b>Me Studing Stuff</b>
+          <span class="dot">•</span>
+          Study smarter. Pass exams.
+          <span class="dot">•</span>
+          A calm binder for SOA Exam FAM
+        </footer>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

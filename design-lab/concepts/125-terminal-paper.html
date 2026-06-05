@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Terminal Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============ TERMINAL PAPER ============ */
+  /* Monospace command-line content on warm analog paper */
+
+  :root{
+    --paper:#efe7d4;        /* warm paper base */
+    --paper-2:#e8dfc8;      /* slightly deeper */
+    --ink:#2b2620;          /* dark warm ink */
+    --ink-soft:#5c5448;
+    --ink-faint:#8a8070;
+    --rule:#c9bfa6;         /* hairline rule */
+    --amber:#c2570f;        /* phosphor amber */
+    --green:#3d6b3a;        /* terminal green */
+    --red:#a8341f;          /* trap red */
+    --teal:#226b66;
+    --line-h:1.55;
+    --col:74ch;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    background:
+      /* faint horizontal "ruled paper" lines */
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        rgba(124,110,80,.10) 31px,
+        rgba(124,110,80,.10) 32px
+      ),
+      /* paper grain via subtle radial blobs */
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,.45), transparent 38%),
+      radial-gradient(circle at 85% 75%, rgba(160,140,100,.18), transparent 42%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"JetBrains Mono","Space Mono",ui-monospace,monospace;
+    font-size:15px;
+    line-height:var(--line-h);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* CRT scanline + vignette overlay (very subtle, paper-friendly) */
+  body::after{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:9999;
+    background:
+      repeating-linear-gradient(to bottom, rgba(0,0,0,.018) 0 1px, transparent 1px 3px),
+      radial-gradient(ellipse at center, transparent 60%, rgba(60,48,28,.10) 100%);
+    mix-blend-mode:multiply;
+  }
+
+  a{color:inherit;text-decoration:none}
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 22px 64px;
+  }
+
+  /* ====== TOP BAR : punch-tape header ====== */
+  .topbar{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 0 12px;
+    border-bottom:2px solid var(--ink);
+    flex-wrap:wrap;
+  }
+  .mmark{
+    width:42px;height:42px;flex:0 0 auto;
+    border:2px solid var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+    display:grid;place-items:center;
+    font-weight:800;font-size:24px;
+    box-shadow:3px 3px 0 var(--amber);
+    position:relative;
+  }
+  .brand h1{
+    font-size:16px;font-weight:800;letter-spacing:.02em;
+    line-height:1.1;
+  }
+  .brand .tag{
+    font-size:11px;color:var(--ink-soft);letter-spacing:.04em;
+  }
+  .brand .tag::before{content:"// "}
+  .topbar .prompt{
+    margin-left:auto;
+    font-size:12px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:8px;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.live{background:var(--green);box-shadow:0 0 0 3px rgba(61,107,58,.18);animation:blink 1.4s steps(1) infinite}
+  @keyframes blink{50%{opacity:.25}}
+
+  /* ====== MAIN GRID ====== */
+  .layout{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:0;
+    margin-top:0;
+    border-left:2px solid var(--ink);
+    border-right:2px solid var(--ink);
+    border-bottom:2px solid var(--ink);
+    background:rgba(255,253,247,.30);
+  }
+
+  /* ====== SIDEBAR NAV : file tree ====== */
+  nav.side{
+    border-right:2px solid var(--ink);
+    padding:18px 0 24px;
+    background:
+      repeating-linear-gradient(to bottom,transparent 0 31px,rgba(124,110,80,.07) 31px 32px),
+      var(--paper-2);
+  }
+  .nav-label{
+    font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-faint);
+    padding:0 16px 6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .nav-label::before{content:"┌─"}
+  .navsec{
+    margin:0 0 18px;
+  }
+  .navsec .secname{
+    display:inline-block;
+    margin:6px 16px 8px;
+    font-size:12px;font-weight:800;letter-spacing:.06em;
+    color:var(--amber);
+    background:rgba(194,87,15,.10);
+    border:1px dashed var(--amber);
+    padding:3px 9px;
+  }
+  .navsec .secname::before{content:"§ "}
+  nav.side ul{list-style:none}
+  nav.side li a{
+    display:flex;align-items:baseline;gap:9px;
+    padding:6px 16px 6px 20px;
+    font-size:13.5px;color:var(--ink-soft);
+    border-left:3px solid transparent;
+    transition:.12s;
+  }
+  nav.side li a .pfx{color:var(--ink-faint);font-size:12px}
+  nav.side li a:hover{
+    color:var(--ink);
+    background:rgba(194,87,15,.08);
+    border-left-color:var(--amber);
+  }
+  nav.side li a.active{
+    color:var(--ink);font-weight:700;
+    background:rgba(34,107,102,.10);
+    border-left-color:var(--teal);
+  }
+  nav.side li a.active .pfx{color:var(--teal)}
+  .check{color:var(--green);font-weight:700}
+  .nav-foot{
+    margin:18px 16px 0;padding-top:12px;
+    border-top:1px dashed var(--rule);
+    font-size:10.5px;color:var(--ink-faint);line-height:1.7;
+  }
+
+  /* ====== MAIN COLUMN ====== */
+  main{padding:24px 28px 30px;min-width:0}
+
+  .cmdline{
+    font-size:12.5px;color:var(--ink-soft);margin-bottom:18px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .cmdline .usr{color:var(--green);font-weight:700}
+  .cmdline .pth{color:var(--teal)}
+  .cmdline .cmd{color:var(--ink)}
+  .caret{
+    display:inline-block;width:9px;height:17px;background:var(--amber);
+    animation:caret 1s steps(1) infinite;vertical-align:-3px;
+  }
+  @keyframes caret{50%{opacity:0}}
+
+  /* HERO */
+  .hero{
+    border:2px solid var(--ink);
+    background:#1c1812;
+    color:#e9e0cb;
+    padding:0;
+    margin-bottom:24px;
+    box-shadow:6px 6px 0 rgba(43,38,32,.20);
+    position:relative;
+  }
+  .hero .bar{
+    display:flex;align-items:center;gap:7px;
+    padding:8px 12px;
+    background:#15110c;
+    border-bottom:1px solid #38301f;
+    font-size:11px;color:#9a8f74;
+  }
+  .hero .bar .tdot{width:11px;height:11px;border-radius:50%}
+  .hero .bar .t1{background:#a8341f}.hero .bar .t2{background:#c2932a}.hero .bar .t3{background:#3d6b3a}
+  .hero .bar .ttl{margin-left:8px;letter-spacing:.04em}
+  .hero .body{padding:26px 30px 30px}
+  .greet{
+    color:#3fae57;font-size:13px;letter-spacing:.06em;margin-bottom:12px;
+  }
+  .greet::before{content:"$ echo ";color:#7a8f6f}
+  .greet .out{display:block;margin-top:4px;font-size:14px;color:#cdd9c0}
+  .greet .out::before{content:"➜ "}
+  .hero h2{
+    font-family:"JetBrains Mono",monospace;
+    font-size:clamp(28px,5vw,46px);
+    font-weight:800;line-height:1.05;letter-spacing:-.01em;
+    color:#f4ead2;margin:6px 0 16px;
+  }
+  .hero h2 .amber{color:#e8923a}
+  .hero h2 .cur{display:inline-block;width:.5ch;height:.92em;background:#e8923a;vertical-align:-2px;margin-left:4px;animation:caret 1.05s steps(1) infinite}
+  .hero p.lede{
+    max-width:68ch;color:#bdb293;font-size:14.5px;line-height:1.6;
+  }
+  .hero p.lede .hl{color:#e9e0cb}
+
+  /* STATS */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;
+  }
+  .stat{
+    border:2px solid var(--ink);
+    background:var(--paper);
+    padding:14px 16px 16px;
+    position:relative;
+  }
+  .stat::before{
+    content:attr(data-k);
+    position:absolute;top:-9px;left:12px;
+    background:var(--paper);padding:0 6px;
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
+  }
+  .stat .big{font-size:34px;font-weight:800;line-height:1;letter-spacing:-.01em}
+  .stat .big.amber{color:var(--amber)}
+  .stat .big.teal{color:var(--teal)}
+  .stat .big.green{color:var(--green)}
+  .stat .sub{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
+  .bar-meter{
+    height:9px;margin-top:10px;background:var(--paper-2);
+    border:1px solid var(--ink);position:relative;overflow:hidden;
+  }
+  .bar-meter i{
+    position:absolute;inset:0;width:72%;
+    background:repeating-linear-gradient(45deg,var(--amber) 0 6px,#d8772f 6px 12px);
+  }
+  .ticks{display:flex;gap:3px;margin-top:8px}
+  .ticks span{flex:1;height:8px;background:var(--paper-2);border:1px solid var(--rule)}
+  .ticks span.on{background:var(--teal);border-color:var(--teal)}
+
+  /* ROW: exam card + topic preview */
+  .grid2{
+    display:grid;grid-template-columns:1fr 1.35fr;gap:16px;margin-bottom:24px;
+  }
+
+  .card{
+    border:2px solid var(--ink);background:var(--paper);
+  }
+  .card .head{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 14px;border-bottom:2px solid var(--ink);
+    background:var(--ink);color:var(--paper);
+    font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  }
+  .card .head .sq{width:9px;height:9px;background:var(--amber)}
+  .card .pad{padding:16px 16px 18px}
+
+  /* EXAM card */
+  .exam .name{font-size:21px;font-weight:800;letter-spacing:-.01em;margin-bottom:2px}
+  .exam .full{font-size:12px;color:var(--ink-soft);margin-bottom:14px}
+  .exam dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px}
+  .exam dt{color:var(--ink-faint)}
+  .exam dt::before{content:"• "}
+  .exam dd{text-align:right;font-weight:700}
+  .exam dd.pass{color:var(--green)}
+  .badge-soa{
+    display:inline-block;margin-top:14px;
+    border:1px solid var(--teal);color:var(--teal);
+    font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    padding:4px 10px;background:rgba(34,107,102,.08);
+  }
+
+  /* TOPIC PREVIEW */
+  .topic .lede{font-size:13px;color:var(--ink-soft);margin-bottom:14px}
+  .formula{
+    background:#1c1812;color:#e9e0cb;
+    border:2px solid var(--ink);
+    padding:0;margin:4px 0 0;
+  }
+  .formula .fhead{
+    padding:6px 12px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:#9a8f74;border-bottom:1px solid #38301f;background:#15110c;
+  }
+  .formula .fhead::before{content:"ƒ  "}
+  .formula .frows{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+  .frow{
+    font-size:15px;line-height:1.4;color:#f0e6cd;
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .frow .ln{color:#5e6f54;font-size:11px;flex:0 0 22px;text-align:right;user-select:none}
+  .frow .amber{color:#e8923a}
+  .frow .grn{color:#7fc46a}
+  .frow .dim{color:#9a8f74}
+  sup{font-size:.72em}
+  sub{font-size:.72em}
+
+  /* TRAP callout */
+  .trap{
+    border:2px solid var(--red);
+    background:rgba(168,52,31,.07);
+    margin-bottom:24px;
+    display:grid;grid-template-columns:auto 1fr;
+  }
+  .trap .ic{
+    background:var(--red);color:#fff;
+    display:grid;place-items:center;
+    font-size:26px;padding:0 18px;font-weight:800;
+  }
+  .trap .tx{padding:14px 18px}
+  .trap .tt{
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;
+  }
+  .trap .tt::before{content:"!! "}
+  .trap p{font-size:14px;line-height:1.55;color:var(--ink)}
+  .trap p .k{color:var(--red);font-weight:700}
+  .trap p code{background:rgba(168,52,31,.14);padding:1px 6px;border-radius:2px;font-weight:700}
+
+  /* WORKED EXAMPLE + buttons */
+  .worked{
+    border:2px solid var(--ink);background:var(--paper);
+    margin-bottom:20px;
+  }
+  .worked .head{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 16px;border-bottom:2px dashed var(--rule);
+  }
+  .worked .tagn{
+    font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--paper);background:var(--green);padding:3px 9px;font-weight:700;
+  }
+  .worked .head h3{font-size:16px;font-weight:800}
+  .worked .pad{padding:14px 16px 18px}
+  .worked .teaser{font-size:13px;color:var(--ink-soft);max-width:66ch}
+  .worked .teaser .mono-em{color:var(--ink);font-weight:700}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .btn{
+    font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.02em;
+    padding:11px 22px;border:2px solid var(--ink);cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;
+    transition:transform .08s, box-shadow .08s;
+  }
+  .btn .ch{font-size:13px}
+  .btn-primary{background:var(--amber);color:#fff;box-shadow:4px 4px 0 var(--ink)}
+  .btn-primary:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+  .btn-primary:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .btn-ghost{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 var(--rule)}
+  .btn-ghost:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--rule)}
+  .btn-ghost:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--rule)}
+
+  /* FOOTER */
+  footer{
+    margin-top:26px;padding-top:16px;
+    border-top:2px solid var(--ink);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    font-size:12px;color:var(--ink-soft);
+  }
+  footer .mmark{width:30px;height:30px;font-size:17px;box-shadow:2px 2px 0 var(--amber)}
+  footer .grow{margin-left:auto;color:var(--ink-faint);font-size:11px}
+  footer .grow::before{content:"// "}
+
+  /* RESPONSIVE */
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;border-left:2px solid var(--ink)}
+    nav.side{
+      border-right:none;border-bottom:2px solid var(--ink);
+      display:flex;flex-wrap:wrap;gap:0 12px;padding:14px 12px;
+    }
+    nav.side ul{display:flex;flex-wrap:wrap;gap:4px 6px;width:100%}
+    nav.side li a{border-left:none;border:1px solid var(--rule);padding:5px 9px}
+    nav.side li a:hover{border-left:1px solid var(--amber)}
+    .nav-label,.nav-foot{width:100%}
+    .grid2{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+  }
+  @media(max-width:700px){
+    main{padding:18px 16px 22px}
+    .stats{grid-template-columns:1fr}
+    .trap{grid-template-columns:1fr}
+    .trap .ic{padding:10px 0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
+    <div class="mmark">M</div>
+    <div class="brand">
+      <h1>Me Studing Stuff</h1>
+      <div class="tag">Study smarter. Pass exams.</div>
+    </div>
+    <div class="prompt">
+      <span class="dot live"></span> session: active &nbsp;·&nbsp; tty/fam-01
+    </div>
+  </header>
+
+  <!-- ===== LAYOUT ===== -->
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <nav class="side">
+      <div class="nav-label">~/study/topics</div>
+
+      <div class="navsec">
+        <span class="secname">FAM-L / FAM-S</span>
+        <ul>
+          <li><a class="active" href="#"><span class="pfx">├─</span> Survival Models</a></li>
+          <li><a href="#"><span class="pfx">├─</span> Life Tables <span class="check">✓</span></a></li>
+          <li><a href="#"><span class="pfx">├─</span> Life Insurance</a></li>
+          <li><a href="#"><span class="pfx">├─</span> Life Annuities</a></li>
+          <li><a href="#"><span class="pfx">├─</span> Premiums</a></li>
+          <li><a href="#"><span class="pfx">└─</span> Policy Values</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-foot">
+        17 topics indexed<br>
+        8 marked solid <span class="check">✓</span><br>
+        last sync: 21:04 local
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main>
+
+      <div class="cmdline">
+        <span class="usr">student@fam</span><span class="dim">:</span><span class="pth">~/dashboard</span><span class="dim">$</span>
+        <span class="cmd">./resume --topic survival-models</span>
+        <span class="caret"></span>
+      </div>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="bar">
+          <span class="tdot t1"></span><span class="tdot t2"></span><span class="tdot t3"></span>
+          <span class="ttl">dashboard.sh — Me Studing Stuff</span>
+        </div>
+        <div class="body">
+          <div class="greet">Good evening<span class="out">welcome back, let's run the plan</span></div>
+          <h2>Let's get you that <span class="amber">pass</span>.<span class="cur"></span></h2>
+          <p class="lede">Your focused hub for <span class="hl">SOA Exam FAM</span> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat" data-k="overall progress">
+          <div class="big amber">72%</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="bar-meter"><i></i></div>
+        </div>
+        <div class="stat" data-k="exam countdown">
+          <div class="big teal">86<span style="font-size:15px"> days</span></div>
+          <div class="sub">until test date</div>
+          <div class="ticks">
+            <span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="stat" data-k="topics solid">
+          <div class="big green">08</div>
+          <div class="sub">locked in &amp; revised</div>
+          <div class="ticks">
+            <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXAM CARD + TOPIC PREVIEW -->
+      <section class="grid2">
+
+        <div class="card exam">
+          <div class="head"><span class="sq"></span> exam.cfg</div>
+          <div class="pad">
+            <div class="name">Exam FAM</div>
+            <div class="full">Fundamentals of Actuarial Mathematics</div>
+            <dl>
+              <dt>provider</dt><dd>SOA</dd>
+              <dt>questions</dt><dd>34</dd>
+              <dt>pass mark</dt><dd class="pass">6 / 10</dd>
+            </dl>
+            <span class="badge-soa">Society of Actuaries</span>
+          </div>
+        </div>
+
+        <div class="card topic">
+          <div class="head"><span class="sq"></span> topic_preview › Life Insurance PV</div>
+          <div class="pad">
+            <strong style="font-size:16px;display:block;margin-bottom:4px">Life Insurance Present Values</strong>
+            <div class="lede">EPV of a benefit paid on death, and the variance of its present-value random variable.</div>
+            <div class="formula">
+              <div class="fhead">key identities</div>
+              <div class="frows">
+                <div class="frow"><span class="ln">01</span><span>A<sub>x</sub> <span class="dim">=</span> 1 <span class="amber">−</span> d·ä<sub>x</sub></span></div>
+                <div class="frow"><span class="ln">02</span><span>Var(Z) <span class="dim">=</span> <sup>2</sup>A<sub>x</sub> <span class="amber">−</span> (A<sub>x</sub>)<sup>2</sup></span></div>
+                <div class="frow"><span class="ln">03</span><span>ä<sub>x</sub> <span class="dim">=</span> (1 <span class="grn">−</span> A<sub>x</sub>) / d</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TRAP -->
+      <section class="trap">
+        <div class="ic">⚠</div>
+        <div class="tx">
+          <div class="tt">Common trap</div>
+          <p>Under <span class="k">UDD</span>, multiply <span class="k">ONLY</span> the term/death piece by <code>i/δ</code> — the pure endowment is never rescaled.</p>
+        </div>
+      </section>
+
+      <!-- WORKED EXAMPLE -->
+      <section class="worked">
+        <div class="head">
+          <span class="tagn">Example 1</span>
+          <h3>Whole life EPV &amp; variance</h3>
+        </div>
+        <div class="pad">
+          <p class="teaser">Walk through computing <span class="mono-em">A<sub>x</sub></span> and <span class="mono-em">Var(Z)</span> for a whole life policy from a standard table — set up the present-value random variable, pull <sup>2</sup>A<sub>x</sub>, and read off the annuity identity to sanity-check your answer.</p>
+          <div class="actions">
+            <button class="btn btn-primary"><span class="ch">▶</span> Start studying</button>
+            <button class="btn btn-ghost"><span class="ch">↻</span> Resume</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="mmark">M</div>
+        <div>
+          <strong>Me Studing Stuff</strong> &nbsp;·&nbsp; Study smarter. Pass exams.
+        </div>
+        <div class="grow">© 2026 · built for SOA Exam FAM · EOF</div>
+      </footer>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
