@@ -38,6 +38,7 @@
           <li>Compute net premiums funded by <strong>annual</strong>, <strong>m-thly</strong>, and <strong>continuous</strong> premium streams, and handle <strong>limited-pay</strong>, <strong>term</strong>, and <strong>deferred-annuity</strong> products plus the <strong>return-of-premium</strong> feature.</li>
           <li>Compute <strong>gross (expense-loaded) premiums</strong> that incorporate <strong>per-premium</strong>, <strong>per-policy</strong>, <strong>per-1000-of-face</strong>, and <strong>settlement</strong> expenses, with different first-year and renewal levels, and find the <strong>variance of the gross loss</strong>.</li>
           <li>Compute <strong>percentiles and probabilities of $L_0$</strong> for a single policy, and apply the <strong>portfolio percentile premium principle</strong> to a block of independent policies using the Normal approximation.</li>
+          <li>Set a premium so the policy earns a <strong>given expected present value of profit</strong> (the EPV-of-profit principle) — the third premium principle named in the FAM outcomes alongside equivalence and portfolio percentile.</li>
           <li>Price <strong>substandard (extra-risk) lives</strong> by adjusting the mortality basis three standard ways — <strong>age rating</strong>, a <strong>constant addition</strong> to the force of mortality ($\mu_x+c$), and a <strong>constant multiple</strong> of the mortality rate ($k\,q_x$).</li>
         </ul>
         <p>These map to the SOA FAM-L learning outcomes on premium calculation and the loss random variable, following <em>Actuarial Mathematics for Life Contingent Risks</em> (Dickson, Hardy &amp; Waters, "DHW"), Chapter 6.</p>
@@ -152,12 +153,19 @@
         <p>The <strong>general</strong> form $\mathrm{Var}[L_0] = (b+\tfrac{P}{d})^2[{}^2A_x-(A_x)^2]$ works for <em>any</em> premium $P$ — equivalence or not. The <strong>shortcut</strong> $\mathrm{Var}[L_0] = b^2\dfrac{{}^2A_x-(A_x)^2}{(1-A_x)^2}$ is <em>only</em> valid when $P$ is the equivalence-principle premium. On the exam the general form is usually the safer default.</p>
       </div>
 
-      <h3>8. Percentile premiums and the portfolio principle</h3>
-      <p>The equivalence principle gives roughly a 50% chance of loss. Two more prudent rules:</p>
+      <h3>8. Percentile, portfolio, and profit premium principles</h3>
+      <p>The equivalence principle gives roughly a 50% chance of loss. Three more prudent rules — the last two named explicitly in the FAM outcomes:</p>
       <ul>
         <li><strong>Single-policy percentile premium:</strong> choose $P$ so that $\Pr(L_0 > 0) = \alpha$ for some small $\alpha$. Because $L_0$ is monotonic in $T_x$, find the relevant percentile of $T_x$ and set $L_0 = 0$ at that lifetime.</li>
         <li><strong>Portfolio percentile premium principle:</strong> for $N$ <strong>independent, identical</strong> policies, choose $P$ so that the <strong>aggregate</strong> loss $S = \sum L_{0,i}$ satisfies $\Pr(S > 0) = \alpha$ (equivalently $\Pr(S<0)=1-\alpha$, the insurer's "probability of profit"). Apply the Central Limit Theorem: $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$, $S \approx \text{Normal}$, and solve $E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0$. As $N \to \infty$ the loading per policy shrinks toward the equivalence premium.</li>
+        <li><strong>Given expected present value of profit:</strong> the insurer targets a specific expected profit rather than breakeven. Profit at issue (in PV terms) is just $-L_0$, so its expectation is $\Pi = -E[L_0] = \text{EPV(premiums)} - \text{EPV(benefits + expenses)}$. Pick the premium so $E[L_0]$ equals the negative of the target. The target is usually stated as a <strong>percentage of the EPV of premiums</strong> (a profit margin) or as a flat dollar amount; the equivalence principle is just this rule with target profit $\Pi = 0$.</li>
       </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">EPV-of-profit premium in one line</div>
+        <p>For a target expected profit $\Pi$ (in PV at issue):</p>
+        $$\text{EPV(premiums)} = \text{EPV(benefits} + \text{expenses)} + \Pi \;\;\Longleftrightarrow\;\; E[L_0] = -\Pi.$$
+        <p>If the target is a margin $m$ of the premium EPV, i.e. $\Pi = m\cdot G\,\ddot a$, move it to the premium side: $(1-m)\,G\,\ddot a = \text{EPV(benefits + expenses)}$. Equivalence is the case $\Pi = 0$.</p>
+      </div>
       <div class="callout note" data-icon="🧾">
         <div class="callout-title">$\Pr[S<0]$ vs. $\Pr[S>0]$ — don't get turned around</div>
         <p>$S$ is the <strong>loss</strong>. $S<0$ is a <strong>profit</strong> (good), so the insurer wants $\Pr[S<0]$ <em>large</em> — 90%, 95%, 99%. $S>0$ is a real loss (bad), so $\Pr[S>0]$ should be <em>small</em> — 1%, 5%, 10%. They are complements: $\Pr[S<0] = 1 - \Pr[S>0]$.</p>
@@ -280,6 +288,10 @@
         <span class="formula-label">Portfolio percentile premium condition (Normal approximation)</span>
         $$\Pr(S > 0) = \alpha \;\Rightarrow\; \frac{0 - E[S]}{\sqrt{\mathrm{Var}[S]}} = \Phi^{-1}(1-\alpha) \;\Rightarrow\; E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0,$$</div>
       <p>with $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$, and $\Phi^{-1}(0.95)=1.645$. Substitute $E[L]$ and $\mathrm{Var}[L]$ as functions of the premium and solve. Per-policy form: $E[L] = -\,\Phi^{-1}(1-\alpha)\,\sqrt{\mathrm{Var}[L]}/\sqrt N$.</p>
+      <p><strong>Given EPV of profit $\Pi$.</strong> Set $E[L_0]=-\Pi$:</p>
+      <div class="formula">
+        <span class="formula-label">Premium for a target expected PV of profit $\Pi$</span>
+        $$\text{EPV(premiums)} = \text{EPV(benefits + expenses)} + \Pi. \qquad \text{Margin form: } (1-m)\,G\,\ddot a = \text{EPV(benefits + expenses)} \;\; (\Pi = m\,G\,\ddot a).$$</div>
 
       <h2>Worked Examples</h2>
 
@@ -482,6 +494,18 @@
         </div>
       </details>
 
+      <details class="example">
+        <summary><span class="tag">Example 16</span> Premium for a given expected PV of profit <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully discrete whole life of \$100,000 on $(45)$. SULT, $i=0.05$, so $A_{45}=0.15161$ and $\ddot a_{45}=17.8162$. Ignore expenses. The insurer wants the gross premium $G$ to produce an expected present value of profit equal to <strong>10% of the EPV of premiums</strong>. Find $G$.</p>
+          <p><strong>Solution.</strong> Target $\Pi = 0.10\,G\,\ddot a_{45}$ (a margin $m=0.10$). The profit equation $\text{EPV(premiums)} = \text{EPV(benefits)} + \Pi$ becomes the margin form:</p>
+          $$(1-m)\,G\,\ddot a_{45} = 100000\,A_{45} \;\Rightarrow\; 0.90\,G(17.8162) = 100000(0.15161).$$
+          $$G = \frac{15161}{0.90(17.8162)} = \frac{15161}{16.0346} = 945.50.$$
+          <p><strong>Check.</strong> The equivalence premium is $P = 15161/17.8162 = 850.95$; here $G = P/(1-m) = 850.95/0.90 = 945.50$, a 11.1% loading on the breakeven premium that delivers a 10% margin on premium EPV. Setting $m=0$ recovers the equivalence premium.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G \approx \$945.50$. A "given EPV of profit" question is the equivalence equation with the target profit added to the benefit side — read carefully whether the target is a margin on premium, a margin on benefit, or a flat amount.</div>
+        </div>
+      </details>
+
       <h2>Common Exam Traps</h2>
       <div class="callout trap" data-icon="⚠️">
         <div class="callout-title">The traps that cost real points</div>
@@ -550,6 +574,9 @@
       </details>
       <details class="qa"><summary>In the portfolio percentile principle, what happens to the per-policy premium loading (above the equivalence premium) as $N\to\infty$, and why?</summary>
         <div class="qa-answer">It shrinks to <strong>zero</strong>; the premium tends to the equivalence premium. The loading is $\propto \Phi^{-1}(1-\alpha)\,\mathrm{SD}(L)/\sqrt N$, and the $\sqrt N$ drives it to 0 — diversification makes the relative risk of the average loss vanish.</div>
+      </details>
+      <details class="qa"><summary>The insurer wants an expected PV of profit equal to a margin $m$ of the EPV of premiums. Write the equation you solve for the premium, and what it reduces to when $m=0$.</summary>
+        <div class="qa-answer">Profit at issue is $-L_0$, so target $\Pi=m\,G\ddot a$ gives $\text{EPV(premiums)}=\text{EPV(benefits+expenses)}+\Pi$, i.e. $(1-m)\,G\,\ddot a=\text{EPV(benefits+expenses)}$. When $m=0$ this is exactly the <strong>equivalence principle</strong> ($E[L_0]=0$). Read whether the target margin is on premium, on benefit, or a flat dollar amount.</div>
       </details>
       <details class="qa"><summary>Name the three standard ways to model substandard (extra-risk) mortality, and write the survival adjustment for each.</summary>
         <div class="qa-answer">(a) <strong>Age rating</strong>: price at age $x+j$ — use $A_{x+j}$, $\ddot a_{x+j}$, ${}_tp_{x+j}$. (b) <strong>Constant addition to the force</strong>: $\mu^{\,*}=\mu+c$, giving ${}_tp^{\,*}_x = {}_tp_x\,e^{-ct}$ (acts like adding $c$ to $\delta$). (c) <strong>Constant multiple of the rate</strong>: $q^{\,*}=k\,q$, so ${}_tp^{\,*}_x=\prod(1-k\,q_{x+t})$. In every case the premium recipe $\text{EPV(benefit)}/\text{EPV(annuity)}$ is unchanged — only the basis differs.</div>
