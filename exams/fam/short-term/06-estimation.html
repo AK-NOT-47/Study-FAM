@@ -89,6 +89,10 @@
       <p>The <strong>empirical distribution</strong> puts probability mass $1/n$ on each of the $n$ data points. It makes no distributional assumption.</p>
       <div class="formula">$$F_n(x) = \frac{\#\{x_i \le x\}}{n}, \qquad S_n(x) = 1 - F_n(x).$$</div>
       <p>When data are left-truncated and/or right-censored, the empirical cdf is generalized to the <strong>Kaplan–Meier</strong> estimator (for $S(x)$) and the cumulative hazard to the <strong>Nelson–Aalen</strong> estimator.</p>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Borderline FAM scope — prioritise MLE</div>
+        <p>The <strong>Kaplan–Meier</strong>, <strong>Nelson–Aalen</strong>, <strong>Greenwood</strong>, and <strong>Aalen-variance</strong> material (here, plus the matching Formulas and Worked Examples 10 &amp; 12) is <strong>non-parametric estimation</strong>. FAM's Topic 3 learning outcome names <strong>Maximum Likelihood Estimation only</strong> — there is no non-parametric outcome — so this is at most light/background for FAM. (It's left in because the <em>Loss Models</em> Ch. 11 reading borders on it and it reinforces censoring/truncation intuition.) <strong>Spend your time on the MLE recipe</strong>; treat K–M / N–A as understanding-only unless your prep source says otherwise.</p>
+      </div>
 
       <h3>Parametric estimation methods (in order of exam importance)</h3>
       <ol>
