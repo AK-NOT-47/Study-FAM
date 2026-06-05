@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070512;
+    --bg2:#0d0a22;
+    --ink:#f4f1ff;
+    --muted:#a39dc4;
+    --dim:#6f6a90;
+    --line:rgba(255,255,255,.09);
+    --card:rgba(255,255,255,.035);
+    --card-bd:rgba(255,255,255,.08);
+    --c1:#7c5cff;  /* violet */
+    --c2:#ff5ca8;  /* pink   */
+    --c3:#2bd9c9;  /* aqua   */
+    --c4:#ffb347;  /* amber  */
+    --c5:#5cc8ff;  /* sky    */
+    --glow: 0 0 40px rgba(124,92,255,.35);
+    --r:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.55;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ===== Animated aurora background ===== */
+  .aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;mix-blend-mode:screen}
+  .b1{width:60vw;height:60vw;background:radial-gradient(circle,var(--c1),transparent 70%);top:-20%;left:-10%;animation:drift1 22s ease-in-out infinite}
+  .b2{width:50vw;height:50vw;background:radial-gradient(circle,var(--c2),transparent 70%);top:10%;right:-15%;animation:drift2 28s ease-in-out infinite}
+  .b3{width:45vw;height:45vw;background:radial-gradient(circle,var(--c3),transparent 70%);bottom:-20%;left:20%;animation:drift3 25s ease-in-out infinite}
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(8vw,6vh) scale(1.15)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-6vw,8vh) scale(1.2)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,-6vh) scale(1.1)}}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  .wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 28px}
+
+  /* ===== Top nav ===== */
+  header{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);
+    background:linear-gradient(180deg,rgba(7,5,18,.85),rgba(7,5,18,.4));
+    border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:26px;padding:16px 28px;max-width:1240px;margin:0 auto;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Sora';font-weight:800;letter-spacing:-.02em}
+  .mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+    background:conic-gradient(from 0deg,var(--c1),var(--c2),var(--c4),var(--c3),var(--c1));
+    box-shadow:var(--glow);animation:spin 9s linear infinite;position:relative}
+  .mark::after{content:"M";position:absolute;inset:3px;border-radius:10px;background:var(--bg2);
+    display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:20px;
+    background-clip:padding-box;color:var(--ink)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .brand b{font-size:17px}
+  .brand small{display:block;font-family:'Space Grotesk';font-weight:500;font-size:11px;color:var(--muted);letter-spacing:.01em}
+  nav.topics{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto;align-items:center}
+  nav.topics a{font-size:13.5px;color:var(--muted);text-decoration:none;padding:8px 13px;border-radius:999px;
+    transition:.25s;font-weight:500;position:relative}
+  nav.topics a:hover{color:var(--ink);background:var(--card);transform:translateY(-2px)}
+  .pill-exam{font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:#070512;
+    background:linear-gradient(90deg,var(--c3),var(--c5));padding:8px 14px;border-radius:999px;
+    box-shadow:0 0 22px rgba(43,217,201,.4);white-space:nowrap}
+
+  /* ===== Marquee ===== */
+  .marquee{overflow:hidden;border-bottom:1px solid var(--line);
+    background:linear-gradient(90deg,rgba(124,92,255,.06),rgba(255,92,168,.06));
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .marquee .track{display:flex;gap:0;white-space:nowrap;width:max-content;animation:slide 26s linear infinite}
+  .marquee:hover .track{animation-play-state:paused}
+  .marquee span{font-family:'Sora';font-weight:700;font-size:14px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);padding:13px 26px;display:inline-flex;align-items:center;gap:26px}
+  .marquee span:nth-child(3n+1){color:var(--c1)}
+  .marquee span:nth-child(3n+2){color:var(--c3)}
+  .marquee span:nth-child(3n){color:var(--c4)}
+  .marquee span::after{content:"✦";color:var(--c2);font-size:11px;animation:twinkle 2.2s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:1;transform:scale(1) rotate(0)}50%{opacity:.35;transform:scale(.7) rotate(90deg)}}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  /* ===== Hero ===== */
+  .hero{padding:54px 0 30px;display:grid;grid-template-columns:1.5fr 1fr;gap:34px;align-items:start}
+  .greet{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--c4);
+    font-weight:600;letter-spacing:.02em;margin-bottom:18px}
+  .greet .dot{width:8px;height:8px;border-radius:50%;background:var(--c4);box-shadow:0 0 12px var(--c4);
+    animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  h1{font-family:'Sora';font-weight:800;font-size:clamp(40px,6.2vw,76px);line-height:.98;
+    letter-spacing:-.035em;margin-bottom:22px}
+  h1 .shine{background:linear-gradient(110deg,var(--c1) 10%,var(--c2) 35%,var(--c4) 55%,var(--c3) 80%,var(--c1));
+    background-size:280% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:shimmer 6s linear infinite;position:relative;display:inline-block}
+  h1 .shine::after{content:"";position:absolute;left:0;bottom:.04em;height:.09em;width:100%;border-radius:99px;
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c4),var(--c3));background-size:280% auto;
+    animation:shimmer 6s linear infinite,underscan 4.5s cubic-bezier(.6,0,.2,1) infinite;transform-origin:left}
+  @keyframes shimmer{to{background-position:280% center}}
+  @keyframes underscan{0%{transform:scaleX(0)}45%{transform:scaleX(1)}55%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+  .lede{font-size:18px;color:var(--muted);max-width:48ch}
+  .cta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+  .btn{font-family:'Space Grotesk';font-weight:600;font-size:15px;border:none;cursor:pointer;
+    padding:15px 28px;border-radius:14px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+    transition:.25s;position:relative;overflow:hidden}
+  .btn-primary{color:#0a0717;background:linear-gradient(90deg,var(--c3),var(--c5));
+    box-shadow:0 10px 30px rgba(43,217,201,.35)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(43,217,201,.5)}
+  .btn-ghost{color:var(--ink);background:var(--card);border:1px solid var(--card-bd)}
+  .btn-ghost:hover{transform:translateY(-3px);background:rgba(255,255,255,.08);border-color:var(--c1)}
+  .btn .ar{transition:.25s}
+  .btn:hover .ar{transform:translateX(4px)}
+
+  /* exam FAM card (hero right) */
+  .exam-card{background:var(--card);border:1px solid var(--card-bd);border-radius:var(--r);padding:26px;
+    backdrop-filter:blur(8px);position:relative;overflow:hidden;animation:float 7s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .exam-card::before{content:"";position:absolute;inset:0;border-radius:var(--r);padding:1px;
+    background:linear-gradient(135deg,var(--c1),transparent 40%,transparent 60%,var(--c2));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+  .exam-card::after{content:"";position:absolute;top:0;left:-60%;width:50%;height:100%;
+    background:linear-gradient(105deg,transparent,rgba(255,255,255,.07),transparent);
+    transform:skewX(-18deg);animation:scan 5.5s ease-in-out infinite;pointer-events:none}
+  @keyframes scan{0%,100%{left:-60%}55%,70%{left:130%}}
+  .exam-card .badge{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--c3);font-weight:600;display:inline-flex;align-items:center;gap:7px}
+  .exam-card .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c3);
+    box-shadow:0 0 10px var(--c3);animation:pulse 1.8s ease-in-out infinite}
+  .exam-card h3{font-family:'Sora';font-weight:800;font-size:30px;margin:8px 0 4px;letter-spacing:-.02em}
+  .exam-card .sub{font-size:13.5px;color:var(--muted);margin-bottom:20px}
+  .exam-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .exam-meta div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+  .exam-meta b{font-family:'JetBrains Mono';font-size:20px;display:block;color:var(--ink)}
+  .exam-meta span{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+
+  /* ===== Stats ===== */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:34px 0 14px}
+  .stat{background:var(--card);border:1px solid var(--card-bd);border-radius:var(--r);padding:24px;
+    position:relative;overflow:hidden;transition:.3s}
+  .stat:hover{transform:translateY(-6px);border-color:var(--c1)}
+  .stat:hover .num{animation:nudge .5s ease}
+  @keyframes nudge{50%{transform:scale(1.06)}}
+  .stat .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);font-weight:600}
+  .stat .num{font-family:'Sora';font-weight:800;font-size:48px;line-height:1;margin:10px 0 4px;letter-spacing:-.03em;
+    display:inline-block;transform-origin:left}
+  .stat .meta{font-size:13px;color:var(--muted)}
+  .s1 .num{color:var(--c1)} .s2 .num{color:var(--c2)} .s3 .num{color:var(--c3)}
+  .bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);margin-top:16px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c1),var(--c2));
+    width:72%;position:relative;animation:fill 1.6s cubic-bezier(.2,.8,.2,1)}
+  @keyframes fill{from{width:0}}
+  .bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+    animation:sweep 2.4s linear infinite}
+  @keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+  .countpill{position:absolute;top:18px;right:18px;font-family:'JetBrains Mono';font-size:11px;
+    color:var(--c2);border:1px solid rgba(255,92,168,.35);padding:3px 9px;border-radius:99px}
+
+  /* ===== Content grid ===== */
+  .content{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;margin:22px 0 60px}
+  .panel{background:var(--card);border:1px solid var(--card-bd);border-radius:var(--r);padding:28px;backdrop-filter:blur(8px)}
+  .eyebrow{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--c5);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--c5);border-radius:2px}
+  .panel h2{font-family:'Sora';font-weight:800;font-size:27px;letter-spacing:-.02em;margin-bottom:8px}
+  .panel .lede2{font-size:15px;color:var(--muted);margin-bottom:22px}
+
+  /* formula block */
+  .formulas{display:grid;gap:12px}
+  .formula{font-family:'JetBrains Mono';font-size:17px;background:rgba(124,92,255,.07);
+    border:1px solid rgba(124,92,255,.22);border-radius:14px;padding:16px 18px;color:var(--ink);
+    display:flex;align-items:center;gap:14px;transition:.25s;position:relative;overflow:hidden}
+  .formula:hover{border-color:var(--c1);background:rgba(124,92,255,.13);transform:translateX(4px)}
+  .formula .k{font-family:'Sora';font-weight:700;color:var(--c3);font-size:13px;
+    background:rgba(43,217,201,.12);padding:3px 9px;border-radius:7px;white-space:nowrap}
+  .formula .eq{letter-spacing:.01em}
+  .formula sup,.formula sub{font-size:.7em}
+
+  /* common trap */
+  .trap{margin-top:22px;border-radius:16px;padding:18px 20px;
+    background:linear-gradient(135deg,rgba(255,179,71,.12),rgba(255,92,168,.08));
+    border:1px solid rgba(255,179,71,.3);position:relative}
+  .trap .tag{font-family:'Sora';font-weight:800;font-size:12.5px;letter-spacing:.04em;color:var(--c4);
+    text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .trap .tag .ico{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;
+    background:rgba(255,179,71,.22);animation:wob 3s ease-in-out infinite}
+  @keyframes wob{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  .trap p{font-size:14.5px;color:var(--ink)}
+  .trap b{color:var(--c4)}
+
+  /* right column: worked example teaser */
+  .teaser{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+  .teaser::before{content:"";position:absolute;top:-40%;right:-30%;width:60%;height:80%;
+    background:radial-gradient(circle,rgba(255,92,168,.25),transparent 70%);filter:blur(30px)}
+  .teaser .num-badge{font-family:'JetBrains Mono';font-size:12px;color:var(--c2);font-weight:600}
+  .teaser h3{font-family:'Sora';font-weight:800;font-size:22px;line-height:1.15;letter-spacing:-.02em}
+  .teaser .desc{font-size:14px;color:var(--muted)}
+  .mini-stack{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+  .mini-row{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono';
+    font-size:13px;padding:10px 13px;background:rgba(255,255,255,.04);border-radius:11px;border:1px solid var(--line)}
+  .mini-row span:first-child{color:var(--dim)}
+  .mini-row span:last-child{color:var(--c3)}
+  .teaser .cta{margin-top:8px}
+  .teaser .btn{flex:1;justify-content:center;padding:14px 18px;font-size:14px}
+
+  /* progress chips list */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .chip{font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--line);
+    padding:6px 12px;border-radius:99px;display:flex;align-items:center;gap:7px;transition:.25s}
+  .chip:hover{color:var(--ink);border-color:var(--c1);transform:translateY(-2px)}
+  .chip .ok{width:7px;height:7px;border-radius:50%;background:var(--c3);box-shadow:0 0 8px var(--c3)}
+  .chip.todo .ok{background:var(--dim);box-shadow:none}
+
+  /* ===== Footer ===== */
+  footer{border-top:1px solid var(--line);padding:30px 0 50px;
+    background:linear-gradient(180deg,transparent,rgba(124,92,255,.05))}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .foot .brand small{color:var(--dim)}
+  .foot .copy{font-size:12.5px;color:var(--dim)}
+  .foot .copy b{color:var(--muted);font-weight:600}
+
+  /* ===== Responsive ===== */
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr;gap:26px}
+    .content{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    nav.topics{width:100%;margin-left:0;order:3}
+  }
+  @media(max-width:700px){
+    .wrap,.nav{padding-left:18px;padding-right:18px}
+    .exam-meta{grid-template-columns:1fr 1fr}
+    h1{font-size:clamp(38px,11vw,60px)}
+    .formula{font-size:15px;flex-wrap:wrap}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important}
+  }
+</style>
+</head>
+<body>
+  <div class="aurora">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="grain"></div>
+
+  <!-- ===== Header / Nav ===== -->
+  <header>
+    <div class="nav">
+      <a href="#" class="brand" style="text-decoration:none;color:inherit">
+        <span class="mark"></span>
+        <span><b>Me Studing Stuff</b><small>Study smarter. Pass exams.</small></span>
+      </a>
+      <nav class="topics" aria-label="Topics">
+        <a href="#">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+        <a href="#">Short-Term Models</a>
+        <span class="pill-exam">FAM-L / FAM-S</span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Marquee ===== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span>Survival Models</span><span>Life Tables</span><span>Life Insurance</span><span>Life Annuities</span><span>Premiums</span><span>Policy Values</span>
+      <span>Survival Models</span><span>Life Tables</span><span>Life Insurance</span><span>Life Annuities</span><span>Premiums</span><span>Policy Values</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div>
+        <div class="greet"><span class="dot"></span> Good evening</div>
+        <h1>Let's get you<br><span class="shine">that pass.</span></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="cta">
+          <a href="#" class="btn btn-primary">Start studying <span class="ar">→</span></a>
+          <a href="#" class="btn btn-ghost">Resume <span class="ar">↻</span></a>
+        </div>
+      </div>
+
+      <aside class="exam-card">
+        <div class="badge">Now preparing</div>
+        <h3>Exam FAM</h3>
+        <div class="sub">Fundamentals of Actuarial Mathematics · SOA</div>
+        <div class="exam-meta">
+          <div><b>34</b><span>Questions</span></div>
+          <div><b>6/10</b><span>Pass mark</span></div>
+          <div><b>86d</b><span>Until exam</span></div>
+          <div><b>72%</b><span>Ready</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ===== Stats ===== -->
+    <section class="stats" aria-label="Progress stats">
+      <div class="stat s1">
+        <div class="lbl">Overall progress</div>
+        <div class="num">72%</div>
+        <div class="meta">12 of 17 topics</div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="stat s2">
+        <span class="countpill">● live</span>
+        <div class="lbl">Exam countdown</div>
+        <div class="num">86</div>
+        <div class="meta">days remaining</div>
+      </div>
+      <div class="stat s3">
+        <div class="lbl">Topics solid</div>
+        <div class="num">8</div>
+        <div class="meta">mastered &amp; review-ready</div>
+      </div>
+    </section>
+
+    <!-- ===== Content ===== -->
+    <section class="content">
+      <!-- left: topic preview -->
+      <article class="panel">
+        <div class="eyebrow">Topic preview · Life Insurance</div>
+        <h2>Life Insurance Present Values</h2>
+        <p class="lede2">The expected present value of a benefit, and how its variance falls out of the same building blocks.</p>
+
+        <div class="formulas">
+          <div class="formula">
+            <span class="k">Whole life</span>
+            <span class="eq">A<sub>x</sub> = 1 − d·ä<sub>x</sub></span>
+          </div>
+          <div class="formula">
+            <span class="k">Variance</span>
+            <span class="eq">Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></span>
+          </div>
+          <div class="formula">
+            <span class="k">Annuity</span>
+            <span class="eq">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</span>
+          </div>
+        </div>
+
+        <div class="trap">
+          <div class="tag"><span class="ico">⚠️</span> Common trap</div>
+          <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+
+        <div class="chips">
+          <span class="chip"><span class="ok"></span>Survival Models</span>
+          <span class="chip"><span class="ok"></span>Life Tables</span>
+          <span class="chip"><span class="ok"></span>Life Insurance</span>
+          <span class="chip todo"><span class="ok"></span>Life Annuities</span>
+          <span class="chip todo"><span class="ok"></span>Premiums</span>
+          <span class="chip todo"><span class="ok"></span>Policy Values</span>
+        </div>
+      </article>
+
+      <!-- right: worked example teaser -->
+      <article class="panel teaser">
+        <div class="num-badge">Example 1</div>
+        <h3>Whole life EPV &amp; variance</h3>
+        <p class="desc">Work the expected present value of a whole-life benefit, then derive its variance straight from the second moment <sup>2</sup>A<sub>x</sub>.</p>
+        <div class="mini-stack">
+          <div class="mini-row"><span>Step 1 — set up Z</span><span>benefit RV</span></div>
+          <div class="mini-row"><span>Step 2 — EPV = A<sub>x</sub></span><span>1 − d·ä<sub>x</sub></span></div>
+          <div class="mini-row"><span>Step 3 — Var(Z)</span><span><sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)²</span></div>
+        </div>
+        <div class="cta">
+          <a href="#" class="btn btn-primary">Start studying <span class="ar">→</span></a>
+          <a href="#" class="btn btn-ghost">Resume <span class="ar">↻</span></a>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="wrap foot">
+      <div class="brand">
+        <span class="mark"></span>
+        <span><b>Me Studing Stuff</b><small>Study smarter. Pass exams.</small></span>
+      </div>
+      <div class="copy">© 2026 <b>Me Studing Stuff</b> · Built for SOA Exam FAM · FAM-L / FAM-S</div>
+    </div>
+  </footer>
+</body>
+</html>

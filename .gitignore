@@ -1,0 +1,14 @@
+# Large, copyrighted source study material (≈1.4 GB) — kept locally, never pushed
+Books and other resources/
+
+# Working scratch: source-text extraction, audit/fix workflow scripts
+.staging/
+
+# Claude Code local runtime / machine-specific
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+*~$*

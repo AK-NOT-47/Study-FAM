@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Stardos+Stencil:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --steel-0:#0c0e10;
+    --steel-1:#16191c;
+    --steel-2:#23282d;
+    --steel-3:#31373d;
+    --steel-4:#454d54;
+    --rivet:#6b7077;
+    --rivet-hi:#9aa0a7;
+    --oil:#0a0c0d;
+    --brass:#c69a4c;
+    --brass-hi:#f0cd84;
+    --brass-deep:#8a6a2c;
+    --hazard:#e6b422;
+    --rust:#a4471f;
+    --rust-deep:#6e2f13;
+    --warn:#d8531f;
+    --green:#5e8c4a;
+    --green-hi:#8fc06b;
+    --ink:#e8e2d4;
+    --ink-dim:#aab0a8;
+    --paper:#d9cfb6;
+    --paper-ink:#221d14;
+    --line:#3c434a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Oswald",sans-serif;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(198,154,76,.07), transparent 60%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,.012) 0 2px, transparent 2px 4px),
+      linear-gradient(180deg, var(--steel-1), var(--steel-0));
+    color:var(--ink);
+    min-height:100vh;
+    letter-spacing:.02em;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---- riveted plate utility ---- */
+  .plate{
+    position:relative;
+    background:
+      linear-gradient(180deg, var(--steel-3), var(--steel-2) 55%, var(--steel-1));
+    border:2px solid #0b0d0f;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.06),
+      inset 0 -3px 8px rgba(0,0,0,.55),
+      0 6px 18px rgba(0,0,0,.5);
+  }
+  .rivets::before,
+  .rivets::after{
+    content:"";
+    position:absolute;left:10px;right:10px;height:10px;
+    background-image:radial-gradient(circle at center, var(--rivet-hi) 0 1.3px, var(--rivet) 1.3px 3px, #0a0c0d 3px 4px, transparent 4px);
+    background-size:26px 10px;background-repeat:repeat-x;background-position:left center;
+    pointer-events:none;opacity:.9;
+  }
+  .rivets::before{top:6px;}
+  .rivets::after{bottom:6px;}
+  .rivets-side::before,
+  .rivets-side::after{
+    content:"";position:absolute;top:14px;bottom:14px;width:10px;
+    background-image:radial-gradient(circle at center, var(--rivet-hi) 0 1.3px, var(--rivet) 1.3px 3px, #0a0c0d 3px 4px, transparent 4px);
+    background-size:10px 26px;background-repeat:repeat-y;background-position:center top;
+    pointer-events:none;opacity:.9;
+  }
+  .rivets-side::before{left:6px;}
+  .rivets-side::after{right:6px;}
+
+  /* ============ SHELL ============ */
+  .shell{
+    display:grid;
+    grid-template-columns:284px 1fr;
+    min-height:100vh;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    position:relative;
+    background:
+      repeating-linear-gradient(180deg, rgba(0,0,0,.18) 0 3px, transparent 3px 7px),
+      linear-gradient(180deg, var(--steel-3), var(--steel-2));
+    border-right:3px solid #07090a;
+    box-shadow:inset -8px 0 20px rgba(0,0,0,.45), 6px 0 16px rgba(0,0,0,.4);
+    padding:0 0 24px;
+    display:flex;flex-direction:column;
+  }
+  .brand{
+    position:relative;
+    padding:22px 22px 20px;
+    border-bottom:3px solid #07090a;
+    background:linear-gradient(180deg, var(--steel-4), var(--steel-2));
+    box-shadow:inset 0 -6px 12px rgba(0,0,0,.4);
+    display:flex;align-items:center;gap:14px;
+  }
+  .mmark{
+    width:54px;height:54px;flex:0 0 auto;border-radius:6px;
+    background:
+      radial-gradient(circle at 30% 25%, var(--brass-hi), var(--brass) 45%, var(--brass-deep) 100%);
+    border:2px solid #2b2113;
+    box-shadow:inset 0 2px 3px rgba(255,255,255,.5), inset 0 -4px 6px rgba(0,0,0,.5), 0 3px 6px rgba(0,0,0,.5);
+    display:grid;place-items:center;position:relative;
+  }
+  .mmark span{
+    font-family:"Stardos Stencil",sans-serif;font-weight:700;font-size:34px;color:#241a0c;
+    text-shadow:0 1px 0 rgba(255,255,255,.35);line-height:1;
+  }
+  /* rivets on the M plate corners */
+  .mmark i{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff, #6b5226 60%, #2b2113);}
+  .mmark i:nth-child(1){top:4px;left:4px;} .mmark i:nth-child(2){top:4px;right:4px;}
+  .mmark i:nth-child(3){bottom:4px;left:4px;} .mmark i:nth-child(4){bottom:4px;right:4px;}
+  .brand-txt b{
+    display:block;font-family:"Stardos Stencil",sans-serif;font-weight:700;
+    font-size:18px;letter-spacing:.06em;color:var(--ink);text-transform:uppercase;line-height:1.05;
+  }
+  .brand-txt small{
+    display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-hi);margin-top:4px;
+  }
+
+  .nav-label{
+    margin:22px 18px 8px;
+    font-family:"Stardos Stencil",sans-serif;font-size:12px;letter-spacing:.28em;
+    color:var(--paper-ink);text-transform:uppercase;
+    background:repeating-linear-gradient(45deg,var(--hazard) 0 12px,#1a1a1a 12px 24px);
+    padding:6px 10px;border:2px solid #07090a;
+    box-shadow:inset 0 0 0 2px rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.5);
+    display:inline-block;align-self:flex-start;
+    text-shadow:0 1px 0 rgba(255,255,255,.25);
+  }
+  .nav-label-wrap{display:flex;}
+  nav{padding:4px 14px 0;display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+  nav a{
+    position:relative;display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:var(--ink-dim);
+    font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+    padding:10px 12px 10px 14px;
+    border:1.5px solid transparent;border-radius:3px;
+    transition:.15s;
+  }
+  nav a .gear{
+    width:18px;height:18px;flex:0 0 auto;color:var(--rivet);transition:.2s;
+  }
+  nav a:hover{
+    color:var(--ink);
+    background:linear-gradient(180deg, rgba(198,154,76,.12), rgba(0,0,0,.2));
+    border-color:#0a0c0d;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  nav a:hover .gear{color:var(--brass-hi);transform:rotate(40deg);}
+  nav a.active{
+    color:#1c1509;font-weight:600;
+    background:linear-gradient(180deg, var(--brass-hi), var(--brass) 60%, var(--brass-deep));
+    border-color:#2b2113;
+    box-shadow:inset 0 2px 2px rgba(255,255,255,.4), inset 0 -3px 5px rgba(0,0,0,.35), 0 2px 5px rgba(0,0,0,.4);
+  }
+  nav a.active .gear{color:#3a2c10;}
+  nav a .num{
+    margin-left:auto;font-family:"Special Elite",monospace;font-size:11px;opacity:.7;
+  }
+  .sidebar-foot{
+    margin:auto 18px 0;padding-top:18px;
+    font-family:"Special Elite",monospace;font-size:11px;color:var(--rivet);letter-spacing:.1em;
+    line-height:1.6;
+  }
+  .pipe{height:14px;margin:14px 12px 0;border-radius:8px;
+    background:
+      linear-gradient(180deg,var(--steel-4),var(--steel-2));
+    border:1.5px solid #07090a;
+    box-shadow:inset 0 2px 2px rgba(255,255,255,.08), inset 0 -3px 5px rgba(0,0,0,.5);
+    position:relative;}
+  .pipe::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at center, var(--rivet-hi) 0 1px, transparent 1.4px);background-size:18px 14px;opacity:.5;}
+
+  /* ============ MAIN ============ */
+  .main{position:relative;overflow:hidden;}
+  /* subtle blueprint grid behind */
+  .main::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(rgba(120,140,160,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,140,160,.035) 1px, transparent 1px);
+    background-size:34px 34px;
+  }
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;gap:18px;
+    padding:14px 30px;
+    background:linear-gradient(180deg,var(--steel-4),var(--steel-2));
+    border-bottom:3px solid #07090a;
+    box-shadow:inset 0 -6px 12px rgba(0,0,0,.4), 0 4px 10px rgba(0,0,0,.4);
+  }
+  .topbar .gauge{
+    width:42px;height:42px;border-radius:50%;flex:0 0 auto;
+    background:radial-gradient(circle at 40% 30%, #2c3137, #0e1113);
+    border:2px solid #07090a;
+    box-shadow:inset 0 2px 4px rgba(255,255,255,.1), inset 0 -3px 6px rgba(0,0,0,.6);
+    display:grid;place-items:center;position:relative;
+  }
+  .gauge .needle{position:absolute;width:2px;height:15px;background:var(--rust);left:50%;top:6px;transform-origin:bottom center;transform:translateX(-50%) rotate(38deg);box-shadow:0 0 3px var(--rust);}
+  .gauge .cap{width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--rivet-hi),#1a1d20);}
+  .topbar h2{
+    margin:0;font-family:"Stardos Stencil",sans-serif;font-size:16px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+  }
+  .topbar .ribbon{
+    margin-left:auto;display:flex;align-items:center;gap:10px;
+    font-family:"Special Elite",monospace;font-size:12px;color:var(--brass-hi);letter-spacing:.12em;
+  }
+  .led{width:10px;height:10px;border-radius:50%;background:var(--green-hi);box-shadow:0 0 8px var(--green-hi),0 0 2px #fff inset;animation:blink 2.4s infinite;}
+  @keyframes blink{0%,92%,100%{opacity:1}94%{opacity:.3}}
+
+  .content{position:relative;z-index:2;padding:30px;max-width:1280px;margin:0 auto;}
+
+  /* ---- HERO ---- */
+  .hero{
+    padding:34px 34px 30px;margin-bottom:26px;border-radius:4px;
+    background:
+      linear-gradient(180deg, rgba(198,154,76,.06), transparent 40%),
+      linear-gradient(180deg, var(--steel-3), var(--steel-2) 60%, var(--steel-1));
+  }
+  .greet{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:"Special Elite",monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;
+    color:#1c1509;padding:5px 12px;margin-bottom:18px;
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass));border:2px solid #2b2113;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 4px rgba(0,0,0,.4);
+  }
+  .hero h1{
+    margin:0 0 16px;
+    font-family:"Stardos Stencil",sans-serif;font-weight:700;
+    font-size:clamp(34px,5.4vw,62px);line-height:.96;text-transform:uppercase;
+    color:var(--ink);letter-spacing:.01em;
+    text-shadow:0 2px 0 #07090a, 0 3px 6px rgba(0,0,0,.6);
+  }
+  .hero h1 em{
+    font-style:normal;color:var(--brass-hi);
+    text-shadow:0 2px 0 var(--brass-deep),0 3px 8px rgba(0,0,0,.6);
+  }
+  .hero p.lede{
+    margin:0;max-width:62ch;font-size:17px;line-height:1.6;color:var(--ink-dim);font-weight:300;
+    border-left:4px solid var(--brass);padding-left:16px;
+  }
+
+  /* ---- STATS ---- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:26px;}
+  .stat{padding:22px 20px 20px;border-radius:4px;text-align:left;}
+  .stat .cap{font-family:"Special Elite",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);}
+  .stat .big{
+    font-family:"Stardos Stencil",sans-serif;font-weight:700;font-size:46px;line-height:1;margin:8px 0 4px;
+    color:var(--brass-hi);text-shadow:0 2px 0 #07090a;
+  }
+  .stat .sub{font-size:13px;color:var(--ink-dim);letter-spacing:.06em;}
+  .stat.warn .big{color:var(--warn);}
+  .stat.go .big{color:var(--green-hi);}
+  /* dial bar */
+  .dial{height:12px;margin-top:14px;border-radius:7px;overflow:hidden;position:relative;
+    background:linear-gradient(180deg,#0c0e10,#1a1d20);border:1.5px solid #07090a;
+    box-shadow:inset 0 2px 3px rgba(0,0,0,.7);}
+  .dial > i{display:block;height:100%;width:72%;
+    background:repeating-linear-gradient(45deg,var(--brass-hi) 0 8px,var(--brass) 8px 16px);
+    box-shadow:0 0 8px rgba(240,205,132,.4);}
+  .stat.warn .dial > i{width:58%;background:repeating-linear-gradient(45deg,var(--warn) 0 8px,var(--rust) 8px 16px);}
+  .stat.go .dial > i{width:47%;background:repeating-linear-gradient(45deg,var(--green-hi) 0 8px,var(--green) 8px 16px);}
+
+  /* ---- GRID OF CARDS ---- */
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:22px;}
+  .card{padding:24px 24px 22px;border-radius:4px;}
+  .card-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .stencil-tag{
+    font-family:"Stardos Stencil",sans-serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+    color:#1c1509;padding:4px 11px;
+    background:linear-gradient(180deg,var(--hazard),#bd8e12);border:2px solid #07090a;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  .card h3{margin:0;font-family:"Stardos Stencil",sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);}
+  .card p{margin:0 0 14px;color:var(--ink-dim);font-size:15px;line-height:1.55;font-weight:300;}
+
+  /* EXAM FAM card */
+  .examfam{display:flex;flex-direction:column;}
+  .examfam .plate-id{
+    font-family:"Special Elite",monospace;font-size:12px;letter-spacing:.1em;color:var(--brass-hi);
+    margin-bottom:6px;
+  }
+  .specs{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px;}
+  .spec{
+    font-family:"Special Elite",monospace;font-size:12px;letter-spacing:.05em;
+    color:var(--ink);padding:6px 11px;border:1.5px solid var(--line);border-radius:3px;
+    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.25));
+  }
+  .spec b{color:var(--brass-hi);font-weight:600;}
+
+  /* FORMULA block */
+  .formula-card .lede{margin-bottom:16px;}
+  .formula{
+    font-family:"Special Elite",monospace;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 1px, transparent 1px 28px),
+      linear-gradient(180deg, var(--oil), #111417);
+    border:2px solid #07090a;border-radius:4px;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.7), inset 0 0 0 1px rgba(120,140,160,.06);
+    padding:18px 18px;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .formula .f{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    color:var(--green-hi);font-size:16px;letter-spacing:.02em;
+    text-shadow:0 0 6px rgba(143,192,107,.35);
+  }
+  .formula .f .pin{
+    font-family:"Oswald";font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:#0c1408;background:var(--green-hi);padding:2px 7px;border-radius:2px;flex:0 0 auto;
+  }
+  .formula .f code{color:var(--brass-hi);font-family:inherit;}
+  .formula .div{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);}
+
+  /* TRAP callout */
+  .trap{
+    margin-top:20px;padding:16px 18px 16px 54px;position:relative;border-radius:4px;
+    background:
+      repeating-linear-gradient(45deg, rgba(216,83,31,.14) 0 14px, transparent 14px 28px),
+      linear-gradient(180deg, var(--steel-2), var(--steel-1));
+    border:2px solid var(--rust);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.4), 0 4px 10px rgba(0,0,0,.4);
+  }
+  .trap::before{
+    content:"⚠";position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    font-size:26px;color:var(--hazard);text-shadow:0 0 8px rgba(230,180,34,.5);
+  }
+  .trap b{
+    display:block;font-family:"Stardos Stencil",sans-serif;font-size:13px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--warn);margin-bottom:5px;
+  }
+  .trap span{color:var(--ink);font-size:14.5px;line-height:1.5;font-weight:300;}
+  .trap span em{font-style:normal;color:var(--brass-hi);font-weight:600;}
+
+  /* WORKED EXAMPLE */
+  .worked{
+    margin-top:22px;padding:24px;border-radius:4px;
+    display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+    background:
+      linear-gradient(180deg, rgba(198,154,76,.07), transparent),
+      linear-gradient(180deg, var(--steel-3), var(--steel-2));
+  }
+  .worked .icon{
+    width:64px;height:64px;flex:0 0 auto;border-radius:50%;position:relative;
+    background:radial-gradient(circle at 38% 32%, #3a4148, #14171a);
+    border:3px solid #07090a;
+    box-shadow:inset 0 2px 4px rgba(255,255,255,.12),inset 0 -4px 8px rgba(0,0,0,.6),0 3px 6px rgba(0,0,0,.5);
+    display:grid;place-items:center;
+  }
+  .worked .icon::after{content:"";position:absolute;inset:8px;border-radius:50%;border:2px dashed var(--rivet);}
+  .worked .icon span{font-family:"Stardos Stencil";font-size:24px;color:var(--brass-hi);z-index:1;}
+  .worked .w-txt{flex:1 1 240px;}
+  .worked .tag{font-family:"Special Elite",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-hi);}
+  .worked h4{margin:6px 0 4px;font-family:"Stardos Stencil",sans-serif;font-size:21px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink);}
+  .worked .w-txt p{margin:0;font-size:14px;color:var(--ink-dim);font-weight:300;}
+  .actions{display:flex;gap:14px;flex:0 0 auto;flex-wrap:wrap;}
+
+  .btn{
+    cursor:pointer;border:none;
+    font-family:"Stardos Stencil",sans-serif;font-size:15px;letter-spacing:.12em;text-transform:uppercase;
+    padding:14px 24px;border-radius:4px;position:relative;
+    transition:.12s;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn .rv{width:5px;height:5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#0006);}
+  .btn-primary{
+    color:#1c1509;
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass) 55%,var(--brass-deep));
+    border:2px solid #2b2113;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 -4px 7px rgba(0,0,0,.35),0 4px 9px rgba(0,0,0,.45);
+  }
+  .btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+  .btn-primary:active{transform:translateY(1px);box-shadow:inset 0 2px 5px rgba(0,0,0,.5);}
+  .btn-ghost{
+    color:var(--ink);
+    background:linear-gradient(180deg,var(--steel-4),var(--steel-2));
+    border:2px solid #07090a;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.08),inset 0 -4px 7px rgba(0,0,0,.5),0 4px 9px rgba(0,0,0,.4);
+  }
+  .btn-ghost:hover{color:var(--brass-hi);border-color:var(--brass-deep);transform:translateY(-1px);}
+  .btn-ghost:active{transform:translateY(1px);}
+
+  /* FOOTER */
+  footer{
+    position:relative;z-index:2;margin-top:34px;
+    padding:22px 30px;
+    background:linear-gradient(180deg,var(--steel-2),var(--steel-0));
+    border-top:3px solid #07090a;
+    box-shadow:inset 0 6px 12px rgba(0,0,0,.4);
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  footer .fmark{width:36px;height:36px;border-radius:5px;
+    background:radial-gradient(circle at 30% 25%, var(--brass-hi), var(--brass) 50%, var(--brass-deep));
+    border:2px solid #2b2113;display:grid;place-items:center;
+    font-family:"Stardos Stencil";font-size:22px;color:#241a0c;
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.4),0 2px 4px rgba(0,0,0,.5);}
+  footer b{font-family:"Stardos Stencil",sans-serif;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);}
+  footer small{font-family:"Special Elite",monospace;color:var(--rivet);font-size:12px;letter-spacing:.08em;}
+  footer .ftag{margin-left:auto;font-family:"Special Elite",monospace;color:var(--brass-hi);font-size:12px;letter-spacing:.14em;}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:980px){
+    .grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{flex-direction:column;}
+    nav{flex-direction:row;flex-wrap:wrap;}
+    nav a{flex:1 1 44%;}
+    nav a .num{display:none;}
+    .sidebar-foot,.pipe{display:none;}
+    .stats{grid-template-columns:1fr;}
+  }
+  @media (max-width:700px){
+    .content{padding:18px;}
+    .topbar{padding:12px 16px;}
+    .topbar h2{font-size:13px;}
+    .worked .actions{width:100%;}
+    .actions .btn{flex:1 1 auto;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mmark"><i></i><i></i><i></i><i></i><span>M</span></div>
+      <div class="brand-txt">
+        <b>Me Studing<br/>Stuff</b>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+
+    <div class="nav-label-wrap"><div class="nav-label">FAM-L / FAM-S</div></div>
+
+    <nav>
+      <a href="#" class="active">
+        <svg class="gear" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2.2.5a6.9 6.9 0 01-.6 1.5l1.2 1.9-1.6 1.6-1.9-1.2a6.9 6.9 0 01-1.5.6L13 19h-2l-.5-2.2a6.9 6.9 0 01-1.5-.6l-1.9 1.2-1.6-1.6 1.2-1.9a6.9 6.9 0 01-.6-1.5L3 12V10l2.2-.5c.15-.53.35-1.03.6-1.5L4.6 6.1l1.6-1.6 1.9 1.2c.47-.25.97-.45 1.5-.6L11 3h2l.5 2.2c.53.15 1.03.35 1.5.6l1.9-1.2 1.6 1.6-1.2 1.9c.25.47.45.97.6 1.5L21 10v2z"/></svg>
+        Survival Models <span class="num">01</span>
+      </a>
+      <a href="#">
+        <svg class="gear" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2.2.5a6.9 6.9 0 01-.6 1.5l1.2 1.9-1.6 1.6-1.9-1.2a6.9 6.9 0 01-1.5.6L13 19h-2l-.5-2.2a6.9 6.9 0 01-1.5-.6l-1.9 1.2-1.6-1.6 1.2-1.9a6.9 6.9 0 01-.6-1.5L3 12V10l2.2-.5c.15-.53.35-1.03.6-1.5L4.6 6.1l1.6-1.6 1.9 1.2c.47-.25.97-.45 1.5-.6L11 3h2l.5 2.2c.53.15 1.03.35 1.5.6l1.9-1.2 1.6 1.6-1.2 1.9c.25.47.45.97.6 1.5L21 10v2z"/></svg>
+        Life Tables <span class="num">02</span>
+      </a>
+      <a href="#">
+        <svg class="gear" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2.2.5a6.9 6.9 0 01-.6 1.5l1.2 1.9-1.6 1.6-1.9-1.2a6.9 6.9 0 01-1.5.6L13 19h-2l-.5-2.2a6.9 6.9 0 01-1.5-.6l-1.9 1.2-1.6-1.6 1.2-1.9a6.9 6.9 0 01-.6-1.5L3 12V10l2.2-.5c.15-.53.35-1.03.6-1.5L4.6 6.1l1.6-1.6 1.9 1.2c.47-.25.97-.45 1.5-.6L11 3h2l.5 2.2c.53.15 1.03.35 1.5.6l1.9-1.2 1.6 1.6-1.2 1.9c.25.47.45.97.6 1.5L21 10v2z"/></svg>
+        Life Insurance <span class="num">03</span>
+      </a>
+      <a href="#">
+        <svg class="gear" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2.2.5a6.9 6.9 0 01-.6 1.5l1.2 1.9-1.6 1.6-1.9-1.2a6.9 6.9 0 01-1.5.6L13 19h-2l-.5-2.2a6.9 6.9 0 01-1.5-.6l-1.9 1.2-1.6-1.6 1.2-1.9a6.9 6.9 0 01-.6-1.5L3 12V10l2.2-.5c.15-.53.35-1.03.6-1.5L4.6 6.1l1.6-1.6 1.9 1.2c.47-.25.97-.45 1.5-.6L11 3h2l.5 2.2c.53.15 1.03.35 1.5.6l1.9-1.2 1.6 1.6-1.2 1.9c.25.47.45.97.6 1.5L21 10v2z"/></svg>
+        Life Annuities <span class="num">04</span>
+      </a>
+      <a href="#">
+        <svg class="gear" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2.2.5a6.9 6.9 0 01-.6 1.5l1.2 1.9-1.6 1.6-1.9-1.2a6.9 6.9 0 01-1.5.6L13 19h-2l-.5-2.2a6.9 6.9 0 01-1.5-.6l-1.9 1.2-1.6-1.6 1.2-1.9a6.9 6.9 0 01-.6-1.5L3 12V10l2.2-.5c.15-.53.35-1.03.6-1.5L4.6 6.1l1.6-1.6 1.9 1.2c.47-.25.97-.45 1.5-.6L11 3h2l.5 2.2c.53.15 1.03.35 1.5.6l1.9-1.2 1.6 1.6-1.2 1.9c.25.47.45.97.6 1.5L21 10v2z"/></svg>
+        Premiums <span class="num">05</span>
+      </a>
+      <a href="#">
+        <svg class="gear" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2.2.5a6.9 6.9 0 01-.6 1.5l1.2 1.9-1.6 1.6-1.9-1.2a6.9 6.9 0 01-1.5.6L13 19h-2l-.5-2.2a6.9 6.9 0 01-1.5-.6l-1.9 1.2-1.6-1.6 1.2-1.9a6.9 6.9 0 01-.6-1.5L3 12V10l2.2-.5c.15-.53.35-1.03.6-1.5L4.6 6.1l1.6-1.6 1.9 1.2c.47-.25.97-.45 1.5-.6L11 3h2l.5 2.2c.53.15 1.03.35 1.5.6l1.9-1.2 1.6 1.6-1.2 1.9c.25.47.45.97.6 1.5L21 10v2z"/></svg>
+        Policy Values <span class="num">06</span>
+      </a>
+    </nav>
+
+    <div class="pipe"></div>
+    <div class="sidebar-foot">
+      UNIT FAM-2026 // SECTOR L+S<br/>
+      BOILER PRESSURE: NOMINAL<br/>
+      OPERATOR: finance@solidarity
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <div class="topbar">
+      <div class="gauge"><span class="needle"></span><span class="cap"></span></div>
+      <h2>Control Deck — Exam FAM</h2>
+      <div class="ribbon"><span class="led"></span> SYSTEMS ONLINE</div>
+    </div>
+
+    <div class="content">
+
+      <!-- HERO -->
+      <section class="hero plate rivets">
+        <span class="greet">◆ Good evening</span>
+        <h1>Let's get you <em>that pass.</em></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat plate rivets-side">
+          <div class="cap">Overall progress</div>
+          <div class="big">72%</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="dial"><i></i></div>
+        </div>
+        <div class="stat warn plate rivets-side">
+          <div class="cap">Exam countdown</div>
+          <div class="big">86</div>
+          <div class="sub">days remaining</div>
+          <div class="dial"><i></i></div>
+        </div>
+        <div class="stat go plate rivets-side">
+          <div class="cap">Topics solid</div>
+          <div class="big">8</div>
+          <div class="sub">locked &amp; riveted</div>
+          <div class="dial"><i></i></div>
+        </div>
+      </section>
+
+      <!-- GRID -->
+      <section class="grid">
+
+        <!-- LEFT: topic preview + formula -->
+        <div class="card formula-card plate rivets">
+          <div class="card-head">
+            <span class="stencil-tag">Topic 03</span>
+            <h3>Life Insurance Present Values</h3>
+          </div>
+          <p class="lede">The actuarial present value of a death benefit — the machinery that turns mortality into money.</p>
+          <div class="formula">
+            <div class="f"><span class="pin">EPV</span><code>A_x = 1 − d·ä_x</code></div>
+            <div class="div"></div>
+            <div class="f"><span class="pin">VAR</span><code>Var(Z) = ²A_x − (A_x)²</code></div>
+            <div class="div"></div>
+            <div class="f"><span class="pin">ANN</span><code>ä_x = (1 − A_x) / d</code></div>
+          </div>
+
+          <!-- TRAP -->
+          <div class="trap">
+            <b>Common trap</b>
+            <span>Under UDD, multiply <em>ONLY</em> the term/death piece by <em>i/δ</em> — the pure endowment is never rescaled.</span>
+          </div>
+
+          <!-- WORKED EXAMPLE -->
+          <div class="worked">
+            <div class="icon"><span>Σ</span></div>
+            <div class="w-txt">
+              <div class="tag">Worked Example</div>
+              <h4>Example 1 — Whole life EPV &amp; variance</h4>
+              <p>Compute A_x, then chain through to Var(Z) using the second-moment shortcut.</p>
+            </div>
+            <div class="actions">
+              <a href="#" class="btn btn-primary"><span class="rv"></span> Start studying</a>
+              <a href="#" class="btn btn-ghost">Resume</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Exam FAM spec plate -->
+        <div class="card examfam plate rivets">
+          <div class="card-head">
+            <span class="stencil-tag">Spec Plate</span>
+            <h3>Exam FAM</h3>
+          </div>
+          <div class="plate-id">UNIT No. FAM // SOA-CERTIFIED</div>
+          <p>Fundamentals of Actuarial Mathematics. The combined FAM-L and FAM-S short-form syllabus — survival, insurance, annuities, premiums and reserves, machined into one exam.</p>
+          <div class="specs">
+            <span class="spec">Name: <b>Fundamentals of Actuarial Mathematics</b></span>
+            <span class="spec">Body: <b>SOA</b></span>
+            <span class="spec">Load: <b>34 questions</b></span>
+            <span class="spec">Pass: <b>6 / 10</b></span>
+          </div>
+
+          <div class="formula" style="margin-top:18px;">
+            <div class="f"><span class="pin">RIG</span><code>FAM-L · FAM-S</code></div>
+            <div class="div"></div>
+            <div class="f" style="color:var(--brass-hi);text-shadow:none;font-size:14px;">
+              <span class="pin" style="background:var(--brass-hi);color:#1c1509;">PLAN</span>
+              17 topics · 86-day burn-down · daily drills
+            </div>
+          </div>
+
+          <div class="trap" style="border-color:var(--brass-deep);">
+            <b style="color:var(--brass-hi);">Operating note</b>
+            <span>Keep <em>8 solid</em> topics riveted while you bring the remaining <em>5</em> up to pressure.</span>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fmark">M</div>
+      <div>
+        <b>Me Studing Stuff</b><br/>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+      <span class="ftag">FORGED FOR SOA EXAM FAM · MMXXVI</span>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

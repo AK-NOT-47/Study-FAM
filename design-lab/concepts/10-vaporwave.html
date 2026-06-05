@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Vaporwave · SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@500;700;900&family=Audiowide&family=Space+Grotesk:wght@300;400;500;700&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#150c3a;
+    --indigo-2:#0c0826;
+    --purple:#2a124f;
+    --magenta:#ff2e9a;
+    --magenta-soft:#ff6ec7;
+    --cyan:#0ff0fc;
+    --cyan-soft:#7af9ff;
+    --violet:#b14aff;
+    --sun-top:#ffd84d;
+    --sun-mid:#ff6ac1;
+    --sun-bot:#ff2e9a;
+    --ink:#eafcff;
+    --ink-dim:#bdb6e8;
+    --chrome-1:#ffffff;
+    --chrome-2:#c8e6ff;
+    --chrome-3:#ff9be0;
+    --grid:rgba(15,240,252,.32);
+    --panel:rgba(28,16,64,.62);
+    --panel-line:rgba(123,249,255,.28);
+    --glow-m:0 0 18px rgba(255,46,154,.8), 0 0 42px rgba(255,46,154,.4);
+    --glow-c:0 0 18px rgba(15,240,252,.8), 0 0 42px rgba(15,240,252,.35);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 90% at 50% 8%, #3a1466 0%, var(--indigo) 38%, var(--indigo-2) 78%) fixed;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* starfield + scanlines overlay */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      radial-gradient(1px 1px at 14% 22%, #fff 50%, transparent),
+      radial-gradient(1px 1px at 78% 12%, #cdfcff 50%, transparent),
+      radial-gradient(1.4px 1.4px at 33% 40%, #ffd1f3 50%, transparent),
+      radial-gradient(1px 1px at 62% 30%, #fff 50%, transparent),
+      radial-gradient(1.2px 1.2px at 88% 44%, #b9faff 50%, transparent),
+      radial-gradient(1px 1px at 8% 52%, #fff 50%, transparent),
+      radial-gradient(1px 1px at 47% 9%, #fff 50%, transparent);
+    opacity:.7;
+  }
+  body::after{
+    content:"";
+    position:fixed;inset:0;z-index:60;pointer-events:none;
+    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(8,2,20,.16) 2px 3px);
+    mix-blend-mode:multiply;
+  }
+
+  /* neon viewport frame */
+  .neon-frame{
+    position:fixed;inset:10px;z-index:55;pointer-events:none;border-radius:16px;
+    border:1.5px solid rgba(15,240,252,.5);
+    box-shadow:
+      inset 0 0 22px rgba(15,240,252,.28),
+      inset 0 0 2px rgba(255,255,255,.5),
+      0 0 18px rgba(255,46,154,.25);
+  }
+  .neon-frame::before,.neon-frame::after{
+    content:"";position:absolute;width:26px;height:26px;
+    border:2px solid var(--magenta);box-shadow:var(--glow-m);border-radius:4px;
+  }
+  .neon-frame::before{top:-2px;left:-2px;border-right:none;border-bottom:none}
+  .neon-frame::after{bottom:-2px;right:-2px;border-left:none;border-top:none}
+
+  /* ====== retro sun + perspective grid horizon (fixed backdrop) ====== */
+  .scene{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+
+  .sun{
+    position:absolute;
+    top:46px;left:50%;transform:translateX(-50%);
+    width:340px;height:340px;border-radius:50%;
+    background:linear-gradient(180deg,var(--sun-top) 0%, var(--sun-mid) 52%, var(--sun-bot) 100%);
+    box-shadow:0 0 90px rgba(255,106,193,.55), 0 0 160px rgba(255,46,154,.35);
+    -webkit-mask:linear-gradient(180deg,#000 0 58%, transparent 58%),
+      repeating-linear-gradient(180deg,#000 0 12px, transparent 12px 22px);
+    -webkit-mask-composite:source-in;
+    mask:linear-gradient(180deg,#000 0 58%, transparent 58%),
+      repeating-linear-gradient(180deg,#000 0 12px, transparent 12px 22px);
+    mask-composite:intersect;
+  }
+
+  .horizon{
+    position:absolute;left:0;right:0;
+    bottom:0;height:46vh;
+    background:linear-gradient(180deg, transparent 0%, rgba(180,30,120,.18) 30%, var(--indigo-2) 100%);
+    perspective:340px;
+    overflow:hidden;
+  }
+  .horizon::before{
+    content:"";
+    position:absolute;left:-50%;right:-50%;top:0;bottom:-40%;
+    background-image:
+      linear-gradient(var(--grid) 2px, transparent 2px),
+      linear-gradient(90deg, var(--grid) 2px, transparent 2px);
+    background-size:64px 64px;
+    transform:rotateX(76deg);
+    transform-origin:50% 0;
+    animation:scroll-grid 6s linear infinite;
+  }
+  .horizon::after{
+    content:"";position:absolute;left:0;right:0;top:0;height:3px;
+    background:var(--cyan);
+    box-shadow:0 0 16px var(--cyan), 0 0 40px var(--cyan);
+  }
+  @keyframes scroll-grid{from{background-position:0 0}to{background-position:0 64px}}
+
+  @media (prefers-reduced-motion:reduce){
+    .horizon::before{animation:none}
+  }
+
+  /* ====== layout shell ====== */
+  .wrap{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:26px 26px 70px}
+
+  /* ====== top bar ====== */
+  header.topbar{
+    display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+    padding:14px 20px;
+    background:linear-gradient(120deg, rgba(43,18,79,.72), rgba(20,12,58,.55));
+    border:1px solid var(--panel-line);
+    border-radius:18px;
+    box-shadow:0 0 0 1px rgba(255,46,154,.12), 0 18px 50px rgba(8,2,30,.6), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:blur(8px);
+  }
+
+  .brand{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+  .mmark{
+    width:54px;height:54px;border-radius:14px;flex:0 0 auto;
+    display:grid;place-items:center;
+    background:linear-gradient(160deg,#1a0e44,#3a1466);
+    border:1px solid rgba(123,249,255,.5);
+    box-shadow:var(--glow-c), inset 0 0 18px rgba(255,46,154,.25);
+    font-family:'Audiowide',sans-serif;font-size:30px;
+    color:#fff;
+    text-shadow:0 0 10px var(--magenta), 0 0 22px var(--cyan);
+    position:relative;
+  }
+  .mmark::after{content:"";position:absolute;inset:5px;border-radius:9px;border:1px solid rgba(255,46,154,.4)}
+  .brand .name{font-family:'Audiowide',sans-serif;font-size:1.02rem;letter-spacing:.5px;line-height:1.1;
+    background:linear-gradient(180deg,var(--chrome-1),var(--chrome-2) 45%,var(--chrome-3));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .brand .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--cyan-soft);margin-top:3px}
+
+  nav.topics{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:auto}
+  nav.topics a{
+    font-size:.82rem;letter-spacing:.04em;text-decoration:none;color:var(--ink-dim);
+    padding:8px 12px;border-radius:10px;border:1px solid transparent;white-space:nowrap;
+    transition:.18s;
+  }
+  nav.topics a:hover{color:#fff;border-color:var(--panel-line);text-shadow:0 0 10px var(--cyan);background:rgba(15,240,252,.06)}
+  nav.topics a.active{color:#fff;border-color:rgba(255,46,154,.55);box-shadow:inset 0 0 12px rgba(255,46,154,.25);text-shadow:0 0 10px var(--magenta)}
+  .examtab{
+    font-family:'Orbitron',sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.14em;
+    padding:9px 14px;border-radius:11px;color:#08021a;
+    background:linear-gradient(120deg,var(--cyan),var(--magenta-soft));
+    box-shadow:0 0 18px rgba(255,46,154,.5);white-space:nowrap;
+  }
+
+  /* ====== neon ticker / marquee ====== */
+  .ticker{
+    margin-top:16px;overflow:hidden;border-radius:12px;
+    border:1px solid var(--panel-line);
+    background:linear-gradient(90deg, rgba(255,46,154,.14), rgba(15,240,252,.1));
+    box-shadow:inset 0 0 18px rgba(15,240,252,.1);
+    -webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+    mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  }
+  .ticker .track{
+    display:inline-flex;white-space:nowrap;gap:0;padding:9px 0;
+    animation:ticker 22s linear infinite;
+    font-family:'Orbitron',sans-serif;font-weight:700;font-size:.72rem;
+    letter-spacing:.22em;text-transform:uppercase;
+  }
+  .ticker .track span{padding:0 22px;color:var(--cyan-soft);text-shadow:0 0 10px rgba(15,240,252,.5)}
+  .ticker .track span::before{content:"◆";margin-right:22px;color:var(--magenta-soft);text-shadow:var(--glow-m)}
+  .ticker .track span:nth-child(even){color:var(--magenta-soft);text-shadow:var(--glow-m)}
+  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){.ticker .track{animation:none}}
+
+  /* ====== big headline panel ====== */
+  .hero{margin-top:24px;display:grid;grid-template-columns:1.45fr .9fr;gap:24px;align-items:stretch}
+
+  .greet{font-family:'Orbitron',sans-serif;letter-spacing:.4em;text-transform:uppercase;font-size:.82rem;
+    color:var(--cyan-soft);text-shadow:0 0 12px rgba(15,240,252,.6);}
+  .greet::before{content:"▸ ";color:var(--magenta)}
+
+  h1.head{
+    position:relative;
+    font-family:'Monoton',cursive;
+    font-weight:400;
+    font-size:clamp(2.6rem,6.4vw,5.4rem);
+    line-height:.96;
+    margin:14px 0 6px;
+    letter-spacing:.01em;
+    background:linear-gradient(180deg,#fff 0%, var(--cyan-soft) 30%, var(--magenta-soft) 64%, var(--magenta) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 18px rgba(255,46,154,.55)) drop-shadow(0 0 36px rgba(15,240,252,.3));
+  }
+  h1.head span{display:block}
+  .lede{max-width:48ch;color:#d9d3ff;font-size:1.06rem;font-weight:300}
+  .lede b{color:#fff;font-weight:500}
+
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px}
+  .btn{
+    font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    font-size:.82rem;padding:14px 26px;border-radius:13px;cursor:pointer;border:none;text-decoration:none;
+    display:inline-flex;align-items:center;gap:9px;transition:.18s;
+  }
+  .btn-primary{color:#0a0220;background:linear-gradient(120deg,var(--magenta),var(--violet) 60%,var(--cyan));
+    box-shadow:0 0 22px rgba(255,46,154,.6), 0 0 40px rgba(177,74,255,.35);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(255,46,154,.85), 0 10px 30px rgba(0,0,0,.4)}
+  .btn-ghost{color:var(--cyan-soft);background:rgba(15,240,252,.06);border:1px solid var(--panel-line);
+    box-shadow:inset 0 0 14px rgba(15,240,252,.12)}
+  .btn-ghost:hover{transform:translateY(-2px);color:#fff;text-shadow:0 0 10px var(--cyan);border-color:var(--cyan)}
+
+  .hero-left{display:flex;flex-direction:column;justify-content:center}
+
+  /* exam FAM card */
+  .examcard{
+    position:relative;
+    padding:24px;border-radius:20px;
+    background:linear-gradient(160deg, rgba(58,20,102,.78), rgba(20,12,58,.7));
+    border:1px solid var(--panel-line);
+    box-shadow:0 0 0 1px rgba(255,46,154,.16), 0 22px 60px rgba(6,2,24,.6), inset 0 0 40px rgba(255,46,154,.08);
+    overflow:hidden;
+  }
+  .examcard::before{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(115deg, transparent 0 22px, rgba(15,240,252,.05) 22px 23px);
+    pointer-events:none;
+  }
+  .ec-kicker{font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:.32em;color:var(--cyan-soft);text-transform:uppercase}
+  .ec-title{font-family:'Audiowide',sans-serif;font-size:2.1rem;margin:8px 0 2px;
+    background:linear-gradient(180deg,#fff,var(--magenta-soft));-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 26px rgba(255,46,154,.5)}
+  .ec-sub{color:var(--ink-dim);font-size:.92rem}
+  .ec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  .ec-chip{padding:11px 13px;border-radius:12px;border:1px dashed rgba(123,249,255,.35);background:rgba(15,240,252,.05)}
+  .ec-chip .k{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan-soft)}
+  .ec-chip .v{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;margin-top:3px}
+  .ec-chip.pass .v{color:var(--magenta-soft);text-shadow:var(--glow-m)}
+
+  /* ====== stats strip ====== */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+  .stat{
+    position:relative;padding:22px 22px 20px;border-radius:18px;
+    background:linear-gradient(160deg, rgba(28,16,64,.78), rgba(14,8,38,.7));
+    border:1px solid var(--panel-line);
+    box-shadow:0 14px 40px rgba(6,2,24,.5), inset 0 1px 0 rgba(255,255,255,.05);
+    overflow:hidden;
+  }
+  .stat .lbl{font-family:'Orbitron',sans-serif;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--cyan-soft)}
+  .stat .big{font-family:'Orbitron',sans-serif;font-weight:900;font-size:3.1rem;line-height:1;margin:8px 0 4px;
+    background:linear-gradient(180deg,#fff,var(--cyan-soft) 50%,var(--magenta-soft));
+    -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(15,240,252,.4))}
+  .stat .meta{color:var(--ink-dim);font-size:.84rem}
+  .stat.s2 .big{background:linear-gradient(180deg,#fff,var(--magenta-soft));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(255,46,154,.5))}
+  .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);margin-top:14px;overflow:hidden;border:1px solid rgba(123,249,255,.2)}
+  .bar > i{display:block;height:100%;width:72%;border-radius:99px;
+    background:linear-gradient(90deg,var(--cyan),var(--magenta));box-shadow:0 0 14px rgba(255,46,154,.7)}
+  .stat .glowdot{position:absolute;top:18px;right:18px;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:var(--glow-c)}
+  .stat.s2 .glowdot{background:var(--magenta);box-shadow:var(--glow-m)}
+
+  /* ====== content preview + trap (two column) ====== */
+  .main2{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;margin-top:26px;align-items:start}
+
+  .panel{
+    padding:26px;border-radius:20px;
+    background:linear-gradient(165deg, rgba(34,18,74,.72), rgba(16,9,44,.72));
+    border:1px solid var(--panel-line);
+    box-shadow:0 18px 54px rgba(6,2,24,.55), inset 0 0 40px rgba(177,74,255,.07);
+  }
+  .sect-kicker{font-family:'Orbitron',sans-serif;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--magenta-soft);text-shadow:var(--glow-m)}
+  .sect-kicker::before{content:"◆ ";color:var(--cyan)}
+  .panel h2{font-family:'Audiowide',sans-serif;font-size:1.65rem;margin:10px 0 6px;
+    background:linear-gradient(180deg,#fff,var(--cyan-soft));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .panel .sublede{color:#cfc8f5;font-size:.98rem;font-weight:300;margin-bottom:18px}
+
+  /* formula block */
+  .formulas{display:grid;gap:12px}
+  .formula{
+    font-family:'Major Mono Display','Space Grotesk',monospace;
+    font-size:1.18rem;
+    padding:16px 18px;border-radius:13px;
+    background:linear-gradient(120deg, rgba(12,8,38,.85), rgba(42,18,79,.6));
+    border:1px solid rgba(15,240,252,.4);
+    box-shadow:inset 0 0 22px rgba(15,240,252,.12), 0 0 18px rgba(15,240,252,.12);
+    color:var(--cyan-soft);
+    text-shadow:0 0 10px rgba(15,240,252,.55);
+    letter-spacing:.02em;
+    overflow-x:auto;white-space:nowrap;
+  }
+  .formula b{color:var(--magenta-soft);text-shadow:var(--glow-m);font-weight:400}
+
+  /* example teaser */
+  .example{
+    margin-top:20px;padding:18px 20px;border-radius:15px;
+    background:linear-gradient(120deg, rgba(255,46,154,.12), rgba(15,240,252,.08));
+    border:1px solid rgba(255,46,154,.4);
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .example .num{font-family:'Audiowide',sans-serif;font-size:1.5rem;color:#fff;
+    width:54px;height:54px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto;
+    background:linear-gradient(150deg,var(--magenta),var(--violet));box-shadow:var(--glow-m)}
+  .example .etxt .et{font-family:'Orbitron',sans-serif;font-weight:700;color:#fff;font-size:1rem}
+  .example .etxt .es{color:var(--ink-dim);font-size:.82rem;letter-spacing:.04em}
+
+  /* trap callout */
+  .trap{
+    position:relative;
+    padding:24px;border-radius:20px;
+    background:linear-gradient(165deg, rgba(64,12,52,.8), rgba(20,8,40,.78));
+    border:1px solid rgba(255,46,154,.55);
+    box-shadow:0 0 0 1px rgba(255,46,154,.2), 0 18px 50px rgba(40,2,30,.6), inset 0 0 36px rgba(255,46,154,.12);
+  }
+  .trap .warn{font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    font-size:.8rem;color:#fff;display:flex;align-items:center;gap:10px;text-shadow:var(--glow-m)}
+  .trap .warn .ic{font-size:1.2rem}
+  .trap p{margin-top:14px;color:#ffe2f3;font-size:1.02rem;line-height:1.6}
+  .trap p u{text-decoration:none;color:var(--cyan-soft);font-weight:500;text-shadow:0 0 10px rgba(15,240,252,.5);
+    border-bottom:1px dashed rgba(15,240,252,.6)}
+  .trap p b{color:var(--magenta-soft);text-shadow:var(--glow-m)}
+
+  .miniprog{margin-top:22px}
+  .miniprog .ml{font-family:'Orbitron',sans-serif;font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cyan-soft);display:flex;justify-content:space-between}
+  .miniprog .mbar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);margin-top:8px;overflow:hidden;border:1px solid rgba(255,46,154,.3)}
+  .miniprog .mbar > i{display:block;height:100%;width:47%;background:linear-gradient(90deg,var(--magenta),var(--cyan));box-shadow:0 0 12px rgba(255,46,154,.6)}
+
+  /* ====== footer ====== */
+  footer{
+    margin-top:46px;padding:24px 22px;border-radius:18px;text-align:center;
+    background:linear-gradient(120deg, rgba(20,12,58,.6), rgba(43,18,79,.5));
+    border:1px solid var(--panel-line);
+  }
+  footer .fbrand{font-family:'Audiowide',sans-serif;font-size:1.1rem;
+    background:linear-gradient(180deg,var(--chrome-1),var(--chrome-3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  footer .ftag{color:var(--ink-dim);font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;margin-top:6px}
+  footer .fline{margin-top:12px;font-size:.74rem;color:#6f6aa0;letter-spacing:.06em}
+
+  /* ====== responsive ====== */
+  @media (max-width:920px){
+    .hero{grid-template-columns:1fr}
+    .main2{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    nav.topics{margin-left:0;order:3;width:100%}
+  }
+  @media (max-width:700px){
+    .wrap{padding:18px 14px 50px}
+    .ec-grid{grid-template-columns:1fr}
+    h1.head{font-size:clamp(2.2rem,11vw,3.4rem)}
+    .sun{width:240px;height:240px}
+  }
+</style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="horizon"></div>
+  </div>
+  <div class="neon-frame" aria-hidden="true"></div>
+
+  <div class="wrap">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="mmark">M</div>
+        <div>
+          <div class="name">Me Studing Stuff</div>
+          <div class="tag">Study smarter · Pass exams</div>
+        </div>
+      </div>
+      <nav class="topics" aria-label="Topics">
+        <a href="#" class="active">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+        <span class="examtab">FAM-L / FAM-S</span>
+      </nav>
+    </header>
+
+    <!-- NEON TICKER -->
+    <div class="ticker" aria-hidden="true">
+      <div class="track">
+        <span>Survival Models</span><span>Life Tables</span><span>Life Insurance</span><span>Life Annuities</span><span>Premiums</span><span>Policy Values</span><span>SOA Exam FAM</span>
+        <span>Survival Models</span><span>Life Tables</span><span>Life Insurance</span><span>Life Annuities</span><span>Premiums</span><span>Policy Values</span><span>SOA Exam FAM</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="greet">Good evening</div>
+        <h1 class="head"><span>Let's get you</span><span>that pass.</span></h1>
+        <p class="lede">Your focused hub for <b>SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary">▶ Start studying</a>
+          <a href="#" class="btn btn-ghost">↺ Resume</a>
+        </div>
+      </div>
+
+      <!-- EXAM FAM CARD -->
+      <aside class="examcard">
+        <div class="ec-kicker">Now loading</div>
+        <div class="ec-title">Exam FAM</div>
+        <div class="ec-sub">Fundamentals of Actuarial Mathematics · SOA</div>
+        <div class="ec-grid">
+          <div class="ec-chip"><div class="k">Provider</div><div class="v">SOA</div></div>
+          <div class="ec-chip"><div class="k">Questions</div><div class="v">34</div></div>
+          <div class="ec-chip"><div class="k">Format</div><div class="v">FAM-L / FAM-S</div></div>
+          <div class="ec-chip pass"><div class="k">Pass mark</div><div class="v">6 / 10</div></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats" aria-label="Your progress">
+      <div class="stat s1">
+        <span class="glowdot"></span>
+        <div class="lbl">Overall progress</div>
+        <div class="big">72%</div>
+        <div class="meta">12 of 17 topics</div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="stat s2">
+        <span class="glowdot"></span>
+        <div class="lbl">Exam countdown</div>
+        <div class="big">86</div>
+        <div class="meta">days remaining</div>
+        <div class="bar"><i style="width:60%"></i></div>
+      </div>
+      <div class="stat s3">
+        <span class="glowdot"></span>
+        <div class="lbl">Topics solid</div>
+        <div class="big">8</div>
+        <div class="meta">locked &amp; loaded</div>
+        <div class="bar"><i style="width:47%"></i></div>
+      </div>
+    </section>
+
+    <!-- MAIN TWO COLUMN -->
+    <section class="main2">
+
+      <!-- CONTENT PREVIEW -->
+      <article class="panel">
+        <div class="sect-kicker">Topic preview</div>
+        <h2>Life Insurance Present Values</h2>
+        <p class="sublede">The expected present value of a benefit paid on death — the engine behind every premium and reserve.</p>
+
+        <div class="formulas">
+          <div class="formula"><b>A</b><sub>x</sub> = 1 − d · ä<sub>x</sub></div>
+          <div class="formula">Var(Z) = ²A<sub>x</sub> − (<b>A</b><sub>x</sub>)²</div>
+          <div class="formula">ä<sub>x</sub> = (1 − <b>A</b><sub>x</sub>) / d</div>
+        </div>
+
+        <div class="example">
+          <div class="num">1</div>
+          <div class="etxt">
+            <div class="et">Example 1 — Whole life EPV &amp; variance</div>
+            <div class="es">Compute A_x, then derive Var(Z) and the annuity link</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRAP + MINI PROGRESS -->
+      <aside class="trap">
+        <div class="warn"><span class="ic">⚠</span> Common trap</div>
+        <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <u>i/δ</u> — the pure endowment is never rescaled.</p>
+
+        <div class="miniprog">
+          <div class="ml"><span>Life Insurance</span><span>47%</span></div>
+          <div class="mbar"><i></i></div>
+        </div>
+        <div class="miniprog">
+          <div class="ml"><span>FAM readiness</span><span>72%</span></div>
+          <div class="mbar"><i style="width:72%"></i></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fbrand">Me Studing Stuff</div>
+      <div class="ftag">Study smarter. Pass exams.</div>
+      <div class="fline">SOA Exam FAM · FAM-L / FAM-S · notes · formulas · worked problems · a plan</div>
+    </footer>
+
+  </div>
+</body>
+</html>

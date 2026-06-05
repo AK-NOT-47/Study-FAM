@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Annuities · FAM-L · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="lt-04" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Long-Term · Topic 4</div>
+      <h1>Life Annuities</h1>
+      <p class="lede">An annuity is just a bundle of pure endowments paid while alive — write down which payments occur, when, and with what survival probability, and every formula falls out. Every life annuity is the mirror image of a life insurance, so master one relationship — $Y=(1-Z)/d$ — and the rest is bookkeeping.</p>
+      <div class="meta-row">
+        <span class="chip">📖 AMLCR · Ch. 5</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 EPV · $\ddot{a}_x=(1-A_x)/d$ · Woolhouse · UDD $\alpha,\beta$ · variance · percentiles</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>By the end of this topic, the SOA expects you to be able to:</p>
+        <ul>
+          <li>Define the <strong>present-value random variable</strong> $Y$ for each annuity (continuous, due, immediate, $m$-thly) and relate it to the insurance variable $Z$ via $Y=(1-Z)/\,(\text{interest factor})$.</li>
+          <li>Compute the <strong>expected present value (EPV)</strong> of life annuities in every form: whole life, temporary (<em>n</em>-year), deferred, certain-and-life (guaranteed), and varying (increasing/decreasing).</li>
+          <li>Distinguish <strong>annuity-due</strong> ($\ddot{a}_x$), <strong>annuity-immediate</strong> ($a_x$), <strong>continuous</strong> ($\bar{a}_x$), and <strong>$m$-thly</strong> ($\ddot{a}_x^{(m)}$) annuities, and rank them.</li>
+          <li>Apply the fundamental <strong>annuity–insurance relationship</strong> $\ddot{a}_x = \dfrac{1 - A_x}{d}$ and its continuous / $m$-thly analogs — and know that <em>no</em> such direct relationship exists for the annuity-<em>immediate</em>.</li>
+          <li>Use <strong>recursion</strong> formulas (annual and $m$-thly) to step values by age, and decompose whole life = temporary + deferred.</li>
+          <li>Compute the <strong>variance</strong> of $Y$ via $\operatorname{Var}(Y)=\dfrac{{}^2A-(A)^2}{(\text{interest factor})^2}$, and know why $E[Y^2]\neq {}^2\bar a_x$.</li>
+          <li>Apply <strong>UDD</strong> ($\alpha(m),\beta(m)$) and <strong>Woolhouse</strong> approximations for $m$-thly and continuous annuities, and use Woolhouse to recover insurance factors and $\mathring e_x$.</li>
+          <li>Use the <strong>constant-force</strong> and <strong>uniform</strong> shortcuts; compute <strong>accumulated values</strong>.</li>
+          <li>Find <strong>percentiles and probabilities</strong> of the present-value random variable $Y$.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>What is a life annuity? (annuity-certain vs. life annuity)</h3>
+      <p>A <strong>life annuity</strong> is a series of payments made <em>contingent on survival</em>: the annuitant (buyer) receives each payment only if alive at the payment date; the insurer makes the payments. Because future payments depend on survival, the present value of the stream is a <strong>random variable</strong> (it depends on the random future lifetime $T_x$ or curtate lifetime $K_x$), and we are usually interested in its expected value — the <strong>EPV</strong>.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — the one distinction that keeps everything straight</div>
+        <ul>
+          <li><strong>Annuities-certain</strong> (Exam FM) account for <em>interest only</em>. When you discount a cash flow you use $v^t$ alone. Symbols: $\ddot a_{\overline n|},\ a_{\overline n|},\ \bar a_{\overline n|}$.</li>
+          <li><strong>Life annuities</strong> (FAM) account for <em>interest <strong>and</strong> survivorship</em>. When you discount a cash flow you use $v^t\,{}_tp_x$. Symbols: $\ddot a_x,\ a_x,\ \bar a_x$.</li>
+          <li>The actuarial $\bar a_x$ is an <em>expected</em> present value; the FM $\bar a_{\overline t|}$ is a <em>present</em> value. Don't confuse $\bar a_{T_x}$ (a random PV) with $\bar a_x$ (its expectation over survivorship).</li>
+        </ul>
+      </div>
+      <p>Contrast with <strong>insurance</strong>: insurance pays a benefit <em>on death</em>; an annuity pays <em>while alive</em>. They are two sides of the same coin — which is exactly why $\ddot{a}_x = (1 - A_x)/d$ exists.</p>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Annuity-certain refresher (from FM — you'll reuse these inside life formulas)</div>
+        $$\ddot a_{\overline n|}=\frac{1-v^n}{d},\qquad a_{\overline n|}=\frac{1-v^n}{i},\qquad \bar a_{\overline n|}=\int_0^n v^t\,dt=\frac{1-v^n}{\delta},\qquad \ddot a_{\overline n|}^{(m)}=\frac{1-v^n}{d^{(m)}}.$$
+        <p>FAM defaults to the <strong>annuity-due</strong> because premiums are paid in advance and because due annuities have the cleanest tie to insurance (the $Y=(1-Z)/d$ identity).</p>
+      </div>
+
+      <h3>Building intuition: a life annuity is a bundle of pure endowments</h3>
+      <p>A whole life annuity-due paying \$1/year makes a payment at time $k$ (for $k=0,1,2,\dots$) only if $(x)$ survives to age $x+k$. The EPV of that single payment is a <strong>pure endowment</strong> $v^k\,{}_kp_x$. Summing:</p>
+      <div class="formula">$$\ddot{a}_x = \sum_{k=0}^{\infty} v^k \, {}_k p_x.$$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The universal recipe for ANY life annuity EPV</div>
+        <p>Sum (or integrate) over all possible payment times the product of three things:</p>
+        <ul>
+          <li>the <strong>amount</strong> paid at that time,</li>
+          <li>the <strong>discount factor</strong> $v^t$ (interest), and</li>
+          <li>the <strong>probability the payment is made</strong> $\,{}_tp_x$ (survivorship).</li>
+        </ul>
+        <p>If you forget a formula — or face a varying / non-standard annuity — fall back to this. It never fails, and it's the only safe approach for varying annuities and higher moments.</p>
+      </div>
+
+      <h3>The present-value random variable $Y$ (relate it to $Z$)</h3>
+      <p>For a continuous whole life annuity, $Y=\bar a_{\overline{T_x}|}=\dfrac{1-v^{T_x}}{\delta}=\dfrac{1-Z}{\delta}$ where $Z=v^{T_x}$ is the insurance variable. For a whole life annuity-due, $Y=\ddot a_{\overline{K_x+1}|}=\dfrac{1-v^{K_x+1}}{d}=\dfrac{1-Z}{d}$ with $Z=v^{K_x+1}$. Taking expectations gives the EPV identities; taking variances gives the variance identities. This single linear relationship $Y=(1-Z)/(\text{factor})$ is the engine behind every mean and variance formula on this page.</p>
+
+      <h3>Due vs. immediate</h3>
+      <ul>
+        <li><strong>Annuity-due</strong> $\ddot{a}_x$: payments at $0,1,2,\dots$ (start of year). The first payment is certain (time 0).</li>
+        <li><strong>Annuity-immediate</strong> $a_x$: payments at $1,2,3,\dots$ (end of year). No time-0 payment.</li>
+      </ul>
+      <p>The only difference is the time-0 payment, so $\ddot{a}_x = 1 + a_x$. For a temporary annuity the difference is the time-0 payment <strong>and</strong> the last-payment timing — see Formulas and Traps.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — there is NO insurance relationship for the immediate annuity</div>
+        <p>The clean identity $A_x = 1 - d\,\ddot a_x$ only holds for the <strong>annuity-due</strong>. There is no direct $A_x$↔$a_x$ shortcut. If you must bridge, go through the due form: $A_x = 1-d\,\ddot a_x = 1-d(a_x+1)$. On the exam, always compute the due value first, then convert.</p>
+      </div>
+
+      <h3>Continuous, temporary, deferred, guaranteed</h3>
+      <ul>
+        <li><strong>Continuous</strong> $\bar a_x$ pays at a <em>rate</em> of \$1/year while alive: $\bar a_x=\int_0^\infty v^t\,{}_tp_x\,dt$.</li>
+        <li><strong>Temporary</strong> ($n$-year): payments only for at most $n$ years (alive <em>and</em> within term).</li>
+        <li><strong>Deferred</strong> (${}_{u|}\ddot a_x$): no payments for $u$ years; payments begin at $x+u$ if alive.</li>
+        <li><strong>Guaranteed / certain-and-life</strong> ($\ddot a_{\overline{x:\overline n|}}$): pays the first $n$ years <em>no matter what</em>, then continues for life if alive. "Certain period" and "guarantee period" are interchangeable SOA terms.</li>
+      </ul>
+      <p>Clean decompositions: whole life $=$ temporary $+$ deferred, and a temporary annuity splits into shorter pieces:</p>
+      <div class="formula">$$\ddot{a}_x = \ddot{a}_{x:\overline{n}|} + {}_{n|}\ddot{a}_x,\qquad \ddot a_{x:\overline n|}=\ddot a_{x:\overline m|}+{}_mE_x\,\ddot a_{x+m:\overline{n-m}|}.$$</div>
+
+      <h3>The insurance–annuity relationship (the most important identity)</h3>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The annuity–insurance identity (one line, three flavours)</div>
+        $$\ddot{a}_x = \frac{1 - A_x}{d},\qquad \bar a_x=\frac{1-\bar A_x}{\delta},\qquad \ddot a_x^{(m)}=\frac{1-A_x^{(m)}}{d^{(m)}}.$$
+        <p>Same pattern for temporary annuities with <strong>endowment</strong> insurance: $\ddot a_{x:\overline n|}=\dfrac{1-A_{x:\overline n|}}{d}$ (note: endowment, <em>not</em> term insurance — there is no direct term-insurance ↔ temporary-annuity link). Rearranged: $A_x=1-d\,\ddot a_x$.</p>
+        <p>Intuition from $1=\delta\bar a_x+\bar A_x$: \$1 invested now $=$ PV of continuous interest paid on \$1 while $(x)$ lives $+$ PV of returning \$1 at death.</p>
+      </div>
+
+      <h3>Constant force & uniform shortcuts</h3>
+      <p>Under a <strong>constant force of mortality</strong> $\mu$ (exponential lifetime), age does not matter, so $\bar a_{x+n}=\bar a_x$ and:</p>
+      <div class="formula">
+        $$\bar a_x=\frac{1}{\mu+\delta},\qquad \bar a_{x:\overline n|}=\bar a_x\bigl(1-{}_nE_x\bigr)=\frac{1}{\mu+\delta}\Bigl(1-e^{-(\mu+\delta)n}\Bigr).$$
+      </div>
+      <p>Under a <strong>uniform</strong> future lifetime ($\omega$ limiting age), don't memorize new annuity formulas — get $\bar A_x$ (or $\bar A_{x:\overline n|}$) from the uniform insurance formulas, then convert with $\bar a_x=(1-\bar A_x)/\delta$.</p>
+
+      <h3>$m$-thly annuities, ordering & approximations</h3>
+      <p>An $m$-thly annuity pays $1/m$ at the start (due) or end (immediate) of each $\tfrac1m$-year period, \$1/year total. Crucially, $\ddot a_x^{(m)}$ is an <strong>annual</strong> factor: to value \$250/quarter, multiply $\ddot a_x^{(4)}$ by the annual rate $250\times4=1000$, never by 250.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Ordering of annuity values (memorize the chain)</div>
+        $$a_x \;<\; a_x^{(m)} \;<\; \bar a_x \;<\; \ddot a_x^{(m)} \;<\; \ddot a_x.$$
+        <p>Earlier average payment dates ⇒ less discounting ⇒ larger value. The due forms also collect more in the year of death (the annual due grabs the full \$1 up front; the quarterly due only collects the quarters before death).</p>
+      </div>
+      <p>Two approximations connect $m$-thly/continuous annuities to the annual due: <strong>UDD</strong> (exact under uniform deaths, uses $\alpha(m),\beta(m)$) and <strong>Woolhouse</strong> (a series approximation, uses $\mu_x+\delta$). Both appear on the SULT.</p>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">What the SULT hands you for free (at $i=5\%$)</div>
+        <ul>
+          <li>For each age, the table directly tabulates $\ddot a_x$, $\ddot a_{x:\overline{10}|}$, and $\ddot a_{x:\overline{20}|}$ — so common temporary and deferred annuities come straight off the page (e.g. $\ddot a_{x:\overline n|}=\ddot a_x-{}_{n|}\ddot a_x=\ddot a_x-{}_nE_x\,\ddot a_{x+n}$ when $n\neq 10,20$).</li>
+          <li>The <strong>last page</strong> of the SULT lists $i^{(m)},d^{(m)},i/i^{(m)},d/d^{(m)},\alpha(m),\beta(m)$ and the <strong>Woolhouse 3-term coefficients</strong> — all at $i=5\%$. If a problem is set at $i=5\%$, do <em>not</em> recompute these; read them off. (At any other $i$ you must compute $i^{(m)},d^{(m)},\alpha(m),\beta(m)$ yourself.)</li>
+        </ul>
+      </div>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols used throughout</div>
+        <ul>
+          <li>$x$ = current age; $T_x$ = future lifetime (continuous); $K_x=\lfloor T_x\rfloor$ = curtate lifetime.</li>
+          <li>${}_kp_x$ = prob. $(x)$ survives $k$ years; ${}_{k|}q_x={}_kp_x\,q_{x+k}$ = prob. death in year $k{+}1$.</li>
+          <li>$v=1/(1+i)$; $d=iv=1-v$; $\delta=\ln(1+i)$; $v^t=e^{-\delta t}$.</li>
+          <li>${}_nE_x=v^n\,{}_np_x$ = $n$-year pure endowment factor; ${}_0E_x=1$, ${}_\infty E_x=0$.</li>
+          <li>$A_x,\bar A_x$ = whole life insurance EPV; $A_{x:\overline n|}$ = endowment insurance EPV.</li>
+          <li>$d^{(m)}=m(1-v^{1/m})$, $i^{(m)}=m((1+i)^{1/m}-1)$ = nominal discount / interest rates.</li>
+          <li>The "${}^2$" prefix = the quantity evaluated at <strong>double the force of interest</strong> ($v\to v^2$): for discrete, $d\to 2d-d^2$; for continuous, $\delta\to2\delta$.</li>
+        </ul>
+      </div>
+
+      <h3>Present-value random variables (write these before computing variance)</h3>
+      <div class="formula">
+        <span class="formula-label">Whole life</span>
+        $$Y_{\bar a}=\frac{1-v^{T_x}}{\delta}=\frac{1-Z}{\delta},\qquad Y_{\ddot a}=\frac{1-v^{K_x+1}}{d}=\frac{1-Z}{d},\qquad Y_{a}=\ddot a_{\overline{K_x+1}|}-1.$$
+        <span class="formula-label">Temporary ($n$-year)</span>
+        $$Y=\begin{cases}\dfrac{1-v^{T_x}}{\delta}=\dfrac{1-Z}{\delta},&T_x\lt n\\[4pt]\dfrac{1-v^{n}}{\delta},&T_x\ge n\end{cases}\quad\text{(continuous)},\qquad Y=\begin{cases}\ddot a_{\overline{K_x+1}|},&K_x\lt n\\ \ddot a_{\overline n|},&K_x\ge n\end{cases}\ \text{(due)}.$$
+        <span class="formula-label">Deferred ($n$-year)</span>
+        $$Y=\begin{cases}0,&T_x\lt n\\ \bar a_{\overline{T_x}|}-\bar a_{\overline n|},&T_x\ge n.\end{cases}$$
+        <span class="formula-label">Certain-and-life ($n$-year guarantee)</span>
+        $$Y=\begin{cases}\bar a_{\overline n|},&T_x\lt n\\ \bar a_{\overline{T_x}|},&T_x\ge n.\end{cases}$$
+      </div>
+
+      <h3>Whole life annuities (EPV — three equivalent forms)</h3>
+      <div class="formula">
+        <span class="formula-label">Annuity-due</span>
+        $$\ddot{a}_x = \sum_{k=0}^{\infty} v^k\,{}_kp_x = \sum_{k=0}^\infty \ddot a_{\overline{k+1}|}\,{}_{k|}q_x= \frac{1 - A_x}{d}.$$
+        <span class="formula-label">Annuity-immediate</span>
+        $$a_x = \sum_{k=1}^{\infty} v^k\,{}_kp_x = \ddot{a}_x - 1.$$
+        <span class="formula-label">Continuous</span>
+        $$\bar{a}_x = \int_0^\infty v^t\,{}_tp_x\,dt = \int_0^\infty \bar a_{\overline t|}\,{}_tp_x\,\mu_{x+t}\,dt= \frac{1 - \bar{A}_x}{\delta}.$$
+      </div>
+
+      <h3>Temporary ($n$-year) annuities</h3>
+      <div class="formula">
+        $$\ddot{a}_{x:\overline{n}|} = \sum_{k=0}^{n-1} v^k\,{}_kp_x = \frac{1 - A_{x:\overline{n}|}}{d}\quad(\text{endowment insurance in numerator}),$$
+        $$a_{x:\overline{n}|} = \sum_{k=1}^{n} v^k\,{}_kp_x,\qquad \ddot a_{x:\overline n|}-a_{x:\overline n|}=1-{}_nE_x,$$
+        $$\bar{a}_{x:\overline{n}|} = \int_0^n v^t\,{}_tp_x\,dt = \frac{1 - \bar{A}_{x:\overline{n}|}}{\delta}.$$
+      </div>
+
+      <h3>Deferred annuities ($u$-year deferred)</h3>
+      <div class="formula">
+        $$ {}_{u|}\ddot{a}_x = \sum_{k=u}^{\infty} v^k\,{}_kp_x = {}_uE_x\,\ddot{a}_{x+u} = \ddot{a}_x - \ddot{a}_{x:\overline{u}|},\qquad {}_{u|}\bar{a}_x = {}_uE_x\,\bar{a}_{x+u}.$$
+        For the <strong>immediate</strong> deferred annuity, payments start at $u+1$: ${}_{u|}a_x=\sum_{k=u+1}^\infty v^k\,{}_kp_x={}_uE_x\,a_{x+u}=a_x-a_{x:\overline u|}.$
+      </div>
+
+      <h3>Guaranteed (certain-and-life)</h3>
+      <div class="formula">
+        $$\ddot{a}_{\overline{x:\overline{n}|}} = \ddot{a}_{\overline{n}|} + {}_{n|}\ddot{a}_x = \ddot{a}_{\overline{n}|} + {}_nE_x\,\ddot{a}_{x+n},\qquad \bar a_{\overline{x:\overline n|}}=\bar a_{\overline n|}+{}_{n|}\bar a_x,\qquad a_{\overline{x:\overline n|}}=a_{\overline n|}+{}_{n|}a_x.$$
+      </div>
+
+      <h3>Recursions</h3>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">Step from age $x$ to $x+1$</div>
+        <span class="formula-label">Whole life — due / immediate</span>
+        $$\ddot{a}_x = 1 + v\,p_x\,\ddot{a}_{x+1},\qquad a_x = v\,p_x\,(1+a_{x+1})=v\,p_x+v\,p_x\,a_{x+1}.$$
+        <span class="formula-label">Temporary — due / immediate</span>
+        $$\ddot{a}_{x:\overline{n}|} = 1 + v\,p_x\,\ddot{a}_{x+1:\overline{n-1}|},\qquad a_{x:\overline n|}=v\,p_x+v\,p_x\,a_{x+1:\overline{n-1}|}.$$
+        <p>Intuition: the due annuity pays \$1 now; survive the year (prob. $p_x$, discount $v$) and you own the same annuity one age older.</p>
+      </div>
+
+      <h3>Variance — and the $E[Y^2]\neq{}^2\bar a_x$ trap</h3>
+      <p>Because $Y=(1-Z)/(\text{factor})$ is linear in $Z$, $\operatorname{Var}(Y)=\operatorname{Var}(Z)/(\text{factor})^2$:</p>
+      <div class="formula">
+        $$\operatorname{Var}(Y)=\frac{{}^{2}\bar A_x-(\bar A_x)^2}{\delta^2}\ \text{(cont.)},\qquad \operatorname{Var}(Y)=\frac{{}^{2}A_x-(A_x)^2}{d^2}\ \text{(due)},$$
+        $$\operatorname{Var}(Y)=\frac{{}^{2}A_{x:\overline n|}-(A_{x:\overline n|})^2}{d^2}\ \text{(temporary, endowment ins.)}.$$
+        The annuity-<strong>immediate</strong> has the <em>same</em> variance as the due ($Y_a=Y_{\ddot a}-1$ just shifts by a constant).
+      </div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">How to get ${}^2A$ from a doubled-interest annuity</div>
+        <p>If a problem hands you $\,{}^2\bar a_x$ (or $\,{}^2\ddot a_x$), it is meaningless on its own — convert it to the second insurance moment, then use it:</p>
+        $$\text{continuous: }{}^2\bar A_x=1-(2\delta)\,{}^2\bar a_x,\qquad\text{discrete: }{}^2A_x=1-(2d-d^2)\,{}^2\ddot a_x.$$
+        <p>Then $\operatorname{Var}(Y)=\dfrac{{}^2A-(A)^2}{(\text{factor})^2}$. <strong>Never</strong> compute $\operatorname{Var}(Y)$ as $\,{}^2\bar a_x-(\bar a_x)^2$ — that is the planted trap, because $E[Y^2]\neq{}^2\bar a_x$ (the density of $Y$ is ${}_tp_x\mu_{x+t}$, not ${}_tp_x$). For a true second moment from first principles use $E[Y^2]=\int_0^\infty(\bar a_{\overline t|})^2\,{}_tp_x\mu_{x+t}\,dt$.</p>
+      </div>
+
+      <h3>Varying annuities (use the "amount × discount × survival" recipe)</h3>
+      <div class="formula">
+        <span class="formula-label">Continuously increasing / decreasing (rate $=t$ or $n-t$)</span>
+        $$(\bar I\bar a)_x=\int_0^\infty t\,v^t\,{}_tp_x\,dt,\quad (\bar I\bar a)_{x:\overline n|}=\int_0^n t\,v^t\,{}_tp_x\,dt,\quad (\bar D\bar a)_{x:\overline n|}=\int_0^n (n-t)\,v^t\,{}_tp_x\,dt.$$
+        <span class="formula-label">Annually increasing / decreasing (due)</span>
+        $$(I\ddot a)_x=\sum_{k=0}^\infty (k+1)\,v^k\,{}_kp_x,\quad (I\ddot a)_{x:\overline n|}=\sum_{k=0}^{n-1}(k+1)v^k\,{}_kp_x,\quad (D\ddot a)_{x:\overline n|}=\sum_{k=0}^{n-1}(n-k)v^k\,{}_kp_x.$$
+        <span class="formula-label">Increasing-annuity recursions (annual)</span>
+        $$(I\ddot a)_x=\ddot a_x+v\,p_x\,(I\ddot a)_{x+1},\qquad (I\ddot a)_{x:\overline n|}=\ddot a_{x:\overline n|}+v\,p_x\,(I\ddot a)_{x+1:\overline{n-1}|}.$$
+      </div>
+      <p class="text-mute">For varying annuities the SOA only tests the EPV; higher moments would need first principles and a computer, so don't memorize variance formulas for them.</p>
+
+      <h3>$m$-thly annuities — basics, conversions, recursion</h3>
+      <div class="formula">
+        $$\ddot{a}_x^{(m)} = \sum_{r=0}^{\infty}\tfrac1m\,v^{r/m}\,{}_{r/m}p_x=\frac{1 - A_x^{(m)}}{d^{(m)}},\qquad a_x^{(m)} = \ddot{a}_x^{(m)} - \frac{1}{m}.$$
+        $$\ddot a_{x:\overline n|}^{(m)}-a_{x:\overline n|}^{(m)}=\frac1m\bigl(1-{}_nE_x\bigr),\qquad A_x^{(m)}=1-d^{(m)}\ddot a_x^{(m)},\quad A_{x:\overline n|}^{(m)}=1-d^{(m)}\ddot a_{x:\overline n|}^{(m)}.$$
+        <span class="formula-label">Recursion (split off the part before age $x+n$)</span>
+        $$\ddot a_x^{(m)}=\ddot a_{x:\overline n|}^{(m)}+{}_nE_x\,\ddot a_{x+n}^{(m)};\qquad\text{with } n=\tfrac1m:\ \ \ddot a_x^{(m)}=\tfrac1m+v^{1/m}\,{}_{1/m}p_x\,\ddot a_{x+1/m}^{(m)}.$$
+      </div>
+
+      <h3>UDD approximation ($\alpha(m),\beta(m)$ — exact under uniform deaths)</h3>
+      <div class="formula">
+        $$\ddot a_x^{(m)}=\alpha(m)\,\ddot a_x-\beta(m),\quad \ddot a_{x:\overline n|}^{(m)}=\alpha(m)\,\ddot a_{x:\overline n|}-\beta(m)\bigl(1-{}_nE_x\bigr),\quad {}_{n|}\ddot a_x^{(m)}=\alpha(m)\,{}_{n|}\ddot a_x-\beta(m)\,{}_nE_x,$$
+        $$\text{where}\quad \alpha(m)=\frac{i\,d}{i^{(m)}d^{(m)}},\qquad \beta(m)=\frac{i-i^{(m)}}{i^{(m)}d^{(m)}}.$$
+        Useful sanity checks: $\alpha(m)\approx1$ and $\beta(m)\approx\dfrac{m-1}{2m}$. (At $i=0.05$, read $i^{(m)},d^{(m)},\alpha(m),\beta(m)$ straight off the SULT.)
+      </div>
+      <p class="text-mute">Mnemonic: annuity$^{(m)}=\alpha(m)\times$(annuity without $m$) $-\ \beta(m)\times$[EPV of the beginning cash flow $-$ EPV of the ending cash flow]. Whole life: $\beta(m)({}_0E_x-{}_\infty E_x)=\beta(m)(1-0)$. Temporary: $\beta(m)(1-{}_nE_x)$. Deferred: $\beta(m)({}_nE_x-0)$.</p>
+
+      <h3>Woolhouse approximation (and extracting insurance / $\mathring e_x$)</h3>
+      <div class="formula">
+        <span class="formula-label">3-term Woolhouse ($m$-thly due)</span>
+        $$\ddot{a}_x^{(m)} \approx \ddot{a}_x - \frac{m-1}{2m} - \frac{m^2 - 1}{12 m^2}\big(\mu_x+\delta\big).$$
+        <span class="formula-label">Continuous (let $m\to\infty$)</span>
+        $$\bar{a}_x \approx \ddot{a}_x - \frac{1}{2} - \frac{1}{12}\big(\mu_x+\delta\big).$$
+        <span class="formula-label">Temporary $m$-thly</span>
+        $$\ddot{a}_{x:\overline{n}|}^{(m)} \approx \ddot{a}_{x:\overline{n}|} - \frac{m-1}{2m}\big(1 - {}_nE_x\big) - \frac{m^2-1}{12 m^2}\big[\mu_x+\delta - {}_nE_x(\mu_{x+n}+\delta)\big].$$
+        <span class="formula-label">2-term Woolhouse (drop the $\mu$ term)</span>
+        $$\ddot{a}_x^{(m)} \approx \ddot{a}_x - \frac{m-1}{2m}.$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Three Woolhouse spin-offs worth knowing</div>
+        <ul>
+          <li><strong>Force of mortality from a life table</strong> (when $\mu_x$ isn't given): $\ \mu_x\approx-\tfrac12\bigl(\ln p_{x-1}+\ln p_x\bigr).$</li>
+          <li><strong>Insurance factors:</strong> approximate $\ddot a_x^{(m)}$ by Woolhouse, then $A_x^{(m)}=1-d^{(m)}\ddot a_x^{(m)}$.</li>
+          <li><strong>Complete expectation at $i=0$:</strong> letting $m\to\infty$ with $\delta=0$, $\ \mathring e_x\approx e_x+\tfrac12-\tfrac1{12}\mu_x.$</li>
+        </ul>
+      </div>
+
+      <h3>Accumulated values</h3>
+      <div class="formula">
+        $$\ddot{s}_{x:\overline{n}|} = \frac{\ddot{a}_{x:\overline{n}|}}{ {}_nE_x } = \frac{\ddot{a}_{x:\overline{n}|}}{v^n\,{}_np_x}.$$
+        This is the value <em>per survivor</em> at time $n$ — it spreads the accumulated fund only over those still alive (divide by the pure endowment factor: discount <strong>and</strong> survival).
+      </div>
+
+      <h3>Percentiles & probabilities of $Y$</h3>
+      <p>The $100p$-th percentile $y_p$ satisfies $\Pr[Y\le y_p]=p$. Since $Y$ <em>increases</em> with $T_x$ (more years alive ⇒ more payments ⇒ larger PV), you translate the percentile of $Y$ into a percentile of $T_x$:</p>
+      <div class="formula">
+        $$\Pr[Y\le y_p]=p\ \Longleftrightarrow\ \Pr[T_x\le h]={}_hq_x=p,\quad\text{then}\quad y_p=\bar a_{\overline h|}=\frac{1-e^{-\delta h}}{\delta}.$$
+        <p>Steps: (1) sketch $Y$ vs. $T_x$; (2) find the $T_x$ value $h$ that cuts off probability $p$ from solving ${}_hq_x=p$; (3) plug $h$ into the PV. (Note the <em>direction</em>: the $75$th percentile of $Y$ corresponds to the $75$th percentile of $T_x$, because $Y$ is increasing in $T_x$.)</p>
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Whole life annuity-due from $A_x$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>You are given $A_x = 0.25$ and $i = 0.05$. Find $\ddot{a}_x$, $a_x$, and the EPV of a whole life annuity-due paying \$2{,}000 per year.</p>
+          <p><strong>Solution.</strong> $d = i/(1+i) = 0.05/1.05 = 0.047619$.</p>
+          $$\ddot{a}_x = \frac{1 - A_x}{d} = \frac{0.75}{0.047619} = 15.75,\qquad a_x = \ddot{a}_x - 1 = 14.75.$$
+          <p>EPV $= 2000 \times 15.75 = 31{,}500$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\ddot{a}_x = 15.75$, $a_x = 14.75$, EPV $= \$31{,}500$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Deferred annuity via pure endowment <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A life aged 65 will receive \$10,000/year in advance, starting at age 70 (a 5-year deferred whole life annuity-due). Given $i=0.06$, ${}_5p_{65}=0.92$, $\ddot a_{70}=11.20$. Find the EPV.</p>
+          $$ {}_{5|}\ddot{a}_{65} = v^5\,{}_5p_{65}\,\ddot{a}_{70}=0.747258 \times 0.92 \times 11.20 = 7.6990.$$
+          <p>EPV $= 10{,}000 \times 7.6990 = 76{,}990$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>EPV $\approx \$76{,}990$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Variance of a whole life annuity-due <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $A_x = 0.30$, ${}^{2}A_x = 0.12$, $i = 0.05$. Find $\operatorname{Var}(Y)$ for a \$1/year annuity-due.</p>
+          <p><strong>Solution.</strong> $d^2 = 0.047619^2 = 0.00226757$.</p>
+          $$\operatorname{Var}(Y) = \frac{{}^{2}A_x - (A_x)^2}{d^2} = \frac{0.12 - 0.09}{0.00226757} = 13.229.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\operatorname{Var}(Y) \approx 13.23$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> From a doubled-interest annuity to $E[\bar a_{\overline{T}|}^2]$ <span class="ex-chev">▾</span> <em>(CAS4A-S92:11)</em></summary>
+        <div class="ex-body">
+          <p>Given a continuous whole life annuity on $(x)$: $\bar a_x = 15$, ${}^2\bar a_x = 9$, $\delta = 0.05$. Determine $E[\bar a_{\overline{T_x}|}^2]$.</p>
+          <p><strong>Solution.</strong> First convert each annuity to its insurance moment:</p>
+          $$\bar A_x = 1-\delta\bar a_x = 1-0.05(15) = 0.25,\qquad {}^2\bar A_x = 1-(2\delta)\,{}^2\bar a_x = 1-0.10(9) = 0.10.$$
+          $$\operatorname{Var}(Y) = \frac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2} = \frac{0.10-0.0625}{0.0025} = 15.$$
+          <p>Now use $\operatorname{Var}(Y)=E[Y^2]-(E[Y])^2$ with $E[Y]=\bar a_x=15$:</p>
+          $$15 = E[\bar a_{\overline{T_x}|}^2]-15^2 \ \Rightarrow\ E[\bar a_{\overline{T_x}|}^2] = 15+225 = 240.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[\bar a_{\overline{T_x}|}^2] = 240$. Note we did <strong>not</strong> use the trap $\operatorname{Var}(Y)={}^2\bar a_x-(\bar a_x)^2 = 9-225$ (which is negative — a giveaway that it's wrong).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Constant-force whole life & temporary annuity <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $\mu_{20+t}=0.03$ for all $t$ and $\delta=0.04$. Find $\bar a_{20}$ and $\bar a_{20:\overline 5|}$.</p>
+          $$\bar a_{20}=\frac{1}{\mu+\delta}=\frac{1}{0.07}=14.286.$$
+          $$\bar a_{20:\overline 5|}=\bar a_{20}\bigl(1-{}_5E_{20}\bigr)=\frac{1}{0.07}\Bigl(1-e^{-0.07(5)}\Bigr)=14.286(1-0.70469)=4.219.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\bar a_{20}=14.286$, $\bar a_{20:\overline 5|}=4.219$. (The product form $\bar a_x(1-{}_nE_x)$ works <em>only</em> under constant force.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Certain-and-life equivalence (CAS4A-S97:5) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A retiree chooses between (a) a continuous life annuity of \$30,000/year, and (b) a continuous life annuity with a 5-year certain period of benefit $b$/year, with equal EPV. Given $\delta=0.02$, $\mu=0.07$. Find $b$.</p>
+          <p><strong>Solution.</strong> EPV of (a): $30{,}000\,\bar a_x = 30{,}000\cdot\dfrac{1}{0.02+0.07}=333{,}333.33.$</p>
+          <p>EPV of (b): $b\,\bigl(\bar a_{\overline 5|}+{}_{5|}\bar a_x\bigr)$ where</p>
+          $$\bar a_{\overline 5|}=\frac{1-e^{-0.02(5)}}{0.02}=4.7581,\qquad {}_{5|}\bar a_x=\int_5^\infty e^{-0.09t}\,dt=\frac{e^{-0.45}}{0.09}=7.0848.$$
+          $$b\,(4.7581+7.0848)=11.8429\,b = 333{,}333.33 \ \Rightarrow\ b=28{,}146.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$b\approx\$28{,}146$. The guarantee makes each payment cheaper to promise, so the same EPV buys a smaller annual benefit.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Probability that $\bar a_{\overline{T}|}$ exceeds a target (150-F97:26) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $\mu_{x+t}=0.01$, $\delta=0.05$. Calculate $\Pr\bigl[\bar a_{\overline{T_x}|}>\bar a_{x:\overline{20}|}\bigr]$.</p>
+          <p><strong>Solution.</strong> First the target (an EPV): $\bar a_{x:\overline{20}|}=\dfrac{1-e^{-0.06(20)}}{0.06}=11.6468.$</p>
+          $$\Pr\!\left[\frac{1-e^{-0.05T_x}}{0.05}>11.6468\right]=\Pr[e^{-0.05T_x}<0.41766]=\Pr[T_x>17.4617].$$
+          $${}_{17.4617}p_x=e^{-0.01(17.4617)}=0.8398.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\approx 0.8398$. Watch the trap: $\bar a_{\overline{T_x}|}$ is a random PV but $\bar a_{x:\overline{20}|}$ is an EPV (a constant) — compare apples to a number.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> 75th percentile of a continuous annuity (SOA MLC 229) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$Y$ is the PV of a continuous whole life annuity of 1 on (40); $S_0(t)=1-t/120$, $\delta=0.05$. Find the 75th percentile of $Y$.</p>
+          <p><strong>Solution.</strong> $Y$ increases in $T_{40}$, so $\Pr[Y\le y_{0.75}]=0.75=\Pr[T_{40}\le h]={}_hq_{40}$.</p>
+          $${}_hq_{40}=\frac{1-\frac{80-h}{80}}{1}=\frac{h}{80}=0.75\ \Rightarrow\ h=60.$$
+          $$y_{0.75}=\bar a_{\overline{60}|}=\frac{1-e^{-0.05(60)}}{0.05}=19.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$y_{0.75}=19$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> UDD: temporary $m$-thly annuity (life-table) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Life table: $\ell_{80}=100,\ \ell_{81}=92,\ \ell_{82}=74,\ \ell_{83}=58,\ \ell_{84}=38$; $i=0.06$. Compute $\ddot a_{80:\overline 4|}^{(4)}$ assuming UDD.</p>
+          <p><strong>Solution.</strong> $d=0.056604$; $i^{(4)}=0.058695$, $d^{(4)}=0.057847$, so</p>
+          $$\alpha(4)=\frac{i\,d}{i^{(4)}d^{(4)}}=1.0002653,\qquad \beta(4)=\frac{i-i^{(4)}}{i^{(4)}d^{(4)}}=0.3842386.$$
+          $$\ddot a_{80:\overline 4|}=1+v\tfrac{92}{100}+v^2\tfrac{74}{100}+v^3\tfrac{58}{100}=3.0135,\qquad {}_4E_{80}=v^4\tfrac{38}{100}=0.3010.$$
+          $$\ddot a_{80:\overline 4|}^{(4)}=1.0002653(3.0135)-0.3842386(1-0.3010)=2.7457.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\ddot a_{80:\overline 4|}^{(4)}\approx 2.7457$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Woolhouse 3-term with $\mu$ estimated from the table <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Same table extended: $\ell_{79}=110,\ \ell_{80}=100,\dots,\ell_{86}=10,\ \ell_{87}=0$; $i=0.06$. Compute $a_{80}^{(4)}$ (annuity-immediate) using 3-term Woolhouse.</p>
+          <p><strong>Solution.</strong> $\ddot a_{80}=1+v\tfrac{92}{100}+v^2\tfrac{74}{100}+v^3\tfrac{58}{100}+v^4\tfrac{38}{100}+v^5\tfrac{24}{100}+v^6\tfrac{10}{100}=3.5643.$ Estimate $\mu_{80}$:</p>
+          $$\mu_{80}\approx-\tfrac12\bigl(\ln p_{79}+\ln p_{80}\bigr)=-\tfrac12\Bigl[\ln\tfrac{100}{110}+\ln\tfrac{92}{100}\Bigr]=0.08935.$$
+          $$\ddot a_{80}^{(4)}\approx 3.5643-\frac{3}{8}-\frac{15}{192}\bigl(0.08935+\ln 1.06\bigr)=3.1778,\qquad a_{80}^{(4)}=\ddot a_{80}^{(4)}-\tfrac14=2.9278.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\ddot a_{80}^{(4)}\approx 3.1778$, $a_{80}^{(4)}\approx 2.9278$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Fund size via normal approximation (M-F05:11) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>250 independent lives aged $x$, each paid 500 at the start of each year if living; $A_x=0.369131$, ${}^2A_x=0.177411$, $i=0.06$. Using the normal approximation, find the fund needed to be 90% certain of meeting the payments.</p>
+          <p><strong>Solution.</strong> $d=0.06/1.06$. Per \$1, single life:</p>
+          $$E[Y]=\frac{1-0.369131}{d}=11.1454,\qquad \operatorname{Var}[Y]=\frac{0.177411-0.369131^2}{d^2}=12.8445.$$
+          <p>For $S=500\sum_{j=1}^{250}Y_j$: $E[S]=500(250)(11.1454)=1{,}393{,}169$, $\operatorname{Var}[S]=500^2(250)(12.8445)=802{,}781{,}083.$</p>
+          $$F=E[S]+1.28155\sqrt{\operatorname{Var}[S]}=1{,}393{,}169+1.28155(28{,}333)=1{,}429{,}480.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$F\approx \$1{,}429{,}480$. Pooling 250 lives makes the per-life buffer tiny — the law of large numbers at work.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Non-level temporary annuity-due — variance by first principles (SOA3-F04:40) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Special 3-year temporary life annuity-due: payments 15, 20, 25 at $t=0,1,2$; $p_x=0.95$, $p_{x+1}=0.90$, $p_{x+2}=0.85$; $i=0.06$. Find $\operatorname{Var}(Y)$.</p>
+          <p><strong>Solution.</strong> The variance shortcut needs <em>level</em> payments, so use first principles. Enumerate $Y$ by year of death:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Year of death</th><th>$Y$</th><th>Probability</th></tr></thead>
+            <tbody>
+              <tr><td>1st</td><td>$15$</td><td>$0.05$</td></tr>
+              <tr><td>2nd</td><td>$15+20v=33.8679$</td><td>$0.95(0.10)=0.095$</td></tr>
+              <tr><td>3rd+</td><td>$15+20v+25v^2=56.1178$</td><td>$0.95(0.90)=0.855$</td></tr>
+            </tbody>
+          </table></div>
+          $$E[Y]=15(0.05)+33.8679(0.095)+56.1178(0.855)=51.9482,$$
+          $$E[Y^2]=15^2(0.05)+33.8679^2(0.095)+56.1178^2(0.855)=2{,}812.7943,$$
+          $$\operatorname{Var}(Y)=2{,}812.7943-51.9482^2=114.18.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\operatorname{Var}(Y)\approx 114.18$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Annuity-immediate from $A_x$ and a deferred insurance (150-S98:9) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $A_x=0.22$, $A_{x+25}=0.46$, ${}_{25}E_x=0.20$, $i=0.06$. Find $a_{x:\overline{25}|}$.</p>
+          <p><strong>Solution.</strong> Build the endowment insurance, then the due annuity, then convert to immediate.</p>
+          $$A_{x:\overline{25}|}=\bigl[A_x-{}_{25}E_x\,A_{x+25}\bigr]+{}_{25}E_x=[0.22-0.20(0.46)]+0.20=0.328.$$
+          $$\ddot a_{x:\overline{25}|}=\frac{1-A_{x:\overline{25}|}}{d}=\frac{1-0.328}{0.06/1.06}=11.872.$$
+          $$a_{x:\overline{25}|}=\ddot a_{x:\overline{25}|}-\bigl(1-{}_{25}E_x\bigr)=11.872-(1-0.20)=11.072.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$a_{x:\overline{25}|}\approx 11.072$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> Woolhouse for a monthly annuity from $\ddot a_x$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$(60)$ has $\ddot{a}_{60} = 14.00$, $\delta = \ln(1.05) = 0.048790$, $\mu_{60} = 0.015$. Estimate the EPV of \$12,000/year paid monthly in advance using 3-term Woolhouse.</p>
+          <p><strong>Solution.</strong> $m=12$: $\dfrac{m-1}{2m}=0.458333$, $\dfrac{m^2-1}{12m^2}=0.082755$, $\mu_{60}+\delta=0.063790$.</p>
+          $$\ddot{a}_{60}^{(12)} \approx 14.00 - 0.458333 - 0.082755(0.063790) = 13.53639.$$
+          <p>EPV $= 12{,}000 \times 13.53639 = 162{,}437$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\ddot{a}_{60}^{(12)} \approx 13.536$; EPV $\approx \$162{,}437$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 15</span> Recursion <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given $\ddot{a}_{x+1} = 12.50$, $p_x = 0.98$, $i = 0.04$. Find $\ddot{a}_x$.</p>
+          $$\ddot{a}_x = 1 + v\,p_x\,\ddot{a}_{x+1} = 1 + \tfrac{1}{1.04}(0.98)(12.50) = 1 + 11.77885 = 12.77885.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\ddot{a}_x \approx 12.779$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 16</span> Probability vs. EPV for a certain-and-life annuity (SOA Sample 5.10) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual annuity-due of 1 with a 5-year certain period on (55), SULT, $i=0.05$. Find the probability that the sum of the <em>undiscounted</em> payments made exceeds the EPV at issue.</p>
+          <p><strong>Solution.</strong> EPV $=\ddot a_{\overline 5|}+{}_5E_{55}\,\ddot a_{60}=\dfrac{1-v^5}{0.05/1.05}+0.77382(14.9041)=16.08.$</p>
+          <p>To exceed 16.08, at least 17 payments are needed; the 17th payment (at $t=16$) requires surviving 16 years:</p>
+          $${}_{16}p_{55}=\frac{\ell_{71}}{\ell_{55}}=\frac{90{,}134.0}{97{,}846.2}=0.92.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\approx 0.92$. Compare undiscounted payment <em>count</em> to a discounted EPV — these live in different units, which is the whole point of the question.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 17</span> Uniform lifetime: convert insurance to annuity ($\omega=80$) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Future lifetime is uniform with limiting age $\omega=80$ and $\delta=0.04$. Find $\bar a_{20}$ and $\bar a_{20:\overline 5|}$. (Don't memorize new annuity formulas — get the insurance factor under uniform mortality, then convert with $\bar a=(1-\bar A)/\delta$.)</p>
+          <p><strong>Solution.</strong> With $\omega-x=80-20=60$, the uniform whole life insurance factor is $\bar A_{20}=\dfrac{\bar a_{\overline{60}|}}{60}=\dfrac{1-v^{60}}{0.04(60)}=0.3789$, so</p>
+          $$\bar a_{20}=\frac{1-\bar A_{20}}{\delta}=\frac{1-0.3789}{0.04}=15.53.$$
+          <p>For the 5-year temporary, build the endowment insurance $\bar A_{20:\overline 5|}=\bar A^{\,1}_{20:\overline 5|}+{}_5E_{20}$:</p>
+          $${}_5E_{20}=v^5\,{}_5p_{20}=e^{-0.04(5)}\cdot\frac{60-5}{60}=0.7505,\qquad \bar A^{\,1}_{20:\overline 5|}=\frac{\bar a_{\overline 5|}}{60}=\frac{1-v^5}{0.04(60)}=0.0755,$$
+          $$\bar A_{20:\overline 5|}=0.0755+0.7505=0.8260\ \Rightarrow\ \bar a_{20:\overline 5|}=\frac{1-0.8260}{0.04}=4.35.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\bar a_{20}=15.53$, $\bar a_{20:\overline 5|}=4.35$. Notice we never wrote a "uniform annuity formula" — uniform mortality gives clean <em>insurance</em> factors, and the $(1-\bar A)/\delta$ bridge does the rest.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 18</span> Geometric survival: the annuity-immediate as a geometric series (CAS4A-S99:18) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Mike, aged 30, will receive \$5{,}000 annually for life beginning one year from today (a whole life annuity-immediate). You are given $p_x=w$ for <em>all</em> $x$, $i=0.10$, and the EPV is \$22{,}500. Find $w$.</p>
+          <p><strong>Solution.</strong> $5{,}000\,a_{30}=22{,}500\Rightarrow a_{30}=4.5$. Since $p_x=w$ for all ages, ${}_tp_{30}=w^t$, so the immediate-annuity sum is a geometric series with first term $vw$ and common ratio $vw$:</p>
+          $$a_{30}=\sum_{k=1}^{\infty} v^k\,{}_kp_{30}=\sum_{k=1}^{\infty}(vw)^k=\frac{vw}{1-vw}.$$
+          <p>Set equal to $4.5$ and solve:</p>
+          $$\frac{vw}{1-vw}=4.5\ \Rightarrow\ vw=\frac{4.5}{5.5}=\frac{9}{11}\ \Rightarrow\ w=\frac{9}{11}(1.1)=0.9.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$w=0.9$. Whenever survival is <strong>geometric</strong> (${}_tp_x=w^t$), the annuity-immediate collapses to $a_x=\dfrac{vw}{1-vw}$ and the annuity-due to $\ddot a_x=1+a_x=\dfrac{1}{1-vw}$ — a fast shortcut worth recognizing.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>$\operatorname{Var}(Y)\neq {}^2\bar a_x-(\bar a_x)^2$.</strong> The single most-planted trap. $E[Y^2]\neq{}^2\bar a_x$ because the density of $Y$ is ${}_tp_x\mu_{x+t}$, not ${}_tp_x$. Convert ${}^2\bar a_x\to{}^2\bar A_x=1-2\delta\,{}^2\bar a_x$ first, then $\operatorname{Var}(Y)=\dfrac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2}$. (If your "variance" comes out negative — as $9-15^2$ would — you fell for it.)</li>
+          <li><strong>Matching the denominator to the frequency.</strong> Discrete annual uses $d$, continuous uses $\delta$, $m$-thly uses $d^{(m)}$. Mixing them is the classic error.</li>
+          <li><strong>Doubling the force of interest is different for discrete vs. continuous.</strong> Continuous: $\delta\to2\delta$. Discrete: $d\to 2d-d^2$ (equivalently $i\to 2i+i^2$, $v\to v^2$). Using $2d$ instead of $2d-d^2$ is wrong.</li>
+          <li><strong>${}^{2}A_x\neq (A_x)^2$.</strong> The "2" prefix means evaluate at double the force of interest, not algebraic squaring.</li>
+          <li><strong>No insurance relationship for the immediate annuity.</strong> $A_x=1-d\,\ddot a_x$ holds only for the <em>due</em>. There is no direct $A_x\leftrightarrow a_x$ formula — always solve the due first.</li>
+          <li><strong>Temporary uses endowment, not term, insurance.</strong> $\ddot a_{x:\overline n|}=\dfrac{1-A_{x:\overline n|}}{d}$ uses the <em>endowment</em> insurance $A_{x:\overline n|}$. There is no clean link to term insurance.</li>
+          <li><strong>Immediate temporary conversion.</strong> $a_{x:\overline n|}=\ddot a_{x:\overline n|}-\bigl(1-{}_nE_x\bigr)$: you remove the time-0 payment but <em>add back</em> the time-$n$ payment ${}_nE_x$. Forgetting ${}_nE_x$ is extremely common.</li>
+          <li><strong>Deferred annuity uses $\ddot{a}_{x+u}$, not $\ddot{a}_x$.</strong> ${}_{u|}\ddot{a}_x = {}_uE_x\,\ddot{a}_{x+u}$. The immediate deferred starts at $u+1$, not $u$.</li>
+          <li><strong>Guaranteed annuity double-counting.</strong> In $\ddot{a}_{\overline{x:\overline n|}} = \ddot{a}_{\overline n|} + {}_{n|}\ddot{a}_x$, the first term is the <em>annuity-certain</em> (no survival), the second the <em>deferred life</em> part. Don't add a temporary <em>life</em> annuity for the first $n$ years — the certain part already covers them unconditionally.</li>
+          <li><strong>$\ddot a_x^{(m)}$ is an annual factor.</strong> To value \$250/quarter, multiply $\ddot a_x^{(4)}$ by the <em>annual</em> rate $1000$, never by the per-period $250$.</li>
+          <li><strong>Constant-force product form is constant-force only.</strong> $\bar a_{x:\overline n|}=\bar a_x(1-{}_nE_x)$ requires constant force (so $\bar a_{x+n}=\bar a_x$). Otherwise use $\bar a_{x:\overline n|}=\bar a_x-{}_nE_x\bar a_{x+n}$.</li>
+          <li><strong>Woolhouse sign and force terms.</strong> All correction terms are <strong>subtracted</strong>; the third term uses $(\mu_x+\delta)$ — <em>forces</em>, not $i$ and not $q_x$. Drop only the third term for "2-term."</li>
+          <li><strong>UDD $\alpha,\beta$ vs. Woolhouse first two terms.</strong> The UDD simple approximations $\alpha(m)\approx1$, $\beta(m)\approx\frac{m-1}{2m}$ reproduce Woolhouse's first two terms — handy as a check, but use the <em>exact</em> $\alpha(m),\beta(m)$ when UDD is requested.</li>
+          <li><strong>Accumulated value conditioning.</strong> $\ddot{s}_{x:\overline n|} = \ddot{a}_{x:\overline n|}/{}_nE_x$ divides by the pure endowment (discount <strong>and</strong> survival) — value per survivor. Dividing by $v^n$ alone is wrong.</li>
+          <li><strong>$\ddot{a}_x = 1 + a_x$ only for whole life.</strong> Temporary: $\ddot{a}_{x:\overline n|} = 1 + a_{x:\overline{n-1}|}$ (note $n-1$).</li>
+          <li><strong>Percentile direction.</strong> $Y$ is <em>increasing</em> in $T_x$, so the $p$-th percentile of $Y$ maps to the $p$-th percentile of $T_x$ (not $1-p$). Solve ${}_hq_x=p$, then $y_p=\bar a_{\overline h|}$.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Write the EPV of a whole life annuity-due as a sum of pure endowments, and state its relationship to $A_x$.</summary>
+        <div class="qa-answer">$\ddot{a}_x = \sum_{k=0}^{\infty} v^k\,{}_kp_x$, and $\ddot{a}_x = \dfrac{1 - A_x}{d}$. Each term $v^k\,{}_kp_x$ is the EPV of a \$1 pure endowment at time $k$.</div>
+      </details>
+      <details class="qa"><summary>Given $A_x = 0.20$ and $i = 0.06$, compute $\ddot{a}_x$.</summary>
+        <div class="qa-answer">$d = 0.06/1.06 = 0.056604$; $\ddot{a}_x = 0.80/0.056604 = 14.133$.</div>
+      </details>
+      <details class="qa"><summary>Why can't $\operatorname{Var}(Y)$ for an annuity be computed as ${}^2\bar a_x-(\bar a_x)^2$? What should you do instead?</summary>
+        <div class="qa-answer">Because $E[Y^2]\neq{}^2\bar a_x$ — the integrand ${}_tp_x$ is not the density of $Y$ (the density is ${}_tp_x\mu_{x+t}$). Instead use $\operatorname{Var}(Y)=\dfrac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2}$, getting ${}^2\bar A_x$ from $1-2\delta\,{}^2\bar a_x$.</div>
+      </details>
+      <details class="qa"><summary>Explain in one sentence why ${}^{2}A_x \neq (A_x)^2$.</summary>
+        <div class="qa-answer">${}^{2}A_x$ is the insurance EPV evaluated at <strong>double the force of interest</strong> ($v^2$), a genuinely different value, not the algebraic square of $A_x$.</div>
+      </details>
+      <details class="qa"><summary>When you double the force of interest, what happens to $\delta$ (continuous) and to $d$ (discrete)?</summary>
+        <div class="qa-answer">Continuous: $\delta\to2\delta$. Discrete: $v\to v^2$, equivalently $i\to 2i+i^2$ and $d\to 2d-d^2$.</div>
+      </details>
+      <details class="qa"><summary>Is there a clean insurance–annuity relationship for the annuity-immediate? How would you find $a_x$ from $A_x$?</summary>
+        <div class="qa-answer">No direct one. Compute the due value $\ddot a_x=(1-A_x)/d$, then $a_x=\ddot a_x-1$.</div>
+      </details>
+      <details class="qa"><summary>Survival is geometric: ${}_tp_x=w^t$ for all $t$. Give a closed form for $a_x$ (whole life annuity-immediate).</summary>
+        <div class="qa-answer">$a_x=\sum_{k=1}^\infty v^k w^k=\dfrac{vw}{1-vw}$ (geometric series, first term $vw$, ratio $vw$). Then $\ddot a_x=1+a_x=\dfrac{1}{1-vw}$.</div>
+      </details>
+      <details class="qa"><summary>A 3-year deferred whole life annuity-due on $(x)$ pays \$1/year. Write its EPV in terms of $\ddot{a}_{x+3}$.</summary>
+        <div class="qa-answer">${}_{3|}\ddot{a}_x = v^3\,{}_3p_x\,\ddot{a}_{x+3}={}_3E_x\,\ddot a_{x+3}$.</div>
+      </details>
+      <details class="qa"><summary>Under a constant force $\mu$ with force of interest $\delta$, give $\bar a_x$ and $\bar a_{x:\overline n|}$.</summary>
+        <div class="qa-answer">$\bar a_x=\dfrac{1}{\mu+\delta}$ and $\bar a_{x:\overline n|}=\dfrac{1}{\mu+\delta}\bigl(1-e^{-(\mu+\delta)n}\bigr)=\bar a_x(1-{}_nE_x)$ (product form valid only under constant force).</div>
+      </details>
+      <details class="qa"><summary>Rank $a_x,\ a_x^{(m)},\ \bar a_x,\ \ddot a_x^{(m)},\ \ddot a_x$ from smallest to largest, and say why.</summary>
+        <div class="qa-answer">$a_x\lt a_x^{(m)}<\bar a_x<\ddot a_x^{(m)}<\ddot a_x$. Earlier average payment dates mean less discounting (and due forms collect more in the year of death), so values rise as payments move earlier.</div>
+      </details>
+      <details class="qa"><summary>Write the UDD formulas for $\ddot a_x^{(m)}$ and $\ddot a_{x:\overline n|}^{(m)}$, including $\alpha(m)$ and $\beta(m)$.</summary>
+        <div class="qa-answer">$\ddot a_x^{(m)}=\alpha(m)\ddot a_x-\beta(m)$ and $\ddot a_{x:\overline n|}^{(m)}=\alpha(m)\ddot a_{x:\overline n|}-\beta(m)(1-{}_nE_x)$, with $\alpha(m)=\dfrac{i\,d}{i^{(m)}d^{(m)}}\approx1$, $\beta(m)=\dfrac{i-i^{(m)}}{i^{(m)}d^{(m)}}\approx\dfrac{m-1}{2m}$.</div>
+      </details>
+      <details class="qa"><summary>State the 2-term Woolhouse approximation for $\bar{a}_x$ and what the 3-term version adds.</summary>
+        <div class="qa-answer">$\bar{a}_x \approx \ddot{a}_x - \tfrac{1}{2}$. The 3-term version adds $-\tfrac{1}{12}(\mu_x+\delta)$, correcting for force of mortality and interest.</div>
+      </details>
+      <details class="qa"><summary>If $\mu_x$ is not given but a life table is, how do you approximate it for Woolhouse?</summary>
+        <div class="qa-answer">$\mu_x\approx-\tfrac12\bigl(\ln p_{x-1}+\ln p_x\bigr)$ (constant force assumed over $[x-1,x+1]$).</div>
+      </details>
+      <details class="qa"><summary>How do you find the $p$-th percentile of $Y$ for a continuous whole life annuity?</summary>
+        <div class="qa-answer">$Y$ increases with $T_x$, so solve ${}_hq_x=p$ for $h$, then $y_p=\bar a_{\overline h|}=\dfrac{1-e^{-\delta h}}{\delta}$.</div>
+      </details>
+      <details class="qa"><summary>Write the EPV of a continuously increasing whole life annuity (rate $=t$) and of an annually increasing whole life annuity-due.</summary>
+        <div class="qa-answer">$(\bar I\bar a)_x=\int_0^\infty t\,v^t\,{}_tp_x\,dt$; $(I\ddot a)_x=\sum_{k=0}^\infty (k+1)v^k\,{}_kp_x=1+2vp_x+3v^2{}_2p_x+\cdots$, with recursion $(I\ddot a)_x=\ddot a_x+vp_x(I\ddot a)_{x+1}$.</div>
+      </details>
+      <details class="qa"><summary>Using Woolhouse at $i=0$, approximate the complete expectation of life $\mathring e_x$.</summary>
+        <div class="qa-answer">$\mathring e_x\approx e_x+\tfrac12-\tfrac1{12}\mu_x$ (from $\bar a_x\approx\ddot a_x-\tfrac12-\tfrac1{12}\mu_x$ with $\delta=0$, using $\bar a_x=\mathring e_x$ and $\ddot a_x=1+e_x$).</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

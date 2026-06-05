@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff // FAM-OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#05070d;
+    --bg2:#080b14;
+    --panel:#0b1020;
+    --panel2:#0d1426;
+    --cyan:#00f0ff;
+    --cyan-dim:#0a8f9b;
+    --magenta:#ff2bd6;
+    --magenta-dim:#9c1a86;
+    --yellow:#f7ff36;
+    --green:#27ff9e;
+    --ink:#cfe9ff;
+    --ink-dim:#5d7896;
+    --line:rgba(0,240,255,.18);
+    --line-mag:rgba(255,43,214,.22);
+    --grid:rgba(0,240,255,.045);
+    --clip:polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+    --clip-sm:polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Rajdhani',sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+    overflow-x:hidden;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+      radial-gradient(circle at 78% 8%, rgba(255,43,214,.10), transparent 40%),
+      radial-gradient(circle at 12% 90%, rgba(0,240,255,.10), transparent 42%);
+    background-size:42px 42px,42px 42px,100% 100%,100% 100%;
+  }
+  /* scanline overlay */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9000;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.18) 3px,rgba(0,0,0,0) 4px);
+    mix-blend-mode:multiply;opacity:.5;
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'Share Tech Mono',monospace}
+
+  /* ---------- App shell ---------- */
+  .shell{
+    max-width:1480px;margin:0 auto;padding:18px;
+    display:grid;grid-template-columns:286px 1fr;gap:18px;
+    min-height:100vh;align-items:start;
+  }
+
+  /* ---------- Corner tick helper ---------- */
+  .ticks::before,.ticks::after{
+    content:"";position:absolute;width:16px;height:16px;pointer-events:none;
+  }
+  .ticks::before{top:6px;left:6px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+  .ticks::after{bottom:6px;right:6px;border-bottom:2px solid var(--magenta);border-right:2px solid var(--magenta)}
+
+  /* ---------- Sidebar ---------- */
+  .side{
+    position:sticky;top:18px;
+    background:linear-gradient(160deg,var(--panel),var(--bg2));
+    border:1px solid var(--line);
+    clip-path:var(--clip);
+    padding:22px 20px 26px;
+  }
+  .side::before{
+    content:"";position:absolute;inset:0;clip-path:var(--clip);
+    border:1px solid var(--line);transform:scale(.997);pointer-events:none;
+  }
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .mmark{
+    width:48px;height:48px;flex:none;position:relative;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--cyan),var(--magenta));
+    clip-path:polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%);
+    box-shadow:0 0 18px rgba(0,240,255,.4);
+  }
+  .mmark span{
+    font-family:'Orbitron',sans-serif;font-weight:900;font-size:26px;color:#04060c;
+    text-shadow:0 0 4px rgba(255,255,255,.5);
+  }
+  .brand h1{
+    font-family:'Orbitron',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;
+    line-height:1.15;color:#fff;
+  }
+  .brand .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);font-family:'Share Tech Mono',monospace}
+
+  .syswrap{
+    margin:18px 0 22px;border:1px solid var(--line);clip-path:var(--clip-sm);
+    background:rgba(0,240,255,.04);padding:10px 12px;
+  }
+  .sysrow{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.1em;color:var(--ink-dim);font-family:'Share Tech Mono',monospace}
+  .sysrow b{color:var(--green)}
+  .blink{animation:blink 1.2s steps(1) infinite}
+  @keyframes blink{50%{opacity:.15}}
+
+  .navlabel{
+    font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.28em;
+    color:var(--magenta);text-transform:uppercase;margin:0 2px 12px;display:flex;align-items:center;gap:8px;
+  }
+  .navlabel::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--magenta),transparent)}
+
+  nav ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  nav a{
+    position:relative;display:flex;align-items:center;gap:12px;
+    padding:11px 13px;font-weight:600;font-size:15px;letter-spacing:.02em;
+    color:var(--ink);clip-path:var(--clip-sm);
+    border:1px solid transparent;transition:.18s;
+  }
+  nav a .idx{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--ink-dim);min-width:22px}
+  nav a .dot{margin-left:auto;width:7px;height:7px;background:var(--ink-dim);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+  nav a:hover{background:rgba(0,240,255,.07);border-color:var(--line);color:#fff;transform:translateX(3px)}
+  nav a:hover .dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  nav a.on{
+    background:linear-gradient(90deg,rgba(0,240,255,.14),transparent);
+    border-color:var(--cyan);color:#fff;
+  }
+  nav a.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  nav a.on .dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  nav a.done .idx{color:var(--green)}
+  nav a.done .dot{background:var(--green)}
+
+  .exambadge{
+    margin-top:22px;border:1px solid var(--line-mag);clip-path:var(--clip-sm);
+    background:linear-gradient(135deg,rgba(255,43,214,.12),rgba(0,240,255,.05));
+    padding:14px;text-align:center;
+  }
+  .exambadge .lbl{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.24em;color:var(--ink-dim);text-transform:uppercase}
+  .exambadge .big{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:.08em;
+    background:linear-gradient(90deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;margin:4px 0 2px}
+
+  /* ---------- Main ---------- */
+  .main{display:flex;flex-direction:column;gap:18px;min-width:0}
+
+  .topbar{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    border:1px solid var(--line);clip-path:var(--clip-sm);
+    background:linear-gradient(90deg,var(--panel2),var(--bg2));
+    padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--ink-dim);
+  }
+  .topbar .seg{display:flex;align-items:center;gap:7px}
+  .topbar .seg b{color:var(--cyan)}
+  .topbar .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 1.4s steps(1) infinite}
+  .topbar .spacer{flex:1}
+  .topbar .right{color:var(--magenta)}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;border:1px solid var(--line);
+    background:
+      linear-gradient(150deg,rgba(0,240,255,.05),transparent 40%),
+      linear-gradient(300deg,rgba(255,43,214,.06),transparent 45%),
+      var(--panel);
+    clip-path:var(--clip);padding:34px 36px 30px;overflow:hidden;
+  }
+  .hero::before{
+    content:"// SESSION_ID 0x7F·FAM // BUILD 2026.06.05 // NODE_ACTIVE";
+    position:absolute;top:0;left:0;right:0;padding:6px 16px;z-index:2;
+    font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--cyan-dim);
+    background:rgba(0,240,255,.06);border-bottom:1px solid var(--line);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  /* animated radar sweep behind hero */
+  .hero::after{
+    content:"";position:absolute;top:-40%;right:-20%;width:60%;height:180%;pointer-events:none;z-index:0;
+    background:conic-gradient(from 0deg,transparent 0deg,rgba(0,240,255,.08) 20deg,transparent 55deg);
+    animation:sweep 7s linear infinite;
+  }
+  @keyframes sweep{to{transform:rotate(360deg)}}
+  .hero>*{position:relative;z-index:1}
+  .greet{margin-top:26px;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:.26em;text-transform:uppercase;color:var(--magenta);display:flex;align-items:center;gap:10px}
+  .greet::before{content:"▶";color:var(--cyan);font-size:10px}
+
+  .headline{
+    font-family:'Orbitron',sans-serif;font-weight:900;
+    font-size:clamp(34px,5.4vw,62px);line-height:1.02;letter-spacing:-.01em;margin:12px 0 16px;
+    color:#fff;text-shadow:0 0 22px rgba(0,240,255,.25);position:relative;
+  }
+  .headline .glx{position:relative;display:inline-block}
+  .headline .glx::before,.headline .glx::after{
+    content:attr(data-t);position:absolute;left:0;top:0;width:100%;clip-path:inset(0 0 0 0);
+  }
+  .headline .glx::before{color:var(--cyan);transform:translate(-2px,1px);mix-blend-mode:screen;animation:gl1 4s infinite steps(1)}
+  .headline .glx::after{color:var(--magenta);transform:translate(2px,-1px);mix-blend-mode:screen;animation:gl2 4s infinite steps(1)}
+  @keyframes gl1{0%,92%,100%{opacity:0}93%{opacity:.9;transform:translate(-3px,2px)}96%{opacity:.6;transform:translate(2px,-1px)}}
+  @keyframes gl2{0%,90%,100%{opacity:0}91%{opacity:.9;transform:translate(3px,-2px)}95%{opacity:.5;transform:translate(-2px,1px)}}
+
+  .lede{max-width:680px;font-size:17px;color:var(--ink);font-weight:500;line-height:1.55}
+  .lede em{color:var(--cyan);font-style:normal}
+
+  .cta{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+  .hudreadout{
+    display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;padding-top:16px;
+    border-top:1px dashed var(--line);font-size:11px;letter-spacing:.16em;color:var(--ink-dim);text-transform:uppercase;
+  }
+  .hudreadout span{display:flex;align-items:center;gap:7px}
+  .hudreadout b{color:var(--cyan);font-weight:400}
+  .hudreadout .acc b{color:var(--magenta);letter-spacing:-.04em}
+  .btn{
+    position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+    padding:14px 26px;cursor:pointer;border:none;
+    clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+    transition:.18s;
+  }
+  .btn.primary{background:linear-gradient(135deg,var(--cyan),#00b8c4);color:#04060c;box-shadow:0 0 24px rgba(0,240,255,.35)}
+  .btn.primary:hover{box-shadow:0 0 36px rgba(0,240,255,.6);transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--magenta);border:1px solid var(--magenta);box-shadow:inset 0 0 18px rgba(255,43,214,.12)}
+  .btn.ghost:hover{background:rgba(255,43,214,.12);color:#fff;transform:translateY(-2px)}
+
+  /* ---------- Stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{
+    position:relative;border:1px solid var(--line);clip-path:var(--clip);
+    background:linear-gradient(165deg,var(--panel2),var(--bg2));padding:20px 22px 18px;overflow:hidden;
+  }
+  .stat .k{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-dim);display:flex;justify-content:space-between}
+  .stat .k i{font-style:normal;color:var(--magenta)}
+  .stat .v{font-family:'Orbitron',sans-serif;font-weight:900;font-size:46px;line-height:1;margin:14px 0 6px;color:#fff}
+  .stat .v small{font-size:18px;color:var(--cyan)}
+  .stat .sub{font-size:13px;color:var(--ink-dim);font-weight:500;letter-spacing:.03em}
+  .stat.c1 .v{color:var(--cyan);text-shadow:0 0 18px rgba(0,240,255,.4)}
+  .stat.c2 .v{color:var(--magenta);text-shadow:0 0 18px rgba(255,43,214,.4)}
+  .stat.c3 .v{color:var(--green);text-shadow:0 0 18px rgba(39,255,158,.4)}
+  .bar{height:6px;margin-top:14px;background:rgba(255,255,255,.06);clip-path:var(--clip-sm);overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--magenta));box-shadow:0 0 12px var(--cyan)}
+  .ring{position:absolute;top:14px;right:18px;font-family:'Share Tech Mono',monospace;font-size:30px;color:rgba(0,240,255,.1)}
+
+  /* ---------- Content grid ---------- */
+  .grid2{display:grid;grid-template-columns:1.55fr 1fr;gap:18px}
+
+  .panel{
+    position:relative;border:1px solid var(--line);clip-path:var(--clip);
+    background:linear-gradient(160deg,var(--panel),var(--bg2));padding:24px 26px;
+  }
+  .phead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .phead .tag{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);
+    border:1px solid var(--line);padding:3px 9px;clip-path:var(--clip-sm);background:rgba(0,240,255,.05)}
+  .ptitle{font-family:'Orbitron',sans-serif;font-weight:700;font-size:22px;color:#fff;letter-spacing:.01em;margin:8px 0 4px}
+  .pled{font-size:15px;color:var(--ink-dim);font-weight:500;margin-bottom:18px}
+
+  .formula{
+    border:1px solid var(--line);clip-path:var(--clip-sm);background:rgba(2,6,14,.7);
+    padding:0;margin-top:6px;
+  }
+  .formula .fh{
+    font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--magenta);
+    padding:8px 14px;border-bottom:1px solid var(--line-mag);background:rgba(255,43,214,.06);text-transform:uppercase;
+    display:flex;justify-content:space-between;
+  }
+  .formula ul{list-style:none;padding:8px 0}
+  .formula li{
+    font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--ink);
+    padding:11px 18px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(0,240,255,.06);
+  }
+  .formula li:last-child{border-bottom:none}
+  .formula li .n{color:var(--cyan-dim);font-size:11px;min-width:34px}
+  .formula li b{color:var(--cyan)}
+  .formula li .eq{color:#fff;letter-spacing:.02em}
+  .formula li:hover{background:rgba(0,240,255,.04)}
+
+  .trap{
+    margin-top:20px;position:relative;border:1px solid var(--line-mag);clip-path:var(--clip-sm);
+    background:linear-gradient(120deg,rgba(255,43,214,.1),rgba(255,43,214,.02));padding:16px 18px 16px 50px;
+  }
+  .trap::before{
+    content:"!";position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    width:24px;height:24px;display:grid;place-items:center;
+    font-family:'Orbitron',sans-serif;font-weight:900;font-size:15px;color:#04060c;
+    background:var(--magenta);clip-path:polygon(50% 0,100% 100%,0 100%);box-shadow:0 0 14px var(--magenta);
+  }
+  .trap .lbl{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:3px}
+  .trap p{font-size:15px;color:var(--ink);font-weight:500;line-height:1.45}
+  .trap p b{color:var(--yellow)}
+
+  /* right column */
+  .stack{display:flex;flex-direction:column;gap:18px}
+
+  .examcard{
+    position:relative;border:1px solid var(--cyan);clip-path:var(--clip);
+    background:linear-gradient(165deg,rgba(0,240,255,.08),var(--panel));padding:22px 24px;overflow:hidden;
+  }
+  .examcard::after{
+    content:"FAM";position:absolute;right:-6px;bottom:-22px;
+    font-family:'Orbitron',sans-serif;font-weight:900;font-size:96px;color:rgba(0,240,255,.06);letter-spacing:-.04em;
+  }
+  .examcard .top{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--cyan);text-transform:uppercase}
+  .examcard h3{font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;color:#fff;margin:6px 0 2px;letter-spacing:.02em}
+  .examcard .full{font-size:14px;color:var(--ink-dim);font-weight:500;margin-bottom:16px}
+  .spec{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1}
+  .spec div{border:1px solid var(--line);clip-path:var(--clip-sm);padding:9px 11px;background:rgba(2,6,14,.6)}
+  .spec .sk{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--ink-dim);text-transform:uppercase}
+  .spec .sv{font-family:'Orbitron',sans-serif;font-weight:700;font-size:15px;color:var(--cyan);margin-top:2px}
+  .spec .sv.mag{color:var(--magenta)}
+
+  .teaser{
+    position:relative;border:1px solid var(--line);clip-path:var(--clip);
+    background:linear-gradient(160deg,var(--panel2),var(--bg2));padding:22px 24px;
+  }
+  .teaser .tag{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta)}
+  .teaser h3{font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px;color:#fff;margin:8px 0 10px;line-height:1.15}
+  .teaser .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .teaser .chip{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--ink-dim);
+    border:1px solid var(--line);padding:4px 10px;clip-path:var(--clip-sm)}
+  .teaser .chip b{color:var(--green)}
+  .teaser .cta{margin-top:0}
+  .teaser .btn{font-size:11px;padding:11px 18px}
+
+  /* ---------- Footer ---------- */
+  .foot{
+    grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    border:1px solid var(--line);clip-path:var(--clip-sm);
+    background:linear-gradient(90deg,var(--panel2),var(--bg2));padding:16px 22px;margin-top:2px;
+  }
+  .foot .fb{display:flex;align-items:center;gap:12px}
+  .foot .fm{width:34px;height:34px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--magenta));
+    clip-path:polygon(0 7px,7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%)}
+  .foot .fm span{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;color:#04060c}
+  .foot .ft b{font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:.05em}
+  .foot .ft small{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.18em;color:var(--cyan)}
+  .foot .fr{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--ink-dim);text-align:right}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:1080px){
+    .shell{grid-template-columns:1fr}
+    .side{position:relative;top:0}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media(max-width:760px){
+    .stats{grid-template-columns:1fr}
+    .hero{padding:30px 22px 26px}
+    .spec{grid-template-columns:1fr 1fr}
+    .headline{font-size:clamp(30px,8.5vw,44px)}
+    .stat .v{font-size:40px}
+    .cta{gap:10px}
+    .btn{padding:13px 20px;flex:1 1 auto;text-align:center;justify-content:center}
+    .topbar{gap:10px 14px;font-size:10px}
+    .foot{flex-direction:column;align-items:flex-start}
+    .foot .fr{text-align:left}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="side ticks">
+    <div class="brand">
+      <div class="mmark"><span>M</span></div>
+      <div>
+        <h1>ME STUDING<br>STUFF</h1>
+        <div class="tag">study&nbsp;·&nbsp;pass</div>
+      </div>
+    </div>
+
+    <div class="syswrap">
+      <div class="sysrow"><span>SYS.STATUS</span><b>ONLINE<span class="blink">_</span></b></div>
+      <div class="sysrow"><span>LINK</span><b>SOA::FAM</b></div>
+      <div class="sysrow"><span>USER</span><b>CANDIDATE-07</b></div>
+    </div>
+
+    <div class="navlabel">NAV // TOPICS</div>
+    <nav>
+      <ul>
+        <li><a class="done" href="#"><span class="idx">01</span>Survival Models<span class="dot"></span></a></li>
+        <li><a class="done" href="#"><span class="idx">02</span>Life Tables<span class="dot"></span></a></li>
+        <li><a class="on" href="#"><span class="idx">03</span>Life Insurance<span class="dot"></span></a></li>
+        <li><a href="#"><span class="idx">04</span>Life Annuities<span class="dot"></span></a></li>
+        <li><a href="#"><span class="idx">05</span>Premiums<span class="dot"></span></a></li>
+        <li><a href="#"><span class="idx">06</span>Policy Values<span class="dot"></span></a></li>
+        <li><a href="#"><span class="idx">07</span>Multi-State Models<span class="dot"></span></a></li>
+        <li><a href="#"><span class="idx">08</span>Short-Term Insurance<span class="dot"></span></a></li>
+      </ul>
+    </nav>
+
+    <div class="exambadge">
+      <div class="lbl">EXAM SECTION</div>
+      <div class="big">FAM-L / FAM-S</div>
+      <div class="lbl">dual-module track</div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <div class="topbar">
+      <span class="seg"><span class="pulse"></span> <b>FAM-OS</b> v4.8</span>
+      <span class="seg">CORE TEMP <b>NOMINAL</b></span>
+      <span class="seg">PING <b>12ms</b></span>
+      <span class="spacer"></span>
+      <span class="right mono">2026-06-05 // 21:40 LOCAL</span>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero ticks">
+      <div class="greet">Good evening</div>
+      <h1 class="headline">Let's get you that <span class="glx" data-t="pass.">pass.</span></h1>
+      <p class="lede">Your focused hub for <em>SOA Exam FAM</em> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="cta">
+        <button class="btn primary">Start studying ▸</button>
+        <button class="btn ghost">↻ Resume</button>
+      </div>
+      <div class="hudreadout mono">
+        <span>RDY<b>✓</b></span><span>FOCUS<b>03</b></span><span>STREAK<b>14d</b></span><span class="acc">SIGNAL<b>██████░░</b></span>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat c1 ticks">
+        <div class="k"><span>Overall Progress</span><i>%</i></div>
+        <div class="v">72<small>%</small></div>
+        <div class="sub">12 of 17 topics cleared</div>
+        <div class="bar"><i style="width:72%"></i></div>
+      </div>
+      <div class="stat c2 ticks">
+        <div class="k"><span>Exam Countdown</span><i>T-</i></div>
+        <div class="v">86<small> days</small></div>
+        <div class="sub">window locks 2026-08-30</div>
+        <div class="bar"><i style="width:43%"></i></div>
+      </div>
+      <div class="stat c3 ticks">
+        <div class="k"><span>Topics Solid</span><i>OK</i></div>
+        <div class="v">8<small>/17</small></div>
+        <div class="sub">mastery threshold reached</div>
+        <div class="bar"><i style="width:47%"></i></div>
+      </div>
+    </section>
+
+    <!-- CONTENT GRID -->
+    <section class="grid2">
+
+      <!-- LEFT: topic preview + formula + trap -->
+      <div class="panel ticks">
+        <div class="phead">
+          <span class="tag">MODULE 03 // PREVIEW</span>
+        </div>
+        <h2 class="ptitle">Life Insurance Present Values</h2>
+        <p class="pled">Expected present value of benefits — the backbone of every premium and reserve you'll compute.</p>
+
+        <div class="formula">
+          <div class="fh"><span>// CORE FORMULAE</span><span>UDD-READY</span></div>
+          <ul>
+            <li><span class="n">f01</span><span class="eq"><b>A_x</b> = 1 − d·ä_x</span></li>
+            <li><span class="n">f02</span><span class="eq"><b>Var(Z)</b> = ²A_x − (A_x)²</span></li>
+            <li><span class="n">f03</span><span class="eq"><b>ä_x</b> = (1 − A_x) / d</span></li>
+          </ul>
+        </div>
+
+        <div class="trap">
+          <span class="lbl">COMMON TRAP // FLAGGED</span>
+          <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: exam card + worked example -->
+      <div class="stack">
+
+        <div class="examcard ticks">
+          <div class="top">// EXAMINATION</div>
+          <h3>Exam FAM</h3>
+          <div class="full">Fundamentals of Actuarial Mathematics</div>
+          <div class="spec">
+            <div><div class="sk">Provider</div><div class="sv">SOA</div></div>
+            <div><div class="sk">Questions</div><div class="sv">34</div></div>
+            <div><div class="sk">Format</div><div class="sv">Multiple choice</div></div>
+            <div><div class="sk">Pass mark</div><div class="sv mag">6 / 10</div></div>
+          </div>
+        </div>
+
+        <div class="teaser ticks">
+          <div class="tag">WORKED EXAMPLE // 01</div>
+          <h3>Example 1 — Whole life EPV &amp; variance</h3>
+          <div class="meta">
+            <span class="chip">EST <b>9 min</b></span>
+            <span class="chip">DIFFICULTY <b>★★☆</b></span>
+            <span class="chip">MODULE <b>03</b></span>
+          </div>
+          <div class="cta">
+            <button class="btn primary">Start studying</button>
+            <button class="btn ghost">Resume</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="foot">
+      <div class="fb">
+        <div class="fm"><span>M</span></div>
+        <div class="ft">
+          <b>Me Studing Stuff</b>
+          <small>STUDY SMARTER. PASS EXAMS.</small>
+        </div>
+      </div>
+      <div class="fr">© 2026 ME STUDING STUFF // FAM-OS BUILD 4.8<br>NO PERSONAL DATA TRANSMITTED · LOCAL SESSION</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

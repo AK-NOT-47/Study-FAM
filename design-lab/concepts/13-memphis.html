@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1530;
+    --paper:#fdf6e3;
+    --pink:#ff5da2;
+    --cyan:#22d3ee;
+    --yellow:#ffd23f;
+    --lilac:#a86bff;
+    --mint:#3ddc97;
+    --coral:#ff7a5c;
+    --blue:#3a86ff;
+    --shadow:6px 6px 0 var(--ink);
+    --shadow-lg:10px 10px 0 var(--ink);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    /* terrazzo speckle */
+    background-image:
+      radial-gradient(circle at 12% 22%, var(--pink) 0 3px, transparent 4px),
+      radial-gradient(circle at 78% 14%, var(--cyan) 0 4px, transparent 5px),
+      radial-gradient(circle at 34% 78%, var(--yellow) 0 3px, transparent 4px),
+      radial-gradient(circle at 88% 64%, var(--mint) 0 3px, transparent 4px),
+      radial-gradient(circle at 52% 42%, var(--lilac) 0 2px, transparent 3px),
+      radial-gradient(circle at 6% 88%, var(--coral) 0 3px, transparent 4px),
+      radial-gradient(circle at 64% 92%, var(--blue) 0 2px, transparent 3px),
+      radial-gradient(circle at 92% 38%, var(--pink) 0 2px, transparent 3px),
+      radial-gradient(circle at 22% 52%, var(--cyan) 0 2px, transparent 3px);
+    background-size:340px 340px;
+    background-attachment:fixed;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit;text-decoration:none}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:22px clamp(16px,4vw,40px) 60px}
+
+  /* ===== confetti ornaments ===== */
+  .shape{position:absolute;z-index:1;pointer-events:none}
+  /* in-panel scattered Memphis bits */
+  .panel{overflow:hidden}
+  .deco{position:absolute;pointer-events:none;z-index:1}
+  .deco.dot{width:16px;height:16px;border-radius:50%}
+  .deco.ring{width:22px;height:22px;border-radius:50%;border:4px solid var(--ink);background:transparent}
+  .deco.tri{width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent}
+  .deco.bar{width:34px;height:11px;border-radius:6px}
+  .deco.plus{width:22px;height:22px}
+  .deco.plus::before,.deco.plus::after{content:"";position:absolute;background:currentColor;border-radius:2px}
+  .deco.plus::before{left:9px;top:0;width:4px;height:22px}
+  .deco.plus::after{top:9px;left:0;height:4px;width:22px}
+
+  /* ===== TOP BAR ===== */
+  header.bar{
+    position:relative;z-index:3;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap;
+    background:var(--ink);
+    color:var(--paper);
+    border:4px solid var(--ink);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:14px 20px;
+    margin-bottom:26px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .mmark{
+    width:54px;height:54px;flex:0 0 auto;
+    background:var(--yellow);
+    border:4px solid var(--paper);
+    border-radius:14px;
+    display:grid;place-items:center;
+    font-family:'Archivo Black',sans-serif;
+    font-size:30px;color:var(--ink);
+    transform:rotate(-6deg);
+    box-shadow:3px 3px 0 var(--pink);
+  }
+  .brand h1{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800;font-size:21px;letter-spacing:-.5px;line-height:1;color:var(--paper)
+  }
+  .brand p{font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cyan);font-weight:600;margin-top:4px}
+
+  nav.topnav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+  nav.topnav a{
+    font-size:12.5px;font-weight:600;
+    padding:7px 12px;border-radius:30px;
+    border:2.5px solid var(--paper);
+    background:transparent;color:var(--paper);
+    transition:transform .12s,background .12s,color .12s;
+    white-space:nowrap;
+  }
+  nav.topnav a:nth-child(1):hover{background:var(--pink)}
+  nav.topnav a:nth-child(2):hover{background:var(--cyan);color:var(--ink)}
+  nav.topnav a:nth-child(3):hover{background:var(--yellow);color:var(--ink)}
+  nav.topnav a:nth-child(4):hover{background:var(--mint);color:var(--ink)}
+  nav.topnav a:nth-child(5):hover{background:var(--lilac)}
+  nav.topnav a:nth-child(6):hover{background:var(--coral)}
+  nav.topnav a:hover{transform:translateY(-3px) rotate(-2deg)}
+  nav.topnav .pill{
+    background:var(--pink);color:var(--paper);
+    border-color:var(--pink);
+    font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:.5px;
+    padding:8px 13px;
+  }
+
+  /* ===== HERO GRID ===== */
+  .hero{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:22px;
+    position:relative;z-index:2;
+    margin-bottom:22px;
+  }
+  .panel{
+    background:var(--paper);
+    border:4px solid var(--ink);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    position:relative;
+  }
+
+  .greet-card{
+    padding:34px clamp(22px,3vw,40px);
+    overflow:hidden;
+    background:
+      repeating-linear-gradient(135deg, rgba(168,107,255,.10) 0 14px, transparent 14px 28px),
+      var(--paper);
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--mint);
+    border:3px solid var(--ink);
+    border-radius:30px;
+    padding:6px 14px 6px 10px;
+    font-weight:700;font-size:13px;
+    box-shadow:3px 3px 0 var(--ink);
+    transform:rotate(-2deg);
+  }
+  .eyebrow .dot{width:14px;height:14px;border-radius:50%;background:var(--coral);border:2px solid var(--ink)}
+  .greet-card h2{
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(34px,5.4vw,60px);
+    line-height:.96;letter-spacing:-1.5px;
+    margin:18px 0 16px;
+  }
+  .greet-card h2 .hl{
+    color:var(--yellow);
+    -webkit-text-stroke:2.5px var(--ink);
+    text-stroke:2.5px var(--ink);
+    text-shadow:5px 5px 0 var(--pink);
+    position:relative;
+    display:inline-block;
+    transform:rotate(-1.5deg);
+  }
+  .lede{font-size:16px;max-width:48ch;font-weight:500;color:#3a3252}
+
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .btn{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800;font-size:16px;
+    padding:14px 24px;border-radius:16px;
+    border:4px solid var(--ink);cursor:pointer;
+    transition:transform .12s,box-shadow .12s;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn-go{background:var(--pink);color:var(--paper);box-shadow:var(--shadow)}
+  .btn-resume{background:var(--cyan);color:var(--ink);box-shadow:var(--shadow)}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-lg)}
+  .btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+
+  /* exam card (right of hero) */
+  .exam-card{
+    background:
+      radial-gradient(circle at 88% 12%, rgba(255,255,255,.14) 0 5px, transparent 6px) 0 0/40px 40px,
+      var(--lilac);
+    color:var(--paper);
+    padding:26px 24px;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+  }
+  .exam-card .tag{
+    align-self:flex-start;
+    background:var(--yellow);color:var(--ink);
+    border:3px solid var(--ink);border-radius:10px;
+    font-family:'Archivo Black',sans-serif;font-size:12px;
+    padding:5px 11px;transform:rotate(2deg);box-shadow:3px 3px 0 var(--ink);
+  }
+  .exam-card h3{
+    font-family:'Archivo Black',sans-serif;
+    font-size:34px;line-height:.95;margin:18px 0 6px;letter-spacing:-1px;
+    -webkit-text-stroke:1.5px var(--ink);
+  }
+  .exam-card .sub{font-size:14px;font-weight:600;color:#f3e9ff;margin-bottom:18px}
+  .exam-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}
+  .exam-meta div{
+    background:var(--ink);border-radius:12px;padding:11px 12px;
+    border:3px solid var(--paper);
+  }
+  .exam-meta .k{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);font-weight:700}
+  .exam-meta .v{font-family:'Archivo Black',sans-serif;font-size:17px;color:var(--paper);margin-top:2px}
+
+  /* ===== STATS ===== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    position:relative;z-index:2;margin-bottom:22px;
+  }
+  .stat{
+    padding:22px;
+    display:flex;flex-direction:column;gap:6px;
+    overflow:hidden;position:relative;
+  }
+  .stat .icn{
+    position:absolute;top:-14px;right:-10px;font-size:64px;opacity:.16;transform:rotate(12deg)
+  }
+  .stat.s1{background:var(--yellow)}
+  .stat.s2{background:var(--cyan)}
+  .stat.s3{background:var(--mint)}
+  .stat .num{font-family:'Archivo Black',sans-serif;font-size:46px;line-height:1;letter-spacing:-1.5px}
+  .stat .lab{font-weight:700;font-size:14px}
+  .stat .meta{font-size:12.5px;font-weight:600;color:#3a3252}
+  .progbar{
+    height:14px;background:var(--paper);border:3px solid var(--ink);border-radius:20px;
+    overflow:hidden;margin-top:8px;
+  }
+  .progbar>span{
+    display:block;height:100%;width:72%;
+    background:repeating-linear-gradient(45deg,var(--pink) 0 8px,var(--coral) 8px 16px);
+    border-right:3px solid var(--ink);
+  }
+
+  /* ===== CONTENT GRID ===== */
+  .content{
+    display:grid;grid-template-columns:1.55fr 1fr;gap:22px;
+    position:relative;z-index:2;
+  }
+
+  .section-flag{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+    font-size:13px;text-transform:uppercase;letter-spacing:1px;
+    background:var(--ink);color:var(--paper);
+    padding:6px 14px;border-radius:30px;margin-bottom:14px;
+  }
+  .section-flag .sq{width:12px;height:12px;background:var(--yellow);transform:rotate(45deg)}
+
+  .preview{padding:28px clamp(20px,2.6vw,32px)}
+  .preview h3{
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+    font-size:clamp(24px,3vw,32px);letter-spacing:-.8px;line-height:1.04;
+  }
+  .preview .lede2{font-size:14.5px;font-weight:500;color:#3a3252;margin-top:8px;margin-bottom:22px}
+
+  /* formula block */
+  .formulas{
+    background:var(--ink);
+    border:4px solid var(--ink);border-radius:18px;
+    padding:8px;
+    box-shadow:inset 0 0 0 3px var(--ink);
+    display:grid;gap:8px;
+  }
+  .formula{
+    background:var(--paper);
+    border-radius:12px;
+    padding:14px 16px;
+    display:flex;align-items:center;gap:12px;
+    font-size:clamp(16px,2.2vw,21px);
+    border-left:8px solid var(--cyan);
+  }
+  .formula:nth-child(2){border-left-color:var(--pink)}
+  .formula:nth-child(3){border-left-color:var(--mint)}
+  .formula .fx{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;
+    letter-spacing:.3px;
+  }
+  .formula sup,.formula sub{font-size:.62em}
+  .formula .tag2{
+    margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.6px;
+    text-transform:uppercase;color:#7a7290;white-space:nowrap;
+  }
+
+  /* trap callout */
+  .trap{
+    background:
+      repeating-linear-gradient(45deg, rgba(28,21,48,.10) 0 9px, transparent 9px 18px),
+      var(--coral);
+    color:var(--paper);
+    padding:22px 24px;display:flex;gap:16px;align-items:flex-start;
+    overflow:hidden;
+  }
+  .trap .bang{
+    flex:0 0 auto;width:48px;height:48px;border-radius:14px;
+    background:var(--yellow);color:var(--ink);
+    border:3px solid var(--ink);
+    display:grid;place-items:center;font-size:28px;
+    transform:rotate(-8deg);box-shadow:3px 3px 0 var(--ink);
+  }
+  .trap h4{font-family:'Archivo Black',sans-serif;font-size:15px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+  .trap p{font-size:14.5px;font-weight:500}
+  .trap b{color:var(--yellow)}
+
+  /* worked example teaser */
+  .example{
+    background:
+      radial-gradient(circle at 14% 86%, rgba(255,255,255,.16) 0 4px, transparent 5px) 0 0/34px 34px,
+      var(--blue);color:var(--paper);
+    padding:24px;overflow:hidden;
+  }
+  .example .kicker{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--cyan)}
+  .example h4{
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+    font-size:23px;line-height:1.05;margin:8px 0 14px;letter-spacing:-.5px;
+  }
+  .example .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .example .badges span{
+    background:rgba(255,255,255,.16);border:2px solid var(--paper);
+    border-radius:20px;padding:4px 11px;font-size:11.5px;font-weight:600;
+  }
+  .example .cta-row{margin-top:6px}
+  .example .btn-go{background:var(--yellow);color:var(--ink)}
+  .example .btn-resume{background:var(--paper);color:var(--ink)}
+
+  .side{display:flex;flex-direction:column;gap:22px}
+
+  /* ===== FOOTER ===== */
+  footer{
+    position:relative;z-index:2;
+    margin-top:30px;
+    background:var(--ink);color:var(--paper);
+    border:4px solid var(--ink);border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:20px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+  }
+  footer .brand h1{font-size:17px}
+  footer .mmark{width:42px;height:42px;font-size:23px;box-shadow:2px 2px 0 var(--pink)}
+  footer .fnote{font-size:12.5px;color:#bdb6d4;font-weight:600}
+  footer .dots{display:flex;gap:7px}
+  footer .dots i{width:13px;height:13px;border-radius:50%;border:2px solid var(--paper);display:block}
+  footer .dots i:nth-child(1){background:var(--pink)}
+  footer .dots i:nth-child(2){background:var(--cyan)}
+  footer .dots i:nth-child(3){background:var(--yellow)}
+  footer .dots i:nth-child(4){background:var(--mint)}
+
+  /* floating confetti placed in body */
+  .confetti{position:fixed;z-index:0;pointer-events:none}
+  .c1{top:120px;left:2%}
+  .c2{top:42%;right:1%}
+  .c3{bottom:8%;left:3%}
+  .c4{top:70%;left:46%}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:920px){
+    .hero{grid-template-columns:1fr}
+    .content{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    nav.topnav{justify-content:flex-start}
+  }
+  @media (max-width:700px){
+    .stat .num{font-size:40px}
+    .greet-card h2{font-size:clamp(30px,9vw,44px)}
+    .formula{flex-wrap:wrap}
+    .formula .tag2{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<!-- floating confetti -->
+<svg class="confetti c1" width="70" height="70" viewBox="0 0 70 70"><path d="M5 35 Q18 8 35 35 T65 35" fill="none" stroke="#a86bff" stroke-width="6" stroke-linecap="round"/></svg>
+<svg class="confetti c2" width="64" height="64" viewBox="0 0 64 64"><polygon points="32,4 60,58 4,58" fill="#22d3ee" stroke="#1c1530" stroke-width="4"/></svg>
+<svg class="confetti c3" width="70" height="34" viewBox="0 0 70 34"><polyline points="3,28 16,6 29,28 42,6 55,28 67,6" fill="none" stroke="#ff5da2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<svg class="confetti c4" width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="22" fill="none" stroke="#ffd23f" stroke-width="7" stroke-dasharray="6 9"/></svg>
+
+<div class="wrap">
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="bar">
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <p>Study smarter. Pass exams.</p>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+      <a href="#" class="pill">FAM-L / FAM-S</a>
+    </nav>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="panel greet-card">
+      <span class="deco ring" style="top:22px;right:30px"></span>
+      <span class="deco dot" style="top:64px;right:74px;background:var(--cyan)"></span>
+      <span class="deco plus" style="bottom:30px;right:36px;color:var(--lilac)"></span>
+      <span class="deco bar" style="bottom:74px;right:96px;background:var(--mint);transform:rotate(-24deg)"></span>
+      <span class="deco tri" style="top:44px;right:130px;border-bottom:18px solid var(--coral);transform:rotate(14deg)"></span>
+      <span class="eyebrow"><span class="dot"></span> Good evening</span>
+      <h2>Let's get you <span class="hl">that pass.</span></h2>
+      <p class="lede">Your loud, fast hub for SOA Exam FAM — notes, formulas, worked problems and a plan, stacked and ready to go.</p>
+      <div class="cta-row">
+        <button class="btn btn-go">▶ Start studying</button>
+        <button class="btn btn-resume">↻ Resume</button>
+      </div>
+    </div>
+
+    <div class="panel exam-card">
+      <span class="deco dot" style="top:18px;right:20px;background:var(--cyan)"></span>
+      <span class="deco dot" style="top:42px;right:44px;background:var(--yellow)"></span>
+      <span class="deco ring" style="top:20px;right:64px;border-color:var(--paper)"></span>
+      <span class="tag">EXAM FAM</span>
+      <h3>Fundamentals of Actuarial Mathematics</h3>
+      <p class="sub">The headline cert this hub is built around.</p>
+      <div class="exam-meta">
+        <div><div class="k">Body</div><div class="v">SOA</div></div>
+        <div><div class="k">Questions</div><div class="v">34</div></div>
+        <div><div class="k">Pass mark</div><div class="v">6 / 10</div></div>
+        <div><div class="k">Format</div><div class="v">FAM-L/S</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section class="stats">
+    <div class="panel stat s1">
+      <span class="icn">📈</span>
+      <div class="num">72%</div>
+      <div class="lab">Overall progress</div>
+      <div class="meta">12 of 17 topics</div>
+      <div class="progbar"><span></span></div>
+    </div>
+    <div class="panel stat s2">
+      <span class="icn">⏳</span>
+      <div class="num">86</div>
+      <div class="lab">Days to exam</div>
+      <div class="meta">Exam countdown — keep the pace</div>
+    </div>
+    <div class="panel stat s3">
+      <span class="icn">✅</span>
+      <div class="num">8</div>
+      <div class="lab">Topics solid</div>
+      <div class="meta">Locked in &amp; review-ready</div>
+    </div>
+  </section>
+
+  <!-- ===== CONTENT ===== -->
+  <section class="content">
+
+    <!-- LEFT: topic preview + formulas -->
+    <div class="panel preview">
+      <span class="deco bar" style="top:26px;right:28px;background:var(--cyan);transform:rotate(18deg)"></span>
+      <span class="deco dot" style="top:30px;right:74px;background:var(--pink)"></span>
+      <span class="deco plus" style="top:60px;right:34px;color:var(--lilac)"></span>
+      <span class="section-flag"><span class="sq"></span> Topic preview</span>
+      <h3>Life Insurance Present Values</h3>
+      <p class="lede2">Expected present values of benefit payments — the backbone of pricing whole life, term and endowment cover.</p>
+
+      <div class="formulas">
+        <div class="formula">
+          <span class="fx">A<sub>x</sub> = 1 − d·ä<sub>x</sub></span>
+          <span class="tag2">EPV identity</span>
+        </div>
+        <div class="formula">
+          <span class="fx">Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></span>
+          <span class="tag2">Variance of Z</span>
+        </div>
+        <div class="formula">
+          <span class="fx">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</span>
+          <span class="tag2">Annuity link</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: trap + example -->
+    <div class="side">
+      <div class="panel trap">
+        <div class="bang">⚠</div>
+        <div>
+          <h4>Common trap</h4>
+          <p>Under UDD, multiply <b>ONLY</b> the term / death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </div>
+
+      <div class="panel example">
+        <span class="kicker">Worked example</span>
+        <h4>Example 1 — Whole life EPV &amp; variance</h4>
+        <div class="badges">
+          <span>Life Insurance</span>
+          <span>~6 min</span>
+          <span>Step-by-step</span>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-go">▶ Start studying</button>
+          <button class="btn btn-resume">↻ Resume</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <p class="fnote">Study smarter. Pass exams. · SOA Exam FAM</p>
+      </div>
+    </div>
+    <div class="dots"><i></i><i></i><i></i><i></i></div>
+  </footer>
+
+</div>
+</body>
+</html>

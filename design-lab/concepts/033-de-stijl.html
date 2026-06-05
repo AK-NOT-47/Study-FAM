@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#E2241A;
+    --blue:#0042B8;
+    --yellow:#FFD400;
+    --black:#0B0B0B;
+    --white:#FAFAF7;
+    --line:12px;
+    --line-thin:7px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--black);color:var(--black);font-family:'Space Grotesk',sans-serif}
+  body{padding:clamp(10px,2.4vw,26px)}
+  a{color:inherit;text-decoration:none}
+
+  /* ---- Mondrian master grid ---- */
+  .canvas{
+    background:var(--white);
+    border:var(--line) solid var(--black);
+    display:grid;
+    grid-template-columns: 250px 1fr 1fr 280px;
+    grid-template-rows: auto auto auto auto;
+    max-width:1320px;
+    margin:0 auto;
+    box-shadow:18px 18px 0 rgba(11,11,11,.92);
+  }
+  .cell{
+    border-right:var(--line) solid var(--black);
+    border-bottom:var(--line) solid var(--black);
+    padding:clamp(16px,2vw,28px);
+    position:relative;
+    min-width:0;
+  }
+  .cell.last-col{border-right:none}
+  .cell.last-row{border-bottom:none}
+
+  /* color blocks */
+  .red{background:var(--red);color:var(--white)}
+  .blue{background:var(--blue);color:var(--white)}
+  .yellow{background:var(--yellow);color:var(--black)}
+  .white{background:var(--white)}
+
+  /* ===== BRAND / LOGO (top-left) ===== */
+  .brand{
+    grid-column:1;grid-row:1;
+    background:var(--white);
+    display:flex;flex-direction:column;justify-content:space-between;gap:14px;
+  }
+  .mmark{
+    width:78px;height:78px;
+    border:var(--line) solid var(--black);
+    background:var(--yellow);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo Black';font-size:48px;line-height:1;
+    box-shadow:7px 7px 0 var(--black);
+  }
+  .brand h1{font-family:'Archivo Black';font-size:21px;line-height:.98;letter-spacing:-.5px}
+  .brand .tag{font-family:'Space Mono';font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+    border-top:var(--line-thin) solid var(--black);padding-top:8px}
+
+  /* ===== HERO (top center, spans 2 cols) ===== */
+  .hero{
+    grid-column:2 / 4;grid-row:1;
+    background:var(--white);
+    display:flex;flex-direction:column;justify-content:center;gap:14px;
+  }
+  .greet{
+    font-family:'Space Mono';font-weight:700;text-transform:uppercase;letter-spacing:2px;font-size:13px;
+    background:var(--blue);color:var(--white);align-self:flex-start;
+    padding:6px 14px;border:var(--line-thin) solid var(--black);
+  }
+  .hero h2{font-family:'Archivo Black';font-size:clamp(34px,5.4vw,64px);line-height:.9;letter-spacing:-2px}
+  .hero h2 em{font-style:normal;color:var(--red);-webkit-text-stroke:0}
+  .hero p{font-size:clamp(14px,1.4vw,18px);font-weight:500;max-width:54ch;line-height:1.45}
+
+  /* ===== COUNTDOWN (top-right, yellow) ===== */
+  .countdown{
+    grid-column:4;grid-row:1;
+    background:var(--yellow);
+    display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;
+  }
+  .countdown .lbl{font-family:'Space Mono';font-weight:700;text-transform:uppercase;letter-spacing:2px;font-size:11px}
+  .countdown .num{font-family:'Archivo Black';font-size:clamp(58px,7vw,96px);line-height:.82}
+  .countdown .unit{font-family:'Archivo Black';font-size:20px;text-transform:uppercase;letter-spacing:1px}
+  .countdown .sub{font-family:'Space Mono';font-size:11px;border-top:var(--line-thin) solid var(--black);
+    padding-top:6px;margin-top:6px}
+
+  /* ===== NAV (left rail, spans rows 2-4) ===== */
+  .nav{
+    grid-column:1;grid-row:2 / 5;
+    background:var(--white);
+    display:flex;flex-direction:column;
+    padding:0;
+  }
+  .nav-head{
+    background:var(--red);color:var(--white);
+    padding:14px 18px;
+    font-family:'Archivo Black';font-size:14px;text-transform:uppercase;letter-spacing:1px;
+    border-bottom:var(--line) solid var(--black);
+  }
+  .nav ul{list-style:none}
+  .nav li a{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 18px;
+    border-bottom:var(--line-thin) solid var(--black);
+    font-weight:700;font-size:15px;
+    transition:transform .12s ease, background .12s ease;
+  }
+  .nav li a .dot{width:16px;height:16px;border:4px solid var(--black);flex:none}
+  .nav li:nth-child(1) a .dot{background:var(--red)}
+  .nav li:nth-child(2) a .dot{background:var(--blue)}
+  .nav li:nth-child(3) a .dot{background:var(--yellow)}
+  .nav li:nth-child(4) a .dot{background:var(--red)}
+  .nav li:nth-child(5) a .dot{background:var(--blue)}
+  .nav li:nth-child(6) a .dot{background:var(--yellow)}
+  .nav li a:hover{background:var(--yellow);transform:translateX(5px)}
+  .nav li.active a{background:var(--black);color:var(--white)}
+  .nav li.active a .dot{border-color:var(--white)}
+  .nav-foot{
+    margin-top:auto;
+    background:var(--blue);color:var(--white);
+    padding:14px 18px;
+    font-family:'Space Mono';font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;
+    border-top:var(--line) solid var(--black);
+  }
+
+  /* ===== PROGRESS stat (row2, col2) blue ===== */
+  .stat-prog{
+    grid-column:2;grid-row:2;
+    background:var(--blue);color:var(--white);
+    display:flex;flex-direction:column;justify-content:center;gap:10px;
+  }
+  .stat-prog .lbl{font-family:'Space Mono';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:11px}
+  .stat-prog .big{font-family:'Archivo Black';font-size:clamp(48px,6vw,76px);line-height:.85}
+  .stat-prog .meta{font-family:'Space Mono';font-size:12px}
+  .bar{height:20px;background:rgba(255,255,255,.22);border:4px solid var(--white);position:relative;overflow:hidden}
+  .bar i{display:block;height:100%;width:72%;background:var(--yellow);
+    border-right:4px solid var(--white)}
+
+  /* ===== SOLID stat (row2, col3) red ===== */
+  .stat-solid{
+    grid-column:3;grid-row:2;
+    background:var(--red);color:var(--white);
+    display:flex;flex-direction:column;justify-content:center;gap:6px;
+  }
+  .stat-solid .lbl{font-family:'Space Mono';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:11px}
+  .stat-solid .big{font-family:'Archivo Black';font-size:clamp(58px,8vw,104px);line-height:.82}
+  .stat-solid .meta{font-family:'Space Mono';font-size:12px;border-top:var(--line-thin) solid var(--white);padding-top:8px}
+
+  /* ===== EXAM CARD (row2, col4) ===== */
+  .exam{
+    grid-column:4;grid-row:2;
+    background:var(--white);
+    display:flex;flex-direction:column;gap:8px;justify-content:center;
+  }
+  .exam .kicker{font-family:'Space Mono';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:10px;
+    background:var(--yellow);align-self:flex-start;padding:4px 8px;border:4px solid var(--black)}
+  .exam h3{font-family:'Archivo Black';font-size:30px;line-height:.92;letter-spacing:-1px}
+  .exam .full{font-weight:600;font-size:13px}
+  .exam .specs{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .exam .specs span{font-family:'Space Mono';font-size:11px;font-weight:700;
+    border:4px solid var(--black);padding:3px 7px}
+  .exam .specs span.b{background:var(--blue);color:var(--white)}
+  .exam .specs span.r{background:var(--red);color:var(--white)}
+
+  /* ===== TOPIC + FORMULA (row3, cols 2-3) ===== */
+  .topic{
+    grid-column:2 / 4;grid-row:3;
+    background:var(--white);
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .topic .head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .topic .head .pv{font-family:'Space Mono';font-weight:700;font-size:11px;text-transform:uppercase;
+    background:var(--red);color:var(--white);padding:4px 9px;border:4px solid var(--black)}
+  .topic h3{font-family:'Archivo Black';font-size:clamp(24px,2.8vw,34px);line-height:.92;letter-spacing:-1px}
+  .topic .lede{font-weight:500;font-size:14px;max-width:62ch;line-height:1.4}
+  .formula{
+    background:var(--black);color:var(--white);
+    border:var(--line-thin) solid var(--black);
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--line-thin);
+    margin-top:4px;
+  }
+  .formula .f{
+    background:var(--white);color:var(--black);
+    padding:14px;
+    font-family:'Space Mono';font-weight:700;font-size:clamp(13px,1.4vw,16px);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .formula .f:nth-child(1){background:var(--yellow)}
+  .formula .f:nth-child(2){background:var(--white)}
+  .formula .f:nth-child(3){background:var(--blue);color:var(--white)}
+  sup{font-size:.7em}
+
+  /* ===== TRAP (row3, col4) yellow ===== */
+  .trap{
+    grid-column:4;grid-row:3;
+    background:var(--yellow);
+    display:flex;flex-direction:column;gap:10px;justify-content:center;
+  }
+  .trap .badge{font-family:'Archivo Black';font-size:14px;text-transform:uppercase;letter-spacing:.5px;
+    display:flex;align-items:center;gap:8px}
+  .trap .badge .x{width:26px;height:26px;background:var(--black);color:var(--yellow);
+    display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+  .trap p{font-weight:600;font-size:13.5px;line-height:1.4}
+  .trap p b{background:var(--red);color:var(--white);padding:0 3px}
+
+  /* ===== EXAMPLE + CTAs (row4, cols 2-4) ===== */
+  .example{
+    grid-column:2 / 5;grid-row:4;
+    background:var(--white);
+    display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+  }
+  .example .txt{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .example .ex-k{font-family:'Space Mono';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:11px;
+    background:var(--blue);color:var(--white);align-self:flex-start;padding:5px 10px;border:4px solid var(--black)}
+  .example h3{font-family:'Archivo Black';font-size:clamp(22px,2.6vw,32px);line-height:.92;letter-spacing:-1px}
+  .example .sub{font-weight:500;font-size:13px}
+  .ctas{display:flex;gap:14px;flex:none}
+  .btn{
+    font-family:'Archivo Black';font-size:16px;text-transform:uppercase;letter-spacing:.5px;
+    padding:18px 26px;border:var(--line-thin) solid var(--black);
+    box-shadow:7px 7px 0 var(--black);
+    display:flex;align-items:center;gap:10px;cursor:pointer;
+    transition:transform .1s ease, box-shadow .1s ease;white-space:nowrap;
+  }
+  .btn:active{transform:translate(7px,7px);box-shadow:0 0 0 var(--black)}
+  .btn.primary{background:var(--red);color:var(--white)}
+  .btn.primary:hover{transform:translate(-2px,-2px);box-shadow:9px 9px 0 var(--black)}
+  .btn.ghost{background:var(--white);color:var(--black)}
+  .btn.ghost:hover{background:var(--yellow);transform:translate(-2px,-2px);box-shadow:9px 9px 0 var(--black)}
+
+  /* ===== FOOTER ===== */
+  footer{
+    max-width:1320px;margin:18px auto 0;
+    background:var(--white);
+    border:var(--line) solid var(--black);
+    box-shadow:18px 18px 0 rgba(11,11,11,.92);
+    display:flex;align-items:stretch;flex-wrap:wrap;
+  }
+  footer .f-mark{background:var(--yellow);padding:14px 18px;font-family:'Archivo Black';font-size:24px;
+    border-right:var(--line) solid var(--black);display:flex;align-items:center}
+  footer .f-name{padding:14px 18px;font-family:'Archivo Black';font-size:15px;display:flex;align-items:center;
+    border-right:var(--line) solid var(--black)}
+  footer .f-tag{padding:14px 18px;font-family:'Space Mono';font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+    display:flex;align-items:center;flex:1}
+  footer .f-end{background:var(--blue);color:var(--white);padding:14px 18px;font-family:'Space Mono';
+    font-size:11px;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;font-weight:700}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:1080px){
+    .canvas{grid-template-columns:220px 1fr 1fr}
+    .countdown{grid-column:1;grid-row:1;display:none}
+    .brand{grid-column:1;grid-row:1}
+    .hero{grid-column:2 / 4;grid-row:1}
+    .nav{grid-column:1;grid-row:2 / 6}
+    .stat-prog{grid-column:2;grid-row:2}
+    .stat-solid{grid-column:3;grid-row:2}
+    .exam{grid-column:2 / 4;grid-row:3}
+    .topic{grid-column:2 / 4;grid-row:4}
+    .trap{grid-column:2 / 4;grid-row:5}
+    .example{grid-column:2 / 4;grid-row:6}
+  }
+  @media(max-width:760px){
+    body{padding:8px}
+    .canvas{grid-template-columns:1fr;box-shadow:10px 10px 0 rgba(11,11,11,.92)}
+    .cell{border-right:none}
+    .brand,.hero,.nav,.stat-prog,.stat-solid,.exam,.topic,.trap,.example{
+      grid-column:1 !important;grid-row:auto !important}
+    .nav{order:2}
+    .formula{grid-template-columns:1fr}
+    .example{grid-template-columns:1fr}
+    .ctas{flex-wrap:wrap}
+    .btn{flex:1;justify-content:center}
+    footer{box-shadow:10px 10px 0 rgba(11,11,11,.92)}
+  }
+</style>
+</head>
+<body>
+
+<main class="canvas">
+
+  <!-- BRAND -->
+  <header class="cell brand">
+    <div class="mmark">M</div>
+    <div>
+      <h1>ME<br>STUDING<br>STUFF</h1>
+    </div>
+    <div class="tag">Study smarter. Pass exams.</div>
+  </header>
+
+  <!-- HERO -->
+  <section class="cell hero">
+    <span class="greet">Good evening</span>
+    <h2>Let's get you<br>that <em>pass.</em></h2>
+    <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <aside class="cell last-col countdown">
+    <div class="lbl">Exam countdown</div>
+    <div class="num">86</div>
+    <div class="unit">Days</div>
+    <div class="sub">until exam day</div>
+  </aside>
+
+  <!-- NAV -->
+  <nav class="cell nav">
+    <div class="nav-head">Topics</div>
+    <ul>
+      <li class="active"><a href="#"><span class="dot"></span>Survival Models</a></li>
+      <li><a href="#"><span class="dot"></span>Life Tables</a></li>
+      <li><a href="#"><span class="dot"></span>Life Insurance</a></li>
+      <li><a href="#"><span class="dot"></span>Life Annuities</a></li>
+      <li><a href="#"><span class="dot"></span>Premiums</a></li>
+      <li><a href="#"><span class="dot"></span>Policy Values</a></li>
+    </ul>
+    <div class="nav-foot">Section · FAM-L / FAM-S</div>
+  </nav>
+
+  <!-- PROGRESS -->
+  <section class="cell stat-prog">
+    <div class="lbl">Overall progress</div>
+    <div class="big">72%</div>
+    <div class="bar"><i></i></div>
+    <div class="meta">12 of 17 topics</div>
+  </section>
+
+  <!-- SOLID -->
+  <section class="cell stat-solid">
+    <div class="lbl">Topics solid</div>
+    <div class="big">8</div>
+    <div class="meta">locked in &amp; exam-ready</div>
+  </section>
+
+  <!-- EXAM CARD -->
+  <section class="cell last-col exam">
+    <span class="kicker">The exam</span>
+    <h3>Exam FAM</h3>
+    <div class="full">Fundamentals of Actuarial Mathematics · SOA</div>
+    <div class="specs">
+      <span class="b">34 questions</span>
+      <span class="r">pass = 6/10</span>
+    </div>
+  </section>
+
+  <!-- TOPIC + FORMULA -->
+  <section class="cell topic">
+    <div class="head">
+      <span class="pv">Topic preview</span>
+      <h3>Life Insurance Present Values</h3>
+    </div>
+    <p class="lede">The bridge between assurances and annuities — memorize these three and you can reverse-engineer most FAM-L identities on sight.</p>
+    <div class="formula">
+      <div class="f">A<sub>x</sub> = 1 &minus; d&middot;&auml;<sub>x</sub></div>
+      <div class="f">Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)<sup>2</sup></div>
+      <div class="f">&auml;<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</div>
+    </div>
+  </section>
+
+  <!-- TRAP -->
+  <aside class="cell last-col trap">
+    <div class="badge"><span class="x">!</span>Common trap</div>
+    <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/&delta; — the pure endowment is never rescaled.</p>
+  </aside>
+
+  <!-- EXAMPLE + CTAs -->
+  <section class="cell last-col last-row example">
+    <div class="txt">
+      <span class="ex-k">Worked example</span>
+      <h3>Example 1 — Whole life EPV &amp; variance</h3>
+      <div class="sub">Compute A<sub>x</sub>, then Var(Z) straight from the two-rate identity.</div>
+    </div>
+    <div class="ctas">
+      <a class="btn primary" href="#">Start studying &rarr;</a>
+      <a class="btn ghost" href="#">Resume</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-mark">M</div>
+  <div class="f-name">Me Studing Stuff</div>
+  <div class="f-tag">Study smarter. Pass exams.</div>
+  <div class="f-end">SOA Exam FAM · 2026</div>
+</footer>
+
+</body>
+</html>

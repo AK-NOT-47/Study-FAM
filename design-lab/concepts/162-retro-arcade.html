@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Retro Arcade · Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#05030f;
+    --cab:#170a2e;
+    --cab2:#0d0520;
+    --neon-pink:#ff2e88;
+    --neon-cyan:#1ff3ff;
+    --neon-yellow:#ffe53b;
+    --neon-green:#39ff8b;
+    --neon-purple:#b46bff;
+    --neon-orange:#ff8a2b;
+    --screen:#0a0420;
+    --ink:#e8f6ff;
+    --dim:#8b9bd4;
+    --grid:rgba(31,243,255,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1200px 800px at 50% -10%, #1a0b3d 0%, transparent 60%),
+      radial-gradient(900px 700px at 90% 110%, #2a0a3a 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Share Tech Mono',monospace;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* global scanline + flicker over everything */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:9000;pointer-events:none;
+    background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.16) 3px,rgba(0,0,0,0) 4px);
+    mix-blend-mode:multiply;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:9001;pointer-events:none;
+    background:radial-gradient(120% 120% at 50% 50%,transparent 60%,rgba(0,0,0,.55) 100%);
+  }
+
+  a{color:inherit;text-decoration:none}
+  .px{font-family:'Press Start 2P',cursive}
+  .mono{font-family:'Share Tech Mono',monospace}
+  .vt{font-family:'VT323',monospace}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:26px 22px 60px;position:relative;z-index:1}
+
+  /* ============ MARQUEE TOP BAR ============ */
+  .coinbar{
+    display:flex;align-items:center;justify-content:center;gap:18px;
+    font-family:'Press Start 2P',cursive;font-size:9px;letter-spacing:1px;
+    color:var(--neon-yellow);
+    padding:9px 12px;margin-bottom:18px;
+    border:2px solid #3a2466;border-radius:8px;
+    background:linear-gradient(180deg,#1b0f3a,#0d0622);
+    overflow:hidden;white-space:nowrap;
+    box-shadow:0 0 18px rgba(255,46,136,.25) inset, 0 0 14px rgba(31,243,255,.12);
+  }
+  .coinbar .blink{color:var(--neon-pink);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* ============ CABINET HEADER ============ */
+  header.cab{
+    border:3px solid #3a2466;
+    border-radius:18px;
+    background:
+      linear-gradient(180deg,#1d0f3e 0%,#120726 100%);
+    padding:0;
+    box-shadow:
+      0 0 0 4px #0a0420,
+      0 0 40px rgba(180,107,255,.20),
+      0 24px 60px rgba(0,0,0,.6);
+    margin-bottom:24px;
+    overflow:hidden;
+  }
+  .marquee{
+    position:relative;
+    padding:20px 26px;
+    background:linear-gradient(90deg,#ff2e88,#b46bff 45%,#1ff3ff);
+    background-size:200% 100%;
+    animation:hue 8s linear infinite;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+    border-bottom:3px solid #0a0420;
+  }
+  @keyframes hue{to{background-position:200% 0}}
+  .brand{display:flex;align-items:center;gap:16px;min-width:0}
+  .mmark{
+    width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;
+    background:#0a0420;border:3px solid #fff;border-radius:8px;
+    font-family:'Press Start 2P',cursive;font-size:24px;color:#ffe53b;
+    box-shadow:0 0 14px rgba(255,229,59,.7),4px 4px 0 #000;
+    text-shadow:0 0 8px #ff2e88;
+  }
+  .brand h1{
+    font-family:'Press Start 2P',cursive;font-size:17px;line-height:1.3;color:#0a0420;
+    text-shadow:2px 2px 0 #fff;
+  }
+  .brand .tag{
+    font-family:'VT323',monospace;font-size:18px;color:#0a0420;letter-spacing:.5px;margin-top:4px;font-weight:700;
+  }
+  .credits{
+    text-align:right;font-family:'Press Start 2P',cursive;font-size:9px;color:#0a0420;line-height:1.9;
+    text-shadow:1px 1px 0 rgba(255,255,255,.5);
+  }
+  .credits b{color:#fff;text-shadow:0 0 6px #0a0420}
+
+  /* ============ NAV (cartridge tabs) ============ */
+  nav.tabs{
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:16px 22px;background:#0d0622;
+  }
+  .seclabel{
+    font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-green);
+    border:2px dashed #2c8f5a;border-radius:6px;padding:7px 10px;
+    background:rgba(57,255,139,.07);letter-spacing:1px;
+    box-shadow:0 0 10px rgba(57,255,139,.18);
+  }
+  .tab{
+    font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;
+    color:var(--ink);text-transform:uppercase;
+    padding:9px 13px;border:2px solid #36266b;border-radius:8px;
+    background:linear-gradient(180deg,#1a0f3a,#120726);
+    transition:.15s;position:relative;
+  }
+  .tab::before{content:"▸ ";color:var(--neon-cyan)}
+  .tab:hover{
+    color:#0a0420;background:var(--neon-cyan);border-color:#fff;
+    box-shadow:0 0 16px rgba(31,243,255,.6);transform:translateY(-2px);
+  }
+  .tab:hover::before{color:#0a0420}
+  .tab.on{
+    color:#0a0420;background:var(--neon-yellow);border-color:#fff;
+    box-shadow:0 0 18px rgba(255,229,59,.6);
+  }
+  .tab.on::before{color:#0a0420}
+
+  /* ============ MAIN GRID ============ */
+  .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;margin-bottom:22px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+  .screen{
+    border:3px solid #2a1a55;border-radius:16px;
+    background:
+      linear-gradient(180deg,rgba(31,243,255,.04),transparent),
+      var(--screen);
+    box-shadow:0 0 0 4px #0a0420, inset 0 0 60px rgba(120,40,180,.18), 0 14px 40px rgba(0,0,0,.5);
+    padding:26px;position:relative;overflow:hidden;
+  }
+  .screen.gridbg{
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+      linear-gradient(180deg,#150a30,#0a0420);
+    background-size:34px 34px,34px 34px,100% 100%;
+  }
+  /* horizon glow line */
+  .screen.gridbg::after{
+    content:"";position:absolute;left:0;right:0;top:42%;height:1px;
+    background:linear-gradient(90deg,transparent,var(--neon-pink),var(--neon-cyan),transparent);
+    box-shadow:0 0 20px var(--neon-pink);opacity:.5;
+  }
+
+  /* ===== HERO / DASHBOARD ===== */
+  .greet{
+    font-family:'Press Start 2P',cursive;font-size:9px;color:var(--neon-cyan);
+    letter-spacing:2px;margin-bottom:14px;display:inline-flex;align-items:center;gap:8px;
+  }
+  .greet .coin{font-size:14px;animation:spin 2.4s linear infinite;display:inline-block}
+  @keyframes spin{to{transform:rotateY(360deg)}}
+  h2.head{
+    font-family:'Press Start 2P',cursive;font-size:30px;line-height:1.35;
+    color:#fff;margin:6px 0 16px;
+    text-shadow:3px 3px 0 var(--neon-pink),6px 6px 0 rgba(31,243,255,.5);
+  }
+  @media(max-width:600px){h2.head{font-size:21px}}
+  .lede{
+    font-family:'VT323',monospace;font-size:21px;line-height:1.4;color:var(--dim);max-width:60ch;
+    border-left:3px solid var(--neon-purple);padding-left:14px;
+  }
+  .lede b{color:var(--neon-yellow)}
+
+  .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
+  .btn{
+    font-family:'Press Start 2P',cursive;font-size:11px;letter-spacing:1px;
+    padding:15px 20px;border-radius:10px;cursor:pointer;border:3px solid #0a0420;
+    transition:.12s;position:relative;
+  }
+  .btn.start{
+    background:var(--neon-pink);color:#0a0420;
+    box-shadow:0 6px 0 #a01254,0 0 22px rgba(255,46,136,.5);
+  }
+  .btn.start:hover{transform:translateY(2px);box-shadow:0 4px 0 #a01254,0 0 28px rgba(255,46,136,.7)}
+  .btn.resume{
+    background:#120726;color:var(--neon-cyan);border-color:var(--neon-cyan);
+    box-shadow:0 6px 0 #0a3a3f,0 0 18px rgba(31,243,255,.3);
+  }
+  .btn.resume:hover{transform:translateY(2px);box-shadow:0 4px 0 #0a3a3f,0 0 24px rgba(31,243,255,.5)}
+
+  /* ===== HIGH SCORE / STATS PANEL ===== */
+  .hiscore .ttl{
+    font-family:'Press Start 2P',cursive;font-size:11px;color:var(--neon-yellow);
+    text-align:center;letter-spacing:2px;margin-bottom:18px;
+    text-shadow:0 0 12px rgba(255,229,59,.6);animation:blink 1.4s steps(1) infinite;
+  }
+  .score-row{
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;
+    padding:14px 12px;border-bottom:2px dotted #2c2160;
+    font-family:'Share Tech Mono',monospace;
+  }
+  .score-row:last-of-type{border-bottom:none}
+  .rank{font-family:'Press Start 2P',cursive;font-size:13px;width:42px}
+  .r1{color:var(--neon-yellow)}.r2{color:var(--neon-cyan)}.r3{color:var(--neon-pink)}
+  .score-row .name{font-size:14px;letter-spacing:1px;color:var(--ink);text-transform:uppercase}
+  .score-row .name small{display:block;color:var(--dim);font-size:12px;letter-spacing:0;text-transform:none;margin-top:3px}
+  .score-row .val{font-family:'Press Start 2P',cursive;font-size:18px}
+  .v1{color:var(--neon-yellow);text-shadow:0 0 10px rgba(255,229,59,.5)}
+  .v2{color:var(--neon-cyan);text-shadow:0 0 10px rgba(31,243,255,.5)}
+  .v3{color:var(--neon-green);text-shadow:0 0 10px rgba(57,255,139,.5)}
+  .pbar{height:12px;margin-top:9px;border:2px solid #2c2160;border-radius:3px;background:#0a0420;overflow:hidden;grid-column:1/-1}
+  .pbar > i{display:block;height:100%;width:72%;
+    background:repeating-linear-gradient(90deg,var(--neon-pink) 0 8px,#0a0420 8px 11px);
+    box-shadow:0 0 10px var(--neon-pink);
+  }
+
+  /* ===== EXAM CARTRIDGE CARD ===== */
+  .cartridge{
+    border:3px solid #3a2466;border-radius:14px 14px 6px 6px;
+    background:linear-gradient(180deg,#241148,#160a30);
+    padding:0;overflow:hidden;
+    box-shadow:0 0 0 3px #0a0420,0 12px 30px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .cartridge::before{ /* cartridge top notch */
+    content:"";display:block;height:14px;
+    background:repeating-linear-gradient(90deg,#0a0420 0 14px,#3a2466 14px 28px);
+    border-bottom:3px solid #0a0420;
+  }
+  .cart-body{padding:20px}
+  .cart-tag{font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-green);letter-spacing:1px}
+  .cart-title{font-family:'Press Start 2P',cursive;font-size:17px;color:#fff;margin:10px 0 6px;text-shadow:2px 2px 0 var(--neon-purple)}
+  .cart-sub{font-family:'VT323',monospace;font-size:18px;color:var(--dim)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{
+    font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.5px;
+    padding:6px 10px;border:2px solid #463078;border-radius:20px;color:var(--neon-cyan);
+    background:rgba(31,243,255,.06);
+  }
+  .chip.pass{color:var(--neon-green);border-color:#2c8f5a;background:rgba(57,255,139,.08)}
+
+  /* ===== TOPIC PREVIEW + FORMULA ===== */
+  .topic .eyebrow{font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-orange);letter-spacing:1px}
+  .topic h3{font-family:'Press Start 2P',cursive;font-size:16px;color:#fff;margin:10px 0 8px;text-shadow:2px 2px 0 var(--neon-pink)}
+  .topic .one{font-family:'VT323',monospace;font-size:19px;color:var(--dim);margin-bottom:18px}
+  .formula{
+    border:2px solid #2a8fa0;border-radius:10px;background:#04101a;
+    padding:18px 16px;margin:4px 0 0;position:relative;overflow:hidden;
+    box-shadow:inset 0 0 30px rgba(31,243,255,.12);
+  }
+  .formula .lbl{
+    position:absolute;top:0;left:14px;transform:translateY(-50%);
+    font-family:'Press Start 2P',cursive;font-size:8px;color:#04101a;background:var(--neon-cyan);
+    padding:5px 8px;border-radius:4px;letter-spacing:1px;
+  }
+  .formula .line{
+    font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--neon-cyan);
+    letter-spacing:.5px;line-height:2.1;text-shadow:0 0 10px rgba(31,243,255,.5);
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  }
+  .formula .sep{color:var(--neon-pink);font-size:14px;opacity:.8}
+  .formula sub{font-size:.7em}
+  .formula sup{font-size:.7em}
+
+  /* ===== TRAP CALLOUT ===== */
+  .trap{
+    border:3px solid var(--neon-pink);border-radius:12px;
+    background:linear-gradient(180deg,rgba(255,46,136,.10),rgba(255,46,136,.02));
+    padding:18px 18px 18px 56px;position:relative;
+    box-shadow:0 0 24px rgba(255,46,136,.22);
+  }
+  .trap .icon{
+    position:absolute;left:14px;top:16px;font-size:26px;
+    filter:drop-shadow(0 0 8px var(--neon-pink));animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{transform:scale(1.18)}}
+  .trap .lbl{font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-pink);letter-spacing:1px;text-transform:uppercase}
+  .trap p{font-family:'VT323',monospace;font-size:20px;line-height:1.35;color:var(--ink);margin-top:8px}
+  .trap b{color:var(--neon-yellow)}
+
+  /* ===== WORKED EXAMPLE TEASER ===== */
+  .example{
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    border:3px dashed #463078;border-radius:12px;padding:20px;
+    background:linear-gradient(180deg,#160a30,#0d0622);
+  }
+  .sprite{
+    width:64px;height:64px;flex:0 0 64px;border-radius:8px;
+    background:#0a0420;border:2px solid #463078;display:grid;place-items:center;
+    box-shadow:inset 0 0 16px rgba(180,107,255,.3);
+  }
+  /* pixel-art "ghost" via box-shadow */
+  .ghost{width:6px;height:6px;background:transparent;
+    box-shadow:
+      12px 0 var(--neon-pink),18px 0 var(--neon-pink),24px 0 var(--neon-pink),
+      6px 6px var(--neon-pink),12px 6px var(--neon-pink),18px 6px var(--neon-pink),24px 6px var(--neon-pink),30px 6px var(--neon-pink),
+      0 12px var(--neon-pink),6px 12px var(--neon-pink),12px 12px #fff,18px 12px #fff,24px 12px var(--neon-pink),30px 12px var(--neon-pink),36px 12px var(--neon-pink),
+      0 18px var(--neon-pink),6px 18px var(--neon-pink),12px 18px #0a0420,18px 18px #fff,24px 18px var(--neon-pink),30px 18px var(--neon-pink),36px 18px var(--neon-pink),
+      0 24px var(--neon-pink),6px 24px var(--neon-pink),12px 24px var(--neon-pink),18px 24px var(--neon-pink),24px 24px var(--neon-pink),30px 24px var(--neon-pink),36px 24px var(--neon-pink),
+      0 30px var(--neon-pink),12px 30px var(--neon-pink),24px 30px var(--neon-pink),36px 30px var(--neon-pink);
+  }
+  .ex-meta{flex:1;min-width:200px}
+  .ex-meta .k{font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-green);letter-spacing:1px}
+  .ex-meta .t{font-family:'VT323',monospace;font-size:24px;color:#fff;margin-top:6px;line-height:1.1}
+  .ex-go{font-family:'Press Start 2P',cursive;font-size:9px;color:var(--neon-cyan);align-self:center;animation:blink 1.2s steps(1) infinite}
+
+  /* spacing helper */
+  .stack{display:flex;flex-direction:column;gap:22px}
+
+  /* ===== FOOTER ===== */
+  footer{
+    margin-top:30px;text-align:center;padding:22px;
+    border-top:2px dotted #2c2160;
+  }
+  footer .gameover{font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-purple);letter-spacing:2px}
+  footer .b{font-family:'Press Start 2P',cursive;font-size:12px;color:var(--neon-yellow);margin-top:12px;text-shadow:0 0 10px rgba(255,229,59,.4)}
+  footer .t{font-family:'VT323',monospace;font-size:18px;color:var(--dim);margin-top:8px}
+  footer .copy{font-family:'Share Tech Mono',monospace;font-size:11px;color:#5a4f8a;margin-top:14px;letter-spacing:1px}
+
+  .section-title{
+    font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-cyan);
+    letter-spacing:2px;margin:6px 0 2px;display:flex;align-items:center;gap:10px;
+  }
+  .section-title::before,.section-title::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,transparent,#2c2160)}
+  .section-title::before{background:linear-gradient(90deg,#2c2160,transparent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- INSERT COIN BAR -->
+  <div class="coinbar">
+    <span>★ 1UP</span>
+    <span class="blink">INSERT COIN</span>
+    <span>— STUDY SMARTER · PASS EXAMS —</span>
+    <span class="blink">PRESS START</span>
+    <span>HI 86 DAYS ★</span>
+  </div>
+
+  <!-- CABINET HEADER -->
+  <header class="cab">
+    <div class="marquee">
+      <div class="brand">
+        <div class="mmark">M</div>
+        <div>
+          <h1>ME STUDING STUFF</h1>
+          <div class="tag">Study smarter. Pass exams.</div>
+        </div>
+      </div>
+      <div class="credits">
+        CREDITS <b>∞</b><br/>
+        PLAYER <b>FINANCE</b><br/>
+        STAGE <b>FAM</b>
+      </div>
+    </div>
+
+    <!-- NAV: cartridge tabs -->
+    <nav class="tabs">
+      <span class="seclabel">▣ FAM-L / FAM-S</span>
+      <a href="#" class="tab on">Survival Models</a>
+      <a href="#" class="tab">Life Tables</a>
+      <a href="#" class="tab">Life Insurance</a>
+      <a href="#" class="tab">Life Annuities</a>
+      <a href="#" class="tab">Premiums</a>
+      <a href="#" class="tab">Policy Values</a>
+    </nav>
+  </header>
+
+  <!-- HERO + HIGH SCORE -->
+  <div class="grid">
+    <!-- HERO SCREEN -->
+    <section class="screen gridbg">
+      <div class="greet"><span class="coin">◉</span> GOOD EVENING — READY PLAYER ONE</div>
+      <h2 class="head">Let's get you<br/>that pass.</h2>
+      <p class="lede">Your <b>focused hub</b> for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="cta">
+        <button class="btn start">▶ START STUDYING</button>
+        <button class="btn resume">↺ RESUME</button>
+      </div>
+    </section>
+
+    <!-- HIGH SCORE TABLE = stats -->
+    <section class="screen hiscore">
+      <div class="ttl">— HIGH SCORE —</div>
+
+      <div class="score-row">
+        <span class="rank r1">1ST</span>
+        <span class="name">Overall Progress<small>12 of 17 topics cleared</small></span>
+        <span class="val v1">72%</span>
+        <div class="pbar"><i></i></div>
+      </div>
+
+      <div class="score-row">
+        <span class="rank r2">2ND</span>
+        <span class="name">Exam Countdown<small>days until cabinet powers off</small></span>
+        <span class="val v2">86<span style="font-size:9px"> DAYS</span></span>
+      </div>
+
+      <div class="score-row">
+        <span class="rank r3">3RD</span>
+        <span class="name">Topics Solid<small>locked in &amp; combo-ready</small></span>
+        <span class="val v3">08</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- LOWER ZONE -->
+  <div class="grid">
+    <!-- LEFT COLUMN -->
+    <div class="stack">
+
+      <!-- TOPIC PREVIEW + FORMULA -->
+      <section class="screen topic">
+        <div class="section-title">STAGE 3 · NOW LOADING</div>
+        <div class="eyebrow">▮ TOPIC PREVIEW</div>
+        <h3>Life Insurance Present Values</h3>
+        <p class="one">The expected present value of a benefit paid at death — your bread-and-butter combo move.</p>
+
+        <div class="formula">
+          <span class="lbl">★ FORMULA POWER-UP</span>
+          <div class="line">
+            A<sub>x</sub> = 1 − d·ä<sub>x</sub>
+            <span class="sep">·</span>
+            Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²
+            <span class="sep">·</span>
+            ä<sub>x</sub> = (1 − A<sub>x</sub>) / d
+          </div>
+        </div>
+      </section>
+
+      <!-- TRAP CALLOUT -->
+      <section class="trap">
+        <span class="icon">⚠</span>
+        <span class="lbl">Common Trap — Avoid!</span>
+        <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+      </section>
+
+      <!-- WORKED EXAMPLE TEASER -->
+      <section class="example">
+        <div class="sprite"><div class="ghost"></div></div>
+        <div class="ex-meta">
+          <div class="k">▶ WORKED EXAMPLE · BONUS STAGE</div>
+          <div class="t">Example 1 — Whole life EPV &amp; variance</div>
+        </div>
+        <div class="ex-go">PLAY ►</div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="stack">
+      <!-- EXAM CARTRIDGE -->
+      <section class="cartridge">
+        <div class="cart-body">
+          <div class="cart-tag">▣ NOW PLAYING · CARTRIDGE</div>
+          <div class="cart-title">EXAM&nbsp;FAM</div>
+          <div class="cart-sub">Fundamentals of Actuarial Mathematics</div>
+          <div class="chips">
+            <span class="chip">SOA</span>
+            <span class="chip">34 questions</span>
+            <span class="chip pass">PASS = 6/10</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLAYER STATUS panel -->
+      <section class="screen" style="text-align:center">
+        <div class="ttl" style="font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-green);letter-spacing:2px;margin-bottom:16px">PLAYER STATUS</div>
+        <div style="font-family:'VT323',monospace;font-size:60px;line-height:.9;color:var(--neon-yellow);text-shadow:0 0 18px rgba(255,229,59,.5)">LV.12</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--dim);margin-top:10px;letter-spacing:1px">5 STAGES TO CLEAR · KEEP THE COMBO ALIVE</div>
+        <div class="pbar" style="margin:18px auto 0;max-width:240px"><i style="width:72%"></i></div>
+        <div style="font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-cyan);margin-top:10px">XP 72% TO BOSS: EXAM DAY</div>
+      </section>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="gameover">— CONTINUE? 9 . . 8 . . 7 —</div>
+    <div class="b">★ ME STUDING STUFF ★</div>
+    <div class="t">Study smarter. Pass exams. · SOA Exam FAM hub</div>
+    <div class="copy">© 2026 INSERT COIN TO CONTINUE · ALL HIGH SCORES RESERVED</div>
+  </footer>
+
+</div>
+</body>
+</html>

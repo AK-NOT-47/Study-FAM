@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM // Retro Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#020604;
+    --bg2:#04100a;
+    --grid:#0a1f14;
+    --green:#39ff7a;
+    --green-dim:#1f8a48;
+    --green-deep:#0d3d22;
+    --amber:#ffb000;
+    --amber-dim:#a86b00;
+    --white:#d6ffe6;
+    --muted:#4f8c66;
+    --red:#ff5b5b;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+    --crt:'VT323', monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    background:
+      radial-gradient(120% 90% at 50% -10%, #0a2417 0%, var(--bg) 55%, #000 100%);
+    color:var(--green);
+    font-family:var(--mono);
+    font-size:15px;
+    line-height:1.55;
+    min-height:100vh;
+    overflow-x:hidden;
+    letter-spacing:.2px;
+    padding:0;
+  }
+
+  /* ===== CRT OVERLAYS ===== */
+  .crt-scan{
+    pointer-events:none;
+    position:fixed;
+    inset:0;
+    z-index:9000;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.22) 3px,
+      rgba(0,0,0,.22) 4px
+    );
+    mix-blend-mode:multiply;
+  }
+  .crt-glow{
+    pointer-events:none;
+    position:fixed;
+    inset:0;
+    z-index:9001;
+    background:radial-gradient(120% 100% at 50% 50%, transparent 60%, rgba(0,0,0,.55) 100%);
+  }
+  .crt-flicker{
+    pointer-events:none;
+    position:fixed;
+    inset:0;
+    z-index:9002;
+    background:rgba(57,255,122,.015);
+    animation:flicker 6s infinite steps(1);
+  }
+  @keyframes flicker{
+    0%,97%,100%{opacity:.4}
+    97.5%{opacity:.7}
+    98%{opacity:.2}
+    98.5%{opacity:.6}
+  }
+
+  ::selection{background:var(--amber);color:#000}
+
+  a{color:inherit;text-decoration:none}
+
+  .blink{animation:blink 1.05s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* ===== LAYOUT SHELL ===== */
+  .shell{
+    max-width:1280px;
+    margin:0 auto;
+    padding:22px 26px 60px;
+    position:relative;
+    z-index:10;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    border:1px solid var(--green-deep);
+    background:linear-gradient(180deg, rgba(10,40,24,.6), rgba(2,10,6,.6));
+    padding:10px 16px;
+    border-radius:6px;
+    box-shadow:0 0 0 1px rgba(57,255,122,.06), 0 0 30px rgba(57,255,122,.06) inset;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .mmark{
+    width:42px;height:42px;flex:none;
+    border:1.5px solid var(--green);
+    border-radius:5px;
+    display:grid;place-items:center;
+    font-family:var(--crt);
+    font-size:34px;
+    line-height:1;
+    color:var(--green);
+    background:radial-gradient(circle at 50% 40%, rgba(57,255,122,.2), transparent 70%);
+    text-shadow:0 0 8px var(--green);
+    box-shadow:0 0 14px rgba(57,255,122,.25), inset 0 0 12px rgba(57,255,122,.15);
+  }
+  .brand-txt b{
+    font-weight:700;font-size:15px;letter-spacing:1px;color:var(--white);
+    text-shadow:0 0 6px rgba(57,255,122,.5);
+  }
+  .brand-txt span{display:block;font-size:11.5px;color:var(--muted);letter-spacing:.5px}
+
+  .winbtns{display:flex;gap:8px;align-items:center}
+  .winbtns i{
+    width:12px;height:12px;border-radius:50%;display:block;
+    border:1px solid rgba(0,0,0,.4);
+  }
+  .winbtns i:nth-child(1){background:#ff5f56}
+  .winbtns i:nth-child(2){background:#ffbd2e}
+  .winbtns i:nth-child(3){background:#27c93f}
+  .clock{
+    font-size:12px;color:var(--amber);
+    border:1px dashed var(--amber-dim);
+    padding:4px 10px;border-radius:4px;
+    text-shadow:0 0 6px rgba(255,176,0,.4);
+    white-space:nowrap;
+  }
+
+  /* ===== MAIN GRID ===== */
+  .grid{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:22px;
+    margin-top:22px;
+  }
+
+  /* ===== SIDEBAR NAV ===== */
+  .sidebar{
+    border:1px solid var(--green-deep);
+    border-radius:6px;
+    background:linear-gradient(180deg, rgba(6,24,15,.7), rgba(2,8,5,.85));
+    padding:16px 14px;
+    align-self:start;
+    position:sticky;
+    top:22px;
+    box-shadow:0 0 24px rgba(0,0,0,.5);
+  }
+  .navlabel{
+    font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;
+    margin:2px 4px 12px;
+  }
+  .examtag{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    border:1px solid var(--amber-dim);
+    background:rgba(255,176,0,.06);
+    color:var(--amber);
+    font-weight:700;letter-spacing:2px;font-size:13px;
+    padding:8px;border-radius:5px;
+    margin-bottom:16px;
+    text-shadow:0 0 8px rgba(255,176,0,.4);
+  }
+  .navlist{list-style:none;display:flex;flex-direction:column;gap:3px}
+  .navlist li a{
+    display:flex;align-items:center;gap:9px;
+    padding:8px 10px;border-radius:4px;
+    color:var(--green);
+    font-size:13.5px;
+    border:1px solid transparent;
+    transition:.12s;
+    position:relative;
+  }
+  .navlist li a .pre{color:var(--green-dim);font-weight:600}
+  .navlist li a:hover{
+    background:rgba(57,255,122,.08);
+    border-color:var(--green-deep);
+    color:var(--white);
+    text-shadow:0 0 6px var(--green);
+  }
+  .navlist li a:hover .pre{color:var(--amber)}
+  .navlist li.active a{
+    background:linear-gradient(90deg, rgba(57,255,122,.16), transparent);
+    border-color:var(--green-dim);
+    color:var(--white);
+  }
+  .navlist li.active a .pre{color:var(--amber)}
+  .navlist .badge{
+    margin-left:auto;font-size:10px;color:var(--muted);
+    border:1px solid var(--green-deep);border-radius:3px;padding:1px 5px;
+  }
+  .navlist .badge.ok{color:var(--green);border-color:var(--green-dim)}
+
+  .sysbox{
+    margin-top:18px;border-top:1px dashed var(--green-deep);padding-top:14px;
+    font-size:11px;color:var(--muted);line-height:1.7;
+  }
+  .sysbox b{color:var(--green);font-weight:600}
+  .meter{
+    height:6px;background:var(--green-deep);border-radius:3px;overflow:hidden;margin:6px 0 2px;
+    border:1px solid rgba(57,255,122,.15);
+  }
+  .meter i{display:block;height:100%;background:linear-gradient(90deg,var(--green-dim),var(--green));box-shadow:0 0 8px var(--green)}
+
+  /* ===== MAIN COLUMN ===== */
+  .main{display:flex;flex-direction:column;gap:22px}
+
+  .panel{
+    border:1px solid var(--green-deep);
+    border-radius:7px;
+    background:linear-gradient(180deg, rgba(6,22,14,.55), rgba(2,8,5,.75));
+    position:relative;
+    box-shadow:0 0 30px rgba(0,0,0,.45);
+  }
+  .panel-h{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 14px;
+    border-bottom:1px solid var(--green-deep);
+    background:rgba(57,255,122,.04);
+    border-radius:7px 7px 0 0;
+    font-size:12px;color:var(--muted);letter-spacing:1px;
+  }
+  .panel-h .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  .panel-h .path{color:var(--amber)}
+  .panel-b{padding:20px 22px}
+
+  /* ===== HERO ===== */
+  .cmd{color:var(--green-dim);font-size:13px;margin-bottom:14px}
+  .cmd b{color:var(--amber);font-weight:600}
+  .boot{
+    font-family:var(--mono);font-size:11px;line-height:1.25;
+    color:var(--green-dim);white-space:pre;overflow:hidden;
+    margin:2px 0 14px;user-select:none;
+    text-shadow:0 0 6px rgba(57,255,122,.25);
+  }
+  .boot b{color:var(--amber);text-shadow:0 0 6px rgba(255,176,0,.35)}
+  .greet{
+    color:var(--amber);font-size:14px;letter-spacing:3px;text-transform:uppercase;
+    margin-bottom:10px;text-shadow:0 0 10px rgba(255,176,0,.4);
+  }
+  .headline{
+    font-family:var(--crt);
+    font-size:clamp(44px, 7vw, 84px);
+    line-height:.92;
+    color:var(--white);
+    letter-spacing:1px;
+    text-shadow:0 0 18px rgba(57,255,122,.55), 0 0 4px rgba(57,255,122,.9);
+    margin-bottom:16px;
+  }
+  .headline .cur{color:var(--green);font-family:var(--mono);font-size:.55em}
+  .lede{
+    color:var(--green);font-size:15px;max-width:62ch;line-height:1.7;opacity:.92;
+  }
+  .lede .hl{color:var(--amber)}
+
+  .ascii-rule{
+    color:var(--green-deep);
+    font-size:13px;
+    line-height:1;
+    overflow:hidden;
+    white-space:nowrap;
+    margin:18px 0;
+    user-select:none;
+  }
+
+  /* ===== STATS ===== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  }
+  .stat{
+    border:1px solid var(--green-deep);
+    border-radius:6px;
+    padding:16px;
+    background:rgba(57,255,122,.03);
+    position:relative;
+    overflow:hidden;
+  }
+  .stat::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--green);box-shadow:0 0 12px var(--green);
+  }
+  .stat.amber::before{background:var(--amber);box-shadow:0 0 12px var(--amber)}
+  .stat .k{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+  .stat .v{
+    font-family:var(--crt);font-size:48px;line-height:1;color:var(--green);
+    text-shadow:0 0 12px rgba(57,255,122,.5);margin:6px 0 4px;
+  }
+  .stat.amber .v{color:var(--amber);text-shadow:0 0 12px rgba(255,176,0,.5)}
+  .stat .sub{font-size:12px;color:var(--muted)}
+  .stat .bar{height:6px;background:var(--green-deep);border-radius:3px;margin-top:10px;overflow:hidden;border:1px solid rgba(57,255,122,.12)}
+  .stat .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green-dim),var(--green));box-shadow:0 0 8px var(--green)}
+
+  /* ===== TWO COL ===== */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+  /* exam card */
+  .exam-card .panel-b{padding-top:18px}
+  .exam-title{
+    font-family:var(--crt);font-size:40px;color:var(--white);line-height:.95;
+    text-shadow:0 0 12px rgba(57,255,122,.5);
+  }
+  .exam-sub{color:var(--amber);font-size:13px;margin:4px 0 16px;letter-spacing:.5px}
+  .specs{list-style:none;display:flex;flex-direction:column;gap:0}
+  .specs li{
+    display:flex;justify-content:space-between;gap:10px;
+    padding:9px 2px;border-bottom:1px dashed var(--green-deep);font-size:13.5px;
+  }
+  .specs li:last-child{border-bottom:0}
+  .specs li .lab{color:var(--muted)}
+  .specs li .val{color:var(--green);font-weight:600}
+  .specs li .val.amber{color:var(--amber)}
+  .pass-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--amber-dim);background:rgba(255,176,0,.08);
+    color:var(--amber);padding:2px 9px;border-radius:20px;font-weight:700;font-size:12px;
+  }
+
+  /* trap callout */
+  .trap{
+    border:1px solid var(--amber-dim);
+    background:linear-gradient(180deg, rgba(255,176,0,.08), rgba(255,176,0,.02));
+    border-radius:6px;
+    padding:16px 16px 16px 18px;
+    position:relative;
+    height:100%;
+  }
+  .trap::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--amber);box-shadow:0 0 12px var(--amber)}
+  .trap h4{
+    color:var(--amber);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;margin-bottom:10px;
+    text-shadow:0 0 8px rgba(255,176,0,.4);
+  }
+  .trap p{color:var(--white);font-size:14px;line-height:1.65}
+  .trap p .hot{color:var(--amber);font-weight:700}
+  .trap p code{
+    color:var(--green);background:rgba(57,255,122,.1);padding:1px 5px;border-radius:3px;
+    border:1px solid var(--green-deep);font-size:.9em;
+  }
+
+  /* topic preview + formulas */
+  .lede2{color:var(--green);font-size:13.5px;opacity:.9;margin-bottom:16px}
+  .formula-block{
+    border:1px solid var(--green-deep);
+    background:rgba(0,0,0,.4);
+    border-radius:6px;
+    padding:6px 0;
+    box-shadow:inset 0 0 24px rgba(57,255,122,.04);
+  }
+  .frow{
+    display:flex;align-items:center;gap:12px;
+    padding:13px 18px;
+    border-bottom:1px dashed var(--green-deep);
+    font-size:18px;
+    color:var(--white);
+  }
+  .frow:last-child{border-bottom:0}
+  .frow .n{
+    color:var(--green-dim);font-size:12px;flex:none;width:26px;
+    font-family:var(--mono);
+  }
+  .frow .fx{
+    font-family:var(--crt);font-size:25px;letter-spacing:.5px;
+    color:var(--green);text-shadow:0 0 10px rgba(57,255,122,.4);
+  }
+  .frow .fx .op{color:var(--amber);text-shadow:0 0 8px rgba(255,176,0,.4)}
+  .frow .tag{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid var(--green-deep);padding:2px 7px;border-radius:3px;flex:none}
+
+  /* worked example teaser */
+  .teaser{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    border:1px dashed var(--green-dim);
+    border-radius:6px;
+    padding:16px 18px;
+    background:rgba(57,255,122,.04);
+    margin-top:18px;
+  }
+  .teaser .ico{
+    width:46px;height:46px;flex:none;border:1px solid var(--green-dim);border-radius:6px;
+    display:grid;place-items:center;font-size:22px;
+    background:rgba(57,255,122,.06);box-shadow:0 0 14px rgba(57,255,122,.12) inset;
+  }
+  .teaser .meta{flex:1;min-width:200px}
+  .teaser .meta .ex{color:var(--amber);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+  .teaser .meta .t{color:var(--white);font-size:16px;font-weight:600;margin-top:2px}
+  .teaser .acts{display:flex;gap:10px;flex-wrap:wrap}
+
+  .btn{
+    font-family:var(--mono);font-weight:600;font-size:13.5px;
+    padding:10px 18px;border-radius:5px;cursor:pointer;
+    border:1px solid var(--green-dim);
+    background:transparent;color:var(--green);
+    letter-spacing:.5px;transition:.14s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn .pre{color:var(--green-dim)}
+  .btn:hover{
+    background:rgba(57,255,122,.12);color:var(--white);
+    box-shadow:0 0 16px rgba(57,255,122,.25);text-shadow:0 0 6px var(--green);
+  }
+  .btn:hover .pre{color:var(--amber)}
+  .btn.primary{
+    background:var(--green);color:#021006;border-color:var(--green);
+    box-shadow:0 0 18px rgba(57,255,122,.4);
+  }
+  .btn.primary .pre{color:#0a4a22}
+  .btn.primary:hover{background:var(--white);box-shadow:0 0 26px rgba(57,255,122,.6);text-shadow:none}
+
+  /* ===== FOOTER ===== */
+  footer{
+    margin-top:34px;
+    border-top:1px dashed var(--green-deep);
+    padding-top:18px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:12px;color:var(--muted);
+  }
+  footer .fb{display:flex;align-items:center;gap:10px}
+  footer .fb .mmark{width:28px;height:28px;font-size:22px}
+  footer .fb b{color:var(--green);letter-spacing:1px}
+  footer .fb span{color:var(--muted)}
+  footer .ftag{color:var(--green-dim)}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:960px){
+    .grid{grid-template-columns:1fr}
+    .sidebar{position:static}
+    .navlist{flex-direction:row;flex-wrap:wrap}
+    .navlist li{flex:1 1 auto;min-width:140px}
+    .navlist .badge{display:none}
+  }
+  @media(max-width:760px){
+    .shell{padding:16px 14px 48px}
+    .stats{grid-template-columns:1fr}
+    .twocol{grid-template-columns:1fr}
+    .frow{flex-wrap:wrap}
+    .frow .fx{font-size:21px}
+    .clock{display:none}
+    .headline{font-size:clamp(40px,12vw,60px)}
+  }
+</style>
+</head>
+<body>
+  <div class="crt-scan"></div>
+  <div class="crt-glow"></div>
+  <div class="crt-flicker"></div>
+
+  <div class="shell">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="mmark">M</div>
+        <div class="brand-txt">
+          <b>ME&nbsp;STUDING&nbsp;STUFF</b>
+          <span>Study smarter. Pass exams.</span>
+        </div>
+      </div>
+      <div class="winbtns" title="terminal">
+        <span class="clock">user@fam:~$ uptime // 86d to exam</span>
+        <i></i><i></i><i></i>
+      </div>
+    </header>
+
+    <div class="grid">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="navlabel">// topics.dir</div>
+        <div class="examtag">[ FAM-L / FAM-S ]</div>
+        <ul class="navlist">
+          <li class="active"><a href="#"><span class="pre">&gt;</span> Survival Models <span class="badge ok">ok</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Life Tables <span class="badge ok">ok</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Life Insurance <span class="badge">··</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Life Annuities <span class="badge">··</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Premiums <span class="badge ok">ok</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Policy Values <span class="badge">··</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Multiple Decrements <span class="badge">··</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Multiple States <span class="badge">··</span></a></li>
+          <li><a href="#"><span class="pre">&gt;</span> Estimation / FAM-S <span class="badge ok">ok</span></a></li>
+        </ul>
+        <div class="sysbox">
+          <div><b>sys.status</b> :: online</div>
+          <div>progress &mdash; <b>72%</b></div>
+          <div class="meter"><i style="width:72%"></i></div>
+          <div>15 / 21 modules linked</div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="main">
+
+        <!-- HERO -->
+        <section class="panel">
+          <div class="panel-h"><span class="dot"></span> session <span class="path">~/dashboard</span> &mdash; tty1</div>
+          <div class="panel-b">
+            <div class="cmd">$ <b>./study</b> --resume --user=finance@solidarity<span class="blink">_</span></div>
+            <div class="boot">┌─[ <b>FAM.os</b> ]─[ kernel 4.life-contingencies ]──────────────────┐
+│  loading survival models ... <b>OK</b>   curve fit ... <b>OK</b>           │
+│  mounting /topics ... <b>OK</b>          syllabus crc ... <b>PASS</b>       │
+└───────────────────────────── boot complete in 0.34s ─────────┘</div>
+            <div class="greet">&gt;&gt; Good evening</div>
+            <h1 class="headline">Let&rsquo;s get you<br>that pass.<span class="cur blink">█</span></h1>
+            <p class="lede">Your focused hub for <span class="hl">SOA Exam FAM</span> &mdash; notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+            <div class="ascii-rule">╞═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╡</div>
+
+            <!-- STATS -->
+            <div class="stats">
+              <div class="stat">
+                <div class="k">Overall progress</div>
+                <div class="v">72%</div>
+                <div class="sub">12 of 17 topics</div>
+                <div class="bar"><i style="width:72%"></i></div>
+              </div>
+              <div class="stat amber">
+                <div class="k">Exam countdown</div>
+                <div class="v">86</div>
+                <div class="sub">days remaining</div>
+                <div class="bar"><i style="width:38%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));box-shadow:0 0 8px var(--amber)"></i></div>
+              </div>
+              <div class="stat">
+                <div class="k">Topics solid</div>
+                <div class="v">8</div>
+                <div class="sub">locked &amp; reviewed</div>
+                <div class="bar"><i style="width:47%"></i></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TWO COLUMN: exam card + trap -->
+        <div class="twocol">
+          <section class="panel exam-card">
+            <div class="panel-h"><span class="dot"></span> cat <span class="path">exam.fam</span></div>
+            <div class="panel-b">
+              <div class="exam-title">Exam FAM</div>
+              <div class="exam-sub">Fundamentals of Actuarial Mathematics</div>
+              <ul class="specs">
+                <li><span class="lab">provider</span> <span class="val">SOA</span></li>
+                <li><span class="lab">questions</span> <span class="val">34</span></li>
+                <li><span class="lab">sections</span> <span class="val amber">FAM-L / FAM-S</span></li>
+                <li><span class="lab">pass threshold</span> <span class="val"><span class="pass-pill">&#9733; 6 / 10</span></span></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-h"><span class="dot" style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></span> warn <span class="path">common.trap</span></div>
+            <div class="panel-b">
+              <div class="trap">
+                <h4>&#9888; Common trap</h4>
+                <p>Under <span class="hot">UDD</span>, multiply <span class="hot">ONLY</span> the term/death piece by <code>i/&delta;</code> &mdash; the pure endowment is never rescaled.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- TOPIC PREVIEW + FORMULAS -->
+        <section class="panel">
+          <div class="panel-h"><span class="dot"></span> open <span class="path">topics/life-insurance/present-values.md</span></div>
+          <div class="panel-b">
+            <div class="cmd">$ <b>open</b> life-insurance &mdash; present-values<span class="blink">_</span></div>
+            <h2 class="exam-title" style="font-size:34px;margin-top:6px">Life Insurance Present Values</h2>
+            <p class="lede2">Discount the benefit back to issue: the EPV of a unit benefit, its variance, and the annuity link that ties it all together.</p>
+
+            <div class="formula-block">
+              <div class="frow">
+                <span class="n">[1]</span>
+                <span class="fx">A<sub>x</sub> <span class="op">=</span> 1 <span class="op">&minus;</span> d<span class="op">&middot;</span>&auml;<sub>x</sub></span>
+                <span class="tag">EPV &harr; annuity</span>
+              </div>
+              <div class="frow">
+                <span class="n">[2]</span>
+                <span class="fx">Var(Z) <span class="op">=</span> &sup2;A<sub>x</sub> <span class="op">&minus;</span> (A<sub>x</sub>)&sup2;</span>
+                <span class="tag">variance</span>
+              </div>
+              <div class="frow">
+                <span class="n">[3]</span>
+                <span class="fx">&auml;<sub>x</sub> <span class="op">=</span> (1 <span class="op">&minus;</span> A<sub>x</sub>) <span class="op">/</span> d</span>
+                <span class="tag">solve back</span>
+              </div>
+            </div>
+
+            <!-- WORKED EXAMPLE TEASER -->
+            <div class="teaser">
+              <div class="ico">&#129518;</div>
+              <div class="meta">
+                <div class="ex">Worked example</div>
+                <div class="t">Example 1 &mdash; Whole life EPV &amp; variance</div>
+              </div>
+              <div class="acts">
+                <a class="btn primary" href="#"><span class="pre">&gt;</span> Start studying</a>
+                <a class="btn" href="#"><span class="pre">&gt;</span> Resume</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /main -->
+    </div><!-- /grid -->
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fb">
+        <div class="mmark">M</div>
+        <div>
+          <b>Me Studing Stuff</b> &nbsp;<span>// Study smarter. Pass exams.</span>
+        </div>
+      </div>
+      <div class="ftag">&copy; 2026 &mdash; build.fam &middot; press <b style="color:var(--amber)">[ESC]</b> to dream<span class="blink">_</span></div>
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#070809;
+    --bg-2:#0b0d10;
+    --panel:#0e1115;
+    --panel-2:#11151a;
+    --line:#1b2026;
+    --line-soft:#161a1f;
+    --ink:#e8edf2;
+    --ink-2:#a3adb8;
+    --ink-3:#5e6872;
+    --ink-4:#3a424b;
+    --neon:#00ffc6;
+    --neon-dim:rgba(0,255,198,.14);
+    --neon-glow:rgba(0,255,198,.45);
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* fine technical grid + vignette */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:46px 46px;
+    opacity:.5;
+    pointer-events:none;
+    z-index:0;
+    mask-image:radial-gradient(ellipse 120% 90% at 50% 0%,#000 30%,transparent 85%);
+  }
+  body::after{
+    content:"";
+    position:fixed;inset:0;
+    background:radial-gradient(ellipse 70% 50% at 80% -10%,var(--neon-dim),transparent 60%);
+    pointer-events:none;z-index:0;
+  }
+
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- LAYOUT SHELL ---------- */
+  .shell{
+    position:relative;z-index:1;
+    display:grid;
+    grid-template-columns:268px 1fr;
+    min-height:100vh;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .side{
+    border-right:1px solid var(--line);
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));
+    padding:30px 22px 26px;
+    display:flex;flex-direction:column;
+    position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .mark{
+    width:42px;height:42px;border-radius:11px;
+    border:1px solid var(--neon);
+    display:grid;place-items:center;
+    font-weight:700;font-size:20px;color:var(--neon);
+    background:radial-gradient(circle at 30% 25%,var(--neon-dim),transparent 70%);
+    box-shadow:0 0 18px -4px var(--neon-glow),inset 0 0 12px -6px var(--neon-glow);
+    position:relative;
+  }
+  .mark::after{
+    content:"";position:absolute;inset:-1px;border-radius:11px;
+    border-top:1px solid var(--neon);opacity:.6;
+  }
+  .brand-name{font-weight:600;font-size:15px;letter-spacing:.3px;}
+  .brand-tag{font-size:10.5px;color:var(--ink-3);letter-spacing:.4px;margin-top:1px;}
+
+  .nav-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:2.5px;color:var(--ink-3);
+    text-transform:uppercase;
+    margin:30px 6px 12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::after{content:"";height:1px;flex:1;background:var(--line);}
+
+  .nav{display:flex;flex-direction:column;gap:2px;}
+  .nav a{
+    display:flex;align-items:center;gap:11px;
+    text-decoration:none;color:var(--ink-2);
+    font-size:13.5px;font-weight:500;
+    padding:9px 11px;border-radius:9px;
+    position:relative;transition:.18s;
+    border:1px solid transparent;
+  }
+  .nav a .dot{
+    width:5px;height:5px;border-radius:50%;
+    background:var(--ink-4);transition:.18s;flex-shrink:0;
+  }
+  .nav a .idx{
+    margin-left:auto;font-family:'JetBrains Mono',monospace;
+    font-size:10px;color:var(--ink-4);
+  }
+  .nav a:hover{color:var(--ink);background:var(--panel);border-color:var(--line-soft);}
+  .nav a:hover .dot{background:var(--neon);box-shadow:0 0 8px var(--neon-glow);}
+  .nav a.active{
+    color:var(--ink);background:var(--panel-2);
+    border-color:var(--line);
+  }
+  .nav a.active::before{
+    content:"";position:absolute;left:-22px;top:50%;transform:translateY(-50%);
+    width:3px;height:22px;border-radius:0 3px 3px 0;
+    background:var(--neon);box-shadow:0 0 14px var(--neon-glow);
+  }
+  .nav a.active .dot{background:var(--neon);box-shadow:0 0 8px var(--neon-glow);}
+
+  .side-foot{margin-top:auto;padding-top:22px;}
+  .side-foot .status{
+    display:flex;align-items:center;gap:9px;
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;
+    color:var(--ink-3);letter-spacing:.5px;
+  }
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--neon);position:relative;}
+  .pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--neon);animation:pulse 2s infinite;}
+  @keyframes pulse{0%{transform:scale(1);opacity:.7}70%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+
+  /* ---------- MAIN ---------- */
+  .main{padding:26px 38px 48px;max-width:1180px;}
+
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:18px;margin-bottom:34px;flex-wrap:wrap;
+  }
+  .greet-line{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--neon);display:flex;align-items:center;gap:10px;
+  }
+  .greet-line::before{content:"";width:26px;height:1px;background:var(--neon);box-shadow:0 0 8px var(--neon-glow);}
+  .top-meta{display:flex;gap:10px;align-items:center;}
+  .chip{
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    color:var(--ink-2);border:1px solid var(--line);
+    padding:7px 13px;border-radius:999px;background:var(--panel);
+    letter-spacing:.5px;display:flex;align-items:center;gap:8px;
+  }
+  .chip b{color:var(--ink);font-weight:600;}
+  .chip .k{color:var(--neon);}
+
+  /* HERO */
+  .hero{margin-bottom:30px;}
+  .hero h1{
+    font-size:clamp(34px,5vw,58px);
+    font-weight:700;line-height:1.02;letter-spacing:-1.5px;
+    margin:10px 0 16px;
+  }
+  .hero h1 .glow{
+    color:var(--neon);
+    text-shadow:0 0 26px var(--neon-glow);
+    position:relative;
+  }
+  .hero p.lede{
+    color:var(--ink-2);font-size:15.5px;max-width:620px;line-height:1.6;
+  }
+  .hero p.lede b{color:var(--ink);font-weight:500;}
+
+  /* STATS */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+    margin:30px 0;
+  }
+  .stat{
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    padding:20px 20px 18px;position:relative;overflow:hidden;
+  }
+  .stat::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--neon),transparent);
+    opacity:.0;transition:.3s;
+  }
+  .stat:hover::before{opacity:.7;}
+  .stat .lbl{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);
+    display:flex;align-items:center;gap:7px;
+  }
+  .stat .lbl .ico{color:var(--neon);font-size:11px;}
+  .stat .big{
+    font-size:42px;font-weight:700;letter-spacing:-1px;margin:12px 0 2px;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .stat .big small{font-size:18px;color:var(--ink-3);font-weight:500;}
+  .stat .sub{font-size:12px;color:var(--ink-3);font-family:'JetBrains Mono',monospace;}
+  .bar{height:4px;border-radius:3px;background:var(--line);margin-top:14px;overflow:hidden;}
+  .bar i{display:block;height:100%;background:var(--neon);box-shadow:0 0 12px var(--neon-glow);border-radius:3px;}
+
+  /* GRID OF CARDS */
+  .grid{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start;}
+
+  .card{
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    padding:22px;position:relative;
+  }
+  .card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .card-kicker{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2px;text-transform:uppercase;color:var(--neon);
+  }
+  .card h2{font-size:21px;font-weight:600;letter-spacing:-.3px;}
+  .card h3{font-size:17px;font-weight:600;letter-spacing:-.2px;}
+  .card .lede{color:var(--ink-2);font-size:13.5px;margin-top:4px;line-height:1.55;}
+
+  /* FORMULA BLOCK */
+  .formula{
+    margin-top:18px;border:1px solid var(--line);border-radius:11px;
+    background:var(--bg);overflow:hidden;
+  }
+  .formula .fhead{
+    display:flex;align-items:center;gap:8px;
+    padding:9px 14px;border-bottom:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    color:var(--ink-3);letter-spacing:1.5px;text-transform:uppercase;
+  }
+  .formula .fhead .lights{display:flex;gap:5px;}
+  .formula .fhead .lights span{width:8px;height:8px;border-radius:50%;background:var(--line);}
+  .formula .fhead .lights span:first-child{background:var(--neon);box-shadow:0 0 7px var(--neon-glow);}
+  .formula .frow{
+    display:flex;align-items:center;gap:14px;
+    padding:13px 16px;font-family:'JetBrains Mono',monospace;font-size:14px;
+    border-bottom:1px solid var(--line-soft);color:var(--ink);
+  }
+  .formula .frow:last-child{border-bottom:none;}
+  .formula .frow .ln{color:var(--ink-4);font-size:11px;width:22px;flex-shrink:0;}
+  .formula .frow .eq{color:var(--neon);}
+  .formula .frow var{color:var(--ink);font-style:normal;}
+
+  /* TRAP CALLOUT */
+  .trap{
+    margin-top:18px;border:1px solid var(--line);
+    border-left:2px solid var(--neon);
+    border-radius:11px;padding:15px 17px;
+    background:linear-gradient(90deg,var(--neon-dim),transparent 60%);
+    display:flex;gap:13px;align-items:flex-start;
+  }
+  .trap .tico{
+    flex-shrink:0;width:26px;height:26px;border-radius:7px;
+    border:1px solid var(--neon);color:var(--neon);
+    display:grid;place-items:center;font-size:13px;font-weight:700;
+    box-shadow:0 0 12px -3px var(--neon-glow);
+  }
+  .trap .tlbl{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:1.5px;text-transform:uppercase;color:var(--neon);
+    display:block;margin-bottom:4px;
+  }
+  .trap p{font-size:13px;color:var(--ink-2);line-height:1.55;}
+  .trap p b{color:var(--ink);font-weight:600;}
+
+  /* EXAM CARD (right column) */
+  .exam{
+    background:
+      radial-gradient(circle at 85% 0%,var(--neon-dim),transparent 55%),
+      linear-gradient(180deg,var(--panel-2),var(--bg-2));
+  }
+  .exam .badge{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;
+    color:var(--neon);border:1px solid var(--neon);border-radius:999px;
+    padding:4px 11px;text-transform:uppercase;
+    box-shadow:inset 0 0 14px -6px var(--neon-glow);
+  }
+  .exam .ex-title{font-size:30px;font-weight:700;letter-spacing:-.6px;margin:16px 0 4px;}
+  .exam .ex-full{color:var(--ink-2);font-size:13px;margin-bottom:18px;}
+  .ex-specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .spec{
+    border:1px solid var(--line);border-radius:10px;padding:12px 13px;
+    background:var(--bg);
+  }
+  .spec .sl{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-3);}
+  .spec .sv{font-size:18px;font-weight:600;margin-top:4px;}
+  .spec .sv .k{color:var(--neon);}
+
+  /* EXAMPLE TEASER + BUTTONS */
+  .example{
+    margin-top:18px;border:1px dashed var(--line);border-radius:11px;
+    padding:16px 17px;background:var(--bg);
+    position:relative;
+  }
+  .example .ekick{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--ink-3);
+  }
+  .example .etitle{font-size:16px;font-weight:600;margin:6px 0 4px;}
+  .example .etitle .n{color:var(--neon);}
+  .example .edesc{font-size:12.5px;color:var(--ink-3);font-family:'JetBrains Mono',monospace;}
+
+  .btns{display:flex;gap:11px;margin-top:18px;}
+  .btn{
+    flex:1;text-align:center;text-decoration:none;
+    font-size:13.5px;font-weight:600;letter-spacing:.3px;
+    padding:13px 16px;border-radius:10px;transition:.18s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-family:'Space Grotesk',sans-serif;cursor:pointer;
+  }
+  .btn-primary{
+    background:var(--neon);color:#04130f;border:1px solid var(--neon);
+    box-shadow:0 0 22px -6px var(--neon-glow);
+  }
+  .btn-primary:hover{box-shadow:0 0 30px -4px var(--neon-glow);transform:translateY(-1px);}
+  .btn-ghost{
+    background:transparent;color:var(--ink);border:1px solid var(--line);
+  }
+  .btn-ghost:hover{border-color:var(--neon);color:var(--neon);}
+
+  /* FOOTER */
+  footer{
+    margin-top:42px;padding-top:22px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  footer .fbrand{display:flex;align-items:center;gap:10px;color:var(--ink-2);font-size:13px;}
+  footer .fmark{
+    width:24px;height:24px;border-radius:7px;border:1px solid var(--line);
+    display:grid;place-items:center;color:var(--neon);font-weight:700;font-size:12px;
+  }
+  footer .fnote{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-4);letter-spacing:.5px;}
+
+  /* RESPONSIVE */
+  @media(max-width:920px){
+    .shell{grid-template-columns:1fr;}
+    .side{
+      position:relative;height:auto;flex-direction:row;flex-wrap:wrap;
+      align-items:center;gap:14px 22px;padding:18px 20px;
+    }
+    .nav-label{margin:0 0 0 0;width:100%;display:none;}
+    .nav{flex-direction:row;flex-wrap:wrap;gap:6px;flex:1;}
+    .nav a{padding:7px 11px;}
+    .nav a .idx{display:none;}
+    .nav a.active::before{display:none;}
+    .side-foot{margin:0;padding:0;}
+    .main{padding:24px 22px 40px;}
+  }
+  @media(max-width:760px){
+    .grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .nav .full-only{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div>
+      <div class="brand">
+        <div class="mark">M</div>
+        <div>
+          <div class="brand-name">Me Studing Stuff</div>
+          <div class="brand-tag">Study smarter. Pass exams.</div>
+        </div>
+      </div>
+
+      <div class="nav-label">FAM-L / FAM-S</div>
+      <nav class="nav">
+        <a href="#" class="active"><span class="dot"></span>Survival Models<span class="idx">01</span></a>
+        <a href="#"><span class="dot"></span>Life Tables<span class="idx">02</span></a>
+        <a href="#"><span class="dot"></span>Life Insurance<span class="idx">03</span></a>
+        <a href="#"><span class="dot"></span>Life Annuities<span class="idx">04</span></a>
+        <a href="#"><span class="dot"></span>Premiums<span class="idx">05</span></a>
+        <a href="#"><span class="dot"></span>Policy Values<span class="idx">06</span></a>
+      </nav>
+    </div>
+
+    <div class="side-foot">
+      <div class="status"><span class="pulse"></span>SESSION ACTIVE · FAM</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="topbar">
+      <div class="greet-line">Good evening</div>
+      <div class="top-meta">
+        <span class="chip"><span class="k">▲</span> <b>72%</b> complete</span>
+        <span class="chip">T-minus <b>86</b> days</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Let's get you <br>that <span class="glow">pass.</span></h1>
+      <p class="lede">Your focused hub for <b>SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat">
+        <div class="lbl"><span class="ico">◆</span> Overall progress</div>
+        <div class="big">72<small>%</small></div>
+        <div class="sub">12 of 17 topics</div>
+        <div class="bar"><i style="width:72%"></i></div>
+      </div>
+      <div class="stat">
+        <div class="lbl"><span class="ico">◷</span> Exam countdown</div>
+        <div class="big">86<small> days</small></div>
+        <div class="sub">until test window</div>
+        <div class="bar"><i style="width:38%"></i></div>
+      </div>
+      <div class="stat">
+        <div class="lbl"><span class="ico">✦</span> Topics solid</div>
+        <div class="big">8<small> / 17</small></div>
+        <div class="sub">mastered & retained</div>
+        <div class="bar"><i style="width:47%"></i></div>
+      </div>
+    </section>
+
+    <!-- MAIN GRID -->
+    <section class="grid">
+
+      <!-- LEFT: topic preview + formula + trap -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-kicker">// Topic preview · 03</span>
+        </div>
+        <h2>Life Insurance Present Values</h2>
+        <p class="lede">The expected present value of a benefit paid on death — the backbone of every premium and reserve you'll compute.</p>
+
+        <div class="formula">
+          <div class="fhead">
+            <div class="lights"><span></span><span></span><span></span></div>
+            core relations
+          </div>
+          <div class="frow"><span class="ln">01</span><var>A_x</var> <span class="eq">=</span> <var>1 − d·ä_x</var></div>
+          <div class="frow"><span class="ln">02</span><var>Var(Z)</var> <span class="eq">=</span> <var>²A_x − (A_x)²</var></div>
+          <div class="frow"><span class="ln">03</span><var>ä_x</var> <span class="eq">=</span> <var>(1 − A_x) / d</var></div>
+        </div>
+
+        <div class="trap">
+          <div class="tico">!</div>
+          <div>
+            <span class="tlbl">Common trap</span>
+            <p>Under UDD, multiply <b>ONLY the term/death piece</b> by i/δ — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+
+        <div class="example">
+          <div class="ekick">Worked example</div>
+          <div class="etitle"><span class="n">Example 1</span> — Whole life EPV &amp; variance</div>
+          <div class="edesc">Compute A_x, then Var(Z) using the second moment ²A_x.</div>
+        </div>
+
+        <div class="btns">
+          <a href="#" class="btn btn-primary">Start studying →</a>
+          <a href="#" class="btn btn-ghost">⟳ Resume</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: exam card -->
+      <div class="card exam">
+        <div class="card-head">
+          <span class="badge">● Exam</span>
+        </div>
+        <div class="ex-title">FAM</div>
+        <div class="ex-full">Fundamentals of Actuarial Mathematics · SOA</div>
+
+        <div class="ex-specs">
+          <div class="spec">
+            <div class="sl">Questions</div>
+            <div class="sv">34</div>
+          </div>
+          <div class="spec">
+            <div class="sl">Pass mark</div>
+            <div class="sv"><span class="k">6</span> / 10</div>
+          </div>
+          <div class="spec">
+            <div class="sl">Sponsor</div>
+            <div class="sv">SOA</div>
+          </div>
+          <div class="spec">
+            <div class="sl">Countdown</div>
+            <div class="sv"><span class="k">86</span>d</div>
+          </div>
+        </div>
+
+        <div class="trap" style="margin-top:18px;background:transparent;border-left:2px solid var(--line);">
+          <div class="tico" style="border-color:var(--line);color:var(--ink-2);box-shadow:none;">i</div>
+          <div>
+            <span class="tlbl" style="color:var(--ink-3);">Plan</span>
+            <p>Stay on the calm path — clear one topic, log it solid, advance. 8 down, 9 to go.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fbrand">
+        <span class="fmark">M</span>
+        <span><b style="color:var(--ink);font-weight:600;">Me Studing Stuff</b> — Study smarter. Pass exams.</span>
+      </div>
+      <div class="fnote">SOA EXAM FAM · MINIMAL CYBER BUILD · © 2026</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

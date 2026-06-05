@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --panel:#121214;
+    --panel-2:#18181c;
+    --card:#1d1d22;
+    --elev:#26262c;
+    --accent:#1ed760;
+    --accent-dim:#1aa84c;
+    --accent-glow:rgba(30,215,96,.35);
+    --text:#ffffff;
+    --muted:#a7a7ad;
+    --faint:#6e6e76;
+    --line:rgba(255,255,255,.07);
+    --radius:14px;
+    --radius-lg:20px;
+    --sidebar:248px;
+    --rightbar:312px;
+    font-synthesis:none;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#06150b}
+
+  /* ---------- SHELL ---------- */
+  .app{
+    display:grid;
+    grid-template-columns:var(--sidebar) 1fr var(--rightbar);
+    gap:8px;
+    height:100vh;
+    padding:8px;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    background:var(--panel);
+    border-radius:var(--radius-lg);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    min-height:0;
+  }
+  .brand{
+    display:flex;align-items:center;gap:12px;
+    padding:22px 22px 18px;
+  }
+  .mark{
+    width:42px;height:42px;flex:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),#13a544);
+    display:grid;place-items:center;
+    font-family:'Montserrat';font-weight:900;font-size:24px;color:#06150b;
+    box-shadow:0 6px 22px var(--accent-glow);
+    position:relative;
+  }
+  .mark::after{
+    content:"";position:absolute;inset:0;border-radius:12px;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.4);
+  }
+  .brand .bn{font-family:'Montserrat';font-weight:800;font-size:15px;letter-spacing:-.2px;line-height:1.05}
+  .brand .bt{font-size:11px;color:var(--faint);margin-top:2px}
+
+  .nav{padding:6px 12px;overflow-y:auto;flex:1;min-height:0}
+  .nav::-webkit-scrollbar{width:8px}
+  .nav::-webkit-scrollbar-thumb{background:#2a2a30;border-radius:8px}
+
+  .seclabel{
+    font-family:'Montserrat';
+    font-size:10.5px;font-weight:800;letter-spacing:.16em;
+    color:var(--faint);text-transform:uppercase;
+    padding:18px 12px 8px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .seclabel::after{content:"";height:1px;flex:1;background:var(--line)}
+
+  .navitem{
+    display:flex;align-items:center;gap:13px;
+    padding:10px 12px;border-radius:10px;
+    color:var(--muted);font-weight:600;font-size:14px;
+    cursor:pointer;transition:.18s;position:relative;
+  }
+  .navitem .ico{
+    width:30px;height:30px;flex:none;border-radius:8px;
+    background:var(--elev);display:grid;place-items:center;font-size:15px;
+    transition:.18s;
+  }
+  .navitem:hover{color:#fff;background:var(--panel-2)}
+  .navitem:hover .ico{background:#34343c}
+  .navitem.active{color:#fff;background:linear-gradient(90deg,rgba(30,215,96,.16),rgba(30,215,96,.02))}
+  .navitem.active .ico{background:var(--accent);color:#06150b}
+  .navitem.active::before{
+    content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+    width:4px;height:22px;border-radius:0 4px 4px 0;background:var(--accent);
+  }
+  .navitem .meta{margin-left:auto;font-size:11px;color:var(--faint);font-weight:600}
+
+  .sidefoot{padding:14px 22px 20px;border-top:1px solid var(--line)}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent);color:#06150b;
+    font-family:'Montserrat';font-weight:800;font-size:12.5px;
+    padding:9px 16px;border-radius:30px;
+    box-shadow:0 8px 20px var(--accent-glow);
+  }
+
+  /* ---------- MAIN ---------- */
+  .main{
+    background:linear-gradient(180deg,#1a1a1e 0%, #101013 280px, var(--panel) 520px);
+    border-radius:var(--radius-lg);
+    overflow-y:auto;min-height:0;position:relative;
+  }
+  .main::-webkit-scrollbar{width:10px}
+  .main::-webkit-scrollbar-thumb{background:#2a2a30;border-radius:8px}
+
+  .topbar{
+    position:sticky;top:0;z-index:5;
+    display:flex;align-items:center;gap:16px;
+    padding:16px 30px;
+    backdrop-filter:blur(14px);
+    background:linear-gradient(180deg,rgba(20,20,24,.7),rgba(20,20,24,.0));
+  }
+  .navbtns{display:flex;gap:8px}
+  .rd{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#cfcfd4;font-size:15px;cursor:pointer}
+  .search{
+    flex:1;max-width:420px;display:flex;align-items:center;gap:10px;
+    background:rgba(255,255,255,.06);border:1px solid var(--line);
+    border-radius:30px;padding:9px 16px;color:var(--muted);font-size:13.5px;
+  }
+  .tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .upsell{font-family:'Montserrat';font-weight:800;font-size:12px;color:#06150b;background:#fff;padding:8px 16px;border-radius:30px;cursor:pointer}
+  .avatar{width:34px;height:34px;border-radius:50%;background:#2a2a30;display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--accent);border:1px solid var(--line)}
+
+  .hero{padding:8px 30px 30px}
+  .greet{font-size:14px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:8px}
+  .greet .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .h1{
+    font-family:'Montserrat';font-weight:900;
+    font-size:clamp(38px,5.4vw,68px);line-height:.98;letter-spacing:-.02em;
+    margin:14px 0 16px;
+  }
+  .h1 .gl{
+    background:linear-gradient(120deg,#fff 30%, var(--accent));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .lede{font-size:16px;color:var(--muted);max-width:640px;line-height:1.55}
+
+  /* stat row */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+  .stat{
+    background:linear-gradient(160deg,var(--card),#161619);
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;position:relative;overflow:hidden;
+  }
+  .stat .lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  .stat .big{font-family:'Montserrat';font-weight:900;font-size:38px;line-height:1;margin:10px 0 6px}
+  .stat .sub{font-size:12.5px;color:var(--muted)}
+  .stat.accent{background:linear-gradient(150deg,#143b24,#0e2417);border-color:rgba(30,215,96,.25)}
+  .stat.accent .big{color:var(--accent)}
+  .ring{
+    position:absolute;right:14px;top:14px;width:46px;height:46px;border-radius:50%;
+    background:conic-gradient(var(--accent) 0 72%, rgba(255,255,255,.1) 72% 100%);
+    display:grid;place-items:center;
+  }
+  .ring::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#0e2417}
+  .ring span{position:relative;font-size:11px;font-weight:800;font-family:'Montserrat';color:#fff}
+  .bars{position:absolute;right:16px;bottom:16px;display:flex;gap:3px;align-items:flex-end;opacity:.5}
+  .bars i{width:4px;border-radius:2px;background:var(--accent);display:block}
+
+  /* now-playing style FAM card */
+  .famcard{
+    margin-top:24px;
+    display:flex;align-items:center;gap:24px;
+    background:linear-gradient(100deg,#5b1ad8 0%, #2b1166 48%, #0e0e12 100%);
+    border-radius:var(--radius-lg);padding:26px 30px;position:relative;overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  .famcard::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(30,215,96,.18),transparent 55%)}
+  .cover{
+    width:128px;height:128px;flex:none;border-radius:14px;
+    background:linear-gradient(135deg,#1ed760,#0a7d33);
+    display:grid;place-items:center;position:relative;
+    box-shadow:0 16px 40px rgba(0,0,0,.55);
+  }
+  .cover .em{font-family:'Montserrat';font-weight:900;font-size:60px;color:#06150b;line-height:1}
+  .cover small{position:absolute;bottom:10px;font-size:9px;font-weight:800;letter-spacing:.12em;color:#06150b;opacity:.7}
+  .fammeta{position:relative;flex:1;min-width:0}
+  .kicker{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+  .famtitle{font-family:'Montserrat';font-weight:900;font-size:clamp(30px,4vw,52px);line-height:1;letter-spacing:-.02em;margin:8px 0 12px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:12px;font-weight:600;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);padding:6px 13px;border-radius:30px;color:#fff}
+  .chip b{color:var(--accent)}
+  .play{
+    width:60px;height:60px;border-radius:50%;flex:none;
+    background:var(--accent);display:grid;place-items:center;color:#06150b;font-size:24px;
+    box-shadow:0 10px 30px var(--accent-glow);cursor:pointer;transition:.18s;position:relative;
+  }
+  .play:hover{transform:scale(1.07)}
+
+  /* section heading */
+  .sec-h{display:flex;align-items:flex-end;justify-content:space-between;margin:34px 30px 16px;padding:0}
+  .sec-h h2{font-family:'Montserrat';font-weight:800;font-size:22px;letter-spacing:-.01em}
+  .sec-h a{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+
+  .grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;padding:0 30px 30px}
+
+  /* topic preview + formula */
+  .topic{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:24px;position:relative;overflow:hidden;
+  }
+  .topic .tnum{position:absolute;top:-18px;right:10px;font-family:'Montserrat';font-weight:900;font-size:120px;color:rgba(255,255,255,.03);line-height:1}
+  .topic h3{font-family:'Montserrat';font-weight:800;font-size:21px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+  .topic h3 .eq{width:30px;height:30px;border-radius:8px;background:var(--accent);color:#06150b;display:grid;place-items:center;font-size:15px;flex:none}
+  .topic .lede2{color:var(--muted);font-size:14px;margin:10px 0 18px;line-height:1.5}
+
+  .formula{
+    background:#0c0c0f;border:1px solid var(--line);border-radius:14px;
+    padding:6px;display:flex;flex-direction:column;gap:6px;
+  }
+  .frow{
+    display:flex;align-items:center;gap:14px;
+    padding:13px 16px;border-radius:10px;
+    background:linear-gradient(90deg,rgba(30,215,96,.05),transparent);
+    transition:.18s;
+  }
+  .frow:hover{background:linear-gradient(90deg,rgba(30,215,96,.12),transparent)}
+  .frow .tk{width:26px;height:26px;flex:none;border-radius:6px;background:var(--elev);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--accent)}
+  .frow .fx{
+    font-family:'Cambria Math','Times New Roman',Georgia,serif;
+    font-size:18px;color:#eafff1;letter-spacing:.3px;flex:1;
+  }
+  .frow .dur{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+  sub{font-size:.66em}
+
+  /* right rail */
+  .rail{display:flex;flex-direction:column;gap:16px}
+
+  .trap{
+    background:linear-gradient(160deg,#3a1d05,#241204);
+    border:1px solid rgba(255,176,32,.3);border-radius:var(--radius-lg);
+    padding:22px;position:relative;overflow:hidden;
+  }
+  .trap .tag{display:inline-flex;align-items:center;gap:8px;font-family:'Montserrat';font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#ffb020}
+  .trap p{margin-top:12px;font-size:14.5px;line-height:1.55;color:#ffe9c7}
+  .trap p b{color:#fff}
+  .trap .glow{position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,176,32,.25),transparent 70%);right:-40px;top:-40px}
+
+  /* worked example teaser */
+  .example{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+    padding:22px;
+  }
+  .example .ek{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:800}
+  .example h3{font-family:'Montserrat';font-weight:800;font-size:19px;margin:8px 0 14px;line-height:1.15}
+  .extrack{
+    display:flex;align-items:center;gap:14px;background:#0c0c0f;border-radius:12px;padding:12px 14px;margin-bottom:18px;
+  }
+  .extrack .pl{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#1ed760,#0a7d33);display:grid;place-items:center;color:#06150b;font-size:16px;flex:none}
+  .extrack .info{flex:1;min-width:0}
+  .extrack .info b{font-size:13.5px;display:block}
+  .extrack .info span{font-size:12px;color:var(--faint)}
+  .wave{display:flex;align-items:center;gap:2px;height:22px}
+  .wave i{width:3px;border-radius:2px;background:var(--accent);opacity:.85}
+
+  .btns{display:flex;gap:10px}
+  .btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:9px;
+    font-family:'Montserrat';font-weight:800;font-size:14px;
+    padding:14px;border-radius:30px;cursor:pointer;transition:.18s;border:none;
+  }
+  .btn-primary{background:var(--accent);color:#06150b;box-shadow:0 10px 26px var(--accent-glow)}
+  .btn-primary:hover{transform:translateY(-2px) scale(1.01);background:#28e96c}
+  .btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.22)}
+  .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.05)}
+
+  /* progress mini in rail */
+  .miniprog{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+  .miniprog .row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:4px;font-weight:600}
+  .miniprog .row b{color:#fff}
+  .track{height:8px;border-radius:8px;background:#0c0c0f;overflow:hidden;margin-top:8px}
+  .track i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--accent),#9af7bd)}
+
+  /* footer */
+  .footer{
+    margin:auto 30px 26px;padding-top:22px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .footer .fbrand{display:flex;align-items:center;gap:10px}
+  .footer .fmark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#13a544);display:grid;place-items:center;font-family:'Montserrat';font-weight:900;color:#06150b;font-size:15px}
+  .footer .ft{font-family:'Montserrat';font-weight:800;font-size:14px}
+  .footer .fs{font-size:11.5px;color:var(--faint)}
+  .footer .fc{font-size:11.5px;color:var(--faint)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:1180px){
+    .app{grid-template-columns:var(--sidebar) 1fr}
+    .rail-wide{display:none}
+    .rail-col{display:none}
+    .grid2{grid-template-columns:1fr}
+    /* fold rail content into main on small screens */
+    .rail-inline{display:flex !important;flex-direction:column;gap:16px;padding:0 30px 24px}
+  }
+  @media(min-width:1181px){ .rail-inline{display:none} }
+
+  @media(max-width:820px){
+    .app{grid-template-columns:1fr;height:auto;min-height:100vh}
+    .sidebar{display:none}
+    .stats{grid-template-columns:1fr}
+    .famcard{flex-direction:column;align-items:flex-start;text-align:left}
+    .play{position:absolute;right:24px;bottom:24px}
+    body{overflow-y:auto}
+    .main{overflow:visible}
+  }
+  @media(max-width:700px){
+    .hero{padding:8px 18px 24px}
+    .sec-h{margin:28px 18px 14px}
+    .grid2,.rail-inline{padding-left:18px;padding-right:18px}
+    .topbar{padding:14px 18px}
+    .search{display:none}
+    .frow .fx{font-size:15px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">M</div>
+      <div>
+        <div class="bn">Me Studing Stuff</div>
+        <div class="bt">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="navitem active"><div class="ico">🏠</div> Dashboard</div>
+      <div class="navitem"><div class="ico">🔎</div> Search topics</div>
+      <div class="navitem"><div class="ico">📚</div> My library</div>
+
+      <div class="seclabel">FAM-L / FAM-S</div>
+      <div class="navitem"><div class="ico">📈</div> Survival Models <span class="meta">●</span></div>
+      <div class="navitem"><div class="ico">📋</div> Life Tables <span class="meta">●</span></div>
+      <div class="navitem"><div class="ico">🛡️</div> Life Insurance <span class="meta">▶</span></div>
+      <div class="navitem"><div class="ico">💵</div> Life Annuities</div>
+      <div class="navitem"><div class="ico">🧮</div> Premiums</div>
+      <div class="navitem"><div class="ico">📂</div> Policy Values</div>
+
+      <div class="seclabel">Practice</div>
+      <div class="navitem"><div class="ico">✏️</div> Worked problems <span class="meta">128</span></div>
+      <div class="navitem"><div class="ico">🎯</div> Mock exam</div>
+    </nav>
+
+    <div class="sidefoot">
+      <span class="pill">⚡ 86 days to exam</span>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+    <div class="topbar">
+      <div class="navbtns">
+        <div class="rd">‹</div><div class="rd">›</div>
+      </div>
+      <div class="search">🔍 Search formulas, topics, problems…</div>
+      <div class="tb-right">
+        <span class="upsell">Exam day plan</span>
+        <div class="avatar">AM</div>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="greet"><span class="dot"></span> Good evening</div>
+      <h1 class="h1">Let's get you <span class="gl">that pass.</span></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat accent">
+          <div class="ring"><span>72%</span></div>
+          <div class="lab">Overall progress</div>
+          <div class="big">72%</div>
+          <div class="sub">12 of 17 topics complete</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Exam countdown</div>
+          <div class="big">86<span style="font-size:18px;color:var(--muted)"> days</span></div>
+          <div class="sub">Keep the streak alive</div>
+          <div class="bars"><i style="height:10px"></i><i style="height:18px"></i><i style="height:14px"></i><i style="height:22px"></i><i style="height:12px"></i></div>
+        </div>
+        <div class="stat">
+          <div class="lab">Topics solid</div>
+          <div class="big">8</div>
+          <div class="sub">Locked in &amp; review-ready</div>
+          <div class="bars"><i style="height:16px"></i><i style="height:22px"></i><i style="height:9px"></i><i style="height:19px"></i></div>
+        </div>
+      </div>
+
+      <!-- FAM "NOW PLAYING" CARD -->
+      <div class="famcard">
+        <div class="cover">
+          <span class="em">FAM</span>
+          <small>SOA EXAM</small>
+        </div>
+        <div class="fammeta">
+          <div class="kicker">Featured exam</div>
+          <div class="famtitle">Exam FAM</div>
+          <div class="chips">
+            <span class="chip">Fundamentals of Actuarial Mathematics</span>
+            <span class="chip">SOA</span>
+            <span class="chip"><b>34</b>&nbsp;questions</span>
+            <span class="chip">pass = <b>6/10</b></span>
+          </div>
+        </div>
+        <div class="play" title="Start">▶</div>
+      </div>
+    </section>
+
+    <!-- TOPIC + FORMULA -->
+    <div class="sec-h">
+      <h2>Up next for you</h2>
+      <a>See all topics</a>
+    </div>
+
+    <div class="grid2">
+      <!-- topic preview -->
+      <div class="topic">
+        <div class="tnum">03</div>
+        <h3><span class="eq">∫</span> Life Insurance Present Values</h3>
+        <p class="lede2">The present-value building blocks — link the EPV of a benefit to the annuity it mirrors, then read its variance straight off.</p>
+        <div class="formula">
+          <div class="frow">
+            <div class="tk">EPV</div>
+            <div class="fx">A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+            <div class="dur">2:14</div>
+          </div>
+          <div class="frow">
+            <div class="tk">VAR</div>
+            <div class="fx">Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²</div>
+            <div class="dur">3:02</div>
+          </div>
+          <div class="frow">
+            <div class="tk">ANN</div>
+            <div class="fx">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+            <div class="dur">1:48</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right rail (desktop) -->
+      <div class="rail rail-col">
+        <div class="trap">
+          <div class="glow"></div>
+          <div class="tag">⚠ Common trap</div>
+          <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the <b>pure endowment is never rescaled</b>.</p>
+        </div>
+
+        <div class="example">
+          <div class="ek">Worked example</div>
+          <h3>Example 1 — Whole life EPV &amp; variance</h3>
+          <div class="extrack">
+            <div class="pl">▶</div>
+            <div class="info">
+              <b>Whole life · solve A<sub>x</sub>, then Var(Z)</b>
+              <span>5 steps · ~6 min</span>
+            </div>
+            <div class="wave">
+              <i style="height:6px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:8px"></i><i style="height:16px"></i><i style="height:22px"></i><i style="height:10px"></i>
+            </div>
+          </div>
+          <div class="btns">
+            <button class="btn btn-primary">▶ Start studying</button>
+            <button class="btn btn-ghost">⟳ Resume</button>
+          </div>
+        </div>
+
+        <div class="miniprog">
+          <div class="row"><span>FAM-L core</span><b>72%</b></div>
+          <div class="track"><i style="width:72%"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- rail content folded into main on narrow screens -->
+    <div class="rail-inline">
+      <div class="trap">
+        <div class="glow"></div>
+        <div class="tag">⚠ Common trap</div>
+        <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the <b>pure endowment is never rescaled</b>.</p>
+      </div>
+      <div class="example">
+        <div class="ek">Worked example</div>
+        <h3>Example 1 — Whole life EPV &amp; variance</h3>
+        <div class="extrack">
+          <div class="pl">▶</div>
+          <div class="info">
+            <b>Whole life · solve A<sub>x</sub>, then Var(Z)</b>
+            <span>5 steps · ~6 min</span>
+          </div>
+          <div class="wave">
+            <i style="height:6px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:8px"></i>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="btn btn-primary">▶ Start studying</button>
+          <button class="btn btn-ghost">⟳ Resume</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="fbrand">
+        <div class="fmark">M</div>
+        <div>
+          <div class="ft">Me Studing Stuff</div>
+          <div class="fs">Study smarter. Pass exams.</div>
+        </div>
+      </div>
+      <div class="fc">© 2026 · Built for SOA Exam FAM · Made calm on purpose.</div>
+    </footer>
+  </main>
+
+  <!-- ===== RIGHT BAR (desktop wide) ===== -->
+  <aside class="sidebar rail-wide" style="background:var(--panel)">
+    <div class="brand" style="padding-bottom:14px">
+      <div style="font-family:'Montserrat';font-weight:800;font-size:14px">Your plan tonight</div>
+    </div>
+    <div class="nav" style="padding:0 16px">
+      <div class="navitem"><div class="ico">🛡️</div> Life Insurance PVs <span class="meta">now</span></div>
+      <div class="navitem"><div class="ico">🧮</div> Premiums recap <span class="meta">9:30</span></div>
+      <div class="navitem"><div class="ico">📂</div> Policy Values drill <span class="meta">10:00</span></div>
+
+      <div class="seclabel">Quick stats</div>
+      <div style="padding:0 6px">
+        <div class="miniprog" style="margin-bottom:12px">
+          <div class="row"><span>Overall</span><b>72%</b></div>
+          <div class="track"><i style="width:72%"></i></div>
+        </div>
+        <div class="miniprog" style="margin-bottom:12px">
+          <div class="row"><span>Topics solid</span><b>8 / 17</b></div>
+          <div class="track"><i style="width:47%"></i></div>
+        </div>
+        <div class="miniprog">
+          <div class="row"><span>Countdown</span><b>86 days</b></div>
+          <div class="track"><i style="width:30%;background:linear-gradient(90deg,#ffb020,#ffd27d)"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="sidefoot">
+      <span class="pill" style="background:#fff">🎧 FAM-L · FAM-S</span>
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>

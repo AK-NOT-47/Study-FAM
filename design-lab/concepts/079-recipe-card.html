@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM · Recipe Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Caveat:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fbf3e4;
+    --card:#fffdf7;
+    --ink:#3a2a1e;
+    --ink-soft:#6b5544;
+    --tomato:#c2452f;
+    --tomato-deep:#9c3522;
+    --basil:#5a7048;
+    --mustard:#d99a2b;
+    --cream-line:#e6d3b3;
+    --rule:#d7c4a3;
+    --shadow:rgba(74,46,24,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Cormorant Garamond',Georgia,serif;
+    background:
+      radial-gradient(circle at 12% 8%, #fdf7ea 0%, transparent 40%),
+      radial-gradient(circle at 88% 92%, #f7ecd6 0%, transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    padding:clamp(14px,2.4vw,34px);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* faint kitchen-tile texture */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      linear-gradient(0deg, rgba(193,69,47,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(193,69,47,.035) 1px, transparent 1px);
+    background-size:46px 46px;
+  }
+
+  .sheet{
+    max-width:1280px;margin:0 auto;
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:clamp(16px,1.6vw,26px);
+  }
+
+  /* ============ RECIPE INDEX CARD (sidebar) ============ */
+  .index{
+    background:var(--card);
+    border:1px solid var(--cream-line);
+    border-radius:6px;
+    box-shadow:0 18px 40px -22px var(--shadow), 0 2px 0 #fff inset;
+    position:relative;
+    overflow:hidden;
+    align-self:start;
+    position:sticky;top:clamp(14px,2.4vw,34px);
+  }
+  /* red top stripe like an index card */
+  .index::before{
+    content:"";position:absolute;top:54px;left:0;right:0;height:2px;
+    background:var(--tomato);opacity:.55;
+  }
+  /* horizontal ruled lines */
+  .index .rules{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(
+      transparent,transparent 33px,
+      rgba(122,153,200,.16) 33px,rgba(122,153,200,.16) 34px);
+    background-position:0 56px;
+  }
+  /* punch hole */
+  .index .hole{
+    position:absolute;top:20px;right:18px;width:16px;height:16px;border-radius:50%;
+    background:var(--paper);box-shadow:inset 0 2px 3px rgba(0,0,0,.22);
+  }
+  .brand{
+    padding:16px 22px 12px;
+    display:flex;align-items:center;gap:12px;
+    position:relative;z-index:2;
+  }
+  .mmark{
+    width:42px;height:42px;flex:none;border-radius:9px;
+    background:var(--tomato);
+    color:#fff;display:grid;place-items:center;
+    font-family:'Playfair Display',serif;font-weight:900;font-size:26px;
+    box-shadow:0 6px 14px -4px var(--tomato-deep);
+    transform:rotate(-4deg);
+  }
+  .brand h1{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:20px;
+    line-height:1;letter-spacing:.2px;
+  }
+  .brand small{
+    display:block;font-family:'Caveat',cursive;font-size:16px;color:var(--tomato);
+    margin-top:3px;font-weight:700;
+  }
+  .index nav{padding:18px 22px 8px;position:relative;z-index:2}
+  .sec-label{
+    font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--tomato-deep);font-weight:700;
+    display:flex;align-items:center;gap:8px;margin:4px 0 12px;
+  }
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--rule)}
+  .ingredients{list-style:none}
+  .ingredients li{
+    display:flex;align-items:baseline;gap:11px;
+    font-size:19px;color:var(--ink);
+    padding:6.5px 0;line-height:1.15;cursor:pointer;
+    transition:color .15s, transform .15s;
+  }
+  .ingredients li .tick{
+    font-family:'Courier Prime',monospace;font-size:13px;color:var(--basil);
+    width:14px;flex:none;text-align:center;
+  }
+  .ingredients li .qty{
+    font-family:'Caveat',cursive;font-size:15px;color:var(--ink-soft);
+    margin-left:auto;flex:none;
+  }
+  .ingredients li:hover{color:var(--tomato);transform:translateX(3px)}
+  .ingredients li.todo .tick{color:var(--rule)}
+
+  .card-foot{
+    margin:14px 22px 20px;padding-top:14px;border-top:1px dashed var(--rule);
+    position:relative;z-index:2;
+    font-family:'Caveat',cursive;font-size:18px;color:var(--ink-soft);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .card-foot .pin{color:var(--tomato);font-size:22px}
+
+  /* ============ MAIN COLUMN ============ */
+  .main{display:flex;flex-direction:column;gap:clamp(16px,1.6vw,24px)}
+
+  /* hero recipe header */
+  .hero{
+    background:var(--card);
+    border:1px solid var(--cream-line);
+    border-radius:8px;
+    padding:clamp(22px,3vw,40px);
+    position:relative;overflow:hidden;
+    box-shadow:0 18px 44px -24px var(--shadow);
+  }
+  .hero::after{ /* dog-ear corner */
+    content:"";position:absolute;top:0;right:0;
+    border-width:0 34px 34px 0;border-style:solid;
+    border-color:var(--tomato) var(--paper);
+    border-color:transparent var(--tomato);
+    opacity:.0;
+  }
+  .stamp{
+    position:absolute;top:18px;right:18px;
+    border:2px solid var(--tomato);color:var(--tomato);
+    font-family:'Courier Prime',monospace;font-weight:700;font-size:11px;
+    letter-spacing:.18em;text-transform:uppercase;
+    padding:7px 11px;border-radius:4px;transform:rotate(7deg);
+    opacity:.78;text-align:center;line-height:1.3;
+  }
+  .greet{
+    font-family:'Caveat',cursive;font-size:clamp(22px,3vw,30px);
+    color:var(--tomato);font-weight:700;margin-bottom:2px;
+  }
+  .hero h2{
+    font-family:'Playfair Display',serif;font-weight:900;
+    font-size:clamp(36px,6.4vw,68px);line-height:.96;letter-spacing:-1px;
+    margin:4px 0 14px;max-width:14ch;
+  }
+  .hero p.lede{
+    font-size:clamp(17px,1.8vw,21px);color:var(--ink-soft);
+    max-width:56ch;line-height:1.5;font-style:italic;
+  }
+  .serve-row{
+    display:flex;flex-wrap:wrap;gap:14px;margin-top:22px;align-items:center;
+  }
+  .btn{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:16px;
+    padding:13px 26px;border-radius:40px;border:none;cursor:pointer;
+    text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+    transition:transform .14s, box-shadow .14s;
+  }
+  .btn.primary{background:var(--tomato);color:#fff;box-shadow:0 10px 22px -8px var(--tomato-deep)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 16px 28px -10px var(--tomato-deep)}
+  .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:11px 24px}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper);transform:translateY(-2px)}
+
+  /* stats — three measuring cups */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.4vw,20px);
+  }
+  .cup{
+    background:var(--card);border:1px solid var(--cream-line);border-radius:8px;
+    padding:20px 20px 18px;position:relative;overflow:hidden;
+    box-shadow:0 14px 32px -22px var(--shadow);
+  }
+  .cup .label{
+    font-family:'Courier Prime',monospace;font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;
+  }
+  .cup .big{
+    font-family:'Playfair Display',serif;font-weight:900;
+    font-size:clamp(34px,4.4vw,48px);line-height:1;color:var(--tomato);
+  }
+  .cup .sub{font-family:'Caveat',cursive;font-size:17px;color:var(--ink-soft);margin-top:4px}
+  /* progress measuring-cup fill */
+  .cup.fill::after{
+    content:"";position:absolute;left:0;bottom:0;width:72%;height:5px;
+    background:linear-gradient(90deg,var(--mustard),var(--tomato));
+  }
+  .cup .ticks{position:absolute;right:14px;top:16px;display:flex;flex-direction:column;gap:5px;opacity:.45}
+  .cup .ticks span{display:block;width:13px;height:2px;background:var(--rule)}
+  .cup .ticks span:nth-child(odd){width:9px}
+
+  /* two-up content row */
+  .row2{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(14px,1.6vw,22px)}
+  .panel{
+    background:var(--card);border:1px solid var(--cream-line);border-radius:8px;
+    padding:clamp(20px,2.4vw,30px);position:relative;
+    box-shadow:0 14px 34px -24px var(--shadow);
+  }
+  .panel h3{
+    font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(22px,2.6vw,28px);
+    margin-bottom:6px;line-height:1.1;
+  }
+  .kicker{
+    font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--tomato-deep);font-weight:700;margin-bottom:10px;
+  }
+  .lede-sm{font-size:18px;color:var(--ink-soft);font-style:italic;line-height:1.45;margin-bottom:18px}
+
+  /* the formula block = ingredient list */
+  .formula{
+    background:#fff;border:1px dashed var(--rule);border-radius:6px;
+    padding:16px 18px;margin-top:4px;
+    background-image:repeating-linear-gradient(transparent,transparent 35px,rgba(122,153,200,.13) 35px,rgba(122,153,200,.13) 36px);
+  }
+  .formula .fhead{
+    font-family:'Caveat',cursive;font-size:18px;color:var(--tomato);font-weight:700;
+    margin-bottom:6px;border-bottom:1px solid var(--rule);padding-bottom:4px;
+    display:flex;justify-content:space-between;
+  }
+  .formula ul{list-style:none}
+  .formula li{
+    font-family:'Courier Prime',monospace;font-size:15.5px;color:var(--ink);
+    padding:7px 0 7px 26px;line-height:1.45;position:relative;
+  }
+  .formula li::before{
+    content:"▪";position:absolute;left:6px;top:6px;color:var(--basil);font-size:13px;
+  }
+  .formula sup,.formula sub{font-size:.72em}
+
+  /* exam FAM card — a tasting menu chip */
+  .exam-card{
+    background:linear-gradient(160deg,#fff 0%,#fdf4e2 100%);
+    border:1px solid var(--cream-line);border-radius:8px;
+    padding:clamp(20px,2.4vw,28px);position:relative;overflow:hidden;
+    box-shadow:0 14px 34px -24px var(--shadow);
+    display:flex;flex-direction:column;
+  }
+  .exam-card .dish{
+    font-family:'Caveat',cursive;font-size:19px;color:var(--tomato);font-weight:700;
+  }
+  .exam-card h3{
+    font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(30px,4vw,42px);
+    line-height:1;margin:2px 0 14px;
+  }
+  .menu-list{list-style:none;margin-top:4px}
+  .menu-list li{
+    display:flex;align-items:baseline;gap:8px;
+    font-size:18px;color:var(--ink);padding:7px 0;
+    border-bottom:1px dotted var(--rule);
+  }
+  .menu-list li:last-child{border-bottom:none}
+  .menu-list .dot{flex:1;border-bottom:1px dotted var(--rule);transform:translateY(-4px);margin:0 4px}
+  .menu-list .v{font-family:'Courier Prime',monospace;font-size:15px;color:var(--tomato-deep);font-weight:700}
+  .pass-chip{
+    margin-top:16px;align-self:flex-start;
+    background:var(--basil);color:#fff;border-radius:40px;
+    font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.1em;
+    padding:8px 16px;font-weight:700;
+  }
+
+  /* common trap callout — spilled / warning */
+  .trap{
+    background:#fbe9df;
+    border:1.5px solid var(--tomato);border-left-width:7px;border-radius:8px;
+    padding:clamp(18px,2.2vw,24px) clamp(20px,2.4vw,28px);
+    position:relative;
+    box-shadow:0 14px 34px -26px var(--shadow);
+  }
+  .trap .tlabel{
+    font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--tomato-deep);font-weight:700;
+    display:flex;align-items:center;gap:9px;margin-bottom:8px;
+  }
+  .trap p{font-size:clamp(18px,2vw,22px);color:var(--ink);line-height:1.45;font-style:italic;max-width:70ch}
+  .trap p b{font-style:normal;color:var(--tomato-deep)}
+  .trap .splat{font-size:30px;filter:saturate(1.1)}
+
+  /* worked example teaser */
+  .example{
+    background:var(--ink);color:var(--paper);
+    border-radius:8px;padding:clamp(22px,2.6vw,30px);
+    position:relative;overflow:hidden;
+    box-shadow:0 18px 40px -22px var(--shadow);
+    display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;
+  }
+  .example::before{
+    content:"";position:absolute;inset:0;opacity:.06;pointer-events:none;
+    background-image:repeating-linear-gradient(45deg,#fff 0 2px,transparent 2px 16px);
+  }
+  .example .ex-kick{
+    font-family:'Caveat',cursive;font-size:19px;color:var(--mustard);font-weight:700;margin-bottom:4px;
+  }
+  .example h3{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(24px,3vw,34px);line-height:1.05;position:relative}
+  .example p{color:#e8d9c4;font-style:italic;font-size:17px;margin-top:6px;max-width:48ch;position:relative}
+  .example .btns{display:flex;gap:12px;position:relative;flex-wrap:wrap}
+  .example .btn.primary{background:var(--mustard);color:var(--ink);box-shadow:0 10px 22px -8px rgba(0,0,0,.5)}
+  .example .btn.ghost{border-color:var(--paper);color:var(--paper)}
+  .example .btn.ghost:hover{background:var(--paper);color:var(--ink)}
+
+  /* footer */
+  footer{
+    text-align:center;padding:26px 10px 10px;color:var(--ink-soft);
+  }
+  footer .fmark{
+    font-family:'Playfair Display',serif;font-weight:900;color:var(--tomato);font-size:22px;
+  }
+  footer .ftag{font-family:'Caveat',cursive;font-size:18px;margin-top:2px}
+  footer .fmeta{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.12em;color:var(--rule);margin-top:8px;text-transform:uppercase}
+
+  /* responsive */
+  @media (max-width:920px){
+    .sheet{grid-template-columns:1fr}
+    .index{position:static}
+    .index .rules{background-position:0 56px}
+    .row2{grid-template-columns:1fr}
+    .example{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    .stats{grid-template-columns:1fr}
+    .menu-list .dot{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ============ RECIPE INDEX CARD / NAV ============ -->
+  <aside class="index">
+    <div class="rules"></div>
+    <div class="hole"></div>
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <h1>Me Studing Stuff</h1>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+
+    <nav>
+      <div class="sec-label">FAM-L / FAM-S · Index</div>
+      <ul class="ingredients">
+        <li><span class="tick">✓</span> Survival Models <span class="qty">2 cups</span></li>
+        <li><span class="tick">✓</span> Life Tables <span class="qty">1 cup</span></li>
+        <li><span class="tick">✓</span> Life Insurance <span class="qty">3 tbsp</span></li>
+        <li class="todo"><span class="tick">○</span> Life Annuities <span class="qty">to taste</span></li>
+        <li class="todo"><span class="tick">○</span> Premiums <span class="qty">a pinch</span></li>
+        <li class="todo"><span class="tick">○</span> Policy Values <span class="qty">¼ cup</span></li>
+      </ul>
+    </nav>
+
+    <div class="card-foot">
+      <span>Recipe #079</span>
+      <span class="pin">✦</span>
+      <span>Serves: you</span>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="stamp">Exam<br>FAM</div>
+      <div class="greet">Good evening,</div>
+      <h2>Let's get you that&nbsp;pass.</h2>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="serve-row">
+        <a href="#example" class="btn primary">Start studying →</a>
+        <a href="#example" class="btn ghost">Resume</a>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="cup fill">
+        <div class="ticks"><span></span><span></span><span></span><span></span></div>
+        <div class="label">Overall progress</div>
+        <div class="big">72%</div>
+        <div class="sub">12 of 17 topics</div>
+      </div>
+      <div class="cup">
+        <div class="ticks"><span></span><span></span><span></span><span></span></div>
+        <div class="label">Exam countdown</div>
+        <div class="big">86</div>
+        <div class="sub">days on the timer</div>
+      </div>
+      <div class="cup">
+        <div class="ticks"><span></span><span></span><span></span><span></span></div>
+        <div class="label">Topics solid</div>
+        <div class="big">8</div>
+        <div class="sub">fully baked</div>
+      </div>
+    </section>
+
+    <!-- TOPIC PREVIEW + FORMULA / EXAM CARD -->
+    <section class="row2">
+      <div class="panel">
+        <div class="kicker">Today's dish · Topic preview</div>
+        <h3>Life Insurance Present Values</h3>
+        <p class="lede-sm">The expected present value of a benefit — whisk together discounting and survival until it sets.</p>
+
+        <div class="formula">
+          <div class="fhead"><span>Ingredients — key relations</span><span>EPV</span></div>
+          <ul>
+            <li>A<sub>x</sub> = 1 − d·ä<sub>x</sub></li>
+            <li>Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></li>
+            <li>ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exam-card">
+        <div class="dish">On the menu</div>
+        <h3>Exam FAM</h3>
+        <ul class="menu-list">
+          <li>Fundamentals of Actuarial Mathematics</li>
+          <li>Awarding body <span class="dot"></span> <span class="v">SOA</span></li>
+          <li>Questions <span class="dot"></span> <span class="v">34</span></li>
+          <li>Passing grade <span class="dot"></span> <span class="v">6 / 10</span></li>
+        </ul>
+        <span class="pass-chip">PASS = 6/10 · cook until golden</span>
+      </div>
+    </section>
+
+    <!-- COMMON TRAP -->
+    <section class="trap">
+      <div class="tlabel"><span class="splat">⚠️</span> Common trap · don't burn it</div>
+      <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+    </section>
+
+    <!-- WORKED EXAMPLE -->
+    <section class="example" id="example">
+      <div>
+        <div class="ex-kick">Worked example · step by step</div>
+        <h3>Example 1 — Whole life EPV &amp; variance</h3>
+        <p>Mise en place done? Plate up the expected present value, then the variance — one clean motion.</p>
+      </div>
+      <div class="btns">
+        <a href="#" class="btn primary">Start studying</a>
+        <a href="#" class="btn ghost">Resume</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="fmark">M · Me Studing Stuff</div>
+      <div class="ftag">Study smarter. Pass exams.</div>
+      <div class="fmeta">SOA Exam FAM · Recipe Card №079 · Kitchen Index</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

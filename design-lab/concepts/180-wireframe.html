@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f4f2;
+    --line:#9a9a96;
+    --line-soft:#c5c5c1;
+    --ink:#2b2b29;
+    --ink-soft:#6b6b66;
+    --box:#e3e3e0;
+    --box-dark:#d2d2ce;
+    --hair:1.5px;
+    --skel:repeating-linear-gradient(135deg,#dcdcd9 0 9px,#d0d0cd 9px 18px);
+    --grid:#e7e7e4;
+    --accent:#1f1f1d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      linear-gradient(transparent 0 calc(100% - var(--hair)),var(--grid) calc(100% - var(--hair))) 0 0/100% 26px,
+      linear-gradient(90deg,transparent 0 calc(100% - var(--hair)),var(--grid) calc(100% - var(--hair))) 0 0/26px 100%,
+      var(--paper);
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* annotation label tag */
+  .tag{
+    font-family:'Inconsolata',monospace;
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    background:var(--paper);
+    border:var(--hair) dashed var(--line);
+    padding:2px 7px;
+    display:inline-block;
+    border-radius:2px;
+  }
+  .skel-line{height:11px;background:var(--box);border-radius:2px;display:block;margin:6px 0}
+  .skel-line.w-90{width:90%}.skel-line.w-75{width:75%}.skel-line.w-60{width:60%}.skel-line.w-45{width:45%}.skel-line.w-30{width:30%}
+  .hatch{background:var(--skel)}
+
+  /* ---------- shell ---------- */
+  .wrap{max-width:1280px;margin:0 auto;padding:0 22px 60px;position:relative}
+
+  /* corner crop marks on the whole page */
+  .wrap::before,.wrap::after{
+    content:"";position:absolute;width:18px;height:18px;pointer-events:none;
+  }
+  .wrap::before{top:14px;left:6px;border-left:var(--hair) solid var(--line);border-top:var(--hair) solid var(--line)}
+  .wrap::after{top:14px;right:6px;border-right:var(--hair) solid var(--line);border-top:var(--hair) solid var(--line)}
+
+  /* ---------- top bar ---------- */
+  header.top{
+    display:flex;align-items:center;gap:18px;
+    padding:22px 4px 16px;border-bottom:var(--hair) solid var(--line);
+    flex-wrap:wrap;
+  }
+  .logo{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+  .mark{
+    width:46px;height:46px;border:2px solid var(--ink);border-radius:8px;
+    display:grid;place-items:center;font-family:'Archivo';font-weight:800;font-size:26px;
+    background:var(--box);position:relative;
+  }
+  .mark::after{content:"";position:absolute;inset:4px;border:var(--hair) dashed var(--line);border-radius:5px}
+  .brand b{font-family:'Archivo';font-weight:800;font-size:18px;letter-spacing:-.01em;display:block}
+  .brand span{font-family:'Inconsolata',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.04em}
+
+  nav.top-nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  nav.top-nav a{
+    font-family:'Inconsolata',monospace;font-size:12px;letter-spacing:.03em;
+    color:var(--ink-soft);text-decoration:none;padding:7px 11px;border:var(--hair) solid transparent;border-radius:3px;
+  }
+  nav.top-nav a:hover{border-color:var(--line);color:var(--ink);background:var(--paper)}
+  nav.top-nav a.cta{border:var(--hair) solid var(--ink);color:var(--ink);background:var(--box)}
+
+  /* ---------- layout grid ---------- */
+  .grid{display:grid;grid-template-columns:248px 1fr;gap:22px;margin-top:22px}
+
+  /* ---------- sidebar ---------- */
+  aside{position:relative}
+  .panel{
+    border:var(--hair) solid var(--line);background:var(--paper);border-radius:5px;
+    position:relative;
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 14px;border-bottom:var(--hair) dashed var(--line-soft);
+  }
+  .panel-head h3{font-family:'Inconsolata',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+  .dots{display:flex;gap:5px}
+  .dots i{width:9px;height:9px;border:var(--hair) solid var(--line);border-radius:50%}
+
+  .seclabel{
+    font-family:'Inconsolata',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);
+    padding:14px 14px 6px;display:block;
+  }
+  nav.side ul{list-style:none}
+  nav.side li a{
+    display:flex;align-items:center;gap:11px;padding:10px 14px;text-decoration:none;color:var(--ink);
+    font-size:14px;border-top:var(--hair) dashed var(--line-soft);position:relative;
+  }
+  nav.side li:first-child a{border-top:none}
+  nav.side li a:hover{background:var(--box)}
+  nav.side li a .ic{
+    width:22px;height:22px;border:var(--hair) solid var(--line);border-radius:3px;background:var(--box);flex:0 0 auto;
+    display:grid;place-items:center;font-family:'Inconsolata',monospace;font-size:10px;color:var(--ink-soft);
+  }
+  nav.side li a.active{background:var(--box-dark);font-weight:600}
+  nav.side li a.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ink)}
+  nav.side li a .num{margin-left:auto;font-family:'Inconsolata',monospace;font-size:11px;color:var(--ink-soft)}
+
+  .mini-prog{padding:12px 14px 16px}
+  .bar{height:14px;border:var(--hair) solid var(--line);border-radius:3px;background:var(--box);overflow:hidden;position:relative}
+  .bar > i{display:block;height:100%;width:72%;background:repeating-linear-gradient(135deg,var(--line) 0 6px,#8b8b87 6px 12px)}
+  .mini-prog .row{display:flex;justify-content:space-between;font-family:'Inconsolata',monospace;font-size:11px;color:var(--ink-soft);margin-top:8px}
+
+  /* ---------- main column ---------- */
+  main{display:flex;flex-direction:column;gap:22px;min-width:0}
+
+  /* hero */
+  .hero{padding:26px 26px 24px;position:relative;overflow:hidden}
+  .hero::after{
+    content:"HERO / DASHBOARD";position:absolute;top:0;right:0;
+    font-family:'Inconsolata',monospace;font-size:9px;letter-spacing:.18em;color:#fff;background:var(--line);
+    padding:3px 8px;border-bottom-left-radius:5px;
+  }
+  .greet{font-family:'Inconsolata',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .greet::before{content:"◷ ";}
+  .hero h1{
+    font-family:'Archivo';font-weight:800;font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.02em;
+    margin:10px 0 14px;max-width:18ch;
+  }
+  .hero h1 u{text-decoration:none;background:var(--box-dark);box-shadow:0 0 0 var(--hair) var(--line);padding:0 .12em;border-radius:3px}
+  .hero p.lede{font-size:15px;color:var(--ink-soft);max-width:58ch;line-height:1.55}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  .stat{border:var(--hair) solid var(--line);border-radius:5px;padding:14px 14px 12px;background:var(--paper);position:relative}
+  .stat .k{font-family:'Inconsolata',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  .stat .v{font-family:'Archivo';font-weight:800;font-size:34px;line-height:1;margin:8px 0 4px;letter-spacing:-.02em}
+  .stat .s{font-family:'Inconsolata',monospace;font-size:11px;color:var(--ink-soft)}
+  .stat .donut{
+    position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;
+    background:conic-gradient(var(--line) 0 72%, var(--box) 72% 100%);
+    -webkit-mask:radial-gradient(circle 8px at center,transparent 98%,#000 100%);
+            mask:radial-gradient(circle 8px at center,transparent 98%,#000 100%);
+  }
+
+  /* two-col body for main content */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:980px){.duo{grid-template-columns:1fr}}
+
+  /* exam fam card */
+  .exam-card .panel-head h3::before{content:"▣ ";color:var(--ink-soft)}
+  .exam-body{padding:16px 16px 18px}
+  .exam-title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .exam-title b{font-family:'Archivo';font-weight:800;font-size:26px;letter-spacing:-.01em}
+  .badge{font-family:'Inconsolata',monospace;font-size:11px;border:var(--hair) solid var(--line);border-radius:3px;padding:2px 7px;color:var(--ink-soft)}
+  .exam-sub{font-size:13px;color:var(--ink-soft);margin:6px 0 14px}
+  .specs{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .spec{display:flex;align-items:center;gap:9px;border:var(--hair) dashed var(--line);border-radius:4px;padding:9px 11px;background:var(--box)}
+  .spec .box{width:18px;height:18px;border:var(--hair) solid var(--line);background:var(--paper);border-radius:2px;flex:0 0 auto}
+  .spec .box.check{background:var(--ink)}
+  .spec span{font-family:'Inconsolata',monospace;font-size:12px}
+  .spec span em{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
+  /* topic preview + formula */
+  .topic-body{padding:16px 16px 18px}
+  .topic-body h4{font-family:'Archivo';font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .topic-body .lede{font-size:13px;color:var(--ink-soft);margin:5px 0 14px}
+  .formula{
+    border:var(--hair) solid var(--line);border-radius:5px;background:var(--box);overflow:hidden;
+  }
+  .formula .fhead{
+    font-family:'Inconsolata',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+    padding:7px 12px;border-bottom:var(--hair) dashed var(--line);background:var(--paper);
+    display:flex;justify-content:space-between;
+  }
+  .formula .frow{
+    font-family:'Inconsolata',monospace;font-size:15px;color:var(--ink);
+    padding:13px 14px;border-bottom:var(--hair) dashed var(--line-soft);display:flex;align-items:center;gap:10px;
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .frow .n{font-size:10px;color:var(--ink-soft);border:var(--hair) solid var(--line);border-radius:50%;width:18px;height:18px;display:grid;place-items:center;flex:0 0 auto}
+
+  /* trap callout */
+  .trap{
+    border:2px solid var(--ink);border-radius:5px;background:var(--paper);position:relative;
+    padding:16px 16px 16px 16px;
+  }
+  .trap::before{
+    content:"";position:absolute;inset:0;border-radius:5px;
+    background:repeating-linear-gradient(135deg,transparent 0 13px,rgba(0,0,0,.04) 13px 14px);
+    pointer-events:none;
+  }
+  .trap .lbl{
+    display:inline-flex;align-items:center;gap:8px;font-family:'Inconsolata',monospace;font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+    background:var(--ink);color:var(--paper);padding:4px 9px;border-radius:3px;margin-bottom:11px;
+  }
+  .trap .lbl::before{content:"⚠"}
+  .trap p{font-size:14px;line-height:1.55;max-width:64ch}
+  .trap p code{font-family:'Inconsolata',monospace;background:var(--box-dark);padding:1px 5px;border-radius:3px;font-size:13px;box-shadow:0 0 0 var(--hair) var(--line)}
+
+  /* worked example teaser */
+  .work-body{padding:16px}
+  .work-row{display:flex;align-items:center;gap:14px;border:var(--hair) dashed var(--line);border-radius:5px;background:var(--box);padding:14px;flex-wrap:wrap}
+  .work-thumb{
+    width:64px;height:64px;border:var(--hair) solid var(--line);border-radius:4px;background:var(--skel);flex:0 0 auto;position:relative;
+  }
+  .work-thumb::after{content:"fx";position:absolute;inset:0;display:grid;place-items:center;font-family:'Inconsolata',monospace;font-size:14px;color:var(--ink-soft);font-style:italic}
+  .work-meta{min-width:160px;flex:1}
+  .work-meta .ex{font-family:'Inconsolata',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  .work-meta b{font-family:'Archivo';font-weight:700;font-size:16px;display:block;margin-top:3px}
+  .work-meta .skel-line{margin-top:10px}
+
+  .btns{display:flex;gap:11px;margin-top:16px;flex-wrap:wrap}
+  .btn{
+    font-family:'Archivo';font-weight:600;font-size:14px;text-decoration:none;
+    padding:12px 20px;border-radius:4px;border:var(--hair) solid var(--ink);cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn.primary:hover{background:#000}
+  .btn.ghost{background:var(--paper);color:var(--ink)}
+  .btn.ghost:hover{background:var(--box)}
+  .btn .pl{width:14px;height:14px;border:var(--hair) solid currentColor;border-radius:2px;display:inline-block}
+  .btn.primary .pl{border-color:var(--paper)}
+
+  /* footer */
+  footer{
+    margin-top:40px;border-top:var(--hair) solid var(--line);padding-top:18px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  footer .mark{width:34px;height:34px;font-size:18px;border-radius:6px}
+  footer .mark::after{inset:3px}
+  footer b{font-family:'Archivo';font-weight:800;font-size:14px}
+  footer .meta{margin-left:auto;font-family:'Inconsolata',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.04em;text-align:right}
+
+  /* full-width helper */
+  .full{grid-column:1/-1}
+
+  @media(max-width:860px){
+    .grid{grid-template-columns:1fr}
+    aside{order:2}
+    .stats{grid-template-columns:1fr}
+    nav.top-nav{width:100%;margin-left:0;justify-content:flex-start}
+  }
+  @media(max-width:700px){
+    .specs{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <header class="top">
+    <div class="logo">
+      <div class="mark">M</div>
+      <div class="brand">
+        <b>Me Studing Stuff</b>
+        <span>Study smarter. Pass exams.</span>
+      </div>
+    </div>
+    <nav class="top-nav">
+      <a href="#">Dashboard</a>
+      <a href="#">Notes</a>
+      <a href="#">Formulas</a>
+      <a href="#">Problems</a>
+      <a href="#">Plan</a>
+      <a href="#" class="cta">Resume →</a>
+    </nav>
+  </header>
+
+  <div class="grid">
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Topics</h3>
+          <div class="dots"><i></i><i></i><i></i></div>
+        </div>
+        <span class="seclabel">// FAM-L &middot; Long-Term</span>
+        <nav class="side">
+          <ul>
+            <li><a href="#" class="active"><span class="ic">01</span>Survival Models<span class="num">●</span></a></li>
+            <li><a href="#"><span class="ic">02</span>Life Tables<span class="num">●</span></a></li>
+            <li><a href="#"><span class="ic">03</span>Life Insurance<span class="num">○</span></a></li>
+            <li><a href="#"><span class="ic">04</span>Life Annuities<span class="num">○</span></a></li>
+            <li><a href="#"><span class="ic">05</span>Premiums<span class="num">○</span></a></li>
+            <li><a href="#"><span class="ic">06</span>Policy Values<span class="num">○</span></a></li>
+          </ul>
+        </nav>
+        <span class="seclabel">// FAM-S &middot; Short-Term</span>
+        <nav class="side">
+          <ul>
+            <li><a href="#"><span class="ic">07</span>Severity &amp; Frequency<span class="num">○</span></a></li>
+            <li><a href="#"><span class="ic">08</span>Ratemaking &amp; Reserving<span class="num">○</span></a></li>
+          </ul>
+        </nav>
+        <div class="mini-prog">
+          <div class="bar"><i></i></div>
+          <div class="row"><span>progress.svg</span><span>72%</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- HERO -->
+      <section class="panel hero">
+        <div class="greet">Good evening</div>
+        <h1>Let's get you that <u>pass.</u></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="donut"></div>
+            <div class="k">Overall progress</div>
+            <div class="v">72%</div>
+            <div class="s">12 of 17 topics</div>
+          </div>
+          <div class="stat">
+            <div class="k">Exam countdown</div>
+            <div class="v">86<span style="font-size:16px;color:var(--ink-soft)"> days</span></div>
+            <div class="s">// ticking ◷</div>
+          </div>
+          <div class="stat">
+            <div class="k">Topics solid</div>
+            <div class="v">8</div>
+            <div class="s">marked ● confident</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="duo">
+        <!-- EXAM FAM CARD -->
+        <section class="panel exam-card">
+          <div class="panel-head">
+            <h3>Exam FAM</h3>
+            <span class="tag">CARD</span>
+          </div>
+          <div class="exam-body">
+            <div class="exam-title">
+              <b>Exam FAM</b>
+              <span class="badge">SOA</span>
+            </div>
+            <p class="exam-sub">Fundamentals of Actuarial Mathematics</p>
+            <div class="specs">
+              <div class="spec"><span class="box"></span><span><em>Provider</em>SOA</span></div>
+              <div class="spec"><span class="box"></span><span><em>Questions</em>34 questions</span></div>
+              <div class="spec"><span class="box check"></span><span><em>Pass mark</em>6 / 10</span></div>
+              <div class="spec"><span class="box"></span><span><em>Format</em>Multiple choice</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TOPIC PREVIEW + FORMULA -->
+        <section class="panel">
+          <div class="panel-head">
+            <h3>Topic Preview</h3>
+            <span class="tag">03 / Life Ins.</span>
+          </div>
+          <div class="topic-body">
+            <h4>Life Insurance Present Values</h4>
+            <p class="lede">EPV of a benefit paid on death — and how its variance falls out of the same machinery.</p>
+            <div class="formula">
+              <div class="fhead"><span>formula.block</span><span>FAM-L</span></div>
+              <div class="frow"><span class="n">1</span>A&#8339; = 1 − d·&auml;&#8339;</div>
+              <div class="frow"><span class="n">2</span>Var(Z) = &sup2;A&#8339; − (A&#8339;)&sup2;</div>
+              <div class="frow"><span class="n">3</span>&auml;&#8339; = (1 − A&#8339;) / d</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- COMMON TRAP -->
+      <section class="trap">
+        <div class="lbl">Common trap</div>
+        <p>Under UDD, multiply <code>ONLY</code> the term/death piece by <code>i/δ</code> — the pure endowment is never rescaled.</p>
+      </section>
+
+      <!-- WORKED EXAMPLE + BUTTONS -->
+      <section class="panel">
+        <div class="panel-head">
+          <h3>Worked Example</h3>
+          <span class="tag">Teaser</span>
+        </div>
+        <div class="work-body">
+          <div class="work-row">
+            <div class="work-thumb"></div>
+            <div class="work-meta">
+              <div class="ex">Example 1</div>
+              <b>Whole life EPV &amp; variance</b>
+              <span class="skel-line w-90"></span>
+              <span class="skel-line w-60"></span>
+            </div>
+          </div>
+          <div class="btns">
+            <a href="#" class="btn primary"><span class="pl"></span>Start studying</a>
+            <a href="#" class="btn ghost"><span class="pl"></span>Resume</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="mark">M</div>
+    <b>Me Studing Stuff</b>
+    <div class="meta">Study smarter. Pass exams.<br>// lo-fi wireframe build · greyscale skeleton · v180</div>
+  </footer>
+
+</div>
+</body>
+</html>

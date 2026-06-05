@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Tracker · FAM · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="tracker" data-exam="fam" data-title="Progress Tracker">
+  <main data-mss-main>
+    <div class="dash" style="max-width:1000px">
+
+      <div class="eyebrow">✅ Your single source of truth</div>
+      <h1 class="page-title" style="margin-bottom:6px">Progress Tracker</h1>
+      <p class="text-mute" style="margin-top:0;max-width:60ch">Update after every session. Your topic confidence syncs automatically with each note page. Honesty here is what makes the final weeks efficient.</p>
+
+      <div class="card" style="padding:22px;margin:22px 0">
+        <div class="mini-progress" style="font-size:14px"><strong>Overall mastery</strong><span id="ovPct">0/17</span></div>
+        <div class="bar" style="height:10px"><i id="ovBar" style="width:0%"></i></div>
+        <p class="text-mute" style="font-size:13px;margin:10px 0 0">🟢 solid · 🟡 learning · 🔴 shaky · ⚪ not started — set these on each topic page or right here.</p>
+      </div>
+
+      <h2 class="section-title" style="font-size:1.3rem">📈 Long-Term (FAM-L)</h2>
+      <div class="card" style="overflow:hidden;margin-bottom:24px"><table class="tracker-table" id="tblL"></table></div>
+
+      <h2 class="section-title" style="font-size:1.3rem">📊 Short-Term (FAM-S)</h2>
+      <div class="card" style="overflow:hidden;margin-bottom:24px"><table class="tracker-table" id="tblS"></table></div>
+
+      <h2 class="section-title" style="font-size:1.3rem">🧪 Mock Exam Log <span class="count">target: 3+ at 70%</span></h2>
+      <div class="card" style="overflow:hidden;margin-bottom:14px"><table class="tracker-table" id="tblMock"></table></div>
+      <button class="btn btn-primary" id="addMock" style="margin-bottom:28px">+ Log a mock exam</button>
+
+      <h2 class="section-title" style="font-size:1.3rem">📓 Mistake Log <span class="count">highest-leverage tool here</span></h2>
+      <p class="text-mute" style="margin-top:-8px">Every missed problem becomes a row. Re-do them weekly until automatic.</p>
+      <div class="card" style="overflow:hidden;margin-bottom:14px"><table class="tracker-table" id="tblMiss"></table></div>
+      <button class="btn btn-primary" id="addMiss" style="margin-bottom:40px">+ Add a mistake</button>
+
+    </div>
+  </main>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+  <script>
+  document.addEventListener("mss:ready", function () {
+    var M = window.MSS_MANIFEST, Store = window.MSSStore, P = window.MSSProgress;
+    var BASE = "../../../";
+    function sectionPages(id){ var s=M.exams[0].sections.filter(function(x){return x.id===id;})[0]; return s?s.pages:[]; }
+    var DOTS = { solid:"🟢", learning:"🟡", red:"🔴" };
+
+    function renderTopicTable(tblId, sectionId){
+      var tbl = document.getElementById(tblId);
+      var rows = '<thead><tr><th>#</th><th>Topic</th><th>Done</th><th>Confidence</th></tr></thead><tbody>';
+      sectionPages(sectionId).forEach(function(p){
+        var r = Store.get(p.id);
+        var dot = r.done ? "🟢" : (DOTS[r.conf] || "⚪");
+        rows += '<tr data-id="'+p.id+'">'+
+          '<td class="tc-num" style="font-family:var(--font-mono)">'+(p.num||"")+'</td>'+
+          '<td><a href="'+BASE+p.file+'" style="font-weight:600">'+p.title+'</a></td>'+
+          '<td><button class="complete-toggle mini" data-act="done" style="padding:5px 10px"><span class="box" style="width:18px;height:18px">'+(r.done?"✓":"")+'</span></button></td>'+
+          '<td><div class="confidence">'+
+            '<button data-v="red" '+(r.conf==="red"?'class="sel"':'')+'>🔴</button>'+
+            '<button data-v="learning" '+(r.conf==="learning"?'class="sel"':'')+'>🟡</button>'+
+            '<button data-v="solid" '+(r.conf==="solid"?'class="sel"':'')+'>🟢</button>'+
+          '</div></td></tr>';
+      });
+      tbl.innerHTML = rows + '</tbody>';
+      tbl.querySelectorAll("tr[data-id]").forEach(function(tr){
+        var id = tr.getAttribute("data-id");
+        tr.querySelector('[data-act="done"]').addEventListener("click", function(){
+          var nd = !Store.get(id).done; Store.set(id,{done:nd, ts:Date.now()});
+          this.classList.toggle("done", nd); this.querySelector(".box").textContent = nd?"✓":"";
+          refresh(); if(nd) window.MSSConfetti && window.MSSConfetti();
+        });
+        tr.querySelectorAll(".confidence button").forEach(function(b){
+          b.addEventListener("click", function(){
+            Store.set(id,{conf:b.getAttribute("data-v")});
+            tr.querySelectorAll(".confidence button").forEach(function(x){x.classList.remove("sel");});
+            b.classList.add("sel"); refresh();
+          });
+        });
+      });
+    }
+    function refresh(){
+      var op = P.overallPct();
+      document.getElementById("ovPct").textContent = op.done+"/"+op.total;
+      document.getElementById("ovBar").style.width = op.pct+"%";
+    }
+
+    // ---- editable localStorage tables (mocks + mistakes) ----
+    function makeStore(key, cols, blank){
+      function read(){ try{return JSON.parse(localStorage.getItem(key)||"[]");}catch(e){return [];} }
+      function write(a){ try{localStorage.setItem(key, JSON.stringify(a));}catch(e){} }
+      function render(tblId){
+        var tbl = document.getElementById(tblId), data = read();
+        var h = '<thead><tr>'+cols.map(function(c){return '<th>'+c.label+'</th>';}).join('')+'<th></th></tr></thead><tbody>';
+        if(!data.length) h += '<tr><td colspan="'+(cols.length+1)+'" class="text-mute" style="text-align:center;padding:22px">Nothing logged yet — add your first entry below.</td></tr>';
+        data.forEach(function(row,i){
+          h += '<tr>'+cols.map(function(c){
+            return '<td><input data-i="'+i+'" data-k="'+c.k+'" value="'+(row[c.k]||"").replace(/"/g,"&quot;")+'" placeholder="'+(c.ph||"")+'" style="width:100%;border:none;background:none;color:var(--text);font:inherit;outline:none"></td>';
+          }).join('')+'<td><button data-del="'+i+'" class="icon-btn" style="width:30px;height:30px;font-size:14px">✕</button></td></tr>';
+        });
+        tbl.innerHTML = h+'</tbody>';
+        tbl.querySelectorAll("input").forEach(function(inp){
+          inp.addEventListener("change", function(){ var d=read(); d[+inp.getAttribute("data-i")][inp.getAttribute("data-k")]=inp.value; write(d); });
+        });
+        tbl.querySelectorAll("[data-del]").forEach(function(btn){
+          btn.addEventListener("click", function(){ var d=read(); d.splice(+btn.getAttribute("data-del"),1); write(d); render(tblId); });
+        });
+      }
+      return { add:function(tblId){ var d=read(); d.push(Object.assign({},blank)); write(d); render(tblId); }, render:render };
+    }
+
+    var mock = makeStore("mss:mocks", [
+      {k:"date",label:"Date",ph:"2026-…"},{k:"num",label:"Mock #",ph:"1"},{k:"score",label:"Score /34",ph:"24"},
+      {k:"pct",label:"%",ph:"71"},{k:"time",label:"Time",ph:"3h10"},{k:"weak",label:"Weak areas to fix",ph:"aggregate, reserves"}
+    ], {date:"",num:"",score:"",pct:"",time:"",weak:""});
+    var miss = makeStore("mss:mistakes", [
+      {k:"date",label:"Date",ph:"2026-…"},{k:"topic",label:"Topic",ph:"Premiums"},
+      {k:"wrong",label:"What I got wrong",ph:"used i not δ"},{k:"fix",label:"Correct idea / formula",ph:"…"},{k:"redo",label:"Re-tested?",ph:"✅"}
+    ], {date:"",topic:"",wrong:"",fix:"",redo:""});
+
+    renderTopicTable("tblL","long-term");
+    renderTopicTable("tblS","short-term");
+    mock.render("tblMock"); miss.render("tblMiss");
+    document.getElementById("addMock").addEventListener("click", function(){ mock.add("tblMock"); });
+    document.getElementById("addMiss").addEventListener("click", function(){ miss.add("tblMiss"); });
+    refresh();
+  });
+  </script>
+</body>
+</html>

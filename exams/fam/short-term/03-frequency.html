@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequency Models · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-03" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 3</div>
+      <h1>Frequency Models</h1>
+      <p class="lede">Frequency answers "how many claims?" — and four distributions, one recursion, the dispersion test, and the slope-of-ratios method cover almost everything the exam asks.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models (KPW)</span>
+        <span class="chip">⏱️ ~3 hrs</span>
+        <span class="chip">🔑 Poisson · Binomial · NB · Geometric</span>
+        <span class="chip">🔑 (a,b,0) · (a,b,1) · PGF</span>
+        <span class="chip">🔑 mean vs variance · slope test</span>
+        <span class="chip">🔑 Poisson–Gamma · thinning</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After studying this topic, you should be able to:</p>
+        <ul>
+          <li>Identify and parametrize the core frequency distributions: <strong>Poisson</strong>, <strong>binomial</strong> (and its <strong>Bernoulli</strong> special case), <strong>negative binomial</strong>, and <strong>geometric</strong> (a special case of the negative binomial).</li>
+          <li>Compute probabilities, means, and variances for each, and use the <strong>mean-to-variance relationship</strong> to recognize which distribution fits a data set.</li>
+          <li>Apply the <strong>closure (sum) properties</strong>: sums of independent Poissons, of binomials with a common $q$, and of geometrics, and recognize the resulting distribution.</li>
+          <li>Use the <strong>geometric memoryless property</strong> for shifted/conditional counts.</li>
+          <li>State the defining property of the <strong>(a, b, 0) class</strong>, identify which distributions belong to it, and back out parameters from the recursion coefficients $a$ and $b$.</li>
+          <li>Use the <strong>(a, b, 0) recursion</strong> $p_k = (a + b/k)\,p_{k-1}$ to compute successive probabilities.</li>
+          <li><strong>Choose the best-fitting (a,b,0) distribution from data</strong> using (1) sample mean vs. variance and (2) the <strong>slope of $k\,n_k/n_{k-1}$</strong>.</li>
+          <li>Recognize the <strong>Poisson–Gamma mixture</strong> that produces a negative binomial.</li>
+          <li>Understand the <strong>(a, b, 1) class</strong>: zero-truncated and zero-modified distributions, convert between base and modified probabilities, and compute their moments.</li>
+          <li>Work with <strong>probability generating functions (PGFs)</strong>, extract moments, and use them for compound and mixed distributions.</li>
+          <li>Build and analyze <strong>compound frequency</strong> distributions (e.g., Neyman Type A).</li>
+          <li>Determine the effect of <strong>exposure changes</strong> and <strong>coverage modifications</strong> (deductibles, via thinning) on the frequency distribution.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. What is a frequency model?</h3>
+      <p>A <strong>frequency model</strong> describes the <em>number of claims</em> $N$ (a non-negative integer random variable) over a fixed period. It is the "how many" half of the risk; the "how much" half is the <strong>severity</strong> $X$. Together they build the <strong>aggregate loss</strong> $S = X_1 + \dots + X_N$ (a compound distribution). Mastering frequency is the foundation for aggregate-loss modeling.</p>
+      <p>We always denote $p_k = \Pr(N = k)$ for $k = 0, 1, 2, \dots$ (the exam table uses $p_n$).</p>
+
+      <h3>2. The four core distributions — intuition</h3>
+      <ul>
+        <li><strong>Poisson</strong> $(\lambda)$: the "default" claim-count model. Counts of rare events over time/space. Its signature feature is <strong>mean = variance = $\lambda$</strong> (equidispersion). Memorize this.</li>
+        <li><strong>Binomial</strong> $(m, q)$: a <em>finite</em> number of independent trials $m$, each producing a claim with probability $q$. Count is capped at $m$. <strong>Variance &lt; mean</strong> (underdispersion): $\text{Var} = mq(1-q) &lt; mq = $ mean. The <strong>Bernoulli</strong> $(q)$ is just the $m=1$ case.</li>
+        <li><strong>Negative binomial</strong> $(r, \beta)$: counts with <strong>variance &gt; mean</strong> (overdispersion). Arises naturally as a <strong>Poisson mixed over a gamma-distributed $\lambda$</strong> — i.e., heterogeneous risks. This is the workhorse when real data are more variable than Poisson allows.</li>
+        <li><strong>Geometric</strong> $(\beta)$: the negative binomial with $r = 1$. The discrete analogue of the exponential; <strong>memoryless</strong> in the count sense.</li>
+      </ul>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — Poisson process vs. Poisson distribution</div>
+        <p>You may see the term <strong>Poisson process</strong>. For this exam it can be used interchangeably with "Poisson distribution." The process is the broader idea of counting occurrences over time; the distribution is the count itself.</p>
+      </div>
+
+      <h3>3. Closure (sum) properties</h3>
+      <p>These "sum of independent copies" facts show up constantly and underpin exposure scaling.</p>
+      <ul>
+        <li><strong>Poisson:</strong> if $N_i \sim \text{Poisson}(\lambda_i)$ are independent, then $\sum_i N_i \sim \text{Poisson}\!\left(\sum_i \lambda_i\right)$.</li>
+        <li><strong>Binomial (common $q$):</strong> if $N_i \sim \text{Binomial}(m_i, q)$ are independent, then $\sum_i N_i \sim \text{Binomial}\!\left(\sum_i m_i,\, q\right)$. (The $q$ must match.)</li>
+        <li><strong>Bernoulli → Binomial:</strong> a sum of $m$ i.i.d. $\text{Bernoulli}(q)$ is $\text{Binomial}(m, q)$.</li>
+        <li><strong>Negative binomial (common $\beta$):</strong> if $N_i \sim \text{NB}(r_i, \beta)$ are independent, then $\sum_i N_i \sim \text{NB}\!\left(\sum_i r_i,\, \beta\right)$.</li>
+        <li><strong>Geometric → Negative binomial:</strong> a sum of $r$ i.i.d. $\text{Geometric}(\beta)$ is $\text{NB}(r, \beta)$.</li>
+      </ul>
+
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Geometric memoryless property</div>
+        <p>For $N \sim \text{Geometric}(\beta)$, the shifted conditional count is again geometric with the same $\beta$:</p>
+        $$ (N - d \mid N \ge d) \sim \text{Geometric}(\beta). $$
+        <p>Consequences: $\mathrm{E}[N - d \mid N \ge d] = \mathrm{E}[N] = \beta$, &nbsp; $\text{Var}(N - d \mid N \ge d) = \beta(1+\beta)$, &nbsp; and $\Pr(N - d = a \mid N \ge d) = \Pr(N = a)$. It is the discrete twin of the exponential's memorylessness.</p>
+      </div>
+
+      <p><strong>The dispersion test</strong> (a hugely common exam shortcut):</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Distribution</th><th>Relationship</th></tr></thead>
+        <tbody>
+          <tr><td>Binomial</td><td>Variance <strong>&lt;</strong> Mean</td></tr>
+          <tr><td>Poisson</td><td>Variance <strong>=</strong> Mean</td></tr>
+          <tr><td>Negative binomial / Geometric</td><td>Variance <strong>&gt;</strong> Mean</td></tr>
+        </tbody>
+      </table></div>
+      <p>Given sample mean $\bar{x}$ and sample variance $s^2$, compare them to pick the family before fitting. (More on this — including a second, data-driven method — in §6.)</p>
+
+      <h3>4. The (a, b, 0) class</h3>
+      <p>A distribution belongs to the <strong>(a, b, 0) class</strong> if there exist constants $a$ and $b$ such that</p>
+      <div class="formula">$$\frac{p_k}{p_{k-1}} = a + \frac{b}{k}, \qquad k = 1, 2, 3, \dots$$</div>
+      <p>The "0" means the recursion starts at $k = 1$ and uses the natural $p_0$. <strong>There are exactly four members: Poisson, binomial, negative binomial, and geometric.</strong> (Geometric is the $r=1$ negative binomial; Bernoulli is the $m=1$ binomial — so really three families.) No other distribution satisfies this.</p>
+      <p>Why it matters: the values of $a$ and $b$ both <strong>identify the family</strong> and let you <strong>back out the parameters</strong>. The <strong>sign of $a$</strong> is the tell:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Sign of $a$</th><th>Distribution</th><th>$a$</th><th>$b$</th></tr></thead>
+        <tbody>
+          <tr><td>$a = 0$</td><td>Poisson</td><td>$0$</td><td>$\lambda$</td></tr>
+          <tr><td>$a &lt; 0$</td><td>Binomial</td><td>$-\dfrac{q}{1-q}$</td><td>$(m+1)\dfrac{q}{1-q}$</td></tr>
+          <tr><td>$a &gt; 0$</td><td>Negative binomial</td><td>$\dfrac{\beta}{1+\beta}$</td><td>$(r-1)\dfrac{\beta}{1+\beta}$</td></tr>
+          <tr><td>$a &gt; 0,\ b = 0$</td><td>Geometric</td><td>$\dfrac{\beta}{1+\beta}$</td><td>$0$</td></tr>
+        </tbody>
+      </table></div>
+      <p>(In all four members $b > 0$ except the geometric, where $b = 0$.) This recursion is also the computational engine for compound (aggregate) distributions via the <strong>Panjer recursion</strong>.</p>
+
+      <h3>5. The Poisson–Gamma mixture (how a negative binomial is born)</h3>
+      <p>A negative binomial arises when each insured is Poisson but the Poisson <em>mean itself varies</em> across the population according to a gamma distribution — the classic model of <strong>heterogeneous risks</strong>:</p>
+      <div class="formula">
+        $$(N \mid \Lambda = \lambda) \sim \text{Poisson}(\lambda), \quad \Lambda \sim \text{Gamma}(\alpha, \theta) \;\Longrightarrow\; N \sim \text{Negative Binomial}(r = \alpha,\ \beta = \theta).$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — why this is worth knowing</div>
+        <p>This is a <em>continuous</em> mixture (an infinite blend of Poissons). Continuous mixtures are not on the syllabus in general, but this specific one is in the prescribed reading for the negative binomial and appears in an SOA sample question — so treat it as testable. Special case: an <strong>exponential</strong> mixing distribution is $\text{Gamma}(\alpha = 1, \theta)$, which yields a <strong>geometric</strong> (NB with $r = 1$).</p>
+      </div>
+
+      <h3>6. Choosing the best (a, b, 0) distribution from data</h3>
+      <p>Given a frequency table, two methods identify the family. The exam table gives all the formulas you need, so neither requires memorizing inequalities.</p>
+      <p><strong>Method 1 — sample mean vs. unbiased sample variance.</strong> Compare $\bar{x}$ and $s^2$:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>If…</th><th>Recommend</th><th>Why (from formulas)</th></tr></thead>
+        <tbody>
+          <tr><td>$\bar{x} = s^2$</td><td>Poisson</td><td>$\lambda = \lambda$</td></tr>
+          <tr><td>$\bar{x} &gt; s^2$</td><td>Binomial</td><td>$mq &gt; mq(1-q)$</td></tr>
+          <tr><td>$\bar{x} &lt; s^2$</td><td>Negative binomial</td><td>$r\beta &lt; r\beta(1+\beta)$</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Method 2 — slope of $k\,n_k / n_{k-1}$.</strong> Starting from the (a,b,0) ratio and multiplying by $k$,</p>
+      <div class="formula">$$\frac{p_k}{p_{k-1}} = a + \frac{b}{k} \;\Longrightarrow\; k\,\frac{p_k}{p_{k-1}} = ak + b,$$</div>
+      <p>so plotting $k\,p_k/p_{k-1}$ against $k$ gives a straight line with <strong>slope $a$</strong>. Estimating $\hat p_k = n_k/n$ (where $n_k$ is the observed count of $k$ and $n$ the total), the proportions cancel:</p>
+      <div class="formula">$$k\,\frac{\hat p_k}{\hat p_{k-1}} = k\,\frac{n_k}{n_{k-1}}.$$</div>
+      <p>Compute $k\,n_k/n_{k-1}$ for successive $k$ and read the trend: <strong>constant ⇒ Poisson</strong> ($a=0$), <strong>decreasing ⇒ binomial</strong> ($a&lt;0$), <strong>increasing ⇒ negative binomial</strong> ($a&gt;0$). This works directly off raw counts, no proportions needed.</p>
+
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Coach's Remark — "how close is close enough?"</div>
+        <p>Real samples never give $\bar{x}$ exactly equal to $s^2$ or a perfectly constant ratio. When $\bar{x}$ and $s^2$ are close, don't rush to a verdict. A handy check: look at the ratio $\bar{x}/s^2$ (or its reciprocal). If it's around $1.00$, Poisson is the call; clearly above $1$ leans binomial, clearly below leans negative binomial. The convention is the <strong>unbiased</strong> $s^2$ (divide by $n-1$), but for large samples the bias is negligible.</p>
+      </div>
+
+      <h3>7. The (a, b, 1) class — truncation and modification</h3>
+      <p>Sometimes the probability of zero claims doesn't match an (a,b,0) model (e.g., a "claim/no-claim" gate, or data where zero is over- or under-represented). The <strong>(a, b, 1) class</strong> keeps the <em>same</em> recursion <strong>but only for $k \ge 2$</strong>:</p>
+      <div class="formula">$$\frac{p_k}{p_{k-1}} = a + \frac{b}{k}, \qquad k = 2, 3, 4, \dots$$</div>
+      <p>This frees up $p_0$ (and hence $p_1$) to be set arbitrarily. The core difference between (a,b,0) and (a,b,1) is entirely in $p_0$; the parameters $a$, $b$ (and hence the underlying $\lambda$, $q$, or $r,\beta$) are the <strong>same</strong> as the base distribution. Two important special cases:</p>
+      <ul>
+        <li><strong>Zero-truncated (ZT):</strong> $p_0^T = 0$. We <em>condition on at least one claim</em>.</li>
+        <li><strong>Zero-modified (ZM):</strong> $p_0^M$ is an arbitrary chosen value in $(0,1)$; the rest is rescaled.</li>
+      </ul>
+      <p>If $p_k$ is the original (a,b,0) probability, the modified probabilities are:</p>
+      <div class="formula">$$p_k^M = \frac{1 - p_0^M}{1 - p_0}\, p_k, \qquad k = 1, 2, 3, \dots$$</div>
+      <p>The zero-truncated case is just the special case $p_0^M = 0$:</p>
+      <div class="formula">$$p_k^T = \frac{p_k}{1 - p_0}, \qquad k \ge 1.$$</div>
+      <p>The factor rescales all the positive-mass probabilities so they sum (with $p_0^M$) to 1. Crucially, the $p_0$ in the denominator and the $p_k$ being scaled are the <strong>original</strong> base probabilities, not the modified ones.</p>
+
+      <h2>Formulas</h2>
+      <p>Throughout, $p_k = \Pr(N=k)$.</p>
+
+      <h3>Poisson $(\lambda)$, $\lambda > 0$</h3>
+      <div class="formula">
+        $$p_k = \frac{e^{-\lambda}\lambda^k}{k!}, \qquad \mathrm{E}[N] = \lambda, \quad \text{Var}(N) = \lambda, \quad P_N(z) = e^{\lambda(z-1)}.$$
+        $$(a, b, 0):\quad a = 0,\quad b = \lambda.$$
+      </div>
+
+      <h3>Binomial $(m, q)$, $m \in \{1,2,\dots\}$, $0 < q < 1$</h3>
+      <div class="formula">
+        $$p_k = \binom{m}{k} q^k (1-q)^{m-k}, \quad k = 0,\dots,m, \qquad \mathrm{E}[N] = mq, \quad \text{Var}(N) = mq(1-q).$$
+        $$P_N(z) = \big(1 + q(z-1)\big)^m, \qquad a = -\frac{q}{1-q},\quad b = (m+1)\frac{q}{1-q}.$$
+      </div>
+
+      <h3>Bernoulli $(q)$ — binomial with $m = 1$</h3>
+      <div class="formula">
+        $$p_k = q^k (1-q)^{1-k}, \quad k = 0, 1, \qquad \mathrm{E}[N] = q, \quad \text{Var}(N) = q(1-q).$$
+      </div>
+
+      <h3>Negative binomial $(r, \beta)$, $r > 0$, $\beta > 0$</h3>
+      <div class="formula">
+        $$p_k = \binom{r + k - 1}{k}\left(\frac{1}{1+\beta}\right)^r \left(\frac{\beta}{1+\beta}\right)^k,$$
+        $$\mathrm{E}[N] = r\beta, \qquad \text{Var}(N) = r\beta(1+\beta), \qquad P_N(z) = \big(1 - \beta(z-1)\big)^{-r}.$$
+        $$a = \frac{\beta}{1+\beta},\qquad b = (r-1)\frac{\beta}{1+\beta}.$$
+      </div>
+      <p>Equivalently, $p_0 = (1+\beta)^{-r}$ and for $k\ge 1$, $\;p_k = \dfrac{r(r+1)\cdots(r+k-1)}{k!}\cdot\dfrac{\beta^k}{(1+\beta)^{r+k}}$. The "success probability" parametrization sets $p = \frac{1}{1+\beta}$, so $\beta = \frac{1-p}{p}$ is the <em>odds of failure</em>.</p>
+
+      <h3>Geometric $(\beta)$ — negative binomial with $r = 1$</h3>
+      <div class="formula">
+        $$p_k = \frac{\beta^k}{(1+\beta)^{k+1}}, \qquad \mathrm{E}[N] = \beta, \quad \text{Var}(N) = \beta(1+\beta), \quad P_N(z) = \big(1-\beta(z-1)\big)^{-1}.$$
+        $$a = \frac{\beta}{1+\beta},\qquad b = 0.$$
+      </div>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbol key</div>
+        <p>$\lambda$ = Poisson rate; $m$ = number of binomial trials; $q$ = per-trial success (claim) probability; $r$ = negative-binomial "shape"; $\beta$ = negative-binomial scale (odds-like parameter, <strong>not</strong> a probability); $z$ = PGF argument; $n_k$ = observed number of policies with exactly $k$ claims.</p>
+      </div>
+
+      <h3>(a, b, 0) recursion</h3>
+      <div class="formula">
+        $$p_k = \left(a + \frac{b}{k}\right) p_{k-1}, \qquad k \ge 1,$$
+      </div>
+      <p>with $p_0$ given by the distribution ($e^{-\lambda}$, $(1-q)^m$, or $(1+\beta)^{-r}$).</p>
+
+      <h3>Choosing the distribution from data</h3>
+      <div class="formula">
+        $$\text{Mean vs. var: } \bar{x}=s^2 \Rightarrow \text{Poisson}, \quad \bar{x}>s^2 \Rightarrow \text{Binomial}, \quad \bar{x}\lt s^2 \Rightarrow \text{NB}.$$
+        $$\text{Slope: } k\,\frac{n_k}{n_{k-1}} = a k + b \quad\Rightarrow\quad \text{constant}\,(a{=}0)\ \text{Poisson},\ \text{decr.}\,(a{<}0)\ \text{Binom.},\ \text{incr.}\,(a{>}0)\ \text{NB}.$$
+      </div>
+
+      <h3>(a, b, 1): zero-modified and zero-truncated</h3>
+      <div class="formula">
+        $$p_k^M = \frac{1 - p_0^M}{1 - p_0}\, p_k \ (k\ge 1), \qquad p_k^T = \frac{p_k}{1 - p_0}\ (k \ge 1).$$
+      </div>
+      <p><strong>Raw moments scale by the same factor.</strong> For zero-truncated, every $k$th raw moment is the base moment scaled by $1/(1-p_0)$; for zero-modified, by $(1-p_0^M)/(1-p_0)$:</p>
+      <div class="formula">
+        $$\mathrm{E}\big[(N^T)^k\big] = \frac{1}{1-p_0}\,\mathrm{E}[N^k], \qquad \mathrm{E}\big[(N^M)^k\big] = \frac{1-p_0^M}{1-p_0}\,\mathrm{E}[N^k].$$
+      </div>
+      <p>There is <strong>no</strong> direct shortcut for the variance — compute it from the (modified/truncated) first and second raw moments:</p>
+      <div class="formula">
+        $$\text{Var}(N^T) = \mathrm{E}\big[(N^T)^2\big] - \big(\mathrm{E}[N^T]\big)^2, \qquad \text{Var}(N^M) = \mathrm{E}\big[(N^M)^2\big] - \big(\mathrm{E}[N^M]\big)^2.$$
+      </div>
+      <p>The (a,b,1) recursion persists for the modified probabilities, just shifted to start at $k = 2$:</p>
+      <div class="formula">
+        $$\frac{p_k^T}{p_{k-1}^T} = a + \frac{b}{k}, \qquad \frac{p_k^M}{p_{k-1}^M} = a + \frac{b}{k}, \qquad k = 2, 3, \dots$$
+      </div>
+
+      <h3>PGF moment extraction</h3>
+      <div class="formula">
+        $$P_N(z) = \mathrm{E}[z^N] = \sum_{k=0}^{\infty} p_k z^k, \qquad \mathrm{E}[N] = P_N'(1), \qquad \text{Var}(N) = P_N''(1) + P_N'(1) - \big[P_N'(1)\big]^2.$$
+      </div>
+      <p>Also $P_N(0) = p_0$, $P_N(1) = 1$, $p_k = P_N^{(k)}(0)/k!$, the PGF of an independent <em>sum</em> is the <em>product</em> of PGFs, and a compound's PGF is the <em>composition</em> $P_K(P_M(z))$.</p>
+
+      <h3>Compound frequency $N = \sum_{i=1}^{K} M_i$</h3>
+      <div class="formula">
+        $$P_N(z) = P_K\big(P_M(z)\big),$$
+        $$\mathrm{E}[N] = \mathrm{E}[K]\,\mathrm{E}[M], \qquad \text{Var}(N) = \mathrm{E}[K]\,\text{Var}(M) + \text{Var}(K)\,\big(\mathrm{E}[M]\big)^2.$$
+      </div>
+      <p>(This is the conditional-variance / compound-variance formula.) Named cases: Poisson–Poisson = <strong>Neyman Type A</strong>; Poisson–logarithmic = <strong>negative binomial</strong>.</p>
+
+      <h3>Exposure scaling (units $n_1 \to n_2$, ratio $c = n_2/n_1$)</h3>
+      <div class="formula">
+        $$\text{Poisson: } \lambda \to c\lambda; \qquad \text{NB: } r \to cr; \qquad \text{Binomial: } m \to cm.$$
+      </div>
+
+      <h3>Coverage modification / thinning (survival probability $v$)</h3>
+      <div class="formula">
+        $$\text{Poisson: } \lambda \to v\lambda; \qquad \text{Binomial: } q \to vq; \qquad \text{NB: } \beta \to v\beta.$$
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Identify the (a, b, 0) member and recover the mean from two ratios <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For an (a,b,0) class distribution you are given $\dfrac{p_1}{p_0} = 2$ and $\dfrac{p_2}{p_1} = \dfrac{4}{3}$. Calculate the mean.</p>
+          <p><strong>Solution.</strong> Each ratio is $a + b/k$:</p>
+          $$\frac{p_1}{p_0} = a + b = 2, \qquad \frac{p_2}{p_1} = a + \frac{b}{2} = \frac{4}{3}.$$
+          <p>Subtract: $\frac{b}{2} = 2 - \frac{4}{3} = \frac{2}{3} \Rightarrow b = \frac{4}{3}$. Then $a = 2 - \frac{4}{3} = \frac{2}{3}$. Both positive ⇒ <strong>negative binomial</strong>. Solve for parameters:</p>
+          $$a = \frac{\beta}{1+\beta} = \frac{2}{3} \implies \beta = 2, \qquad b = (r-1)\frac{\beta}{1+\beta} = \frac{4}{3} \implies (r-1)\cdot\tfrac{2}{3} = \tfrac{4}{3} \implies r = 3.$$
+          $$\mathrm{E}[N] = r\beta = 3 \times 2 = 6.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Negative binomial with $r = 3$, $\beta = 2$; mean $= \mathbf{6}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Closure: summing binomials with a common $q$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An insured owns 3 cars in Year 1 and 4 cars in Year 2. Each car has a 10% chance of an accident and can have at most one accident per year; accidents are independent. Find $\Pr(\text{at most 1 accident in two years})$.</p>
+          <p><strong>Solution.</strong> $N_1 \sim \text{Binomial}(3, 0.1)$ and $N_2 \sim \text{Binomial}(4, 0.1)$ share the same $q = 0.1$, so the two-year total is</p>
+          $$N = N_1 + N_2 \sim \text{Binomial}(3+4,\ 0.1) = \text{Binomial}(7, 0.1).$$
+          $$\Pr(N \le 1) = p_0 + p_1 = \binom{7}{0}(0.9)^7 + \binom{7}{1}(0.1)(0.9)^6 = 0.4783 + 0.3720 = 0.8503.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\Pr(N \le 1) \approx \mathbf{0.85}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Poisson–Gamma mixture (exponential mixing) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The annual number of claims per insured is $\text{Poisson}(\lambda)$, where $\lambda$ varies by insured and follows an <em>exponential</em> distribution with mean 4. (1) For a random insured, find $\Pr(N = 1)$. (2) For an insured <em>known</em> to average 4 claims per year, find $\Pr(N = 1)$.</p>
+          <p><strong>Solution (1).</strong> An exponential with mean 4 is $\text{Gamma}(\alpha = 1, \theta = 4)$. By the Poisson–Gamma result,</p>
+          $$N \sim \text{Negative Binomial}(r = 1,\ \beta = 4) = \text{Geometric}(\beta = 4).$$
+          $$\Pr(N = 1) = \frac{\beta^1}{(1+\beta)^{1+1}} = \frac{4}{5^2} = \frac{4}{25} = 0.16.$$
+          <p><strong>Solution (2).</strong> Now $\lambda$ is fixed at 4, so $N \mid \Lambda = 4 \sim \text{Poisson}(4)$:</p>
+          $$\Pr(N = 1 \mid \Lambda = 4) = \frac{e^{-4} 4^1}{1!} = 0.0733.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) $0.16$ (geometric). (2) $0.0733$ (plain Poisson). The mixing inflates the chance of 1 claim because the population is heterogeneous.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Choosing the distribution from data — both methods <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Auto-accident counts from 1,000 policies:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$k$ (accidents)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+            <tbody><tr><td>$n_k$ (policies)</td><td>210</td><td>367</td><td>275</td><td>115</td><td>29</td><td>4</td></tr></tbody>
+          </table></div>
+          <p><strong>Method 1 — mean vs. variance.</strong></p>
+          $$\bar{x} = \frac{367(1)+275(2)+115(3)+29(4)+4(5)}{1000} = 1.3980,$$
+          $$s^2 = \frac{1000}{999}\left[\frac{367(1)+275(4)+115(9)+29(16)+4(25)}{1000} - 1.3980^2\right] = 1.1127.$$
+          <p>Since $\bar{x} &gt; s^2$ (ratio $1.398/1.113 = 1.26$), recommend the <strong>binomial</strong>.</p>
+          <p><strong>Method 2 — slope of $k\,n_k/n_{k-1}$.</strong></p>
+          $$1\cdot\tfrac{367}{210}=1.748,\quad 2\cdot\tfrac{275}{367}=1.499,\quad 3\cdot\tfrac{115}{275}=1.255,\quad 4\cdot\tfrac{29}{115}=1.009,\quad 5\cdot\tfrac{4}{29}=0.690.$$
+          <p>The sequence <strong>decreases</strong> (slope $a &lt; 0$), confirming the binomial.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Both methods agree: <strong>binomial</strong>.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> When mean ≈ variance: use the slope to break the tie <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Counts from 3,000 policies:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$k$</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+            <tbody><tr><td>$n_k$</td><td>1,490</td><td>1,043</td><td>365</td><td>85</td><td>15</td><td>2</td></tr></tbody>
+          </table></div>
+          <p>$\bar{x} = 0.6993$ and $s^2 = 0.6972$. They are nearly equal ($\bar{x}/s^2 = 1.00$), so Method 1 is inconclusive — don't jump to "binomial" just because $\bar{x}$ is a hair larger. Apply Method 2:</p>
+          $$1\cdot\tfrac{1043}{1490}=0.700,\ \ 2\cdot\tfrac{365}{1043}=0.700,\ \ 3\cdot\tfrac{85}{365}=0.699,\ \ 4\cdot\tfrac{15}{85}=0.706,\ \ 5\cdot\tfrac{2}{15}=0.667.$$
+          <p>The ratio <strong>fluctuates around a constant</strong> ($\approx 0.70$, slope $\approx 0$).</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Recommend the <strong>Poisson</strong> distribution.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Zero-truncated and zero-modified Poisson variance <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Monthly claims $N \sim \text{Poisson}(3)$. Find (1) $\text{Var}(N)$; (2) $\text{Var}(N^T)$ assuming a zero-claim month is impossible; (3) $\text{Var}(N^M)$ assuming the probability of no claims is set to $0.3$.</p>
+          <p><strong>(1)</strong> $\text{Var}(N) = \lambda = 3$. Base moments: $\mathrm{E}[N] = 3$, $\mathrm{E}[N^2] = \text{Var}+\text{mean}^2 = 3 + 9 = 12$, and $p_0 = e^{-3} = 0.049787$.</p>
+          <p><strong>(2) Zero-truncated</strong> (factor $1/(1-p_0)$):</p>
+          $$\mathrm{E}[N^T] = \frac{3}{1-e^{-3}} = 3.157, \qquad \mathrm{E}[(N^T)^2] = \frac{12}{1-e^{-3}} = 12.629,$$
+          $$\text{Var}(N^T) = 12.629 - 3.157^2 = 2.66.$$
+          <p><strong>(3) Zero-modified</strong> with $p_0^M = 0.3$ (factor $(1-0.3)/(1-e^{-3}) = 0.7/0.950213 = 0.73668$):</p>
+          $$\mathrm{E}[N^M] = 0.73668 \times 3 = 2.21, \qquad \mathrm{E}[(N^M)^2] = 0.73668 \times 12 = 8.84,$$
+          $$\text{Var}(N^M) = 8.84 - 2.21^2 = 3.96.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{Var}(N) = 3$; $\text{Var}(N^T) \approx 2.66$; $\text{Var}(N^M) \approx 3.96$. Note truncation <em>lowered</em> the variance and modification (adding zero mass back) <em>raised</em> it — always compute from the modified moments, never scale the base variance.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Compound (Neyman Type A) and exposure + thinning <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><strong>(A)</strong> Storms per year $K \sim \text{Poisson}(3)$; each storm causes $M \sim \text{Poisson}(4)$ claims. Total claims $N$:</p>
+          $$\mathrm{E}[N] = \mathrm{E}[K]\mathrm{E}[M] = 3\times 4 = 12,$$
+          $$\text{Var}(N) = \mathrm{E}[K]\text{Var}(M) + \text{Var}(K)(\mathrm{E}[M])^2 = 3(4) + 3(16) = 60.$$
+          <p><strong>(B)</strong> A 500-policy portfolio has loss count $\text{NB}(r=2, \beta=0.5)$. The book grows to 1,500 policies (exposure ratio $c=3$): $r \to 3(2) = 6$, $\beta$ unchanged ⇒ $\text{NB}(6, 0.5)$, mean $6(0.5)=3$. A deductible then passes only $v = \Pr(X>d) = 0.6$ of losses (thinning): $\beta \to 0.6(0.5) = 0.30$, $r$ unchanged ⇒ payment count $\text{NB}(6, 0.30)$, mean $6(0.30) = 1.80$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(A) $\mathrm{E}[N]=12$, $\text{Var}(N)=60$. (B) Payment count is $\text{NB}(6,0.30)$, mean $1.80$ (= $0.6\times 3$, the thinning sanity check).</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Confusing the negative-binomial $\beta$ with a probability.</strong> $\beta$ is a <em>scale/odds</em> parameter, not in $[0,1]$. The "success probability" is $\frac{1}{1+\beta}$ and $\beta = \frac{1-p}{p}$ is the odds of failure. Loss Models uses $\beta$, not the Exam-P $p$.</li>
+          <li><strong>Mis-signing $a$.</strong> Binomial $a &lt; 0$; negative binomial/geometric $a &gt; 0$; Poisson $a = 0$. Reversing these is the single most common identification error.</li>
+          <li><strong>Forgetting geometric is $b = 0$.</strong> If $a &gt; 0$ and $b = 0$, it's geometric (NB with $r = 1$), not "some other distribution."</li>
+          <li><strong>Closure requires a matching parameter.</strong> Sums of binomials must share $q$; sums of negative binomials must share $\beta$. Without that, the sum is <em>not</em> in the same family.</li>
+          <li><strong>Calling mean ≈ variance "binomial."</strong> When $\bar{x}$ and $s^2$ are close, the mean/variance test is inconclusive — fall back to the slope of $k\,n_k/n_{k-1}$ before committing. A near-constant ratio means Poisson, even if $\bar{x}$ is slightly above $s^2$.</li>
+          <li><strong>(a,b,1) starts the recursion at $k = 2$, not $k = 1$.</strong> $p_1$ relative to $p_0$ is <em>not</em> constrained — only $p_2, p_3, \dots$ are.</li>
+          <li><strong>Using the wrong base $p_0$ in the rescale factor.</strong> In $p_k^M = \frac{1-p_0^M}{1-p_0}p_k$, the $p_0$ in the denominator and the $p_k$ are the <strong>original</strong> (untruncated) probabilities.</li>
+          <li><strong>Trying to scale the truncated/modified variance directly.</strong> Raw <em>moments</em> scale by the factor, but variance does <strong>not</strong> — compute it from the modified first and second moments.</li>
+          <li><strong>Scaling the wrong parameter.</strong> Exposure scales the "size" parameter ($\lambda$, $r$, or $m$); thinning/coverage scales the "intensity" parameter ($\lambda$, $q$, or $\beta$). For Poisson both are $\lambda$ — don't generalize that shortcut to NB/binomial.</li>
+          <li><strong>Compound-variance formula order.</strong> It is $\mathrm{E}[K]\text{Var}(M) + \text{Var}(K)(\mathrm{E}[M])^2$ — the <em>primary</em> variance multiplies the <em>squared secondary mean</em>. Swapping $K$ and $M$ is wrong.</li>
+          <li><strong>PGF vs MGF.</strong> $\mathrm{E}[N] = P'(1)$ (not $P'(0)$), and $P''(1) = \mathrm{E}[N(N-1)]$ is a <em>factorial</em> moment — add $P'(1)$ back for the variance.</li>
+          <li><strong>Thinning stays in family only for plain (a,b,0) members.</strong> A zero-modified or compound distribution may not.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>List the members of the (a, b, 0) class and the signs of $a$ and $b$ for each.</summary>
+        <div class="qa-answer"><strong>Poisson, binomial (incl. Bernoulli, $m{=}1$), negative binomial, geometric ($r{=}1$ NB).</strong> Signs: Poisson $a=0,\,b&gt;0$; binomial $a&lt;0,\,b&gt;0$; negative binomial $a&gt;0,\,b&gt;0$; geometric $a&gt;0,\,b=0$.</div>
+      </details>
+      <details class="qa"><summary>What is the distribution of a sum of independent negative binomials, and what condition is required?</summary>
+        <div class="qa-answer">If $N_i \sim \text{NB}(r_i, \beta)$ are independent and <strong>share the same $\beta$</strong>, then $\sum_i N_i \sim \text{NB}\!\left(\sum_i r_i,\ \beta\right)$. (Likewise a sum of $r$ i.i.d. geometrics is $\text{NB}(r, \beta)$.)</div>
+      </details>
+      <details class="qa"><summary>Describe the Poisson–Gamma mixture and its result.</summary>
+        <div class="qa-answer">If $N\mid\Lambda=\lambda \sim \text{Poisson}(\lambda)$ and $\Lambda \sim \text{Gamma}(\alpha, \theta)$, then unconditionally $N \sim \text{Negative Binomial}(r=\alpha,\ \beta=\theta)$. Special case: exponential mixing ($\alpha=1$) gives a <strong>geometric</strong>.</div>
+      </details>
+      <details class="qa"><summary>A claim-count data set has sample mean 1.5 and sample variance 0.9. Which distribution is the natural candidate, and why?</summary>
+        <div class="qa-answer"><strong>Binomial.</strong> Variance (0.9) &lt; mean (1.5) — underdispersion, which only the binomial exhibits. (Ratio $1.5/0.9 = 1.67$, comfortably above 1, so the call is safe.)</div>
+      </details>
+      <details class="qa"><summary>Explain the slope method for choosing an (a,b,0) distribution. What does a near-constant $k\,n_k/n_{k-1}$ indicate?</summary>
+        <div class="qa-answer">Plot $k\,n_k/n_{k-1}$ against $k$; it equals $ak + b$, so the trend is the slope $a$. <strong>Constant ⇒ Poisson</strong> ($a=0$), decreasing ⇒ binomial ($a&lt;0$), increasing ⇒ negative binomial ($a&gt;0$). A near-constant ratio indicates Poisson.</div>
+      </details>
+      <details class="qa"><summary>$N \sim \text{Geometric}(\beta=2)$. Find $\mathrm{E}[N-3 \mid N \ge 3]$.</summary>
+        <div class="qa-answer">By memorylessness, $(N-3\mid N\ge 3)\sim\text{Geometric}(2)$, so $\mathrm{E}[N-3\mid N\ge 3] = \mathrm{E}[N] = \beta = \mathbf{2}$.</div>
+      </details>
+      <details class="qa"><summary>For a Poisson with $\lambda = 4$, give $a$ and $b$ and express $p_3$ via the recursion.</summary>
+        <div class="qa-answer"><strong>Poisson:</strong> $a = 0$, $b = \lambda = 4$. Recursion: $p_3 = \left(0 + \frac{4}{3}\right)p_2 = \frac{4}{3}p_2$.</div>
+      </details>
+      <details class="qa"><summary>Zero-truncated Poisson with base $\lambda = 1$: find $p_1^T$.</summary>
+        <div class="qa-answer">Base $p_0 = e^{-1}$, $p_1 = e^{-1}$. Then $p_1^T = \dfrac{p_1}{1-p_0} = \dfrac{e^{-1}}{1-e^{-1}} = \dfrac{0.367879}{0.632121} = \mathbf{0.5820}$.</div>
+      </details>
+      <details class="qa"><summary>Base $\text{Poisson}(\lambda=2)$ is zero-modified with $p_0^M = 0.4$. Find $\mathrm{E}[N^M]$.</summary>
+        <div class="qa-answer">Factor $c = \dfrac{1-0.4}{1-e^{-2}} = \dfrac{0.6}{0.864665} = 0.69391$. Then $\mathrm{E}[N^M] = c\,\mathrm{E}[N] = 0.69391 \times 2 = \mathbf{1.388}$.</div>
+      </details>
+      <details class="qa"><summary>Compare the (a,b,0) recursion to the zero-modified version.</summary>
+        <div class="qa-answer">Identical ratio $a + b/k$, but the (a,b,0) version holds for $k\ge 1$ while the ZT/ZM version holds only for $k \ge 2$ (since $p_0$, and hence the $p_1/p_0$ link, has been altered).</div>
+      </details>
+      <details class="qa"><summary>The PGF of $N$ is $P_N(z) = e^{2(z-1)}$. Identify the distribution and find $\text{Var}(N)$.</summary>
+        <div class="qa-answer"><strong>Poisson with $\lambda = 2$</strong>, so $\mathrm{E}[N] = 2$ and $\text{Var}(N) = \mathbf{2}$.</div>
+      </details>
+      <details class="qa"><summary>Storm count is $\text{NB}(r=5,\beta=0.4)$; each storm causes $\text{Poisson}(3)$ claims. Find the mean and variance of total claims.</summary>
+        <div class="qa-answer">$\mathrm{E}[K]=r\beta=2$, $\text{Var}(K)=r\beta(1+\beta)=2.8$; $\mathrm{E}[M]=\text{Var}(M)=3$. $\mathrm{E}[N]=2\times 3=\mathbf{6}$; $\text{Var}(N)=2(3)+2.8(9)=6+25.2=\mathbf{31.2}$.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

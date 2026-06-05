@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Me Studing Stuff — Study smarter. Pass exams.</title>
+  <meta name="description" content="A focused, modern study hub. Right now: SOA Exam FAM.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="home" data-exam="fam">
+  <main data-mss-main>
+    <div class="dash">
+
+      <!-- EXAM-DATE NUDGE (shown only until a date is set or dismissed) -->
+      <div id="examNudge" class="exam-nudge" style="display:none">
+        <span class="en-ico">📅</span>
+        <div class="en-text"><strong>Set your exam date.</strong> The countdown and pacing only work once it knows your sitting — FAM runs in March, July &amp; November.</div>
+        <button class="btn btn-light en-set" id="enSet" type="button">Set date</button>
+        <button class="en-dismiss" id="enDismiss" type="button" aria-label="Dismiss">✕</button>
+      </div>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="greet" id="greet">Welcome back 👋</div>
+        <h1>Let's get you that pass.</h1>
+        <p class="sub">Your focused hub for <strong>SOA Exam FAM</strong> — notes, formula sheets, worked problems and a plan, all in one calm place. Learn efficiently, track what's solid, and walk in ready.</p>
+        <div class="hero-cta">
+          <a class="btn btn-light" id="resumeBtn" href="exams/fam/getting-started/study-plan.html">▶ Start studying</a>
+          <a class="btn btn-ghost" href="exams/fam/getting-started/overview.html">Exam overview</a>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <div class="stat-row">
+        <div class="card ring-card">
+          <div class="ring" id="ring">
+            <svg width="116" height="116" viewBox="0 0 116 116">
+              <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#d946ef"/>
+              </linearGradient></defs>
+              <circle class="ring-bg" cx="58" cy="58" r="50" fill="none" stroke-width="12"/>
+              <circle class="ring-fg" id="ringFg" cx="58" cy="58" r="50" fill="none" stroke-width="12" stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="ring-num" id="ringNum">0%</div>
+          </div>
+          <div>
+            <div class="k">Overall progress</div>
+            <div class="v" id="statDone">0<small>/18 topics</small></div>
+            <div class="text-mute" style="font-size:13px">Across FAM-L &amp; FAM-S</div>
+          </div>
+        </div>
+
+        <div class="stat countdown">
+          <div class="k">Exam countdown</div>
+          <div class="cd-num" id="cdNum">—</div>
+          <div class="cd-label" id="cdLabel">Set your exam date to start the clock</div>
+          <input type="date" class="date-input" id="examDate">
+          <div class="cd-deadline" id="cdDeadline" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:13px">
+            <span style="font-weight:600">⏰ Register &amp; pay by <span id="regDeadlineDate"></span></span>
+            <div class="text-mute" id="regDeadlineLabel" style="margin-top:2px"></div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="k">Topics solid 🟢</div>
+          <div class="v" id="statSolid">0</div>
+          <div class="text-mute" style="font-size:13px">Confidence-rated green</div>
+        </div>
+      </div>
+
+      <!-- EXAMS -->
+      <h2 class="section-title">Your exams <span class="count">1 active</span></h2>
+      <div class="dash-grid">
+        <a class="exam-card" href="exams/fam/getting-started/overview.html">
+          <div class="ec-top">
+            <div class="ec-badge">FAM</div>
+            <div>
+              <h3>Exam FAM</h3>
+              <div class="ec-sub">Fundamentals of Actuarial Mathematics · SOA</div>
+            </div>
+          </div>
+          <p class="ec-desc">34 questions · 3.5 hours · pass = 6/10. Two halves — long-term life contingencies (FAM-L) and short-term loss models (FAM-S).</p>
+          <div class="bar"><i id="examBar" style="width:0%"></i></div>
+        </a>
+
+        <div class="exam-card soon" style="cursor:default">
+          <div class="ec-top">
+            <div class="ec-badge" style="background:var(--surface-2);color:var(--text-mute);box-shadow:none">+</div>
+            <div><h3>More to come</h3><div class="ec-sub">Add another exam anytime</div></div>
+          </div>
+          <p class="ec-desc">This hub is built to hold more than one exam. When you're ready for the next, we drop it in right here.</p>
+        </div>
+      </div>
+
+      <!-- CONTINUE + QUOTE -->
+      <div class="dash-grid">
+        <div>
+          <h2 class="section-title">Jump back in</h2>
+          <div id="continueList" style="display:flex;flex-direction:column;gap:10px"></div>
+        </div>
+        <div>
+          <h2 class="section-title">Daily fuel</h2>
+          <div class="quote-card">
+            <div class="q-mark">&ldquo;</div>
+            <div class="q-text" id="quoteText">Loading…</div>
+            <div class="q-by" id="quoteBy"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>window.MSS_BASE="";</script>
+  <script src="assets/js/manifest.js"></script>
+  <script src="assets/js/search-index.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script>
+  document.addEventListener("mss:ready", function () {
+    var M = window.MSS_MANIFEST, Store = window.MSSStore, P = window.MSSProgress;
+
+    // greeting by time of day
+    var h = new Date().getHours();
+    var g = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    document.getElementById("greet").textContent = g + " 👋  Ready to study?";
+
+    // progress ring + stats
+    var op = P.overallPct();
+    var circ = 2 * Math.PI * 50;
+    var fg = document.getElementById("ringFg");
+    fg.setAttribute("stroke-dasharray", circ.toFixed(1));
+    setTimeout(function(){ fg.setAttribute("stroke-dashoffset", (circ * (1 - op.pct/100)).toFixed(1)); }, 120);
+    document.getElementById("ringNum").textContent = op.pct + "%";
+    document.getElementById("statDone").innerHTML = op.done + '<small>/' + op.total + ' topics</small>';
+    document.getElementById("examBar").style.width = op.pct + "%";
+
+    var solid = P.learnablePages().filter(function(p){ var r=Store.get(p.id); return r.conf==="solid"||r.done; }).length;
+    document.getElementById("statSolid").textContent = solid;
+
+    // resume button -> last visited topic
+    var last; try { last = localStorage.getItem("mss:lastpage"); } catch(e){}
+    var lp = last && M.flatPages.filter(function(p){return p.id===last;})[0];
+    if (lp) {
+      var rb = document.getElementById("resumeBtn");
+      rb.textContent = "▶ Resume: " + lp.title;
+      rb.href = lp.file;
+    }
+
+    // "jump back in" — show last visited + next few learnable topics
+    var learn = P.learnablePages();
+    var startIdx = 0;
+    if (lp) { var i = learn.map(function(p){return p.id;}).indexOf(lp.id); if (i>=0) startIdx = i; }
+    var list = document.getElementById("continueList");
+    learn.slice(startIdx, startIdx+5).forEach(function(p){
+      var r = Store.get(p.id);
+      var dot = r.done ? "🟢" : (r.conf==="learning"?"🟡":(r.conf==="red"?"🔴":"⚪"));
+      var a = document.createElement("a");
+      a.className = "topic-card"; a.href = p.file;
+      a.innerHTML = '<span class="tc-num">'+(p.num||"")+'</span><span class="tc-title">'+p.title+'</span><span>'+dot+'</span>';
+      list.appendChild(a);
+    });
+
+    // rotating quote (stable per day, no flicker)
+    var q = M.quotes[ new Date().getDate() % M.quotes.length ];
+    document.getElementById("quoteText").textContent = q.t;
+    document.getElementById("quoteBy").textContent = q.b && q.b!=="—" ? "— " + q.b : "";
+
+    // exam countdown — defaults to the booked FAM sitting (23 Oct 2026)
+    var KEY = "mss:examdate:fam";
+    var DEFAULT_EXAM = "2026-10-23";   // FAM CBT sitting
+    var REG_DEADLINE = "2026-09-22";   // must register, pay & book before this
+    var di = document.getElementById("examDate");
+    var saved; try { saved = localStorage.getItem(KEY); } catch(e){}
+    di.value = saved || DEFAULT_EXAM;
+    function daysUntil(iso){ var d=new Date(iso+"T00:00:00"), now=new Date(); now.setHours(0,0,0,0); return Math.round((d-now)/86400000); }
+    function paintDeadline(){
+      var box=document.getElementById("cdDeadline");
+      var rd=new Date(REG_DEADLINE+"T00:00:00");
+      document.getElementById("regDeadlineDate").textContent = rd.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+      var n=daysUntil(REG_DEADLINE), lab=document.getElementById("regDeadlineLabel");
+      if (n>0){ lab.textContent = n+" days left to book your seat — don't miss it."; }
+      else if (n===0){ lab.textContent = "Registration closes today — book now!"; }
+      else { lab.textContent = "Registration window has passed for this sitting."; }
+      box.style.display = "block";
+    }
+    function paintCD(){
+      var v = di.value;
+      var num = document.getElementById("cdNum"), lab = document.getElementById("cdLabel");
+      if (!v) { num.textContent="—"; lab.textContent="Set your exam date to start the clock"; return; }
+      var d = new Date(v+"T00:00:00");
+      var days = daysUntil(v);
+      if (days>0){ num.textContent=days; lab.textContent="days until exam · "+d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }
+      else if (days===0){ num.textContent="🎯"; lab.textContent="Exam is today — you've got this!"; }
+      else { num.textContent="✓"; lab.textContent="Exam date passed — update it for your next sitting"; }
+    }
+    di.addEventListener("change", function(){ try{localStorage.setItem(KEY, di.value);}catch(e){} paintCD(); paintNudge(); window.MSSToast && window.MSSToast("📅","Exam date saved — countdown is live."); });
+    paintCD();
+    paintDeadline();
+
+    // exam-date nudge banner — show only when no date is set and not dismissed
+    var NUDGE_KEY = "mss:examdate-nudge-dismissed";
+    var nudge = document.getElementById("examNudge");
+    function paintNudge(){
+      if (!nudge) return;
+      var hasDate; try { hasDate = !!localStorage.getItem(KEY); } catch(e){}
+      var dismissed; try { dismissed = localStorage.getItem(NUDGE_KEY) === "1"; } catch(e){}
+      nudge.style.display = (!hasDate && !dismissed) ? "flex" : "none";
+    }
+    var enSet = document.getElementById("enSet"), enDismiss = document.getElementById("enDismiss");
+    if (enSet) enSet.addEventListener("click", function(){
+      di.focus();
+      if (di.showPicker) { try { di.showPicker(); } catch(e){} }
+      di.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    if (enDismiss) enDismiss.addEventListener("click", function(){
+      try { localStorage.setItem(NUDGE_KEY, "1"); } catch(e){}
+      paintNudge();
+    });
+    paintNudge();
+  });
+  </script>
+</body>
+</html>

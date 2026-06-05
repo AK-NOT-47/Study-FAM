@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aggregate Loss Models &amp; Risk Measures · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-04" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 4</div>
+      <h1>Aggregate Loss Models &amp; Risk Measures</h1>
+      <p class="lede">A whole portfolio's losses collapse into one random sum $S$ — get its mean, variance, and distribution, and stop-loss premiums, approximations, and risk measures (VaR, TVaR) fall out mechanically.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Loss Models · Ch. 9</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 compound mean/var · Panjer · stop-loss · approximations</span>
+        <span class="chip">🔑 aggregate payments · VaR · TVaR · coherence · tail weight</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>By the end of this topic, the SOA expects you to be able to:</p>
+        <ul>
+          <li>Construct and distinguish between the <strong>collective risk model</strong> ($S = X_1 + X_2 + \dots + X_N$, with <strong>primary</strong> frequency and <strong>secondary</strong> severity distributions) and the <strong>individual risk model</strong> ($S = X_1 + X_2 + \dots + X_n$ with fixed $n$).</li>
+          <li>Compute the probability function $p_S(s)$ of aggregate losses directly via the <strong>Law of Total Probability</strong> / $n$-fold convolution when $n$ is small.</li>
+          <li>Compute the <strong>mean and variance</strong> of aggregate losses $S$ using the compound moment formulas.</li>
+          <li>Recognize and exploit the special properties of the <strong>compound Poisson</strong> distribution (additivity, splitting, simplified variance).</li>
+          <li>Compute the distribution of $S$ via <strong>convolution</strong> for discrete severities, and find probabilities such as $\Pr(S = k)$ and $\Pr(S \le k)$.</li>
+          <li>Apply the <strong>Panjer (a, b, 0) recursion</strong> to build the aggregate distribution efficiently.</li>
+          <li>Compute <strong>stop-loss premiums</strong> $E[(S - d)_+]$ via the limited-expected-value relationship $E[S]-E[S\wedge d]$, both exactly (discrete) and from approximations.</li>
+          <li>Approximate the distribution of $S$ using the <strong>normal</strong> (with <strong>continuity correction</strong>) and <strong>lognormal</strong> approximations, and compute probabilities and stop-loss premiums from them.</li>
+          <li>Model <strong>aggregate payments</strong> consistently — either number-of-losses with payment-per-loss $Y^L$, or number-of-payments with payment-per-payment $Y^P$.</li>
+          <li>Compute and interpret <strong>risk measures</strong>: Value-at-Risk (VaR), Tail-Value-at-Risk (TVaR/CTE), evaluate <strong>coherence</strong> (translation invariance, positive homogeneity, subadditivity, monotonicity), and compare <strong>tail weight</strong>.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>Two ways to build aggregate losses</h3>
+      <p>Aggregate losses $S$ for a portfolio over a period can be modeled two ways:</p>
+      <p><strong>Collective risk model (compound model):</strong></p>
+      <div class="formula">$$S = X_1 + X_2 + \dots + X_N,$$</div>
+      <p>where $N$ is a <strong>random</strong> number of claims (the <em>frequency</em>) and each $X_i$ is the <em>severity</em> (size) of an individual claim. Key assumptions:</p>
+      <ol>
+        <li>$N, X_1, X_2, \dots$ are mutually independent.</li>
+        <li>The $X_i$ are i.i.d. with the same severity distribution.</li>
+        <li>$N$ is independent of the values of the $X_i$.</li>
+      </ol>
+      <p>Here $S$ is a <strong>random sum</strong> — both the number of terms and the size of each term are random. When $N = 0$, we define $S = 0$. The distribution of the frequency $N$ is called the <strong>primary distribution</strong>, the severity $X$ is the <strong>secondary distribution</strong>, and the resulting distribution of $S$ is the <strong>compound distribution</strong>.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark</div>
+        <p>On the exam, <strong>most</strong> aggregate questions use the collective risk model. The independence requirement is usually as simple as confirming that frequency and severity are independent.</p>
+      </div>
+      <p><strong>Individual risk model:</strong></p>
+      <div class="formula">$$S = X_1 + X_2 + \dots + X_n,$$</div>
+      <p>where $n$ is a <strong>fixed</strong>, known number of policies (we simplify the frequency to a constant but generalize the severity). Each $X_i$ is the total loss on policyholder $i$. The $X_i$ are independent but <strong>not necessarily identically distributed</strong> (different policies can have different distributions). Often each $X_i = I_i B_i$, where $I_i$ is a Bernoulli "did a claim occur" indicator and $B_i$ is the claim amount given a claim occurs.</p>
+      <div class="callout note" data-icon="📌">
+        <p>Intuition: the <em>collective</em> model thinks "how many claims hit the whole book, and how big is each"; the <em>individual</em> model thinks "policy by policy, what's the loss on each."</p>
+      </div>
+
+      <h3>Probability function via the Law of Total Probability</h3>
+      <p>The exact distribution of a discrete $S$ comes from conditioning on the number of claims:</p>
+      <div class="formula">$$p_S(s) = \sum_{n>0} p_N(n)\,\Pr\!\Big(\textstyle\sum_{i=1}^{n} X_i = s \,\Big|\, N=n\Big), \quad s>0.$$</div>
+      <p>The probability in the sum is the <strong>$n$-fold convolution</strong> of the severity. Because $S = 0$ when there are no losses <em>or</em> all losses are zero,</p>
+      <div class="formula">$$p_S(0) = p_N(0) + \sum_{n>0} p_N(n)\,\Pr\!\Big(\textstyle\sum_{i=1}^{n} X_i = 0 \,\Big|\, N=n\Big).$$</div>
+      <p>The same conditioning gives the aggregate <strong>CDF</strong> — and this form works whether the severity is discrete <em>or continuous</em>, which is exactly what you need when each $X_i$ is, say, Normal or Uniform:</p>
+      <div class="formula">
+        <span class="formula-label">Aggregate CDF</span>
+        $$F_S(s) = p_N(0) + \sum_{n>0} p_N(n)\,\Pr\!\Big(\textstyle\sum_{i=1}^{n} X_i \le s \,\Big|\, N=n\Big).$$
+      </div>
+      <p>The $p_N(0)$ term is the mass at $S=0$ (no claims), and each remaining term weights the CDF of an $n$-fold sum of severities by $p_N(n)$. With a small frequency support (e.g. $N\in\{0,1,2\}$) this collapses to $p_N(0)+p_N(1)F_X(s)+p_N(2)F_{X_1+X_2}(s)+\dots$ — a one-line Law-of-Total-Probability calculation.</p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark</div>
+        <p>These equations are very general — don't memorize them blindly. Exam questions usually <strong>limit the possible values of $n$</strong> (e.g. $N\le 2$) so you only need to enumerate the handful of ways the claims can sum to $s$. Understand the structure and you can rebuild it on the fly.</p>
+      </div>
+
+      <h3>Compound distributions</h3>
+      <p>When $N$ is random, $S$ has a <strong>compound distribution</strong>. Its name comes from the frequency: a <strong>compound Poisson</strong> has $N \sim \text{Poisson}$, a <strong>compound negative binomial</strong> has $N \sim$ negative binomial, etc.</p>
+      <p>The mean and variance come from conditioning on $N$ (double expectation / law of total variance). The key results are the most-tested formulas on this entire topic.</p>
+
+      <h3>Why compound Poisson is special</h3>
+      <p>If $N \sim \text{Poisson}(\lambda)$, three beautiful things happen:</p>
+      <ol>
+        <li><strong>Variance simplifies</strong>: $\text{Var}(S) = \lambda \, E[X^2]$ (the second raw moment of severity, not the variance).</li>
+        <li><strong>Additivity</strong>: The sum of independent compound Poisson random variables is again compound Poisson, with $\lambda = \sum \lambda_j$ and a severity distribution that is the $\lambda$-weighted mixture of the individual severities.</li>
+        <li><strong>Splitting</strong>: The reverse of additivity. Categorize each claim independently (e.g. "below deductible" vs "above deductible") with probabilities $q_j$; the count in each category is independent Poisson with mean $\lambda q_j$.</li>
+      </ol>
+      <div class="callout tip" data-icon="✅">
+        <p>Splitting is the engine behind the "number of payments" approach to aggregate payments: scale the Poisson mean by $\Pr(\text{loss exceeds deductible})$. This works <strong>only for Poisson</strong>, not binomial or negative binomial.</p>
+      </div>
+
+      <h3>Convolutions</h3>
+      <p>To get the <em>exact</em> distribution of a sum of independent random variables, you <strong>convolve</strong>. For two independent discrete random variables $X$ and $Y$:</p>
+      <div class="formula">$$\Pr(X + Y = k) = \sum_{j} \Pr(X = j)\Pr(Y = k - j).$$</div>
+      <p>The $n$-fold convolution $f_X^{*n}$ is the distribution of $X_1 + \dots + X_n$. The aggregate distribution is then a frequency-weighted mixture of convolutions:</p>
+      <div class="formula">$$\Pr(S = x) = \sum_{n=0}^{\infty} \Pr(N = n)\, f_X^{*n}(x).$$</div>
+      <p>This is exact but slow. <strong>Panjer recursion</strong> replaces it with a fast recursion for an important class of frequencies.</p>
+
+      <h3>Stop-loss insurance</h3>
+      <p>A <strong>stop-loss</strong> (or aggregate excess-of-loss) policy imposes an <strong>aggregate deductible</strong> $d$ — applied to the <em>aggregate</em> loss $S$, in contrast to an ordinary per-claim deductible applied to each individual loss. It pays $(S - d)_+ = \max(S - d, 0)$. The <strong>net stop-loss premium</strong> is the expected payment:</p>
+      <div class="formula">$$E[(S - d)_+] = E[S] - E[S \wedge d].$$</div>
+      <p>Because the distribution of $S$ can be hard to pin down, there is no single universal formula — the rule of thumb is to identify the pattern and apply basic probability. Fortunately $S$ is usually discrete in these questions, so a small table of $\Pr(S=s)$ and $S\wedge d$ does the job.</p>
+
+      <h3>Aggregate payments</h3>
+      <p>Beyond aggregate <em>losses</em>, insurers model aggregate <em>payments</em>. There are two equivalent constructions — the key is that frequency and severity must be <strong>consistent</strong> (both "loss" or both "payment"):</p>
+      <ul>
+        <li><strong>Number of losses × payment per loss:</strong> $S = \sum_{i=1}^{N} Y_i^{L}$. Here $N$ counts <em>all</em> losses and $Y^L$ is the payment per loss — which can be $0$ when a loss falls below the deductible.</li>
+        <li><strong>Number of payments × payment per payment:</strong> $S = \sum_{i=1}^{N'} Y_i^{P}$. Here $N'$ counts only losses producing a <em>positive</em> payment, and $Y^P$ is the payment given a payment occurs.</li>
+      </ul>
+      <p>Both give the same $E[S]$ and $\text{Var}(S)$. When there is <strong>no deductible</strong>, $Y^P$ and $Y^L$ are identical and the two approaches coincide.</p>
+
+      <h3>Approximations</h3>
+      <p>For large portfolios, computing the exact distribution is impractical, so we <strong>moment-match</strong> a simple distribution to $S$:</p>
+      <ul>
+        <li><strong>Normal approximation</strong>: match $E[S]$ and $\text{Var}(S)$; treat $S \approx N(\mu, \sigma^2)$. Justified by the CLT (sum of i.i.d. severities); improves as the number of claims grows. Simple but can be poor in the right tail because $S$ is usually right-skewed.</li>
+        <li><strong>Lognormal approximation</strong>: match $E[S]$ and $E[S^2]$ to a lognormal, capturing skewness better.</li>
+      </ul>
+      <p><strong>Continuity correction.</strong> The normal/lognormal are continuous, so when the aggregate model is <strong>discrete</strong> (both frequency and severity discrete) you should shift by half a "step" to avoid assigning zero probability to point masses. With unit integer support, $\Pr(S=s)\approx\Pr(s-0.5\le S\le s+0.5)$, so $\Pr(S\le s)\Rightarrow\Pr(S\le s+0.5)$ and $\Pr(S\ge s)\Rightarrow\Pr(S\ge s-0.5)$. When $S$ only takes spread-out values (e.g. $200, 400, 1000$), use the <strong>midpoints</strong> between adjacent possible values as the correction boundaries.</p>
+
+      <h3>Risk measures</h3>
+      <p>A <strong>risk measure</strong> $\rho(X)$ maps a loss random variable to a single number quantifying risk — used to gauge solvency. The two headline measures are <strong>Value-at-Risk (VaR)</strong> and <strong>Tail-Value-at-Risk (TVaR)</strong>.</p>
+      <ul>
+        <li><strong>VaR</strong> $=\text{VaR}_p(X)=\pi_p$ is just the $100p$th percentile: the value the loss exceeds with probability $1-p$. (Do <em>not</em> confuse with variance!)</li>
+        <li><strong>TVaR</strong> (a.k.a. <strong>CTE</strong>, conditional tail expectation) is the expected loss <em>given</em> the loss already exceeds its VaR — the average severity of a bad tail event.</li>
+      </ul>
+      <p>A measure is <strong>coherent</strong> if it satisfies four properties (translation invariance, positive homogeneity, subadditivity, monotonicity). <strong>TVaR is coherent; VaR is not</strong> (it can fail subadditivity). <strong>Tail weight</strong> compares how likely extreme losses are: fewer finite positive raw moments ⇒ heavier tail.</p>
+
+      <h2>Formulas</h2>
+
+      <h3>Mean and variance (general compound model)</h3>
+      <p>Let $E[N], \text{Var}(N)$ be the frequency moments and $E[X], \text{Var}(X)$ the severity moments.</p>
+      <div class="formula">
+        <span class="formula-label">Mean</span>
+        $$E[S] = E[N]\,E[X] \qquad(\mu_S=\mu_N\mu_X)$$
+        <span class="formula-label">Variance</span>
+        $$\text{Var}(S) = E[N]\,\text{Var}(X) + \text{Var}(N)\,\big(E[X]\big)^2 \qquad(\sigma_S^2=\mu_N\sigma_X^2+\sigma_N^2\mu_X^2)$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <ul>
+          <li>$S$ — aggregate loss (random sum).</li>
+          <li>$N$ — claim count (frequency, the primary distribution).</li>
+          <li>$X$ — individual claim size (severity, the secondary distribution); $E[X]$ first moment, $E[X^2] = \text{Var}(X) + (E[X])^2$ second raw moment.</li>
+        </ul>
+      </div>
+      <p>Equivalent form using the second moment of severity (handy when you have $E[X^2]$):</p>
+      <div class="formula">$$\text{Var}(S) = E[N]\,E[X^2] + \big(\text{Var}(N) - E[N]\big)\big(E[X]\big)^2.$$</div>
+
+      <h3>Compound Poisson ($N \sim \text{Poisson}(\lambda)$)</h3>
+      <p>Since $E[N] = \text{Var}(N) = \lambda$:</p>
+      <div class="formula">$$E[S] = \lambda\,E[X], \qquad \text{Var}(S) = \lambda\,\big(\text{Var}(X)+E[X]^2\big)=\lambda\,E[X^2].$$</div>
+      <p>Third central moment (for skewness):</p>
+      <div class="formula">$$E\big[(S - E[S])^3\big] = \lambda\,E[X^3], \qquad \text{Skew}(S) = \frac{\lambda E[X^3]}{\big(\lambda E[X^2]\big)^{3/2}}.$$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Additivity &amp; splitting</div>
+        <p>If $S_1, \dots, S_m$ are independent compound Poisson with parameters $\lambda_j$ and severity cdfs $F_j$, then $S = \sum_j S_j$ is compound Poisson with</p>
+        $$\lambda = \sum_{j=1}^{m}\lambda_j, \qquad F_X(x) = \sum_{j=1}^{m}\frac{\lambda_j}{\lambda}\,F_j(x).$$
+        <p>Conversely (splitting), if claims are independently sorted into category $j$ with probability $q_j$, the count in category $j$ is independent Poisson with mean $\lambda q_j$.</p>
+      </div>
+
+      <h3>Compound negative binomial / binomial frequency</h3>
+      <p>If $N \sim \text{Negative Binomial}(r, \beta)$: $E[N] = r\beta$, $\text{Var}(N) = r\beta(1+\beta)$.</p>
+      <p>If $N \sim \text{Binomial}(m, q)$: $E[N] = mq$, $\text{Var}(N) = mq(1-q)$.</p>
+      <p>Plug into the general $E[S]$ and $\text{Var}(S)$ formulas above.</p>
+
+      <h3>Individual risk model</h3>
+      <p>For $S = \sum_{i=1}^{n} X_i$ with independent (not necessarily identical) $X_i$:</p>
+      <div class="formula">$$E[S] = \sum_{i=1}^{n} E[X_i], \qquad \text{Var}(S) = \sum_{i=1}^{n} \text{Var}(X_i).$$</div>
+      <p>If $X_i = I_i B_i$ with $\Pr(I_i = 1) = q_i$ (claim probability) and $B_i$ the claim amount (independent of $I_i$):</p>
+      <div class="formula">
+        $$E[X_i] = q_i\,E[B_i],$$
+        $$\text{Var}(X_i) = q_i\,\text{Var}(B_i) + q_i(1 - q_i)\big(E[B_i]\big)^2.$$
+      </div>
+      <p>If the claim amount is a fixed constant $b_i$ (so $\text{Var}(B_i)=0$):</p>
+      <div class="formula">$$E[X_i] = q_i b_i, \qquad \text{Var}(X_i) = q_i(1-q_i)\,b_i^2.$$</div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Bernoulli shortcut</div>
+        <p>For any two-valued variable $X=\begin{cases}a,&q\\ b,&1-q\end{cases}$ the variance is $\text{Var}(X)=(a-b)^2\,q(1-q)$ — no need to compute first and second moments separately.</p>
+      </div>
+
+      <h3>Aggregate payments — compound formulas</h3>
+      <p>The compound mean and variance hold for payments too, in either consistent parameterization:</p>
+      <div class="formula">
+        $$E[S]=E[N]\,E[Y^L]=E[N']\,E[Y^P],$$
+        $$\text{Var}(S)=E[N]\,\text{Var}(Y^L)+\text{Var}(N)\,E[Y^L]^2=E[N']\,\text{Var}(Y^P)+\text{Var}(N')\,E[Y^P]^2.$$
+      </div>
+
+      <h3>Convolution</h3>
+      <p>Discrete severity on $0, 1, 2, \dots$ with pmf $f_X$:</p>
+      <div class="formula">
+        $$f_X^{*n}(x) = \sum_{y} f_X^{*(n-1)}(x - y)\,f_X(y), \qquad f_X^{*0}(0) = 1.$$
+        $$f_S(x) = \Pr(S = x) = \sum_{n=0}^{\infty}\Pr(N = n)\,f_X^{*n}(x).$$
+      </div>
+
+      <h3>Panjer recursion — the $(a, b, 0)$ class</h3>
+      <p>A frequency $N$ is in the <strong>$(a, b, 0)$ class</strong> if its pmf $p_n = \Pr(N = n)$ satisfies</p>
+      <div class="formula">$$\frac{p_n}{p_{n-1}} = a + \frac{b}{n}, \qquad n = 1, 2, 3, \dots$$</div>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Distribution</th><th>$a$</th><th>$b$</th><th>$p_0$</th></tr></thead>
+        <tbody>
+          <tr><td>Poisson$(\lambda)$</td><td>$0$</td><td>$\lambda$</td><td>$e^{-\lambda}$</td></tr>
+          <tr><td>Binomial$(m, q)$</td><td>$-\dfrac{q}{1-q}$</td><td>$(m+1)\dfrac{q}{1-q}$</td><td>$(1-q)^m$</td></tr>
+          <tr><td>Neg. Binomial$(r, \beta)$</td><td>$\dfrac{\beta}{1+\beta}$</td><td>$(r-1)\dfrac{\beta}{1+\beta}$</td><td>$(1+\beta)^{-r}$</td></tr>
+        </tbody>
+      </table></div>
+      <p>With a severity defined on $0, 1, 2, \dots$ with pmf $f_X(j)$ (let $f_k = f_X(k)$), the aggregate pmf $g_s = \Pr(S = s)$ is built by:</p>
+      <p><strong>Starting value</strong> (probability of zero aggregate loss):</p>
+      <div class="formula">$$g_0 = P_N\big(f_X(0)\big),$$</div>
+      <p>the probability generating function of $N$ evaluated at $f_X(0)$. Common cases:</p>
+      <ul>
+        <li>Poisson: $g_0 = e^{-\lambda(1 - f_0)}$.</li>
+        <li>If $f_X(0) = 0$ (severity has no mass at 0): $g_0 = p_0 = \Pr(N=0)$.</li>
+      </ul>
+      <p><strong>Recursion</strong> for $s = 1, 2, 3, \dots$:</p>
+      <div class="formula">$$g_s = \frac{1}{1 - a\,f_0}\sum_{j=1}^{s}\left(a + \frac{b\,j}{s}\right) f_j\, g_{s-j}.$$</div>
+      <ul>
+        <li>$a, b$ — the frequency's $(a,b,0)$ parameters.</li>
+        <li>$f_j = f_X(j)$ — severity pmf at $j$.</li>
+        <li>$g_{s-j}$ — previously computed aggregate probabilities.</li>
+      </ul>
+      <p>(If $f_0 = 0$, the $\frac{1}{1 - a f_0}$ factor is just $1$.)</p>
+
+      <h3>Stop-loss premium</h3>
+      <p>General definition:</p>
+      <div class="formula">$$E[(S - d)_+] = \int_d^\infty \big(1 - F_S(x)\big)\,dx = \int_d^\infty (x - d)\,f_S(x)\,dx.$$</div>
+      <p>Relation to the mean and the limited expected value $E[S \wedge d]$ (the most useful exam form):</p>
+      <div class="formula">$$E[(S - d)_+] = E[S] - E[S \wedge d].$$</div>
+      <p><strong>Discrete $S$</strong> (mass points $0, 1, 2, \dots$), integer retention $d$:</p>
+      <div class="formula">$$E[(S - d)_+] = \sum_{x > d}(x - d)\,f_S(x) = \sum_{x=d}^{\infty}\big(1 - F_S(x)\big).$$</div>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">Recursion across integer retentions (very efficient on exams)</div>
+        $$E[(S - (d+1))_+] = E[(S - d)_+] - \big(1 - F_S(d)\big).$$
+        <p>Each unit increase in the deductible reduces the stop-loss premium by the survival probability at $d$.</p>
+      </div>
+
+      <h3>Normal approximation</h3>
+      <p>Set $\mu = E[S]$, $\sigma^2 = \text{Var}(S)$. Then $S \approx N(\mu, \sigma^2)$:</p>
+      <div class="formula">$$\Pr(S \le s) \approx \Phi\!\left(\frac{s - \mu}{\sigma}\right).$$</div>
+      <p>Stop-loss premium under the normal approximation:</p>
+      <div class="formula">$$E[(S - d)_+] \approx \sigma\,\phi\!\left(\frac{d - \mu}{\sigma}\right) - (d - \mu)\left[1 - \Phi\!\left(\frac{d - \mu}{\sigma}\right)\right],$$</div>
+      <p>where $\phi$ is the standard normal pdf and $\Phi$ the standard normal cdf.</p>
+
+      <h3>Lognormal approximation</h3>
+      <p>Match the first two moments of $S$ to a lognormal with parameters $\mu_L, \sigma_L$. Using $m_1 = E[S]$, $m_2 = E[S^2]$:</p>
+      <div class="formula">$$\sigma_L^2 = \ln\!\left(\frac{m_2}{m_1^2}\right), \qquad \mu_L = \ln m_1 - \tfrac{1}{2}\sigma_L^2.$$</div>
+      <p>Equivalently, equate to the lognormal moment formulas $E[S]=e^{\mu_L+\sigma_L^2/2}$ and $\text{Var}(S)=e^{2\mu_L+\sigma_L^2}(e^{\sigma_L^2}-1)$. Then for a lognormal,</p>
+      <div class="formula">
+        $$\Pr(S \le s) \approx \Phi\!\left(\frac{\ln s - \mu_L}{\sigma_L}\right),$$
+        $$E[(S - d)_+] \approx e^{\mu_L + \sigma_L^2/2}\,\Phi\!\left(\frac{\mu_L + \sigma_L^2 - \ln d}{\sigma_L}\right) - d\left[1 - \Phi\!\left(\frac{\ln d - \mu_L}{\sigma_L}\right)\right].$$
+      </div>
+
+      <h3>Value-at-Risk (VaR)</h3>
+      <p>The VaR of $X$ at the $100p\%$ security level is its $100p$th percentile:</p>
+      <div class="formula">$$\text{VaR}_p(X) = \pi_p = F_X^{-1}(p), \qquad 0\lt p\lt 1.$$</div>
+      <p>It is the loss exceeded with probability $1-p$. The exam tables provide VaR (percentile) formulas for most distributions, so you rarely need to invert the CDF by hand. For a monotone transform $Y=e^X$, $\text{VaR}_p(e^X)=e^{\text{VaR}_p(X)}$.</p>
+
+      <h3>Tail-Value-at-Risk (TVaR / CTE)</h3>
+      <p>The TVaR at the $100p\%$ level is the expected loss given the loss exceeds its VaR:</p>
+      <div class="formula">$$\text{TVaR}_p(X)=E\big[X \mid X>\text{VaR}_p(X)\big]=\frac{\int_{\text{VaR}_p(X)}^{\infty} x\,f(x)\,dx}{1-p}.$$</div>
+      <p>To dodge the integral, write it via the <strong>mean excess loss</strong> $e(d)=\dfrac{E[X]-E[X\wedge d]}{1-F(d)}$ evaluated at the VaR:</p>
+      <div class="formula">$$\text{TVaR}_p(X)=\text{VaR}_p(X)+e\big(\text{VaR}_p(X)\big)=\text{VaR}_p(X)+\frac{E[X]-E[X\wedge \text{VaR}_p(X)]}{1-p}.$$</div>
+      <p>Memorize these two table-free shortcuts (let $z_p=\Phi^{-1}(p)$):</p>
+      <div class="formula">
+        <span class="formula-label">Normal $(\mu,\sigma^2)$</span>
+        $$\text{TVaR}_p(X)=\mu+\sigma\,\frac{\phi(z_p)}{1-p}.$$
+        <span class="formula-label">Lognormal $(\mu,\sigma^2)$</span>
+        $$\text{TVaR}_p(X)=E[X]\cdot\frac{\Phi(\sigma-z_p)}{1-p}, \qquad E[X]=e^{\mu+\sigma^2/2}.$$
+      </div>
+      <p>Always $\text{TVaR}_p(X)\ge\text{VaR}_p(X)$ (the tail average is at least the threshold).</p>
+
+      <h3>Coherence</h3>
+      <p>$\rho(X)$ is <strong>coherent</strong> if it satisfies all four:</p>
+      <div class="formula">
+        $$\text{Translation invariance:}\quad \rho(X+c)=\rho(X)+c$$
+        $$\text{Positive homogeneity:}\quad \rho(cX)=c\,\rho(X),\ c>0$$
+        $$\text{Subadditivity:}\quad \rho(X+Y)\le\rho(X)+\rho(Y)$$
+        $$\text{Monotonicity:}\quad \Pr(X\le Y)=1 \Rightarrow \rho(X)\le\rho(Y)$$
+      </div>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Property</th><th>$\text{VaR}_p$</th><th>$\text{TVaR}_p$</th></tr></thead>
+        <tbody>
+          <tr><td>Translation invariance</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Positive homogeneity</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Subadditivity</td><td>✗</td><td>✓</td></tr>
+          <tr><td>Monotonicity</td><td>✓</td><td>✓</td></tr>
+          <tr><td><strong>Coherent?</strong></td><td><strong>No</strong></td><td><strong>Yes</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p>VaR fails coherence because it can violate <strong>subadditivity</strong>. Memorize the result — the proofs are not examined.</p>
+
+      <h3>Tail weight</h3>
+      <p>A heavier right tail ⇒ extreme losses more likely. Compare two models with the <strong>number of positive raw moments</strong> test:</p>
+      <div class="formula">$$\text{Fewer finite positive raw moments} \;\Rightarrow\; \text{heavier tail}.$$</div>
+      <p>E.g. Pareto$(\alpha,\theta)$ has finite $E[X^k]$ only for $k<\alpha$ (finitely many), whereas the exponential has all positive moments finite — so Pareto is heavier-tailed.</p>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Mean and variance of a compound distribution <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The number of claims $N$ has $E[N] = 5$ and $\text{Var}(N) = 8$ (negative-binomial-type). Claim severity $X$ has mean $E[X] = 200$ and variance $\text{Var}(X) = 30{,}000$. Find $E[S]$ and $\text{Var}(S)$.</p>
+          <p><strong>Solution.</strong></p>
+          <p>Mean:</p>
+          $$E[S] = E[N]E[X] = 5 \times 200 = 1000.$$
+          <p>Variance, using $\text{Var}(S) = E[N]\text{Var}(X) + \text{Var}(N)(E[X])^2$:</p>
+          $$\text{Var}(S) = 5(30{,}000) + 8(200)^2 = 150{,}000 + 8(40{,}000) = 150{,}000 + 320{,}000 = 470{,}000.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S] = 1000$, $\text{Var}(S) = 470{,}000$ (so $\text{SD}(S) \approx 685.6$).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Probability function from the Law of Total Probability <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$N\sim\text{Poisson}(3)$. Each claim amount has $\Pr(X=x)=0.25$ for $x=1,2,3,4$. Frequency and severity are independent. Find $\Pr(S=3)$.</p>
+          <p><strong>Solution.</strong> Enumerate every way the claims can sum to $3$.</p>
+          <p><strong>One claim of size 3:</strong></p>
+          $$p_N(1)p_X(3)=e^{-3}\frac{3^1}{1!}(0.25)=0.75\,e^{-3}.$$
+          <p><strong>Two claims summing to 3</strong> (sizes $1{+}2$ or $2{+}1$):</p>
+          $$p_N(2)\big[2\,p_X(1)p_X(2)\big]=e^{-3}\frac{3^2}{2!}\big[2(0.25)(0.25)\big]=0.5625\,e^{-3}.$$
+          <p><strong>Three claims of size 1 each:</strong></p>
+          $$p_N(3)\,p_X(1)^3=e^{-3}\frac{3^3}{3!}(0.25^3)=0.0703\,e^{-3}.$$
+          <p>Add them:</p>
+          $$\Pr(S=3)=(0.75+0.5625+0.0703)\,e^{-3}=1.3828\,e^{-3}=0.0688.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\Pr(S=3)\approx 0.0688$. The trick is counting ordered combinations correctly (the $1{+}2$ split has multiplicity 2).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Compound Poisson with additivity and normal approximation <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A book has two independent compound Poisson lines:</p>
+          <ul>
+            <li>Line A: $\lambda_A = 3$, severity is exponential with mean $100$ (so $E[X_A] = 100$, $E[X_A^2] = 2(100)^2 = 20{,}000$).</li>
+            <li>Line B: $\lambda_B = 2$, severity is a constant $500$ (so $E[X_B] = 500$, $E[X_B^2] = 250{,}000$).</li>
+          </ul>
+          <p>(a) Find $E[S]$ and $\text{Var}(S)$ for the combined book $S = S_A + S_B$.<br>(b) Use the normal approximation to estimate $\Pr(S > 3000)$.</p>
+          <p><strong>Solution.</strong></p>
+          <p>By additivity, $S$ is compound Poisson with $\lambda = 3 + 2 = 5$ and a mixed severity. We can just add moments of the two independent compound Poissons.</p>
+          <p>Means:</p>
+          $$E[S_A] = 3(100) = 300, \quad E[S_B] = 2(500) = 1000, \quad E[S] = 1300.$$
+          <p>Variances (compound Poisson: $\text{Var} = \lambda E[X^2]$):</p>
+          $$\text{Var}(S_A) = 3(20{,}000) = 60{,}000,$$
+          $$\text{Var}(S_B) = 2(250{,}000) = 500{,}000,$$
+          $$\text{Var}(S) = 60{,}000 + 500{,}000 = 560{,}000.$$
+          <p>So $\text{SD}(S) = \sqrt{560{,}000} \approx 748.33$.</p>
+          <p>(b) Normal approximation:</p>
+          $$\Pr(S > 3000) \approx 1 - \Phi\!\left(\frac{3000 - 1300}{748.33}\right) = 1 - \Phi(2.272).$$
+          <p>$\Phi(2.27) \approx 0.9884$, so the probability $\approx 1 - 0.9884 = 0.0116$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S] = 1300$, $\text{Var}(S) = 560{,}000$; $\Pr(S > 3000) \approx 0.0116$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Panjer recursion and a stop-loss premium <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Claim frequency $N \sim \text{Poisson}(\lambda = 1.5)$. Severity $X$ is discrete with</p>
+          $$f_X(1) = 0.5, \quad f_X(2) = 0.3, \quad f_X(3) = 0.2, \quad f_X(0) = 0.$$
+          <p>(a) Use Panjer recursion to find $\Pr(S = 0), \Pr(S = 1), \Pr(S = 2), \Pr(S = 3)$.<br>(b) Find the stop-loss premium $E[(S - 2)_+]$.</p>
+          <p><strong>Solution.</strong></p>
+          <p>Poisson $(a, b, 0)$ parameters: $a = 0$, $b = \lambda = 1.5$. Since $f_0 = 0$, the recursion is</p>
+          $$g_s = \sum_{j=1}^{s}\frac{b\,j}{s}\,f_j\,g_{s-j} = \frac{1.5}{s}\sum_{j=1}^{s} j\,f_j\,g_{s-j}.$$
+          <p><strong>Starting value:</strong> $g_0 = e^{-\lambda(1 - f_0)} = e^{-1.5} = 0.223130$.</p>
+          <p><strong>$s = 1$:</strong></p>
+          $$g_1 = \frac{1.5}{1}\big[(1)(0.5)(g_0)\big] = 1.5(0.5)(0.223130) = 0.167348.$$
+          <p><strong>$s = 2$:</strong></p>
+          $$g_2 = \frac{1.5}{2}\big[(1)(0.5)(g_1) + (2)(0.3)(g_0)\big].$$
+          <p>Inside: $(0.5)(0.167348) + (0.6)(0.223130) = 0.083674 + 0.133878 = 0.217552.$</p>
+          $$g_2 = 0.75 \times 0.217552 = 0.163164.$$
+          <p><strong>$s = 3$:</strong></p>
+          $$g_3 = \frac{1.5}{3}\big[(1)(0.5)(g_2) + (2)(0.3)(g_1) + (3)(0.2)(g_0)\big].$$
+          <p>Inside: $(0.5)(0.163164) + (0.6)(0.167348) + (0.6)(0.223130)$<br>$= 0.081582 + 0.100409 + 0.133878 = 0.315869.$</p>
+          $$g_3 = 0.5 \times 0.315869 = 0.157934.$$
+          <p>So:</p>
+          $$\Pr(S=0)=0.22313,\ \Pr(S=1)=0.16735,\ \Pr(S=2)=0.16316,\ \Pr(S=3)=0.15793.$$
+          <p>(b) Stop-loss with $d = 2$. Use $E[(S-2)_+] = E[S] - E[S\wedge 2]$.</p>
+          <p>First $E[S] = \lambda E[X] = 1.5\,[(1)(0.5)+(2)(0.3)+(3)(0.2)] = 1.5(1.7) = 2.55.$</p>
+          <p>For nonnegative integer $S$, $E[S\wedge d]=\sum_{x=1}^{d}\Pr(S\ge x)$:</p>
+          <p>$\Pr(S \ge 1) = 1 - g_0 = 1 - 0.223130 = 0.776870.$<br>$\Pr(S \ge 2) = 1 - g_0 - g_1 = 1 - 0.223130 - 0.167348 = 0.609522.$</p>
+          $$E[S\wedge 2] = 0.776870 + 0.609522 = 1.386392.$$
+          $$E[(S-2)_+] = 2.55 - 1.386392 = 1.163608.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$g_0=0.22313$, $g_1=0.16735$, $g_2=0.16316$, $g_3=0.15793$; and $E[(S-2)_+] \approx 1.1636$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Stop-loss with a limited-expected-value table <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Collective risk model: $N\sim\text{Geometric}$ with mean $3$ (so $\beta=3$), and $\Pr(X=x)=\frac{5-x}{10}$ for $x=1,2,3,4$ (i.e. $0.4,0.3,0.2,0.1$). An insurance covers the aggregate loss with deductible $2$. Find the net stop-loss premium.</p>
+          <p><strong>Solution.</strong> $E[(S-2)_+]=E[S]-E[S\wedge 2]$.</p>
+          <p>Means: $E[N]=3$, $E[X]=0.4(1)+0.3(2)+0.2(3)+0.1(4)=2$, so $E[S]=3(2)=6$.</p>
+          <p>Only the lowest $S$ values affect $E[S\wedge 2]$, so build a small table. For geometric, $\Pr(N=n)=\dfrac{\beta^n}{(1+\beta)^{n+1}}$:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$s$</th><th>$\Pr(S=s)$</th><th>$s\wedge 2$</th></tr></thead>
+            <tbody>
+              <tr><td>$0$</td><td>$\Pr(N=0)=\tfrac{1}{1+3}=0.25$</td><td>$0$</td></tr>
+              <tr><td>$1$</td><td>$\Pr(N=1)\Pr(X=1)=\tfrac{3}{4^2}(0.4)=0.075$</td><td>$1$</td></tr>
+              <tr><td>$\ge 2$</td><td>$1-0.25-0.075=0.675$</td><td>$2$</td></tr>
+            </tbody>
+          </table></div>
+          $$E[S\wedge 2]=0(0.25)+1(0.075)+2(0.675)=1.425.$$
+          $$E[(S-2)_+]=6-1.425=4.575.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Net stop-loss premium $=4.575$. (If reinsurance covered only 80% of the excess, multiply: $0.8\times 4.575$.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Normal approximation with continuity correction <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual road crashes $N\sim\text{Poisson}(30)$. Deaths per crash $X$: $\Pr=0.80,0.10,0.05,0.025,0.025$ for $X=0,1,2,3,4$. Independent. Using the normal approximation <em>with</em> continuity correction, find $\Pr(\text{more than }15\text{ deaths})$.</p>
+          <p><strong>Solution.</strong> $\mu_N=\sigma_N^2=30$.</p>
+          $$E[X]=0.1(1)+0.05(2)+0.025(3)+0.025(4)=0.375,$$
+          $$E[X^2]=0.1(1)+0.05(4)+0.025(9)+0.025(16)=0.925,\quad \sigma_X^2=0.925-0.375^2=0.7844.$$
+          $$\mu_S=30(0.375)=11.25,\qquad \sigma_S^2=30(0.7844)+30(0.375^2)=27.75.$$
+          <p>$S$ is integer-valued (both discrete), so apply continuity correction: $\Pr(S>15)\Rightarrow\Pr(S>15.5)$.</p>
+          $$\Pr(S>15.5)=1-\Phi\!\left(\frac{15.5-11.25}{\sqrt{27.75}}\right)=1-\Phi(0.80678)=1-0.7901=0.2099.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\approx 0.2099$. Forgetting the $+0.5$ shift gives $1-\Phi(0.712)\approx 0.238$ — a different answer choice.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Individual risk model <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A group of 3 independent policies:</p>
+          <ul>
+            <li>Policy 1: claim prob $q_1 = 0.10$, fixed benefit $b_1 = 1$.</li>
+            <li>Policy 2: claim prob $q_2 = 0.05$, fixed benefit $b_2 = 2$.</li>
+            <li>Policy 3: claim prob $q_3 = 0.20$, fixed benefit $b_3 = 1$.</li>
+          </ul>
+          <p>Find $E[S]$ and $\text{Var}(S)$.</p>
+          <p><strong>Solution.</strong></p>
+          <p>$E[X_i] = q_i b_i$:</p>
+          $$E[S] = 0.10(1) + 0.05(2) + 0.20(1) = 0.10 + 0.10 + 0.20 = 0.40.$$
+          <p>$\text{Var}(X_i) = q_i(1-q_i)b_i^2$:</p>
+          $$\text{Var}(X_1) = 0.10(0.90)(1) = 0.090,$$
+          $$\text{Var}(X_2) = 0.05(0.95)(4) = 0.190,$$
+          $$\text{Var}(X_3) = 0.20(0.80)(1) = 0.160.$$
+          $$\text{Var}(S) = 0.090 + 0.190 + 0.160 = 0.440.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S] = 0.40$, $\text{Var}(S) = 0.440$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Aggregate payments — two consistent approaches <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A policyholder has a 30% chance to incur one loss each year ($N\sim\text{Bernoulli}(0.3)$). Given a loss, $X$ is $100,200,500$ with probabilities $0.4,0.3,0.3$. Each loss is subject to a deductible of $150$. Find $\text{Var}(S)$, the variance of the annual amount paid.</p>
+          <p><strong>Approach A — number of losses × payment per loss.</strong> $E[N]=0.3$, $\text{Var}(N)=0.3(0.7)=0.21$. The payment per loss $Y^L=(X-150)_+$ is $0,50,350$ with probs $0.4,0.3,0.3$:</p>
+          $$E[Y^L]=0.3(50)+0.3(350)=120,\quad E[(Y^L)^2]=0.3(2500)+0.3(122500)=37{,}500,$$
+          $$\text{Var}(Y^L)=37{,}500-120^2=23{,}100.$$
+          $$\text{Var}(S)=E[N]\text{Var}(Y^L)+\text{Var}(N)E[Y^L]^2=0.3(23{,}100)+0.21(120^2)=9{,}954.$$
+          <p><strong>Approach B — number of payments × payment per payment.</strong> A payment occurs only if a loss occurs and exceeds $150$: $\Pr(N'=1)=0.3\Pr(X>150)=0.3(0.6)=0.18$, so $N'\sim\text{Bernoulli}(0.18)$, $\text{Var}(N')=0.18(0.82)=0.1476$. The payment per payment $Y^P=(X-150\mid X>150)$ is $50,350$ each with prob $0.5$:</p>
+          $$E[Y^P]=200,\quad \text{Var}(Y^P)=0.5(50^2)+0.5(350^2)-200^2=22{,}500.$$
+          $$\text{Var}(S)=0.18(22{,}500)+0.1476(200^2)=9{,}954.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{Var}(S)=9{,}954$ — identical both ways, as long as frequency and severity stay consistent.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> VaR and TVaR of a lognormal (two routes) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X\sim\text{Lognormal}(\mu=2,\sigma^2=9)$. Find $\text{TVaR}_{0.85}(X)$.</p>
+          <p><strong>Fast route — lognormal shortcut.</strong> With $E[X]=e^{2+9/2}=e^{6.5}=665.142$ and $z_{0.85}=\Phi^{-1}(0.85)=1.03643$, $\sigma=3$:</p>
+          $$\text{TVaR}_{0.85}(X)=E[X]\cdot\frac{\Phi(\sigma-z_{0.85})}{1-0.85}=665.142\cdot\frac{\Phi(1.96357)}{0.15}=665.142\cdot\frac{0.97521}{0.15}=4{,}324.35.$$
+          <p><strong>Check — mean-excess route.</strong> $\text{VaR}_{0.85}=e^{\mu+z_{0.85}\sigma}=e^{2+1.03643(3)}=e^{5.109}=165.553$. Then</p>
+          $$\text{TVaR}_{0.85}=165.553+\frac{665.142-E[X\wedge 165.553]}{0.15}=165.553+\frac{665.142-41.322}{0.15}=4{,}324.35.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{TVaR}_{0.85}(X)\approx 4{,}324.35$. The shortcut avoids ever computing the VaR or a limited expected value — memorize it.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> TVaR from a CDF / limited-expected-value table <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X$ is continuous with the table below. Find $\text{TVaR}_{0.85}(X)$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>$F(x)$</th><th>$E[X\wedge x]$</th></tr></thead>
+            <tbody>
+              <tr><td>$2{,}415$</td><td>$0.85$</td><td>$925$</td></tr>
+              <tr><td>$\infty$</td><td>$1.00$</td><td>$1{,}500$</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Solution.</strong> No PDF is given, so use the mean-excess form. $\text{VaR}_{0.85}(X)=F^{-1}(0.85)=2{,}415$, $E[X]=E[X\wedge\infty]=1{,}500$:</p>
+          $$\text{TVaR}_{0.85}(X)=2{,}415+\frac{E[X]-E[X\wedge 2{,}415]}{1-0.85}=2{,}415+\frac{1{,}500-925}{0.15}=2{,}415+3{,}833.33=6{,}248.33.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{TVaR}_{0.85}(X)\approx 6{,}248.33$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Which coherence properties fail? <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For $\rho(X)=E[X]+k\,\text{Var}(X)$ with $k>0$, determine which coherence properties fail.</p>
+          <p><strong>Translation invariance ✓:</strong> $\rho(X+c)=E[X]+c+k\text{Var}(X)=\rho(X)+c$. Holds.</p>
+          <p><strong>Positive homogeneity ✗:</strong> $\rho(cX)=cE[X]+k c^2\text{Var}(X)\ne c\,\rho(X)$ (the variance scales by $c^2$). Fails.</p>
+          <p><strong>Subadditivity ✗:</strong> $\rho(X+Y)=\rho(X)+\rho(Y)+2k\,\text{Cov}(X,Y)$; since covariance can be positive, the inequality can break. Fails.</p>
+          <p><strong>Monotonicity ✗:</strong> Counterexample with $\Pr(X=0)=0.9,\Pr(X=100)=0.1$ and $Y\equiv 100$, so $\Pr(X\le Y)=1$. Using the Bernoulli shortcut $\text{Var}(X)=(100-0)^2(0.9)(0.1)=900$:</p>
+          $$\rho(X)=10+1(900)=910 > \rho(Y)=100+0=100.$$
+          <p>So $\rho(X)>\rho(Y)$ despite $X\le Y$. Fails.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Fails positive homogeneity, subadditivity, and monotonicity (only translation invariance holds). To <em>disprove</em> a property one counterexample suffices; to <em>prove</em> one you need a general argument.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Continuous severity — aggregate probability by the Law of Total Probability <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For an insured car, the number of accidents per year is $\Pr(N=n)=\binom{2}{n}0.2^n(0.8)^{2-n}$ for $n=0,1,2$ (a Binomial$(2,0.2)$). The damage per accident is <strong>Normal with mean $180$ and standard deviation $100$</strong>, independent of $N$. Find $\Pr(S\le 200)$ — the probability that yearly damages are at most $200$.</p>
+          <p><strong>Solution.</strong> With $N\le 2$, the aggregate CDF has just three terms: $\Pr(S\le 200)=p_N(0)+p_N(1)F_X(200)+p_N(2)F_{X_1+X_2}(200)$.</p>
+          <p><strong>No claims</strong> (damages are exactly 0):</p>
+          $$p_N(0)=\binom{2}{0}0.2^0(0.8)^2=0.64.$$
+          <p><strong>One claim, $X\le 200$.</strong> $F_X(200)=\Phi\!\left(\dfrac{200-180}{100}\right)=\Phi(0.2)=0.5793$, and $p_N(1)=\binom{2}{1}0.2(0.8)=0.32$:</p>
+          $$p_N(1)\,F_X(200)=0.32(0.5793)=0.1854.$$
+          <p><strong>Two claims, $X_1+X_2\le 200$.</strong> The sum of independent normals is normal with the means and variances <em>summed</em>: $X_1+X_2\sim\text{Normal}(360,\,100^2+100^2)=\text{Normal}(360,\,20{,}000)$. So $F_{X_1+X_2}(200)=\Phi\!\left(\dfrac{200-360}{\sqrt{20{,}000}}\right)=\Phi(-1.1314)=0.1290$, and $p_N(2)=\binom{2}{2}0.2^2=0.04$:</p>
+          $$p_N(2)\,F_{X_1+X_2}(200)=0.04(0.1290)\approx 0.0052.$$
+          <p>Add the three pieces:</p>
+          $$\Pr(S\le 200)=0.64+0.1854+0.0052\approx 0.8305.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\Pr(S\le 200)\approx 0.8305$. <strong>Key move:</strong> for continuous severity you weight the severity <em>CDF</em> (not a pmf), and a sum of independent normals is again normal with $\mu$ and $\sigma^2$ added — never add standard deviations.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Continuous severity with a per-claim deductible — aggregate payments by integration <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Claims $N\sim\text{Poisson}(25)$; each claim size $X\sim\text{Uniform}(5,55)$, independent of $N$. A per-claim deductible of $20$ applies. Find $E[S]$ and $\text{Var}(S)$ for the aggregate <em>payment</em>.</p>
+          <p><strong>Approach A — number of losses × payment per loss.</strong> The payment per loss is $Y^L=(X-20)_+$. With $f_X(x)=\tfrac{1}{50}$ on $(5,55)$, integrate only where $x>20$:</p>
+          $$E[Y^L]=E[(X-20)_+]=\int_{20}^{55}(x-20)\tfrac{1}{50}\,dx=\tfrac{1}{50}\left[\tfrac{(x-20)^2}{2}\right]_{20}^{55}=\tfrac{1}{50}\cdot\tfrac{35^2}{2}=12.25.$$
+          $$E[(Y^L)^2]=\int_{20}^{55}(x-20)^2\tfrac{1}{50}\,dx=\tfrac{1}{50}\left[\tfrac{(x-20)^3}{3}\right]_{20}^{55}=\tfrac{1}{50}\cdot\tfrac{35^3}{3}=285.8333.$$
+          $$\text{Var}(Y^L)=285.8333-12.25^2=135.7708.$$
+          <p>Poisson frequency: $E[N]=\text{Var}(N)=25$. So</p>
+          $$E[S]=E[N]E[Y^L]=25(12.25)=306.25,$$
+          $$\text{Var}(S)=E[N]\text{Var}(Y^L)+\text{Var}(N)E[Y^L]^2=25(135.7708)+25(12.25^2)=7{,}145.8333.$$
+          <p><strong>Approach B — Poisson split (number of payments × payment per payment).</strong> Split the Poisson by whether a loss clears the deductible. $\Pr(X>20)=\dfrac{55-20}{55-5}=0.7$, so the number of payments is</p>
+          $$N'\sim\text{Poisson}\big(25\times 0.7\big)=\text{Poisson}(17.5),\qquad E[N']=\text{Var}(N')=17.5.$$
+          <p>Conditioning a Uniform on exceeding a threshold (then subtracting it) gives another uniform: $Y^P=(X-20\mid X>20)\sim\text{Uniform}(0,35)$, so</p>
+          $$E[Y^P]=\tfrac{0+35}{2}=17.5,\qquad \text{Var}(Y^P)=\tfrac{(35-0)^2}{12}=102.0833.$$
+          $$E[S]=17.5(17.5)=306.25,\qquad \text{Var}(S)=17.5(102.0833)+17.5(17.5^2)=7{,}145.8333.$$
+          <p>Identical to Approach A — the split is valid because frequency is Poisson.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S]=306.25$, $\text{Var}(S)=7{,}145.83$. Both routes agree. The Poisson-split route is faster but works <strong>only for Poisson</strong> frequency.</div>
+          <div class="callout note" data-icon="🧾">
+            <div class="callout-title">Policy-limit variant — use $E[X\wedge u]$ from the tables (no integration)</div>
+            <p>Swap the deductible for a <strong>policy limit</strong> $u=10$ and let $N\sim$ (mean $300$ claims) with severity $X\sim\text{Pareto}(\alpha=3,\theta=20)$. The payment per claim is the <em>limited loss</em> $X\wedge 10$, whose mean comes straight off the exam table, $E[X\wedge u]=\dfrac{\theta}{\alpha-1}\!\left[1-\left(\dfrac{\theta}{u+\theta}\right)^{\alpha-1}\right]$:</p>
+            $$E[X\wedge 10]=\frac{20}{3-1}\left[1-\left(\frac{20}{10+20}\right)^{3-1}\right]=10\big(1-(2/3)^2\big)=10(1-0.4444)=5.5556.$$
+            $$E[S]=E[N]\,E[X\wedge 10]=300(5.5556)=1{,}667.$$
+            <p>With a limit there is no "below deductible" mass, so $Y^P=Y^L=X\wedge u$ and one expected-value lookup finishes the mean.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> VaR by inverting a pdf, and TVaR by direct integration <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$X$ has density $f(x)=\dfrac{2x}{3}$ for $1\lt x\lt 2$ (and $0$ elsewhere). Find $\text{VaR}_{0.75}(X)$ and $\text{TVaR}_{0.75}(X)$.</p>
+          <p><strong>(a) VaR — invert the CDF.</strong> The exam table has no formula for this ad-hoc density, so integrate the pdf and set the CDF equal to $p$. Let $\pi=\pi_{0.75}$:</p>
+          $$0.75=\int_1^{\pi}\tfrac{2x}{3}\,dx=\left[\tfrac{x^2}{3}\right]_1^{\pi}=\frac{\pi^2-1}{3}.$$
+          $$\pi^2-1=2.25\;\Rightarrow\;\pi=\sqrt{3.25}=1.8028.$$
+          <p>So $\text{VaR}_{0.75}(X)=1.8028$ (its $75$th percentile).</p>
+          <p><strong>(b) TVaR — integrate the tail directly.</strong> With a pdf in hand, use the definition $\text{TVaR}_p(X)=\dfrac{\int_{\pi}^{\infty}x\,f(x)\,dx}{1-p}$. Here the support ends at $2$ and $1-p=0.25$:</p>
+          $$\int_{1.8028}^{2} x\cdot\tfrac{2x}{3}\,dx=\int_{1.8028}^{2}\tfrac{2x^2}{3}\,dx=\left[\tfrac{2x^3}{9}\right]_{1.8028}^{2}=\frac{2(8)}{9}-\frac{2(1.8028)^3}{9}=1.7778-1.3020=0.4758.$$
+          $$\text{TVaR}_{0.75}(X)=\frac{0.4758}{0.25}=1.9031.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\text{VaR}_{0.75}(X)=1.8028$, $\text{TVaR}_{0.75}(X)=1.9031$.</div>
+          <div class="callout trap" data-icon="⚠️">
+            <div class="callout-title">Sanity check (catches limit-of-integration slips)</div>
+            <p>TVaR is the <em>average loss in the bad tail</em>, so it must land <strong>between the VaR and the upper end of the support</strong>: here $1.8028\le\text{TVaR}\le 2$. The answer $1.9031$ sits comfortably inside. If your TVaR falls below the VaR or above $2$, you almost certainly botched the integration limits — recheck before trusting the answer choice.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 15</span> Proportional reinsurance with a logarithmic frequency <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The number of claims follows a <strong>logarithmic</strong> distribution with $\Pr(N=n)=\dfrac{0.9^n}{n\,\ln(10)}$, $n=1,2,3,\dots$ Each claim is a constant $80$. Reinsurance covers <strong>80% of the aggregate claims in excess of $200$</strong>. Find the reinsurance net premium.</p>
+          <p><strong>Solution.</strong> The reinsurer pays a fixed fraction of the stop-loss layer, so the proportional factor multiplies the stop-loss premium as an explicit final step:</p>
+          $$\text{Reinsurance premium}=0.8\cdot E[(S-200)_+]=0.8\big(E[S]-E[S\wedge 200]\big).$$
+          <p><strong>Frequency lookup.</strong> Match the given pmf to the table logarithmic pmf $\Pr(N=n)=\dfrac{(\beta/(1+\beta))^n}{n\,\ln(1+\beta)}$. Since $\dfrac{\beta}{1+\beta}=0.9\Rightarrow\beta=9$, and the mean of a logarithmic distribution is</p>
+          $$E[N]=\frac{\beta}{\ln(1+\beta)}=\frac{9}{\ln(10)}=3.9087.$$
+          <p>Claim amount is constant $80$, so $E[X]=80$ and $E[S]=E[N]E[X]=3.9087(80)=312.6920$.</p>
+          <p><strong>Limited expected value.</strong> Since each claim is $80$, $S$ takes values $80,160,240,\dots$, and only $S\le 160$ matters below the retention $200$. Build a tiny table (here $\Pr(S=80k)=\Pr(N=k)$ because severity is constant):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$s$</th><th>$\Pr(S=s)$</th><th>$s\wedge 200$</th></tr></thead>
+            <tbody>
+              <tr><td>$80$</td><td>$\Pr(N=1)=\tfrac{0.9}{\ln 10}=0.3909$</td><td>$80$</td></tr>
+              <tr><td>$160$</td><td>$\Pr(N=2)=\tfrac{0.9^2}{2\ln 10}=0.1759$</td><td>$160$</td></tr>
+              <tr><td>$\ge 200$</td><td>$1-0.3909-0.1759=0.4332$</td><td>$200$</td></tr>
+            </tbody>
+          </table></div>
+          $$E[S\wedge 200]=0.3909(80)+0.1759(160)+0.4332(200)=146.0606.$$
+          <p>Now apply the proportional multiplier:</p>
+          $$0.8\cdot E[(S-200)_+]=0.8\,(312.6920-146.0606)=0.8(166.6314)=133.3051.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Reinsurance net premium $\approx 133.31$. <strong>Two reusable moves:</strong> the logarithmic mean $E[N]=\beta/\ln(1+\beta)$ from the table, and multiplying the finished stop-loss premium $E[(S-d)_+]$ by the covered fraction ($0.8$) as the last step.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 16</span> Stop-loss premium — the $E[S]-d+\sum$ recursion (second method) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Re-take the geometric stop-loss from Example 5 ($E[S]=6$, $p_S(0)=0.25$, $p_S(1)=0.075$, deductible $d=2$), but compute $E[(S-2)_+]$ a different way as a check.</p>
+          <p><strong>Method.</strong> Start from $E[S-d]=E[S]-d$ and add back the amount by which $(S-d)_+$ exceeds $S-d$ at the points below the retention. For integer $S$ and integer $d$,</p>
+          <div class="formula">$$E[(S-d)_+]=E[S]-d+\sum_{k=0}^{d-1}(d-k)\,p_S(k).$$</div>
+          <p>This works because $(S-d)_+=S-d$ for $S\ge d$ but equals $0$ (not the negative $S-d$) for $S\lt d$, so each $k\lt d$ contributes a correction of $(d-k)p_S(k)$.</p>
+          <p>With $d=2$, only $k=0$ and $k=1$ enter the sum:</p>
+          $$\sum_{k=0}^{1}(2-k)p_S(k)=(2-0)(0.25)+(2-1)(0.075)=0.5+0.075=0.575.$$
+          $$E[(S-2)_+]=6-2+0.575=4.575.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[(S-2)_+]=4.575$ — matching Example 5's $E[S]-E[S\wedge 2]$ route. Use whichever is faster: this $E[S]-d+\sum_{k\lt d}(d-k)p_S(k)$ form is handy when you already have the low-end pmf values $p_S(0),\dots,p_S(d-1)$.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Using $\text{Var}(X)$ instead of $E[X^2]$ in the compound Poisson variance.</strong> For compound Poisson, $\text{Var}(S) = \lambda\,E[X^2]$ — the <strong>second raw moment</strong>, not the variance. A frequent slip is plugging in $\text{Var}(X)$.</li>
+          <li><strong>Forgetting the $(E[X])^2$ term in the general variance.</strong> $\text{Var}(S) = E[N]\text{Var}(X) + \text{Var}(N)(E[X])^2$. Candidates routinely drop the second term.</li>
+          <li><strong>Confusing the two models.</strong> Collective: $N$ random, $X_i$ i.i.d. Individual: $n$ fixed, $X_i$ independent but possibly different. Their variance formulas are completely different — don't apply the compound variance formula to an individual-risk problem.</li>
+          <li><strong>Severity not independent of count.</strong> The compound variance formula assumes severity is i.i.d. and independent of $N$. If the payment distribution <em>changes</em> with the number of claims/visits, you must build the per-unit distribution by enumeration instead.</li>
+          <li><strong>Miscounting convolution combinations.</strong> When summing $\Pr(S=s)$ by hand, account for ordering: two claims of sizes $1$ and $2$ contribute $2f_X(1)f_X(2)$, not $f_X(1)f_X(2)$.</li>
+          <li><strong>Panjer starting value.</strong> $g_0 = P_N(f_0)$, the PGF of $N$ at $f_0 = \Pr(X=0)$. It equals $p_0 = \Pr(N=0)$ <strong>only when $f_0 = 0$</strong>. If severity has mass at 0 (e.g. a deductible truncates small losses to 0), use the full PGF, e.g. $e^{-\lambda(1-f_0)}$ for Poisson.</li>
+          <li><strong>Panjer index/severity at 0.</strong> The recursion sum runs $j = 1$ to $s$, and you need $f_0$ in the leading factor $1/(1 - a f_0)$. For Poisson $a = 0$, so that factor is 1 — but don't forget it for binomial/negative binomial where $a \ne 0$.</li>
+          <li><strong>Severity must start at the right support.</strong> Panjer requires severity on $0, 1, 2, \dots$. Rescale/round to a common monetary unit ("span") first; mismatched spans give wrong $g_s$.</li>
+          <li><strong>Stop-loss sign and which tail.</strong> $E[(S-d)_+]=E[S]-E[S\wedge d]$ integrates the <strong>survival</strong> function $1 - F_S$ above $d$. Don't accidentally use $F_S$ or include the mass at/below $d$.</li>
+          <li><strong>Continuity correction.</strong> Apply it <strong>only when the aggregate is discrete</strong> (both frequency and severity discrete). Decide the half-step direction by whether the point $s$ should be <em>included</em>: $\Pr(S\le s)\Rightarrow s+0.5$, $\Pr(S>s)\Rightarrow s+0.5$, $\Pr(S\ge s)\Rightarrow s-0.5$. With spread-out support use midpoints between possible values, not $\pm 0.5$.</li>
+          <li><strong>Aggregate payments inconsistency.</strong> Don't mix "number of losses" with "payment per payment." Pair $N$ with $Y^L$, or $N'$ with $Y^P$ — never crossed.</li>
+          <li><strong>Splitting only for Poisson.</strong> Scaling the frequency mean by $\Pr(\text{above deductible})$ to get $N'$ works for Poisson only; for binomial/negative binomial use the number-of-losses approach.</li>
+          <li><strong>Lognormal parameterization.</strong> $\sigma_L^2 = \ln(E[S^2]/E[S]^2)$ and $\mu_L = \ln E[S] - \tfrac12\sigma_L^2$. Mixing up $\mu_L$ vs $\sigma_L$, or using $\text{Var}(S)$ where $E[S^2]$ is needed, is a classic error.</li>
+          <li><strong>Additivity only for compound Poisson.</strong> You can merge independent compound Poissons into one compound Poisson. This does <strong>not</strong> hold for compound negative binomial or compound binomial.</li>
+          <li><strong>VaR is not variance.</strong> $\text{VaR}_p(X)=F_X^{-1}(p)$ is a percentile; $\text{Var}(X)=E[X^2]-E[X]^2$ is a spread. Different objects entirely.</li>
+          <li><strong>TVaR shortcut signs.</strong> For the lognormal it's $\Phi(\sigma-z_p)$ (not $\Phi(z_p-\sigma)$); for the normal it's $\mu+\sigma\,\phi(z_p)/(1-p)$ using the standard normal <em>pdf</em> $\phi$, not the cdf $\Phi$.</li>
+          <li><strong>Coherence of VaR.</strong> VaR satisfies three of four properties but <strong>fails subadditivity</strong>, so it is not coherent; TVaR is coherent. Memorize the table.</li>
+          <li><strong>Tail weight direction.</strong> <em>Fewer</em> finite positive raw moments means a <em>heavier</em> tail — the inverse relationship trips people up.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Frequency $N$ has mean 4 and variance 6; severity $X$ has mean 50 and variance 900. Find $E[S]$ and $\text{Var}(S)$.</summary>
+        <div class="qa-answer">$E[S] = 4(50) = 200$. $\text{Var}(S) = 4(900) + 6(50)^2 = 3600 + 15{,}000 = 18{,}600$.</div>
+      </details>
+      <details class="qa"><summary>For a compound Poisson with $\lambda = 10$ and severity having $E[X] = 3$, $E[X^2] = 20$, what are $E[S]$ and $\text{Var}(S)$?</summary>
+        <div class="qa-answer">$E[S] = \lambda E[X] = 10(3) = 30$. $\text{Var}(S) = \lambda E[X^2] = 10(20) = 200$.</div>
+      </details>
+      <details class="qa"><summary>$N\le 2$ with $\Pr(N=0)=0.6,\Pr(N=1)=0.3,\Pr(N=2)=0.1$ and severity $\Pr(X=1)=\Pr(X=2)=0.5$. Find $\Pr(S=2)$.</summary>
+        <div class="qa-answer">$S=2$ from: one claim of 2 → $0.3(0.5)=0.15$; two claims of 1 each → $0.1(0.5)(0.5)=0.025$. Total $\Pr(S=2)=0.175$.</div>
+      </details>
+      <details class="qa"><summary>State the Panjer starting value $g_0$ for a compound Poisson with $\lambda = 2$ when the severity has $f_X(0) = 0.25$.</summary>
+        <div class="qa-answer">$g_0 = e^{-\lambda(1 - f_0)} = e^{-2(1 - 0.25)} = e^{-1.5} \approx 0.22313$.</div>
+      </details>
+      <details class="qa"><summary>Two independent compound Poissons have $\lambda_1 = 4, \lambda_2 = 6$. What is $\lambda$ for the combined compound Poisson, and how is the combined severity cdf formed?</summary>
+        <div class="qa-answer">$\lambda = \lambda_1 + \lambda_2 = 10$. The combined severity is the mixture $F_X(x) = \frac{4}{10}F_1(x) + \frac{6}{10}F_2(x)$ (weights proportional to the $\lambda_j$).</div>
+      </details>
+      <details class="qa"><summary>Claims $N\sim\text{Poisson}(20)$; each loss exceeds a deductible with probability $0.6$. What is the distribution of the number of payments $N'$?</summary>
+        <div class="qa-answer">By Poisson splitting, $N'\sim\text{Poisson}(20\times 0.6)=\text{Poisson}(12)$. (This shortcut is Poisson-only.)</div>
+      </details>
+      <details class="qa"><summary>Given an integer-valued $S$ with $E[S] = 5$ and $E[(S-3)_+] = 2.4$, find $E[S \wedge 3]$.</summary>
+        <div class="qa-answer">$E[S \wedge 3] = E[S] - E[(S-3)_+] = 5 - 2.4 = 2.6$.</div>
+      </details>
+      <details class="qa"><summary>An integer-valued $S$ has $E[S]=504$, $\text{Var}(S)=205{,}344$, and you want $\Pr(S\le 400)$ by normal approximation. $S$ can equal $\dots,200,400,1000,\dots$ — what continuity-corrected boundary do you use?</summary>
+        <div class="qa-answer">Use the midpoints around 400: lower $\tfrac{200+400}{2}=300$, upper $\tfrac{400+1000}{2}=700$. Since we want to include $S=400$, $\Pr(S\le 400)\Rightarrow\Pr(S\le 700)=\Phi\!\big(\tfrac{700-504}{\sqrt{205344}}\big)=\Phi(0.4325)\approx 0.667$.</div>
+      </details>
+      <details class="qa"><summary>$X\sim\text{Weibull}(\theta=5000,\tau=3)$. Find $\text{VaR}_{0.95}(X)$.</summary>
+        <div class="qa-answer">$\text{VaR}_{0.95}=\theta[-\ln(1-0.95)]^{1/\tau}=5000[-\ln 0.05]^{1/3}=5000(2.9957)^{1/3}\approx 7{,}207.83$. (Solve $F(x)=1-e^{-(x/\theta)^\tau}=0.95$.)</div>
+      </details>
+      <details class="qa"><summary>$X\sim\text{Normal}(\mu=1000,\sigma=200)$. Find $\text{TVaR}_{0.95}(X)$. ($z_{0.95}=1.645$, $\phi(1.645)=0.1031$.)</summary>
+        <div class="qa-answer">$\text{TVaR}_{0.95}=\mu+\sigma\dfrac{\phi(z_{0.95})}{1-0.95}=1000+200\cdot\dfrac{0.1031}{0.05}=1000+200(2.062)=1{,}412.4$.</div>
+      </details>
+      <details class="qa"><summary>Is VaR a coherent risk measure? If not, which property does it violate?</summary>
+        <div class="qa-answer">No. VaR satisfies translation invariance, positive homogeneity, and monotonicity, but can violate <strong>subadditivity</strong>, so it is not coherent. TVaR satisfies all four and is coherent.</div>
+      </details>
+      <details class="qa"><summary>Compare the tail weight of a Pareto$(\alpha=2,\theta)$ and an exponential. Which is heavier-tailed, and why?</summary>
+        <div class="qa-answer">The Pareto. It has finite positive raw moments only for $k<\alpha=2$ (finitely many), while the exponential has all positive moments finite. Fewer finite moments ⇒ heavier tail.</div>
+      </details>
+      <details class="qa"><summary>Write the aggregate CDF $F_S(s)$ in Law-of-Total-Probability form, and specialize it to $N\in\{0,1,2\}$.</summary>
+        <div class="qa-answer">$F_S(s)=p_N(0)+\sum_{n>0}p_N(n)\,\Pr\!\big(\sum_{i=1}^n X_i\le s\big)$. With $N\le 2$: $F_S(s)=p_N(0)+p_N(1)F_X(s)+p_N(2)F_{X_1+X_2}(s)$. This holds for continuous severity too — you weight the severity <em>CDF</em>.</div>
+      </details>
+      <details class="qa"><summary>$N\in\{0,1\}$ with $\Pr(N=0)=0.7,\Pr(N=1)=0.3$. Severity $X\sim\text{Normal}(100,\sigma^2=400)$. Find $\Pr(S\le 130)$.</summary>
+        <div class="qa-answer">$\Pr(S\le 130)=p_N(0)+p_N(1)F_X(130)=0.7+0.3\,\Phi\!\big(\tfrac{130-100}{20}\big)=0.7+0.3\,\Phi(1.5)=0.7+0.3(0.9332)=0.9800$.</div>
+      </details>
+      <details class="qa"><summary>$X_1,X_2$ are independent $\text{Normal}(180,100^2)$. What is the distribution of $X_1+X_2$, and what is $F_{X_1+X_2}(200)$?</summary>
+        <div class="qa-answer">Sum of independent normals is normal with means and <em>variances</em> added: $X_1+X_2\sim\text{Normal}(360,\,20{,}000)$. $F_{X_1+X_2}(200)=\Phi\!\big(\tfrac{200-360}{\sqrt{20{,}000}}\big)=\Phi(-1.131)\approx 0.129$. (Never add standard deviations.)</div>
+      </details>
+      <details class="qa"><summary>$X\sim\text{Uniform}(5,55)$ with a deductible of $20$. Compute $E[(X-20)_+]$ by integration.</summary>
+        <div class="qa-answer">$E[(X-20)_+]=\int_{20}^{55}(x-20)\tfrac{1}{50}\,dx=\tfrac{1}{50}\cdot\tfrac{35^2}{2}=12.25$.</div>
+      </details>
+      <details class="qa"><summary>For $N\sim\text{Poisson}(25)$, $X\sim\text{Uniform}(5,55)$, deductible 20: state the Poisson-split frequency $N'$ and the payment-per-payment distribution $Y^P$.</summary>
+        <div class="qa-answer">$\Pr(X>20)=\tfrac{35}{50}=0.7$, so $N'\sim\text{Poisson}(25\times0.7)=\text{Poisson}(17.5)$. Conditioning a uniform on exceeding the threshold and subtracting it gives $Y^P=(X-20\mid X>20)\sim\text{Uniform}(0,35)$, with $E[Y^P]=17.5$, $\text{Var}(Y^P)=35^2/12=102.08$.</div>
+      </details>
+      <details class="qa"><summary>Claims average $300$/yr; severity $X\sim\text{Pareto}(\alpha=3,\theta=20)$ with a policy limit $u=10$. Find $E[S]$ using the table $E[X\wedge u]$.</summary>
+        <div class="qa-answer">$E[X\wedge 10]=\tfrac{20}{2}\big[1-(20/30)^2\big]=10(1-0.4444)=5.5556$. $E[S]=300(5.5556)\approx 1{,}667$.</div>
+      </details>
+      <details class="qa"><summary>$f(x)=\tfrac{2x}{3}$ on $(1,2)$. Find $\text{VaR}_{0.75}(X)$ by inverting the CDF.</summary>
+        <div class="qa-answer">$\int_1^{\pi}\tfrac{2x}{3}dx=\tfrac{\pi^2-1}{3}=0.75\Rightarrow\pi^2=3.25\Rightarrow\pi=1.8028$.</div>
+      </details>
+      <details class="qa"><summary>Same $f(x)=\tfrac{2x}{3}$ on $(1,2)$. Find $\text{TVaR}_{0.75}(X)$ by direct integration, and give the sanity-check range.</summary>
+        <div class="qa-answer">$\text{TVaR}_{0.75}=\tfrac{1}{0.25}\int_{1.8028}^{2}x\cdot\tfrac{2x}{3}dx=\tfrac{1}{0.25}\big[\tfrac{2x^3}{9}\big]_{1.8028}^{2}=\tfrac{0.4758}{0.25}=1.9031$. Sanity check: it must lie between $\text{VaR}=1.8028$ and the upper support bound $2$ — and $1.9031$ does.</div>
+      </details>
+      <details class="qa"><summary>Reinsurance covers 80% of aggregate claims above $200$ and $E[(S-200)_+]=166.63$. What is the reinsurance net premium, and why the multiplier?</summary>
+        <div class="qa-answer">Proportional reinsurance pays a fixed fraction of the stop-loss layer, so multiply the finished stop-loss premium by the covered fraction: $0.8(166.63)=133.31$.</div>
+      </details>
+      <details class="qa"><summary>A logarithmic frequency has $\Pr(N=n)=\tfrac{0.9^n}{n\ln(10)}$. Identify $\beta$ and find $E[N]$.</summary>
+        <div class="qa-answer">Match to the table pmf $\tfrac{(\beta/(1+\beta))^n}{n\ln(1+\beta)}$: $\tfrac{\beta}{1+\beta}=0.9\Rightarrow\beta=9$. Then $E[N]=\tfrac{\beta}{\ln(1+\beta)}=\tfrac{9}{\ln 10}=3.9087$.</div>
+      </details>
+      <details class="qa"><summary>Integer $S$ has $E[S]=6$, $p_S(0)=0.25$, $p_S(1)=0.075$. Find $E[(S-2)_+]$ using the $E[S]-d+\sum_{k\lt d}(d-k)p_S(k)$ recursion.</summary>
+        <div class="qa-answer">$E[(S-2)_+]=E[S]-2+\sum_{k=0}^{1}(2-k)p_S(k)=6-2+[2(0.25)+1(0.075)]=4+0.575=4.575$.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — study.fam // IDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1017;          /* editor background */
+    --bg-2:#11151f;        /* panels */
+    --bg-3:#0a0d13;        /* deepest (gutter) */
+    --sidebar:#0b0e15;
+    --tabbar:#10141d;
+    --line:#1c2230;        /* borders */
+    --line-soft:#161b27;
+    --txt:#c8d3e6;         /* default code text */
+    --txt-dim:#7a8aa3;     /* comments-ish UI */
+    --txt-faint:#4b566b;   /* line numbers */
+    /* syntax palette */
+    --kw:#c678dd;          /* keyword purple */
+    --fn:#61afef;          /* function blue */
+    --str:#98c379;         /* string green */
+    --num:#d19a66;         /* number orange */
+    --type:#e5c07b;        /* type yellow */
+    --var:#56b6c2;         /* cyan */
+    --tag:#e06c75;         /* red/tag */
+    --punc:#5c6a7e;        /* punctuation */
+    --accent:#61afef;
+    --good:#98c379;
+    --warn:#e5c07b;
+    --bad:#e06c75;
+    --glow:rgba(97,175,239,.35);
+    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:'Inter',-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    color:var(--txt);
+    font-family:var(--mono);
+    font-size:14px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:rgba(97,175,239,.28);color:#fff}
+  a{color:inherit;text-decoration:none}
+
+  /* ============ APP SHELL ============ */
+  .ide{
+    display:grid;
+    grid-template-columns:54px 248px 1fr;
+    grid-template-rows:38px 1fr 24px;
+    grid-template-areas:
+      "titlebar titlebar titlebar"
+      "activity sidebar  main"
+      "status   status   status";
+    height:100vh;
+    min-height:640px;
+  }
+
+  /* ---- Title bar ---- */
+  .titlebar{
+    grid-area:titlebar;
+    background:linear-gradient(#12161f,#0e121a);
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;
+    padding:0 14px;gap:14px;
+    font-size:12px;color:var(--txt-dim);
+    user-select:none;
+  }
+  .traffic{display:flex;gap:8px;align-items:center}
+  .traffic i{width:12px;height:12px;border-radius:50%;display:block}
+  .traffic .r{background:#ff5f57}
+  .traffic .y{background:#febc2e}
+  .traffic .g{background:#28c840}
+  .titlebar .crumb{display:flex;align-items:center;gap:7px;letter-spacing:.02em}
+  .titlebar .crumb b{color:var(--txt);font-weight:600}
+  .titlebar .crumb .sep{color:var(--txt-faint)}
+  .titlebar .spacer{flex:1}
+  .titlebar .meta{display:flex;gap:16px;align-items:center}
+  .titlebar .meta span{display:flex;align-items:center;gap:6px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good)}
+
+  /* ---- Activity bar (far left icons) ---- */
+  .activity{
+    grid-area:activity;
+    background:var(--bg-3);
+    border-right:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;
+    padding-top:10px;gap:4px;
+  }
+  .actbtn{
+    width:40px;height:40px;border-radius:9px;
+    display:grid;place-items:center;
+    color:var(--txt-faint);cursor:pointer;
+    position:relative;transition:.15s;
+  }
+  .actbtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
+  .actbtn:hover{color:var(--txt)}
+  .actbtn.on{color:var(--accent)}
+  .actbtn.on::before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .activity .grow{flex:1}
+  .logo-m{
+    width:40px;height:40px;border-radius:11px;margin-bottom:12px;
+    background:linear-gradient(135deg,#61afef,#c678dd);
+    display:grid;place-items:center;
+    font-family:var(--mono);font-weight:800;color:#0a0d13;font-size:20px;
+    box-shadow:0 6px 18px -4px var(--glow);
+  }
+
+  /* ---- Sidebar (explorer / nav) ---- */
+  .sidebar{
+    grid-area:sidebar;
+    background:var(--sidebar);
+    border-right:1px solid var(--line);
+    overflow-y:auto;
+    display:flex;flex-direction:column;
+  }
+  .sb-head{
+    padding:11px 14px 8px;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--txt-faint);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .sb-head .ic{display:flex;gap:9px;color:var(--txt-faint)}
+  .tree{padding:0 6px 12px}
+  .folder{
+    display:flex;align-items:center;gap:6px;
+    padding:5px 8px;border-radius:6px;color:var(--txt);
+    font-size:13px;cursor:default;font-weight:500;
+  }
+  .folder .chev{color:var(--txt-faint);transition:.2s;font-size:10px}
+  .folder .fic{color:var(--type)}
+  .group-label{
+    margin:12px 8px 4px;padding:4px 8px;
+    font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--kw);font-weight:700;
+    border-left:2px solid var(--kw);background:rgba(198,120,221,.07);
+    border-radius:0 5px 5px 0;
+  }
+  .navitem{
+    display:flex;align-items:center;gap:9px;
+    padding:5px 8px 5px 20px;border-radius:6px;
+    font-size:13px;color:var(--txt-dim);cursor:pointer;
+    position:relative;transition:.13s;
+  }
+  .navitem .ext{color:var(--txt-faint);font-size:11px}
+  .navitem:hover{background:rgba(97,175,239,.06);color:var(--txt)}
+  .navitem.active{background:rgba(97,175,239,.12);color:#fff}
+  .navitem.active::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:2px;background:var(--accent);border-radius:2px}
+  .navitem .fdot{width:14px;text-align:center}
+  .navitem .pct{margin-left:auto;font-size:10.5px;color:var(--txt-faint)}
+  .navitem.active .pct{color:var(--good)}
+
+  .sb-foot{margin-top:auto;padding:12px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--txt-faint)}
+  .sb-foot .meter{height:5px;border-radius:4px;background:#0a0d13;overflow:hidden;margin:7px 0 6px;border:1px solid var(--line)}
+  .sb-foot .meter i{display:block;height:100%;width:72%;background:linear-gradient(90deg,#61afef,#98c379)}
+
+  /* ---- Main editor area ---- */
+  .main{
+    grid-area:main;background:var(--bg);
+    display:flex;flex-direction:column;min-width:0;overflow:hidden;
+  }
+  /* tab bar */
+  .tabs{
+    display:flex;background:var(--tabbar);border-bottom:1px solid var(--line);
+    height:40px;flex-shrink:0;overflow:hidden;
+  }
+  .tab{
+    display:flex;align-items:center;gap:8px;
+    padding:0 16px;font-size:12.5px;color:var(--txt-dim);
+    border-right:1px solid var(--line);cursor:pointer;
+    position:relative;white-space:nowrap;transition:.13s;
+  }
+  .tab .ti{font-size:13px}
+  .tab:hover{color:var(--txt)}
+  .tab.active{background:var(--bg);color:#fff}
+  .tab.active::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)}
+  .tab .x{color:var(--txt-faint);font-size:14px;margin-left:2px}
+  .tab.active .x{color:var(--txt-dim)}
+  .tab.preview{font-style:italic}
+  .tabs .spacer{flex:1;border-right:1px solid var(--line)}
+  .tabs .splitbtn{display:flex;align-items:center;padding:0 14px;color:var(--txt-faint);font-size:14px}
+
+  /* breadcrumb under tabs */
+  .subcrumb{
+    display:flex;align-items:center;gap:7px;
+    padding:6px 18px;font-size:11.5px;color:var(--txt-faint);
+    border-bottom:1px solid var(--line-soft);background:var(--bg);
+  }
+  .subcrumb .s{color:var(--type)}
+  .subcrumb b{color:var(--fn);font-weight:500}
+  .subcrumb .arr{opacity:.5}
+
+  /* the scrolling code canvas */
+  .canvas{flex:1;overflow-y:auto;position:relative;background:
+    radial-gradient(900px 500px at 80% -10%, rgba(97,175,239,.06), transparent 60%),
+    radial-gradient(700px 400px at 0% 110%, rgba(198,120,221,.05), transparent 60%);
+  }
+  .code{display:flex;min-height:100%}
+  .gutter{
+    flex-shrink:0;width:56px;background:var(--bg-3);
+    border-right:1px solid var(--line-soft);
+    padding:18px 0 60px;text-align:right;
+    color:var(--txt-faint);font-size:12.5px;line-height:1.85;
+    user-select:none;position:sticky;left:0;
+  }
+  .gutter span{display:block;padding-right:14px}
+  .gutter span.cur{color:var(--txt);background:rgba(97,175,239,.07)}
+  .body{flex:1;padding:18px 30px 60px;min-width:0}
+  .ln{line-height:1.85;font-size:13.5px;white-space:pre-wrap}
+  .cmt{color:var(--punc);font-style:italic}
+  .kw{color:var(--kw)} .fn{color:var(--fn)} .str{color:var(--str)}
+  .num{color:var(--num)} .type{color:var(--type)} .var{color:var(--var)}
+  .tag{color:var(--tag)} .pn{color:var(--punc)} .op{color:#56b6c2}
+
+  /* ---- rendered "cells" that sit inside the editor as block widgets ---- */
+  .widget{margin:14px 0 22px;border:1px solid var(--line);border-radius:12px;background:
+    linear-gradient(#11151f,#0f131b);overflow:hidden;box-shadow:0 14px 40px -22px rgba(0,0,0,.9)}
+  .wtitle{display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid var(--line-soft);
+    font-size:11px;letter-spacing:.04em;color:var(--txt-dim);background:rgba(255,255,255,.015)}
+  .wtitle .badge{margin-left:auto;font-size:10px;color:var(--txt-faint);border:1px solid var(--line);
+    padding:2px 8px;border-radius:20px}
+  .runline{color:var(--txt-faint);font-size:11px;display:flex;align-items:center;gap:6px}
+  .runline .play{color:var(--good)}
+
+  /* HERO widget */
+  .hero{padding:26px 26px 8px}
+  .greet{font-family:var(--sans);color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+  .greet::before{content:"//";color:var(--punc);font-family:var(--mono)}
+  .hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(30px,4.4vw,50px);line-height:1.05;
+    margin:12px 0 14px;color:#eef3fb;letter-spacing:-.02em}
+  .hero h1 .cursor{display:inline-block;width:3px;height:.92em;background:var(--accent);margin-left:5px;
+    vertical-align:-3px;animation:blink 1.05s step-end infinite;box-shadow:0 0 10px var(--glow)}
+  @keyframes blink{50%{opacity:0}}
+  .hero p.lede{font-family:var(--sans);color:var(--txt-dim);font-size:15px;max-width:62ch;line-height:1.6}
+  .hero p.lede .hl{color:var(--str)}
+
+  .cta{display:flex;gap:12px;flex-wrap:wrap;padding:20px 26px 26px}
+  .btn{font-family:var(--mono);font-size:13px;font-weight:600;padding:11px 20px;border-radius:9px;
+    cursor:pointer;display:inline-flex;align-items:center;gap:9px;border:1px solid transparent;transition:.16s;letter-spacing:.01em}
+  .btn .k{font-size:14px}
+  .btn-primary{background:linear-gradient(135deg,#61afef,#4b8fd6);color:#08111c;border-color:#61afef;
+    box-shadow:0 8px 22px -8px var(--glow)}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 12px 28px -8px var(--glow)}
+  .btn-ghost{background:rgba(152,195,121,.08);color:var(--good);border-color:rgba(152,195,121,.35)}
+  .btn-ghost:hover{background:rgba(152,195,121,.16)}
+
+  /* STATS row */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:6px 0 22px;
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0f131b}
+  .stat{padding:18px 20px;border-right:1px solid var(--line-soft);position:relative}
+  .stat:last-child{border-right:none}
+  .stat .lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-faint);display:flex;align-items:center;gap:7px}
+  .stat .val{font-family:var(--sans);font-weight:700;font-size:34px;margin:8px 0 2px;letter-spacing:-.02em}
+  .stat .sub{font-size:11.5px;color:var(--txt-dim)}
+  .stat.s1 .val{color:var(--good)} .stat.s2 .val{color:var(--warn)} .stat.s3 .val{color:var(--fn)}
+  .stat .bar{height:6px;border-radius:5px;background:#0a0d13;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+  .stat .bar i{display:block;height:100%;border-radius:5px}
+  .stat.s1 .bar i{width:72%;background:linear-gradient(90deg,#98c379,#61afef)}
+  .stat .ring{position:absolute;top:16px;right:18px;font-size:11px;color:var(--txt-faint)}
+
+  /* two-col split: exam card + topic preview */
+  .split{display:grid;grid-template-columns:1.1fr 1.4fr;gap:18px;margin-bottom:22px}
+
+  /* exam card */
+  .examcard{border:1px solid var(--line);border-radius:12px;background:
+    linear-gradient(150deg,#141a26,#0f131b);padding:0;overflow:hidden}
+  .examcard .top{padding:18px 20px;border-bottom:1px solid var(--line-soft);display:flex;align-items:flex-start;gap:14px}
+  .exam-badge{width:50px;height:50px;border-radius:12px;flex-shrink:0;
+    background:linear-gradient(135deg,#e06c75,#c678dd);display:grid;place-items:center;
+    font-family:var(--mono);font-weight:800;color:#0a0d13;font-size:13px;letter-spacing:.02em;
+    box-shadow:0 6px 18px -6px rgba(224,108,117,.5)}
+  .examcard h3{font-family:var(--sans);font-size:19px;color:#eef3fb;font-weight:700}
+  .examcard .ftitle{font-size:12px;color:var(--txt-dim);margin-top:2px}
+  .examcard .grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-soft)}
+  .examcard .cell{background:#0f131b;padding:14px 18px}
+  .examcard .cell .ck{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-faint)}
+  .examcard .cell .cv{font-family:var(--mono);font-size:16px;color:var(--txt);margin-top:4px;font-weight:600}
+  .examcard .cell .cv.green{color:var(--good)}
+
+  /* topic preview + formula */
+  .topic{border:1px solid var(--line);border-radius:12px;background:#0f131b;padding:20px 22px;display:flex;flex-direction:column}
+  .topic .eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--var);display:flex;align-items:center;gap:7px}
+  .topic h3{font-family:var(--sans);font-size:21px;color:#eef3fb;font-weight:700;margin:9px 0 6px;letter-spacing:-.01em}
+  .topic .lede{font-family:var(--sans);font-size:13.5px;color:var(--txt-dim);line-height:1.55}
+  .formula{margin-top:16px;border:1px solid var(--line);border-radius:10px;background:#0a0d13;overflow:hidden}
+  .formula .fhead{padding:7px 14px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-faint);
+    border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.012)}
+  .formula .frow{display:flex;align-items:center;padding:0}
+  .formula .fg{width:44px;text-align:right;padding:13px 12px 13px 0;color:var(--txt-faint);font-size:12px;
+    border-right:1px solid var(--line-soft);flex-shrink:0;background:#080b10}
+  .formula .feq{padding:13px 16px;font-size:15.5px;color:var(--txt);letter-spacing:.01em;line-height:1.4}
+  .formula .frow+.frow{border-top:1px solid var(--line-soft)}
+  .formula .var{color:var(--var)} .formula .op{color:var(--kw)} .formula .num{color:var(--num)} .formula .type{color:var(--type)}
+
+  /* common trap callout */
+  .trap{margin-bottom:22px;border:1px solid rgba(229,192,123,.4);border-radius:12px;
+    background:linear-gradient(120deg,rgba(229,192,123,.09),rgba(224,108,117,.05));
+    padding:16px 20px;display:flex;gap:15px;align-items:flex-start;position:relative;overflow:hidden}
+  .trap::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--warn);box-shadow:0 0 12px rgba(229,192,123,.6)}
+  .trap .ticon{font-size:22px;flex-shrink:0;line-height:1}
+  .trap .tk{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--warn);font-weight:700;display:flex;align-items:center;gap:8px}
+  .trap p{font-family:var(--sans);font-size:14px;color:#e8dcc2;margin-top:6px;line-height:1.55}
+  .trap p code{font-family:var(--mono);color:var(--warn);background:rgba(229,192,123,.12);padding:1px 6px;border-radius:5px;font-size:12.5px}
+
+  /* worked example teaser */
+  .example{border:1px solid var(--line);border-radius:12px;background:#0f131b;overflow:hidden;margin-bottom:8px}
+  .example .ehead{padding:14px 20px;display:flex;align-items:center;gap:13px;border-bottom:1px solid var(--line-soft)}
+  .ex-num{width:38px;height:38px;border-radius:10px;background:rgba(97,175,239,.12);border:1px solid rgba(97,175,239,.3);
+    display:grid;place-items:center;color:var(--accent);font-weight:700;font-size:15px;flex-shrink:0}
+  .example .et{font-family:var(--sans);font-size:16px;color:#eef3fb;font-weight:600}
+  .example .es{font-size:11.5px;color:var(--txt-faint);margin-top:1px}
+  .example .ebody{padding:16px 20px;font-size:13px;color:var(--txt-dim);display:flex;gap:24px;flex-wrap:wrap}
+  .example .ebody .step{display:flex;align-items:center;gap:8px}
+  .example .ebody .step .n{color:var(--num)} .example .ebody .step .v{color:var(--var)}
+  .example .efoot{padding:0 20px 18px;display:flex;gap:12px;flex-wrap:wrap}
+
+  /* page footer (inside canvas) */
+  .pagefoot{padding:30px 30px 50px;border-top:1px solid var(--line-soft);margin-top:14px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--txt-faint);font-size:11.5px}
+  .pagefoot .brand{display:flex;align-items:center;gap:10px}
+  .pagefoot .mini-m{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#61afef,#c678dd);
+    display:grid;place-items:center;color:#0a0d13;font-weight:800;font-size:13px}
+  .pagefoot .brand b{color:var(--txt);font-family:var(--sans);font-weight:700}
+  .pagefoot .brand span{color:var(--txt-faint)}
+
+  /* ---- status bar ---- */
+  .status{
+    grid-area:status;background:linear-gradient(90deg,#1b2536,#10141d);
+    border-top:1px solid var(--line);
+    display:flex;align-items:center;gap:0;font-size:11px;color:#9fb2cf;
+    padding:0;user-select:none;
+  }
+  .status .item{display:flex;align-items:center;gap:6px;padding:0 12px;height:100%;border-right:1px solid rgba(255,255,255,.05)}
+  .status .item.accent{background:var(--accent);color:#08111c;font-weight:600;border-right:none}
+  .status .grow{flex:1}
+  .status .git{color:#c678dd}
+
+  /* scrollbars */
+  .canvas::-webkit-scrollbar,.sidebar::-webkit-scrollbar{width:11px;height:11px}
+  .canvas::-webkit-scrollbar-thumb,.sidebar::-webkit-scrollbar-thumb{background:#222a3a;border-radius:10px;border:3px solid var(--bg)}
+  .canvas::-webkit-scrollbar-thumb:hover{background:#2e3849}
+  .canvas::-webkit-scrollbar-track{background:transparent}
+
+  /* minimap (decorative) */
+  .minimap{position:absolute;top:0;right:0;width:58px;bottom:0;background:rgba(10,13,19,.5);
+    border-left:1px solid var(--line-soft);padding:14px 8px;pointer-events:none;display:flex;flex-direction:column;gap:4px;opacity:.5}
+  .minimap .ml{height:3px;border-radius:2px;background:#2a3344}
+  .minimap .ml.a{background:#61afef60;width:80%} .minimap .ml.b{width:55%} .minimap .ml.c{width:90%;background:#c678dd55}
+  .minimap .ml.d{width:40%} .minimap .ml.e{width:70%;background:#98c37955}
+  .minimap .view{position:absolute;top:40px;left:4px;right:4px;height:120px;background:rgba(97,175,239,.08);border-radius:4px}
+
+  @media (max-width:1080px){
+    .ide{grid-template-columns:48px 1fr}
+    .ide{grid-template-areas:"titlebar titlebar" "activity main" "status status"}
+    .sidebar{display:none}
+    .split{grid-template-columns:1fr}
+    .minimap{display:none}
+  }
+  @media (max-width:700px){
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .body{padding:14px 16px 50px}
+    .gutter{width:40px}
+    .hero{padding:20px 18px 6px}
+    .cta{padding:16px 18px 22px}
+    .titlebar .meta{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="ide">
+
+  <!-- ===== TITLE BAR ===== -->
+  <div class="titlebar">
+    <div class="traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+    <div class="crumb">
+      <span class="sep">~/</span><b>me-studing-stuff</b><span class="sep">/</span>
+      <span>exam-fam</span><span class="sep">/</span><b style="color:var(--fn)">dashboard.fam</b>
+    </div>
+    <div class="spacer"></div>
+    <div class="meta">
+      <span><span class="dot"></span> synced</span>
+      <span class="git" style="color:#c678dd">⎇ main</span>
+      <span>UTF-8</span>
+      <span>FAM</span>
+    </div>
+  </div>
+
+  <!-- ===== ACTIVITY BAR ===== -->
+  <nav class="activity">
+    <div class="logo-m">M</div>
+    <div class="actbtn on" title="Explorer">
+      <svg viewBox="0 0 24 24"><path d="M3 7l2-3h5l2 3h9v12H3z"/></svg>
+    </div>
+    <div class="actbtn" title="Search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+    </div>
+    <div class="actbtn" title="Progress">
+      <svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-9"/></svg>
+    </div>
+    <div class="actbtn" title="Bookmarks">
+      <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+    </div>
+    <div class="actbtn" title="Timer">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+    </div>
+    <div class="grow"></div>
+    <div class="actbtn" title="Account">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+    <div class="actbtn" title="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+    </div>
+  </nav>
+
+  <!-- ===== SIDEBAR / EXPLORER NAV ===== -->
+  <aside class="sidebar">
+    <div class="sb-head">EXPLORER
+      <span class="ic">···</span>
+    </div>
+    <div class="tree">
+      <div class="folder"><span class="chev">▾</span><span class="fic">📂</span> EXAM-FAM</div>
+
+      <div class="group-label">// FAM-L / FAM-S</div>
+
+      <div class="navitem active"><span class="fdot">📄</span> survival-models<span class="ext">.fam</span><span class="pct">100%</span></div>
+      <div class="navitem"><span class="fdot">📄</span> life-tables<span class="ext">.fam</span><span class="pct">90%</span></div>
+      <div class="navitem"><span class="fdot">📄</span> life-insurance<span class="ext">.fam</span><span class="pct">64%</span></div>
+      <div class="navitem"><span class="fdot">📄</span> life-annuities<span class="ext">.fam</span><span class="pct">48%</span></div>
+      <div class="navitem"><span class="fdot">📄</span> premiums<span class="ext">.fam</span><span class="pct">30%</span></div>
+      <div class="navitem"><span class="fdot">📄</span> policy-values<span class="ext">.fam</span><span class="pct">12%</span></div>
+
+      <div class="group-label">// resources</div>
+      <div class="navitem"><span class="fdot">📐</span> formulas<span class="ext">.md</span></div>
+      <div class="navitem"><span class="fdot">🧮</span> worked-problems<span class="ext">.md</span></div>
+      <div class="navitem"><span class="fdot">🗓️</span> study-plan<span class="ext">.json</span></div>
+    </div>
+
+    <div class="sb-foot">
+      <div style="display:flex;justify-content:space-between"><span>OVERALL</span><span style="color:var(--good)">72%</span></div>
+      <div class="meter"><i></i></div>
+      <div>12 of 17 topics complete</div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN EDITOR ===== -->
+  <main class="main">
+
+    <!-- tab bar -->
+    <div class="tabs">
+      <div class="tab active"><span class="ti">🔵</span> dashboard.fam <span class="x">×</span></div>
+      <div class="tab"><span class="ti">📄</span> life-insurance.fam <span class="x">×</span></div>
+      <div class="tab preview"><span class="ti">📐</span> formulas.md <span class="x">×</span></div>
+      <div class="spacer"></div>
+      <div class="splitbtn">⫶ ⊞</div>
+    </div>
+
+    <!-- breadcrumb -->
+    <div class="subcrumb">
+      <span class="s">exam-fam</span><span class="arr">›</span>
+      <span class="s">src</span><span class="arr">›</span>
+      <b>dashboard.fam</b><span class="arr">›</span>
+      <span style="color:var(--kw)">⟨⟩</span> <span style="color:var(--type)">StudentDashboard</span>
+    </div>
+
+    <!-- scrolling code canvas -->
+    <div class="canvas">
+
+      <!-- decorative minimap -->
+      <div class="minimap" aria-hidden="true">
+        <div class="view"></div>
+        <div class="ml c"></div><div class="ml a"></div><div class="ml b"></div><div class="ml"></div>
+        <div class="ml e"></div><div class="ml a"></div><div class="ml c"></div><div class="ml d"></div>
+        <div class="ml b"></div><div class="ml e"></div><div class="ml a"></div><div class="ml"></div>
+        <div class="ml c"></div><div class="ml d"></div><div class="ml b"></div><div class="ml a"></div>
+        <div class="ml e"></div><div class="ml"></div><div class="ml c"></div><div class="ml b"></div>
+      </div>
+
+      <div class="code">
+        <!-- line-number gutter -->
+        <div class="gutter">
+          <span>1</span><span>2</span><span class="cur">3</span><span>4</span><span>5</span>
+          <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+          <span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+          <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span>
+          <span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+          <span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
+          <span>31</span><span>32</span><span>33</span><span>34</span><span>35</span>
+          <span>36</span><span>37</span><span>38</span><span>39</span><span>40</span>
+        </div>
+
+        <div class="body">
+          <!-- code preamble -->
+          <div class="ln"><span class="cmt">// dashboard.fam — Fundamentals of Actuarial Mathematics</span></div>
+          <div class="ln"><span class="kw">import</span> <span class="op">{</span> <span class="var">progress</span><span class="pn">,</span> <span class="var">countdown</span><span class="pn">,</span> <span class="var">plan</span> <span class="op">}</span> <span class="kw">from</span> <span class="str">"./soa/fam"</span><span class="pn">;</span></div>
+          <div class="ln"><span class="kw">export default function</span> <span class="fn">StudentDashboard</span><span class="pn">()</span> <span class="op">{</span></div>
+
+          <!-- HERO widget -->
+          <div class="widget">
+            <div class="wtitle"><span style="color:var(--kw)">&lt;Hero/&gt;</span> rendered
+              <span class="runline" style="margin-left:auto"><span class="play">▶</span> render · 0.03s</span>
+            </div>
+            <div class="hero">
+              <div class="greet">Good evening</div>
+              <h1>Let's get you that pass.<span class="cursor"></span></h1>
+              <p class="lede">Your focused hub for SOA Exam FAM — <span class="hl">notes, formulas, worked problems and a plan</span>, all in one calm place.</p>
+            </div>
+            <div class="cta">
+              <button class="btn btn-primary"><span class="k">▶</span> Start studying</button>
+              <button class="btn btn-ghost"><span class="k">⟳</span> Resume <span style="opacity:.6;font-weight:400">· Life Insurance</span></button>
+            </div>
+          </div>
+
+          <!-- STATS -->
+          <div class="ln"><span class="cmt">// const stats = useProgress();</span></div>
+          <div class="stats">
+            <div class="stat s1">
+              <div class="lbl">▣ Overall progress</div>
+              <div class="val">72%</div>
+              <div class="sub">12 of 17 topics</div>
+              <div class="bar"><i></i></div>
+            </div>
+            <div class="stat s2">
+              <div class="lbl">⏳ Exam countdown</div>
+              <div class="val">86<span style="font-size:16px;color:var(--txt-dim)"> days</span></div>
+              <div class="sub">until sitting · stay on plan</div>
+            </div>
+            <div class="stat s3">
+              <div class="lbl">✓ Topics solid</div>
+              <div class="val">8</div>
+              <div class="sub">mastered & review-ready</div>
+            </div>
+          </div>
+
+          <!-- SPLIT: exam card + topic preview -->
+          <div class="ln"><span class="cmt">// &lt;ExamCard/&gt; · &lt;TopicPreview/&gt;</span></div>
+          <div class="split">
+
+            <!-- exam card -->
+            <div class="examcard">
+              <div class="top">
+                <div class="exam-badge">FAM</div>
+                <div>
+                  <h3>Exam FAM</h3>
+                  <div class="ftitle">Fundamentals of Actuarial Mathematics</div>
+                </div>
+              </div>
+              <div class="grid">
+                <div class="cell"><div class="ck">Provider</div><div class="cv">SOA</div></div>
+                <div class="cell"><div class="ck">Questions</div><div class="cv">34</div></div>
+                <div class="cell"><div class="ck">Pass mark</div><div class="cv green">6 / 10</div></div>
+                <div class="cell"><div class="ck">Sections</div><div class="cv">FAM-L · FAM-S</div></div>
+              </div>
+            </div>
+
+            <!-- topic preview + formula -->
+            <div class="topic">
+              <div class="eyebrow">📄 topic preview · life-insurance.fam</div>
+              <h3>Life Insurance Present Values</h3>
+              <p class="lede">Expected present values of death benefits — the building blocks for everything from premiums to policy values.</p>
+              <div class="formula">
+                <div class="fhead">📐 key formulas · whole life</div>
+                <div class="frow"><div class="fg">01</div><div class="feq"><span class="var">A</span>_x <span class="op">=</span> <span class="num">1</span> <span class="op">−</span> <span class="var">d</span>·<span class="var">ä</span>_x</div></div>
+                <div class="frow"><div class="fg">02</div><div class="feq"><span class="type">Var</span>(<span class="var">Z</span>) <span class="op">=</span> <span class="num">²</span><span class="var">A</span>_x <span class="op">−</span> (<span class="var">A</span>_x)<span class="num">²</span></div></div>
+                <div class="frow"><div class="fg">03</div><div class="feq"><span class="var">ä</span>_x <span class="op">=</span> (<span class="num">1</span> <span class="op">−</span> <span class="var">A</span>_x) <span class="op">/</span> <span class="var">d</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMMON TRAP -->
+          <div class="ln"><span class="cmt">/** @warning common-trap — read before the exam */</span></div>
+          <div class="trap">
+            <div class="ticon">⚠️</div>
+            <div>
+              <div class="tk">Common trap</div>
+              <p>Under <code>UDD</code>, multiply <b style="color:var(--warn)">ONLY</b> the term/death piece by <code>i/δ</code> — the pure endowment is never rescaled.</p>
+            </div>
+          </div>
+
+          <!-- WORKED EXAMPLE -->
+          <div class="ln"><span class="cmt">// &lt;WorkedExample id={1} /&gt;</span></div>
+          <div class="example">
+            <div class="ehead">
+              <div class="ex-num">1</div>
+              <div>
+                <div class="et">Example 1 — Whole life EPV &amp; variance</div>
+                <div class="es">life-insurance.fam · ~8 min · 1 worked solution</div>
+              </div>
+              <div style="margin-left:auto" class="runline"><span class="play">▶</span> solve</div>
+            </div>
+            <div class="ebody">
+              <div class="step"><span class="n">①</span> set up <span class="var">A</span>_x</div>
+              <div class="step"><span class="n">②</span> apply <span class="var">A</span>_x = 1 − d·ä_x</div>
+              <div class="step"><span class="n">③</span> compute <span class="var">Var(Z)</span></div>
+              <div class="step"><span class="n">④</span> interpret result</div>
+            </div>
+            <div class="efoot">
+              <button class="btn btn-primary"><span class="k">▶</span> Start studying</button>
+              <button class="btn btn-ghost"><span class="k">⟳</span> Resume</button>
+            </div>
+          </div>
+
+          <div class="ln" style="margin-top:6px"><span class="op">}</span> <span class="cmt">// export default StudentDashboard</span></div>
+
+          <!-- footer -->
+          <footer class="pagefoot">
+            <div class="brand">
+              <div class="mini-m">M</div>
+              <div>
+                <b>Me Studing Stuff</b> &nbsp;<span>· Study smarter. Pass exams.</span>
+              </div>
+            </div>
+            <div>© 2026 · built for SOA Exam FAM · <span style="color:var(--str)">v1.7.2</span></div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== STATUS BAR ===== -->
+  <footer class="status">
+    <div class="item accent">⎇ main</div>
+    <div class="item git">✦ FAM-L / FAM-S</div>
+    <div class="item">⊘ 0 &nbsp; ⚠ 1</div>
+    <div class="grow"></div>
+    <div class="item">Ln 3, Col 1</div>
+    <div class="item">Spaces: 2</div>
+    <div class="item">FAM</div>
+    <div class="item">📅 86 days left</div>
+    <div class="item">🟢 72%</div>
+  </footer>
+
+</div>
+</body>
+</html>

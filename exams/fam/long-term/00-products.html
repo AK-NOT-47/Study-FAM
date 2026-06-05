@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insurance &amp; Annuity Products · FAM-L · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="lt-00" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Long-Term · Topic 0 · Foundations</div>
+      <h1>Insurance &amp; Annuity Products</h1>
+      <p class="lede">Before a single formula, you need the vocabulary of the business. This is the qualitative map of what life insurers actually sell — every $A_x$, $\ddot{a}_x$, and reserve you compute later is the price of one of the products on this page.</p>
+      <div class="meta-row">
+        <span class="chip">📖 AMLCR · Ch. 1</span>
+        <span class="chip">⏱️ ~2 hrs</span>
+        <span class="chip">🔑 Products · contracts · definitions</span>
+        <span class="chip">📝 Mostly qualitative</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>This is the <strong>first</strong> FAM-L topic — it sets the stage for everything that follows. After it you should be able to:</p>
+        <ul>
+          <li>Describe the <strong>three traditional contracts</strong> (term, whole life, endowment) and the key features around them (cash values, lapse, STOLI, participating).</li>
+          <li>Describe the <strong>modern contracts</strong> — universal life, unitized with-profit, equity-linked / unit-linked — and how they bundle investment with insurance.</li>
+          <li>Explain <strong>distribution methods, underwriting</strong> (and adverse selection), and the <strong>premium</strong> structures.</li>
+          <li>Classify the <strong>life annuities</strong> (whole life, temporary, SPDA/SPIA/RPDA, joint, last-survivor, reversionary, guaranteed) and their uses.</li>
+          <li>Distinguish the <strong>long-term health coverages</strong>: disability income, critical illness, chronic illness, and long-term care.</li>
+          <li>Contrast <strong>mutual vs proprietary</strong> insurers, and describe <strong>other life-contingent contracts</strong>: structured settlements, CCRCs, and pensions (DB vs DC).</li>
+        </ul>
+      </div>
+
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Why a qualitative chapter matters on FAM</div>
+        <p>FAM is mostly computation, but the syllabus <em>does</em> ask product-knowledge questions, and they are <strong>free points</strong> — no algebra, just definitions. Student reports confirm items like <strong>STOLI</strong> have appeared. More importantly, this vocabulary tells you <em>which</em> formula a later problem is really asking for. Read it once, then use the Self-Check at the bottom to lock it in.</p>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>0. Insurable interest</h3>
+      <p>Before any product, the law sets one gatekeeping rule: the owner of a life insurance policy must have an <strong>insurable interest</strong> in the insured. An insurable interest exists when the <strong>death of the insured would cause the policyholder a financial loss</strong> — the payout must not leave the beneficiary <em>better off</em> than if the insured had lived.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Why the rule exists (Syllabus Topic 7(a))</div>
+        <p>Insurable interest <strong>removes the incentive to prematurely end the insured's life</strong>: if you can only recover a genuine loss, there is nothing to gain from the insured dying. Historically, before the requirement, people freely insured <strong>strangers and public figures purely as a wager</strong> — betting on when someone would die. The insurable-interest requirement ended that practice, which is why policies are now typically bought by the very individuals being insured. (Throughout this manual we assume the policyholder pays the premium and is the life insured.) This is also the principle that makes <strong>STOLI</strong> illegal — the investment firm has no insurable interest in the stranger it insures.</p>
+      </div>
+
+      <h3>1. Traditional insurance contracts</h3>
+      <p>An insurance policy makes a payment <strong>contingent on a life event</strong>. The three classic forms differ only in <em>when</em> the lump sum is paid.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Contract</th><th>Pays the benefit…</th><th>Relative cost</th><th>Main use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Term</strong></td><td>on death <strong>only if death is within a fixed term</strong> (e.g. 10–30 yrs)</td><td>Cheapest — few policies ever pay out</td><td>Family protection; business "key person" / <strong>COLI</strong> cover</td></tr>
+          <tr><td><strong>Whole life</strong> (permanent)</td><td>on death <strong>whenever it occurs</strong></td><td>Most expensive — a payout is guaranteed</td><td>Lifelong cover + savings element</td></tr>
+          <tr><td><strong>Endowment</strong></td><td>on death <strong>or</strong> at end of term, <strong>whichever is first</strong></td><td>Highest (term + savings)</td><td>Combined protection + savings; now mostly "micro-insurance" in developing markets</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>Term insurance — the variations</h4>
+      <ul>
+        <li><strong>Level term:</strong> death benefit constant, premiums fixed.</li>
+        <li><strong>Decreasing term:</strong> both benefit and premium decrease over time.</li>
+        <li><strong>Renewable term:</strong> renew with <em>no new health evidence</em>, usually at a higher premium. The North-American <strong>Yearly Renewable Term (YRT)</strong> is written one year at a time but guarantees renewal for a fixed period.</li>
+        <li><strong>Convertible term:</strong> option to convert to whole life at the end of the term <em>without</em> health evidence.</li>
+      </ul>
+
+      <h4>Whole life — cash values, lapse, and STOLI</h4>
+      <ul>
+        <li>Regular premiums are often payable only <strong>up to a maximum age</strong> (e.g. 80) — otherwise financial strain at old age could cause lapse and defeat the whole point of lifelong cover.</li>
+        <li><strong>Cash (surrender) value:</strong> a lump sum paid if the holder discontinues. Low early (the insurer must recover acquisition costs — early surrenders may have <em>zero</em> value), more substantial later but usually less than the sum insured. A policy ended early is said to <strong>lapse</strong> or be <strong>surrendered</strong>.</li>
+        <li><strong>Non-forfeiture laws</strong> require insurers to pay specified cash values on traditional whole life.</li>
+        <li><strong>Lapse-supported insurance:</strong> pricing that relies on a predictable share of policies lapsing — the forfeited premiums subsidize lower premiums for those who stay.</li>
+        <li><strong>STOLI (Stranger-Owned Life Insurance):</strong> an investment firm pays the holder for the policy, keeps paying premiums, and collects the death benefit. Because the firm has <strong>no insurable interest</strong>, STOLI is <strong>outlawed in many US states</strong>. A <strong>viatical settlement</strong> is a specific type where a <em>terminally ill</em> holder sells the policy to fund medical/other needs.</li>
+      </ul>
+
+      <h4>Participating ("par" / with-profit) insurance</h4>
+      <p>Insurers use <strong>conservative</strong> pricing assumptions, so most surviving policyholders earn low returns; the gap between the market rate and the rate used to price is the <strong>interest spread</strong>. A <strong>participating</strong> policy charges a higher premium but <strong>shares investment profits</strong> with the holder — as <strong>cash dividends</strong> (North America) or as <strong>bonuses</strong> that raise the benefit (UK/Australia). Profits only; <strong>dividends and bonuses are never negative</strong>.</p>
+      <ul>
+        <li><strong>Reversionary bonuses</strong> are added to in-force contracts: <em>simple</em> (rate on the original sum insured only), <em>compound</em> (rate on sum insured + prior bonuses), <em>super-compound</em> (two rates — one on the original sum, one on prior bonuses).</li>
+        <li><strong>Terminal bonus:</strong> paid on death or at the end of the term.</li>
+      </ul>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Cash dividends</th><th>Bonuses</th></tr></thead>
+        <tbody>
+          <tr><td>Easy to understand</td><td>More complex for policyholders</td></tr>
+          <tr><td>Flexible — offset premium or buy more cover</td><td>Not flexible — always awarded as extra insurance</td></tr>
+          <tr><td>Not tax-efficient (may be taxable)</td><td>Tax efficient</td></tr>
+          <tr><td>On surrender, lose at most one year's profit share</td><td>On surrender, may receive only a small share of profits</td></tr>
+          <tr><td>Require liquidating assets (may hurt returns)</td><td>More potential for future profit; easier to smooth</td></tr>
+          <tr><td>Expensive to operate</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>Common riders &amp; variations</h4>
+      <p>A <strong>rider</strong> is an optional benefit chosen at issue: <strong>joint life</strong> (two lives), <strong>multiple life</strong> (first or each death of a group), <strong>guaranteed cash values</strong>, <strong>policy loans</strong> (borrow against cash value), <strong>accelerated death benefit</strong> (early payout on terminal illness), <strong>accidental death benefit</strong>, <strong>premium waiver on disability</strong>, <strong>family income benefit (FIB)</strong> (regular payments from death to end of term), and <strong>critical illness</strong>.</p>
+
+      <h3>2. Modern insurance contracts</h3>
+      <p>Modern products are more <strong>flexible</strong> and bundle a significant <strong>investment</strong> element, driven by competition with mutual funds/banks, changing demographics, technology, and better-informed customers.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Contract</th><th>What it is</th><th>Where</th><th>Key feature</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Universal life (UL)</strong></td><td>Whole life with <strong>transparent cash values</strong> — a savings account with built-in insurance</td><td>North America</td><td>Premiums + credited interest tracked in a <strong>notional account</strong>; monthly deductions for cost of insurance &amp; expenses. Credited rate <strong>cannot be &lt; 0%</strong>. Holder may skip/reduce premiums while the account covers costs.</td></tr>
+          <tr><td><strong>Unitized with-profit (UWP)</strong></td><td>Premiums buy <strong>units</strong> in a <em>notional</em> asset portfolio; rises add a reversionary bonus, possible terminal bonus</td><td>UK/Australia (withdrawn early 2000s)</td><td>Benefits <strong>only increase or stay the same</strong></td></tr>
+          <tr><td><strong>Equity-linked</strong></td><td>Death/surrender/maturity benefits linked to a <strong>real</strong> investment fund; pays on earlier of death and term end</td><td>Worldwide</td><td>Benefits can <strong>rise or fall</strong>; surrender penalty at early durations</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Two key UWP vs equity-linked differences:</strong> (1) equity-linked benefits sit in a <em>real</em> fund, not a notional pool in the insurer's general account; (2) equity-linked benefits can <em>decrease</em>, while UWP benefits only increase or stay the same.</p>
+      <p>Holders of equity-linked policies receive <strong>at least the accumulated premiums</strong> on death or maturity, and can receive more with a <strong>GMDB</strong> (Guaranteed Minimum Death Benefit) and a <strong>GMMB</strong> (Guaranteed Minimum Maturity Benefit). Equity-linked policies are called:</p>
+      <ul>
+        <li><strong>Variable annuities</strong> / <strong>segregated funds</strong> in North America — the word "annuity" is misleading (benefit is a lump sum, with an <em>option</em> to convert). These offer a GMDB <em>and</em> a GMMB.</li>
+        <li><strong>Unit-linked insurance</strong> outside North America — funds expressed in units/shares; generally <strong>no GMMB</strong>; death benefit often a multiple of the unit value.</li>
+      </ul>
+
+      <h3>3. Distribution, underwriting &amp; premiums</h3>
+      <h4>Distribution methods</h4>
+      <ul>
+        <li><strong>Commission system:</strong> brokers/advisors sell for a commission (a % of premium); the first-year % is higher — the <strong>front-end load</strong>. Tends to sell <em>larger</em> policies.</li>
+        <li><strong>Direct marketing:</strong> sold straight to the public (TV, telemarketing); typically <em>smaller</em> benefits. Example: <em>pre-need</em> insurance for funeral expenses targeting the elderly.</li>
+      </ul>
+      <h4>Underwriting</h4>
+      <p><strong>Underwriting</strong> is how insurers collect and evaluate information on applicants (proposal form, doctor's report, medical exam) to set premiums via <strong>rating factors</strong> (age, gender, smoking, occupation, health). Heavier underwriting applies to <strong>term</strong> policies (extra survival uncertainty), <strong>larger</strong> benefits, and <strong>commission-sold</strong> business. It classifies applicants into <strong>4 classes</strong>:</p>
+      <ol>
+        <li><strong>Preferred lives</strong> — very low mortality risk.</li>
+        <li><strong>Normal lives</strong> — some raised risk but still insurable at standard rates.</li>
+        <li><strong>Rated lives</strong> — one or more elevated risk factors; insurable at a higher premium.</li>
+        <li><strong>Uninsurable lives</strong> — risk so high the insurer will not cover them at any price.</li>
+      </ol>
+      <p>Within the first three, applicants are sub-categorized by age/gender/smoking, etc. Underwriting lowers <strong>adverse selection (anti-selection)</strong> — the tendency for higher-risk people to be the ones most eager to buy.</p>
+      <h4>Premiums</h4>
+      <ul>
+        <li><strong>Single premium:</strong> paid once at the outset.</li>
+        <li><strong>Regular premiums:</strong> annually / semi-annually / quarterly / monthly / weekly. Traditional contracts use a <em>level</em> amount; modern contracts may be variable. <strong>All premiums are paid at the start of each period</strong> (annuity-due) — remember this for the math.</li>
+        <li><strong>Assessmentism:</strong> matching annual income to annual expenses, so premiums <em>rise</em> each year as mortality rises — which discourages renewal.</li>
+      </ul>
+
+      <h3>4. Life annuities</h3>
+      <p>A <strong>life annuity</strong> makes payments that depend on the survival of the <strong>annuitant</strong>. Crucially, there is <strong>no underwriting</strong> (the risk is <em>longevity</em>, not premature death — not assessable by health evidence), and once payments begin the annuity <strong>cannot be surrendered</strong> (surrenders would invite adverse selection and break the cross-subsidy from those who die early to those who live long).</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Type</th><th>How it pays</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Whole life annuity</strong></td><td>Until the annuitant's death.</td></tr>
+          <tr><td><strong>Temporary (term) life annuity</strong></td><td>For a maximum period <em>while the annuitant is alive</em>.</td></tr>
+          <tr><td><strong>SPDA</strong> (Single Premium Deferred)</td><td>One premium; payments <strong>start at a future date</strong>, then continue while alive. May pay a death benefit during deferral; a <strong>guarantee period</strong> ensures payments continue even if the annuitant dies.</td></tr>
+          <tr><td><strong>SPIA</strong> (Single Premium Immediate)</td><td>Like SPDA but payments start <strong>immediately</strong>. Common for converting a lump-sum retirement benefit into income.</td></tr>
+          <tr><td><strong>RPDA</strong> (Regular Premium Deferred)</td><td>Like SPDA but premiums are paid <strong>regularly through the deferred period</strong>.</td></tr>
+          <tr><td><strong>Joint life annuity</strong></td><td>Two lives; pays while <strong>both</strong> survive, stops on the <strong>first</strong> death.</td></tr>
+          <tr><td><strong>Last-survivor annuity</strong></td><td>Two lives; pays until the <strong>second</strong> death.</td></tr>
+          <tr><td><strong>Reversionary annuity</strong></td><td>Two lives (annuitant + insured); pays the annuitant <strong>only after the insured dies</strong>, for as long as the annuitant survives.</td></tr>
+          <tr><td><strong>Guaranteed annuity</strong></td><td>Pays for a minimum period <strong>regardless of survival</strong>, then continues while the annuitant lives.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">These types combine</div>
+        <p>The categories are <strong>not</strong> mutually exclusive — e.g. a "regular premium deferred joint life annuity": regular premiums through deferral, payments start after deferral and continue until the first death of the two lives.</p>
+      </div>
+
+      <h3>5. Long-term health coverages</h3>
+      <h4>Disability Income Insurance (DII)</h4>
+      <p>Also "income protection" — replaces part of income when the insured cannot work due to sickness/injury. Group (employer) DII is cheaper than individual (economies of scale, less adverse selection, lower non-payment risk).</p>
+      <ul>
+        <li><strong>Waiting / elimination period:</strong> time after disability begins before benefits start (typically 30, 60, 180, 365 days).</li>
+        <li><strong>Benefits</strong> are paid until the earliest of recovery, end of the <strong>benefit term</strong>, or death. The <strong>policyholder</strong> chooses the benefit term (max length — e.g. 2 yrs, 5 yrs, or to age 65). Amount is usually <strong>50–70%</strong> of salary (to keep an incentive to return to work).</li>
+        <li><strong>Total vs partial disability:</strong> total = can't do any job; partial = can work but can't earn full salary (smaller benefit). If the insured moves <strong>from total to partial disability during the benefit term</strong>, the benefit payments may be <em>reduced</em>, but the <strong>total benefit term can stay fixed</strong>.</li>
+        <li><strong>Other income sources:</strong> benefits are <strong>reduced if the insured already receives disability income elsewhere</strong> — e.g. workers' compensation or a government benefit program.</li>
+        <li><strong>Own job vs any job:</strong> "own job" pays if you can't do <em>your</em> job; "any job" pays only if you can't do <em>any</em> job — so "any job" is <strong>cheaper</strong>.</li>
+        <li><strong>Return to work assistance:</strong> some policies provide benefits such as <strong>retraining</strong> to help the insured re-enter the workforce smoothly after a disability.</li>
+        <li><strong>Off period:</strong> minimum gap between two disability periods for them to count as <em>separate</em>. The <strong>insurer</strong> defines it (contrast: the policyholder picks the benefit term).</li>
+      </ul>
+
+      <h4>Critical Illness Insurance (CII)</h4>
+      <p>Pays a <strong>lump sum</strong> on diagnosis of a covered condition (almost all cover heart attack, stroke, major organ failure, most cancers). Once paid, the policy <strong>expires</strong> — no benefit on later occurrences. May be whole life or fixed term; possible partial premium return if it expires/lapses with no claim. Often offered as an <strong>accelerated benefit rider</strong> on a life policy: the CII benefit is paid <em>from</em> the death benefit (fully or partially accelerated).</p>
+
+      <h4>Chronic Illness Insurance</h4>
+      <p>Usually an <strong>accelerated benefit rider</strong> on a life policy. Pays a lump sum <em>or</em> an annuity on diagnosis of a chronic illness — defined as an <strong>incurable</strong> illness severe enough that the holder <strong>cannot perform two or more ADLs</strong>.</p>
+
+      <h4>Long-Term Care Insurance (LTC)</h4>
+      <p>Covers the cost of care when a holder can no longer live independently due to advanced age. Premiums are level but insurers <strong>can raise them</strong> (with regulator approval) if claims far exceed projections.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The six ADLs — "Busy Dogs Try To Eat Cookies"</div>
+        <p><strong>B</strong>athing · <strong>D</strong>ressing · <strong>T</strong>ransferring (in/out of bed or chair) · <strong>T</strong>oileting · <strong>E</strong>ating · <strong>C</strong>ontinence. <strong>Eating is an ADL; cooking is not.</strong></p>
+      </div>
+      <ul>
+        <li><strong>Benefit trigger:</strong> cannot perform <strong>at least 2 of 6 ADLs</strong> (some contracts require 3), <em>or</em> severe cognitive impairment (e.g. Alzheimer's).</li>
+        <li><strong>Waiting period</strong> ~90 days; <strong>off period</strong> ~6 months. Benefit term: <strong>2 years, 10 years, or as long as care is needed</strong>.</li>
+        <li><strong>Benefit forms:</strong> <em>reimbursement</em> (paid to the care provider, with a daily/monthly cap) or <em>fixed annuity payments</em> (paid to the holder — may not cover the care cost).</li>
+        <li><strong>Hybrid LTC + life</strong> policies: <em>return of premium</em> (excess of premiums over LTC benefits returned as a death benefit) or <em>accelerated benefit</em> (LTC benefits reduce the face amount; remainder is a death benefit; an <strong>extension of benefits</strong> rider can extend LTC beyond the face amount).</li>
+      </ul>
+      <details class="qa"><summary>Low-yield: how LTC differs internationally (France · Germany · Japan · UK)</summary>
+        <div class="qa-answer">Rarely tested, but it has appeared in the syllabus — skim once.
+          <ul>
+            <li><strong>France:</strong> benefits based on "mild or severe dependency" <em>or</em> "severe dependency only." <em>Severe</em> = bedbound/chairbound, needs constant assistance, or cognitive impairment needing constant monitoring; <em>mild</em> = needs help eating/bathing/with some mobility but not bed- or chairbound. Premiums are <strong>cheaper than in the US</strong>.</li>
+            <li><strong>Germany:</strong> public LTC is <strong>integrated into the government's social health insurance</strong>; individuals who opt out of the state benefit also opt out of the tax that funds it.</li>
+            <li><strong>Japan:</strong> sold <strong>stand-alone or as a rider</strong> on a whole life policy; benefits paid as a <strong>lump sum or annuity</strong>.</li>
+            <li><strong>UK:</strong> regular-premium LTC has been replaced by the <strong>immediate needs annuity</strong> — a <strong>single premium</strong> buying a regular fixed annuity paid <strong>directly to the care home</strong>.</li>
+          </ul>
+        </div>
+      </details>
+
+      <h3>6. Mutual vs proprietary insurers</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th></th><th>Mutual</th><th>Proprietary</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Owned by</strong></td><td>Its <strong>with-profit policyholders</strong> (no external shareholders)</td><td><strong>Shareholders</strong> who invested capital (separate from policyholders)</td></tr>
+          <tr><td><strong>Profits</strong></td><td><strong>All</strong> distributed to with-profit policyholders (dividends/bonuses)</td><td>Shared in a <strong>predetermined proportion</strong> between shareholders and with-profit policyholders</td></tr>
+          <tr><td><strong>Advantages</strong></td><td>Marketing appeal — policyholders get all the profits/ownership</td><td>Easier to <strong>raise capital</strong>, clearer corporate structure, higher efficiency</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Demutualization:</strong> transitioning from mutual to proprietary by issuing shares/cash to with-profit policyholders (for capital access, clearer structure, efficiency). Examples: mutuals include Northwestern Mutual, MassMutual, New York Life; proprietary include MetLife, Prudential Financial, Allstate — <strong>MetLife demutualized in 2000.</strong></p>
+
+      <h3>7. Other life-contingent contracts</h3>
+      <h4>Structured settlements</h4>
+      <p>A compensation payment schedule agreed between an <strong>injured party (IP)</strong> and a <strong>responsible person (RP)</strong> (often via Workers' Compensation, medical malpractice, or motor accidents). It typically combines an <strong>immediate lump sum</strong> with an <strong>annuity</strong> — a <em>whole life</em> annuity if severely injured, or a <em>temporary</em> one until recovery. Payments are usually <strong>&lt; 100%</strong> of pre-injury earnings because they are <strong>tax-free</strong>, to keep a return-to-work incentive, and because the IP may be partly at fault. Payments often rise yearly for inflation; interim benefits run until <strong>maximum medical improvement (MMI)</strong>.</p>
+      <ul>
+        <li><strong>Why annuities, not a lump sum?</strong> An annuity removes investment risk and <strong>dissipation risk</strong> (overspending). <strong>Buy-outs</strong> (selling the annuity for a lump sum) are prohibited / heavily regulated.</li>
+        <li><strong>Valuation:</strong> <em>top-down</em> (pick a lump sum, convert to an annuity) or <em>bottom-up</em> (pick an income stream, take its EPV). <strong>Bottom-up is preferred</strong> — the goal is to match pre-injury income.</li>
+      </ul>
+
+      <h4>Continuing Care Retirement Communities (CCRCs)</h4>
+      <p>Residential facilities giving seniors a <strong>continuum of care</strong>. Three residence levels: <strong>Independent Living Units (ILU)</strong> → <strong>Assisted Living Units (ALU)</strong> (help with ≥1 ADL) → <strong>Skilled Nursing Facility (SNF)</strong> (ongoing medical care); some add a <strong>Memory Care Unit (MCU)</strong> for severe dementia.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Contract</th><th>Entry fee + monthly</th><th>Health-cost risk</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Full / Life Care</strong></td><td>High; monthly level (only cost-of-living rises)</td><td>Transferred to the CCRC — guaranteed access to all services at no extra cost</td></tr>
+          <tr><td><strong>Modified Life Care</strong></td><td>Lower; monthly <strong>rises</strong> when moving ILU→ALU→SNF (but less than full market cost)</td><td>Partly transferred to the CCRC</td></tr>
+          <tr><td><strong>Fee-for-service</strong></td><td>Lowest; monthly covers accommodation only</td><td><strong>Retained by the resident</strong> — pays market rates for all care (no pre-funding)</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Life care</strong> and <strong>modified life care</strong> are forms of <strong>insurance</strong> (they transfer rising health-cost risk to the CCRC) — entrants usually take a medical exam to prove they can live independently and may get a partial entry-fee refund on leaving/death. Those who <strong>cannot live independently</strong> are eligible only for <strong>fee-for-service</strong>. Average entry age ≈ 80; <strong>full-life-care entrants are youngest, fee-for-service entrants oldest.</strong></p>
+      <p>Some CCRC contracts also offer <strong>(partial) ownership of the ILU</strong> in exchange for some or all of the entry fee. The unit is <strong>sold when the resident permanently leaves or dies</strong>, and the proceeds are <strong>shared between the resident (or their estate) and the CCRC</strong>.</p>
+
+      <h3>8. Pensions</h3>
+      <p>A <strong>pension plan</strong> is a retirement plan funded by employer (and often employee) contributions; benefits are usually a mix of lump sum and annuity, contingent on the event of <strong>retirement</strong>. For both types, contributions accumulate in a fund that earns interest until retirement.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th></th><th>Defined Contribution (DC)</th><th>Defined Benefit (DB)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>What's fixed</strong></td><td>The <strong>contribution</strong> (usually a % of salary)</td><td>The <strong>benefit</strong> (the annual pension)</td></tr>
+          <tr><td><strong>At retirement</strong></td><td>Fund proceeds available as a <strong>lump sum</strong></td><td>A specified annual pension (a multiple may be taken as a lump sum)</td></tr>
+          <tr><td><strong>Investment risk</strong></td><td>Borne by the <strong>employee</strong></td><td>Borne by the <strong>employer</strong></td></tr>
+        </tbody>
+      </table></div>
+      <div class="formula">
+        <span class="formula-label">DB annual retirement benefit</span>
+        $$\text{Annual benefit} = n \cdot S \cdot \alpha,$$
+        <p>where $n$ = years of service, $\alpha$ = <strong>accrual rate</strong> (typically $0.01$–$0.02$), and $S$ = <strong>pensionable salary</strong>.</p>
+      </div>
+      <p>The measure of $S$ defines the DB sub-type:</p>
+      <ul>
+        <li><strong>Final salary</strong> (final average): $S$ = average salary over the last few years.</li>
+        <li><strong>Career average earnings:</strong> $S$ = average salary over the whole career.</li>
+        <li><strong>Career average revalued earnings:</strong> career-average $S$ but with all salaries <strong>adjusted for inflation</strong>.</li>
+      </ul>
+      <p>DB plans may add <strong>withdrawal benefits</strong> (leave before retirement) and <strong>death-in-service benefits</strong> (die during employment).</p>
+
+      <h2>Key Terms (quick glossary)</h2>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The terms most likely to be tested verbatim</div>
+        <ul>
+          <li><strong>COLI</strong> — Company Owned Life Insurance (formerly "key person").</li>
+          <li><strong>STOLI</strong> — Stranger-Owned Life Insurance; no insurable interest; often illegal. <strong>Viatical settlement</strong> = STOLI by a terminally ill holder.</li>
+          <li><strong>Interest spread</strong> — gap between market rate and the rate used to price (drives conservative pricing).</li>
+          <li><strong>GMDB / GMMB</strong> — Guaranteed Minimum Death / Maturity Benefit (equity-linked).</li>
+          <li><strong>Front-end load</strong> — higher first-year commission % under the commission system.</li>
+          <li><strong>Adverse selection (anti-selection)</strong> — higher-risk people most eager to buy.</li>
+          <li><strong>Elimination/waiting period</strong> vs <strong>off period</strong> — wait before benefits start vs minimum gap to count two claims separately.</li>
+          <li><strong>ADLs</strong> — Bathing, Dressing, Transferring, Toileting, Eating, Continence.</li>
+          <li><strong>Dissipation risk</strong> — risk the IP overspends a lump sum (structured settlements).</li>
+          <li><strong>Demutualization</strong> — mutual → proprietary by issuing shares/cash.</li>
+          <li><strong>Accrual rate ($\alpha$)</strong> — the DB multiplier, ~0.01–0.02.</li>
+        </ul>
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Classify the contract <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Match each description to the right product.</p>
+          <ol>
+            <li>"Pays a lump sum on death only if it occurs in the next 20 years; benefit and premium both shrink each year."</li>
+            <li>"Two lives; income continues until the second person dies."</li>
+            <li>"A notional account credits interest (never below 0%); the holder may skip premiums while the balance covers costs."</li>
+            <li>"A terminally ill man sells his life policy to a third party for cash."</li>
+          </ol>
+          <p><strong>Solution.</strong></p>
+          <ol>
+            <li><strong>Decreasing term insurance.</strong></li>
+            <li><strong>Last-survivor annuity</strong> (joint life would stop at the <em>first</em> death).</li>
+            <li><strong>Universal life insurance.</strong></li>
+            <li><strong>Viatical settlement</strong> (a specific kind of STOLI).</li>
+          </ol>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Takeaway</div>The exam tests the <em>discriminating</em> word: "whichever is first" → endowment; "first death" → joint; "second death" → last-survivor; "after the insured dies" → reversionary.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> DII benefit timing (off period) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A DII policy has a <strong>1-month elimination period</strong>, a <strong>2-year benefit term</strong>, monthly payments, and a <strong>6-month off period</strong>. The insured is disabled from <strong>1 Jan 2017 to 30 Sep 2017</strong>, recovers, then is disabled again from <strong>1 Jan 2018</strong>. Find the latest date the last benefit can be paid.</p>
+          <p><strong>Solution.</strong></p>
+          <ul>
+            <li>First disability: 1-month elimination ⇒ benefits start <strong>1 Feb 2017</strong>, run through 30 Sep 2017 = <strong>8 months</strong> of benefits.</li>
+            <li>Gap between the two disabilities = <strong>3 months</strong> &lt; 6-month off period ⇒ the second disability is treated as a <strong>continuation</strong> of the first: <em>no</em> new elimination period, payments resume immediately on 1 Jan 2018.</li>
+            <li>Benefit term = 2 yrs = 24 months; 8 already used ⇒ <strong>16 months</strong> remain. From 1 Jan 2018, 16 months later ⇒ last payment <strong>1 Apr 2019</strong>.</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>1 April 2019.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Hybrid LTC: return-of-premium vs accelerated benefit <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>John's hybrid policy: <strong>face amount \$200,000</strong>, <strong>premiums paid \$50,000</strong>, <strong>LTC benefits received \$120,000</strong>. Death benefit under each design?</p>
+          <p><strong>Return of premium:</strong> returns the excess of premiums over LTC benefits. $50{,}000 - 120{,}000 = -70{,}000 \lt 0$ ⇒ no excess ⇒ <strong>\$0 death benefit</strong>.</p>
+          <p><strong>Accelerated benefit:</strong> LTC benefits reduce the face directly. $200{,}000 - 120{,}000 = $ <strong>\$80,000 death benefit</strong> remaining (an <em>extension of benefits</em> rider could extend LTC further, reducing this).</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Return of premium: \$0. Accelerated benefit: \$80,000.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Definition confusions that lose easy points</div>
+        <ul>
+          <li><strong>Joint vs last-survivor annuity.</strong> Joint stops on the <em>first</em> death; last-survivor pays until the <em>second</em> death. A <strong>reversionary</strong> annuity pays the annuitant only <em>after</em> the insured dies.</li>
+          <li><strong>Endowment ≠ pure endowment.</strong> Endowment <em>insurance</em> pays on death-within-term <strong>or</strong> survival to term. (A "pure endowment" pays on survival only — that's a later math object.)</li>
+          <li><strong>"Own job" vs "any job" DII.</strong> "Any job" pays in fewer situations, so it is <strong>cheaper</strong>, not pricier.</li>
+          <li><strong>Who sets what in DII?</strong> The <strong>policyholder</strong> chooses the benefit <em>term</em>; the <strong>insurer</strong> defines the <em>off period</em>.</li>
+          <li><strong>CII vs chronic illness vs LTC.</strong> CII = lump sum on a named <em>diagnosis</em> (then expires). Chronic illness = <em>incurable</em>, can't do <strong>2+ ADLs</strong>. LTC = can't do <strong>≥2 of 6 ADLs</strong> (or cognitive impairment) due to age — and "eating is an ADL, cooking is not."</li>
+          <li><strong>Mutual vs proprietary ownership.</strong> Mutual = owned by <em>with-profit policyholders</em> (no shareholders); proprietary = owned by <em>shareholders</em>. Demutualization goes mutual → proprietary.</li>
+          <li><strong>DC vs DB.</strong> DC fixes the <em>contribution</em> (employee bears investment risk); DB fixes the <em>benefit</em> via $n\cdot S\cdot\alpha$ (employer bears it).</li>
+          <li><strong>Annuities: no underwriting, no surrender.</strong> The risk is longevity, and surrenders would cause adverse selection.</li>
+          <li><strong>UWP benefits only go up</strong> (or stay flat); equity-linked benefits can go <em>down</em>.</li>
+          <li><strong>Dividends/bonuses are never negative</strong> — only profits are shared, never losses.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Drawn from the Concept Checker. Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>What is an insurable interest, why is it required, and how does it prevent harm to the insured?</summary>
+        <div class="qa-answer">An <strong>insurable interest</strong> exists when the <strong>death of the insured would cause the policyholder a financial loss</strong> — so the payout never leaves the beneficiary better off than if the insured had lived. It is required because it <strong>removes the incentive to prematurely end the insured's life</strong>: with no profit available beyond replacing a genuine loss, there is nothing to gain from the death. The rule also <strong>ended historical wagering</strong> on the lives of strangers and public figures, which is why policies are now typically bought by the individuals being insured. (It is also why <strong>STOLI</strong>, where an investor insures a stranger, is illegal.)</div>
+      </details>
+      <details class="qa"><summary>What are the three traditional forms of life insurance, and when does each pay?</summary>
+        <div class="qa-answer"><strong>Term</strong> (death within a fixed term), <strong>whole life</strong> (death whenever it occurs), and <strong>endowment</strong> (death within the term <em>or</em> survival to the end of the term, whichever is first).</div>
+      </details>
+      <details class="qa"><summary>What is STOLI, and how does a viatical settlement relate to it?</summary>
+        <div class="qa-answer"><strong>STOLI</strong> (Stranger-Owned Life Insurance): an investment firm buys a policy, pays the premiums, and collects the death benefit — it has <em>no insurable interest</em>, so it's outlawed in many US states. A <strong>viatical settlement</strong> is a specific STOLI where a <em>terminally ill</em> holder sells the policy to access funds.</div>
+      </details>
+      <details class="qa"><summary>How are profits shared in a participating policy, and can the share be negative?</summary>
+        <div class="qa-answer">As <strong>cash dividends</strong> (North America) or <strong>bonuses</strong> that raise the benefit (UK/Australia: simple/compound/super-compound reversionary, plus terminal). <strong>Never negative</strong> — only profits are shared, not losses.</div>
+      </details>
+      <details class="qa"><summary>Two key differences between equity-linked and unitized with-profit (UWP) policies?</summary>
+        <div class="qa-answer">(1) Equity-linked benefits sit in a <strong>real fund</strong>; UWP units are in a <em>notional</em> portfolio in the insurer's general account. (2) Equity-linked benefits can <strong>increase or decrease</strong>; UWP benefits only increase or stay the same.</div>
+      </details>
+      <details class="qa"><summary>What is adverse selection, and how does underwriting reduce it?</summary>
+        <div class="qa-answer"><strong>Adverse selection (anti-selection)</strong>: people more likely to claim are also more likely to buy, raising claim costs. Underwriting collects/evaluates risk information and classifies lives (preferred, normal, rated, uninsurable), letting the insurer price accurately or decline — reducing the over-representation of high-risk buyers.</div>
+      </details>
+      <details class="qa"><summary>Why is there no underwriting and no surrender for life annuities?</summary>
+        <div class="qa-answer">The annuity provider's risk is <strong>longevity</strong> (the annuitant living too long), which health evidence can't predict — so underwriting doesn't help. Once payments start, <strong>surrenders are barred</strong> because allowing unhealthy annuitants to withdraw would cause adverse selection and break the cross-subsidy from early deaths to long survivors.</div>
+      </details>
+      <details class="qa"><summary>Name the six ADLs and the LTC benefit trigger.</summary>
+        <div class="qa-answer"><strong>Bathing, Dressing, Transferring, Toileting, Eating, Continence</strong> ("Busy Dogs Try To Eat Cookies"). Trigger: cannot perform <strong>≥2 of the 6 ADLs</strong> (some contracts require 3), or <strong>severe cognitive impairment</strong>. Eating is an ADL; cooking is not.</div>
+      </details>
+      <details class="qa"><summary>How does the benefit payout of chronic illness insurance differ from CII?</summary>
+        <div class="qa-answer"><strong>CII</strong> pays a <em>lump sum on diagnosis</em> of a named condition, then the policy expires. <strong>Chronic illness insurance</strong> (an accelerated rider) pays a lump sum <em>or an annuity</em> on diagnosis of an <em>incurable</em> illness severe enough that the holder can't perform 2+ ADLs.</div>
+      </details>
+      <details class="qa"><summary>Who owns a mutual vs a proprietary insurer, and what is demutualization?</summary>
+        <div class="qa-answer">A <strong>mutual</strong> is owned by its <em>with-profit policyholders</em> (no external shareholders) and distributes all profits to them. A <strong>proprietary</strong> insurer is owned by <em>shareholders</em>, with profits split in a set proportion between shareholders and with-profit policyholders. <strong>Demutualization</strong> = converting mutual → proprietary by issuing shares/cash to the with-profit policyholders.</div>
+      </details>
+      <details class="qa"><summary>What is dissipation risk, and why is a structured settlement usually paid as an annuity? Which valuation approach is preferred?</summary>
+        <div class="qa-answer"><strong>Dissipation risk</strong> is the risk the injured party overspends a lump sum and faces later hardship. An annuity removes investment and dissipation risk. The <strong>bottom-up</strong> approach (pick an income stream, take its EPV) is preferred because the objective is to match the IP's pre-injury income.</div>
+      </details>
+      <details class="qa"><summary>In a DB plan, what are $n$, $S$, and $\alpha$, and how do final-salary, career-average, and career-average-revalued plans differ?</summary>
+        <div class="qa-answer">Annual benefit $= n\cdot S\cdot\alpha$: $n$ = years of service, $S$ = pensionable salary, $\alpha$ = accrual rate (~0.01–0.02). <strong>Final salary</strong>: $S$ = average of the last few years. <strong>Career average</strong>: $S$ = whole-career average. <strong>Career average revalued</strong>: whole-career average with salaries adjusted for inflation.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

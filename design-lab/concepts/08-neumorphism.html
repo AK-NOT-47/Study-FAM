@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Soft Neumorphism</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============ SOFT NEUMORPHISM ============
+     One monochrome hue (a calm slate-blue grey).
+     Everything is extruded from a single flat surface
+     using paired light + dark soft shadows. */
+  :root{
+    --bg:        #e0e5ec;   /* the surface everything lives on */
+    --bg-2:      #e6eaf0;
+    --hi:        #ffffff;   /* top-left light */
+    --sh:        #a3b1c6;   /* bottom-right dark */
+    --ink:       #4a5567;   /* primary text */
+    --ink-soft:  #7b8699;   /* secondary text */
+    --ink-faint: #9aa4b5;
+    --accent:    #5b6bce;   /* the ONLY chromatic accent, used sparingly */
+    --accent-2:  #6d7de0;
+    --r-lg: 30px;
+    --r-md: 20px;
+    --r-sm: 14px;
+    --r-pill: 999px;
+    /* shadow recipes */
+    --soft-out: 9px 9px 18px var(--sh), -9px -9px 18px var(--hi);
+    --soft-out-sm: 6px 6px 12px var(--sh), -6px -6px 12px var(--hi);
+    --soft-in: inset 6px 6px 12px var(--sh), inset -6px -6px 12px var(--hi);
+    --soft-in-sm: inset 4px 4px 8px var(--sh), inset -4px -4px 8px var(--hi);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    letter-spacing:.1px;
+  }
+
+  /* layout shell */
+  .shell{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:34px;
+    max-width:1320px;
+    margin:0 auto;
+    padding:34px;
+    min-height:100vh;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    position:sticky;
+    top:34px;
+    align-self:start;
+    background:var(--bg);
+    border-radius:var(--r-lg);
+    box-shadow:var(--soft-out);
+    padding:30px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    max-height:calc(100vh - 68px);
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:54px;height:54px;flex:none;
+    border-radius:18px;
+    background:var(--bg);
+    box-shadow:var(--soft-out-sm);
+    display:grid;place-items:center;
+    font-weight:900;font-size:24px;
+    color:var(--accent);
+    font-family:'Nunito';
+  }
+  .brand-name{font-weight:900;font-size:18px;letter-spacing:.2px;color:var(--ink)}
+  .brand-tag{font-size:11px;color:var(--ink-faint);font-weight:700;letter-spacing:.3px;margin-top:2px}
+
+  .exam-pill{
+    align-self:flex-start;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;font-weight:700;letter-spacing:1px;
+    color:var(--accent);
+    padding:9px 16px;border-radius:var(--r-pill);
+    box-shadow:var(--soft-in-sm);
+  }
+
+  .nav-label{
+    font-size:10px;font-weight:800;letter-spacing:2.5px;
+    color:var(--ink-faint);text-transform:uppercase;
+    padding-left:6px;
+  }
+  nav{display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding:2px}
+  nav::-webkit-scrollbar{width:0}
+  .nav-item{
+    display:flex;align-items:center;gap:14px;
+    padding:13px 16px;border-radius:var(--r-md);
+    color:var(--ink-soft);font-weight:700;font-size:14px;
+    text-decoration:none;cursor:pointer;
+    transition:color .2s, box-shadow .25s, transform .15s;
+  }
+  .nav-item .dot{
+    width:9px;height:9px;border-radius:50%;flex:none;
+    background:var(--bg);box-shadow:var(--soft-out-sm);
+    transition:.25s;
+  }
+  .nav-ct{
+    margin-left:auto;flex:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;font-weight:700;color:var(--ink-faint);
+    min-width:26px;text-align:center;padding:4px 0;border-radius:var(--r-pill);
+    box-shadow:var(--soft-in-sm);transition:.25s;
+  }
+  .nav-item:hover .nav-ct{color:var(--ink-soft)}
+  .nav-item.active .nav-ct{color:var(--accent);box-shadow:var(--soft-out-sm)}
+  .nav-item:hover{color:var(--ink);box-shadow:var(--soft-out-sm)}
+  .nav-item:hover .dot{box-shadow:var(--soft-in-sm)}
+  .nav-item.active{
+    color:var(--accent);box-shadow:var(--soft-in);
+    font-weight:800;
+  }
+  .nav-item.active .dot{
+    background:var(--accent);
+    box-shadow:0 0 0 3px rgba(91,107,206,.18);
+  }
+
+  .side-foot{
+    margin-top:auto;padding-top:18px;
+    font-size:11px;color:var(--ink-faint);font-weight:700;
+    border-top:1px solid rgba(163,177,198,.25);
+  }
+
+  /* ---------- MAIN ---------- */
+  main{display:flex;flex-direction:column;gap:30px;min-width:0}
+
+  /* top bar */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;
+  }
+  .greet-block .greet{
+    font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent);margin-bottom:6px;
+    display:flex;align-items:center;gap:9px;
+  }
+  .greet .moon{font-size:14px}
+  .greet-block h1{
+    font-size:clamp(30px,4.4vw,52px);
+    font-weight:900;line-height:1.02;letter-spacing:-1px;
+    color:var(--ink);
+  }
+  .topbar-right{display:flex;align-items:center;gap:16px}
+  .icon-btn{
+    width:50px;height:50px;border-radius:var(--r-md);
+    background:var(--bg);box-shadow:var(--soft-out-sm);
+    display:grid;place-items:center;font-size:19px;cursor:pointer;
+    color:var(--ink-soft);transition:.18s;border:none;
+  }
+  .icon-btn:hover{box-shadow:var(--soft-in-sm);color:var(--accent)}
+  .avatar{
+    width:50px;height:50px;border-radius:50%;
+    background:var(--bg);box-shadow:var(--soft-out-sm);
+    display:grid;place-items:center;font-weight:900;color:var(--accent);
+    font-size:17px;
+  }
+
+  .lede{
+    font-size:16px;color:var(--ink-soft);font-weight:600;
+    max-width:660px;line-height:1.65;margin-top:-12px;
+  }
+
+  /* generic raised card */
+  .card{
+    background:var(--bg);
+    border-radius:var(--r-lg);
+    box-shadow:var(--soft-out);
+    padding:30px;
+  }
+
+  /* stats row */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:26px;
+  }
+  .stat{
+    background:var(--bg);border-radius:var(--r-lg);
+    box-shadow:var(--soft-out);padding:26px 26px 28px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .stat-top{display:flex;align-items:center;justify-content:space-between}
+  .stat-ico{
+    width:46px;height:46px;border-radius:14px;
+    box-shadow:var(--soft-in-sm);display:grid;place-items:center;
+    font-size:20px;color:var(--accent);
+  }
+  .stat-label{
+    font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .stat-num{font-size:40px;font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1}
+  .stat-num .unit{font-size:18px;font-weight:800;color:var(--ink-soft);margin-left:3px}
+  .stat-sub{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+
+  /* progress ring (for the % stat) */
+  .ring-wrap{display:flex;align-items:center;gap:18px}
+  .ring{position:relative;width:84px;height:84px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .track{fill:none;stroke:var(--sh);stroke-width:9;opacity:.45}
+  .ring .fill{fill:none;stroke:url(#grad);stroke-width:9;stroke-linecap:round;
+    stroke-dasharray:226;stroke-dashoffset:63.3;} /* 72% of 226 */
+  .ring-center{
+    position:absolute;inset:0;display:grid;place-items:center;
+    font-size:19px;font-weight:900;color:var(--ink);letter-spacing:-.5px;
+  }
+  .ring-inset{
+    position:absolute;inset:8px;border-radius:50%;
+    box-shadow:var(--soft-in-sm);
+  }
+
+  /* progress bar variant for countdown / solid */
+  .bar{
+    height:11px;border-radius:var(--r-pill);box-shadow:var(--soft-in-sm);
+    overflow:hidden;
+  }
+  .bar > i{
+    display:block;height:100%;border-radius:var(--r-pill);
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  }
+
+  /* exam card + content split */
+  .grid-2{display:grid;grid-template-columns:340px 1fr;gap:30px;align-items:start}
+
+  /* exam FAM card */
+  .exam-card{position:relative;overflow:hidden}
+  .exam-card::after{
+    content:"";position:absolute;right:-46px;top:-46px;
+    width:128px;height:128px;border-radius:50%;
+    box-shadow:var(--soft-in-sm);opacity:.7;pointer-events:none;
+  }
+  .exam-card .badge,.exam-card h3,.exam-card .sub,.exam-card .spec{position:relative;z-index:1}
+  .exam-card .badge{
+    width:62px;height:62px;border-radius:20px;
+    background:var(--bg);box-shadow:var(--soft-out-sm);
+    display:grid;place-items:center;margin-bottom:20px;
+    font-family:'JetBrains Mono';font-weight:700;font-size:20px;color:var(--accent);
+  }
+  .exam-card h3{font-size:23px;font-weight:900;letter-spacing:-.5px;margin-bottom:4px}
+  .exam-card .sub{font-size:13px;color:var(--ink-soft);font-weight:700;margin-bottom:22px}
+  .spec{display:flex;flex-direction:column;gap:13px}
+  .spec-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:13px 18px;border-radius:var(--r-sm);box-shadow:var(--soft-in-sm);
+  }
+  .spec-row .k{font-size:12.5px;font-weight:800;color:var(--ink-faint);letter-spacing:.5px}
+  .spec-row .v{font-size:14px;font-weight:800;color:var(--ink)}
+  .spec-row .v.acc{color:var(--accent)}
+
+  /* content preview */
+  .content-card h2{
+    font-size:26px;font-weight:900;letter-spacing:-.6px;margin-bottom:6px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .tag{
+    font-family:'JetBrains Mono';font-size:10px;font-weight:700;letter-spacing:1px;
+    color:var(--accent);padding:5px 11px;border-radius:var(--r-pill);
+    box-shadow:var(--soft-in-sm);text-transform:uppercase;
+  }
+  .content-card .preview-lede{font-size:14.5px;color:var(--ink-soft);font-weight:600;margin-bottom:24px;max-width:600px}
+
+  .formula-label{
+    font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:14px;
+  }
+  .formula-block{
+    border-radius:var(--r-md);box-shadow:var(--soft-in);
+    padding:26px 24px;display:flex;flex-direction:column;gap:18px;
+  }
+  .formula{
+    font-family:'JetBrains Mono',monospace;
+    font-size:clamp(15px,1.8vw,19px);
+    font-weight:500;color:var(--ink);text-align:center;letter-spacing:.3px;
+    line-height:1.4;
+  }
+  .formula sub{font-size:.72em;color:var(--ink-soft)}
+  .formula .op{color:var(--accent);font-weight:700}
+  .formula .sup{font-size:.72em;vertical-align:super}
+  .formula-div{height:1px;background:rgba(163,177,198,.35);margin:0 30px}
+
+  /* common trap callout */
+  .trap{
+    display:flex;gap:18px;align-items:flex-start;
+    border-radius:var(--r-md);box-shadow:var(--soft-in);
+    padding:22px 24px;margin-top:26px;
+    position:relative;
+  }
+  .trap::before{
+    content:"";position:absolute;left:0;top:18px;bottom:18px;width:5px;
+    border-radius:var(--r-pill);
+    background:linear-gradient(var(--accent),var(--accent-2));
+    box-shadow:0 0 12px rgba(91,107,206,.4);
+  }
+  .trap .tico{font-size:24px;margin-left:8px;flex:none}
+  .trap-body .trap-title{
+    font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent);margin-bottom:6px;
+  }
+  .trap-body p{font-size:14px;font-weight:600;color:var(--ink);line-height:1.6}
+  .trap-body strong{font-weight:900}
+
+  /* worked example teaser + CTAs */
+  .teaser-card{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:26px;flex-wrap:wrap;
+  }
+  .teaser-left{display:flex;align-items:center;gap:20px;min-width:0}
+  .teaser-ico{
+    width:60px;height:60px;border-radius:var(--r-md);flex:none;
+    box-shadow:var(--soft-in-sm);display:grid;place-items:center;
+    font-size:26px;color:var(--accent);
+  }
+  .teaser-left .ex-tag{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+  .teaser-left h4{font-size:19px;font-weight:900;letter-spacing:-.3px;color:var(--ink)}
+  .cta-row{display:flex;gap:16px;flex:none}
+  .btn{
+    border:none;cursor:pointer;font-family:'Nunito';
+    font-weight:800;font-size:14.5px;letter-spacing:.3px;
+    padding:16px 30px;border-radius:var(--r-pill);
+    transition:box-shadow .2s, transform .12s, color .2s;
+    background:var(--bg);color:var(--ink);
+    box-shadow:var(--soft-out-sm);
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{box-shadow:var(--soft-in-sm);transform:translateY(0)}
+  .btn.primary{
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:6px 6px 14px rgba(91,107,206,.45),-5px -5px 12px var(--hi);
+  }
+  .btn.primary:hover{box-shadow:8px 8px 18px rgba(91,107,206,.55),-6px -6px 14px var(--hi)}
+
+  /* footer */
+  footer{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;padding:6px 8px 14px;
+  }
+  .foot-brand{display:flex;align-items:center;gap:12px}
+  .foot-logo{
+    width:38px;height:38px;border-radius:12px;background:var(--bg);
+    box-shadow:var(--soft-out-sm);display:grid;place-items:center;
+    font-weight:900;color:var(--accent);font-size:16px;
+  }
+  .foot-brand b{font-size:14px;color:var(--ink)}
+  .foot-brand span{font-size:11px;color:var(--ink-faint);font-weight:700;display:block}
+  footer .copy{font-size:11.5px;color:var(--ink-faint);font-weight:700}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .shell{grid-template-columns:1fr;padding:22px;gap:24px}
+    .sidebar{position:static;max-height:none;flex-direction:row;flex-wrap:wrap;align-items:center}
+    nav{flex-direction:row;flex-wrap:wrap;flex:1 1 100%}
+    .nav-item{padding:11px 15px}
+    .side-foot{display:none}
+    .grid-2{grid-template-columns:1fr}
+  }
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr}
+    .teaser-card{flex-direction:column;align-items:flex-start}
+    .cta-row{width:100%}
+    .btn{flex:1}
+    .topbar-right .icon-btn:nth-child(2){display:none}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <div class="brand-name">Me Studing Stuff</div>
+        <div class="brand-tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+
+    <div class="exam-pill">FAM-L / FAM-S</div>
+
+    <div class="nav-label">Topics</div>
+    <nav>
+      <a class="nav-item active"><span class="dot"></span>Survival Models<span class="nav-ct">5</span></a>
+      <a class="nav-item"><span class="dot"></span>Life Tables<span class="nav-ct">7</span></a>
+      <a class="nav-item"><span class="dot"></span>Life Insurance<span class="nav-ct">9</span></a>
+      <a class="nav-item"><span class="dot"></span>Life Annuities<span class="nav-ct">6</span></a>
+      <a class="nav-item"><span class="dot"></span>Premiums<span class="nav-ct">8</span></a>
+      <a class="nav-item"><span class="dot"></span>Policy Values<span class="nav-ct">7</span></a>
+      <a class="nav-item"><span class="dot"></span>Multiple States<span class="nav-ct">4</span></a>
+      <a class="nav-item"><span class="dot"></span>Short-Term Insurance<span class="nav-ct">6</span></a>
+    </nav>
+
+    <div class="side-foot">© 2026 Me Studing Stuff · v1.0</div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- top bar -->
+    <div class="topbar">
+      <div class="greet-block">
+        <div class="greet"><span class="moon">🌙</span>Good evening</div>
+        <h1>Let's get you that pass.</h1>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" aria-label="Search">🔍</button>
+        <button class="icon-btn" aria-label="Notifications">🔔</button>
+        <div class="avatar">MS</div>
+      </div>
+    </div>
+
+    <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+    <!-- stats -->
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-top">
+          <div class="stat-label">Overall progress</div>
+          <div class="stat-ico">◷</div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg width="84" height="84" viewBox="0 0 84 84">
+              <defs>
+                <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#6d7de0"/>
+                  <stop offset="1" stop-color="#5b6bce"/>
+                </linearGradient>
+              </defs>
+              <circle class="track" cx="42" cy="42" r="36"/>
+              <circle class="fill"  cx="42" cy="42" r="36"/>
+            </svg>
+            <div class="ring-inset"></div>
+            <div class="ring-center">72%</div>
+          </div>
+          <div>
+            <div class="stat-num" style="font-size:26px">72<span class="unit">%</span></div>
+            <div class="stat-sub">12 of 17 topics</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top">
+          <div class="stat-label">Exam countdown</div>
+          <div class="stat-ico">⏳</div>
+        </div>
+        <div class="stat-num">86<span class="unit">days</span></div>
+        <div class="bar"><i style="width:62%"></i></div>
+        <div class="stat-sub">Stay on the plan</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top">
+          <div class="stat-label">Topics solid</div>
+          <div class="stat-ico">✓</div>
+        </div>
+        <div class="stat-num">8<span class="unit">/17</span></div>
+        <div class="bar"><i style="width:47%"></i></div>
+        <div class="stat-sub">Mastered & reviewed</div>
+      </div>
+    </section>
+
+    <!-- exam card + content preview -->
+    <section class="grid-2">
+
+      <!-- Exam FAM card -->
+      <div class="card exam-card">
+        <div class="badge">FAM</div>
+        <h3>Exam FAM</h3>
+        <div class="sub">Fundamentals of Actuarial Mathematics</div>
+        <div class="spec">
+          <div class="spec-row"><span class="k">Provider</span><span class="v">SOA</span></div>
+          <div class="spec-row"><span class="k">Questions</span><span class="v">34</span></div>
+          <div class="spec-row"><span class="k">Pass mark</span><span class="v acc">6 / 10</span></div>
+        </div>
+      </div>
+
+      <!-- content preview -->
+      <div class="card content-card">
+        <h2>Life Insurance Present Values <span class="tag">Topic</span></h2>
+        <p class="preview-lede">The expected present value of a benefit paid at death — the backbone of every premium you'll ever compute.</p>
+
+        <div class="formula-label">Key formulas</div>
+        <div class="formula-block">
+          <div class="formula">A<sub>x</sub> <span class="op">=</span> 1 <span class="op">−</span> d·ä<sub>x</sub></div>
+          <div class="formula-div"></div>
+          <div class="formula">Var(Z) <span class="op">=</span> <span class="sup">2</span>A<sub>x</sub> <span class="op">−</span> (A<sub>x</sub>)<span class="sup">2</span></div>
+          <div class="formula-div"></div>
+          <div class="formula">ä<sub>x</sub> <span class="op">=</span> (1 <span class="op">−</span> A<sub>x</sub>) / d</div>
+        </div>
+
+        <!-- common trap -->
+        <div class="trap">
+          <div class="tico">⚠️</div>
+          <div class="trap-body">
+            <div class="trap-title">Common trap</div>
+            <p>Under UDD, multiply <strong>ONLY</strong> the term/death piece by <strong>i/δ</strong> — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- worked example teaser + CTAs -->
+    <section class="card teaser-card">
+      <div class="teaser-left">
+        <div class="teaser-ico">📐</div>
+        <div>
+          <div class="ex-tag">Worked example</div>
+          <h4>Example 1 — Whole life EPV &amp; variance</h4>
+        </div>
+      </div>
+      <div class="cta-row">
+        <button class="btn primary">Start studying</button>
+        <button class="btn">Resume</button>
+      </div>
+    </section>
+
+    <!-- footer -->
+    <footer>
+      <div class="foot-brand">
+        <div class="foot-logo">M</div>
+        <div>
+          <b>Me Studing Stuff</b>
+          <span>Study smarter. Pass exams.</span>
+        </div>
+      </div>
+      <div class="copy">© 2026 Me Studing Stuff · Built calm for SOA Exam FAM</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

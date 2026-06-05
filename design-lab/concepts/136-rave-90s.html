@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — 90s Rave</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+:root{
+  --acid:#e8ff00;
+  --acid2:#c6ff00;
+  --pink:#ff2bd6;
+  --cyan:#00f0ff;
+  --orange:#ff7a00;
+  --purple:#8a2be2;
+  --lime:#39ff14;
+  --ink:#0a0014;
+  --ink2:#14002b;
+  --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Space Mono',monospace;
+  background:var(--ink);
+  color:var(--white);
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255,43,214,.22), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(0,240,255,.20), transparent 42%),
+    radial-gradient(circle at 50% 90%, rgba(138,43,226,.28), transparent 50%),
+    repeating-linear-gradient(45deg,transparent 0 28px,rgba(255,255,255,.012) 28px 30px),
+    linear-gradient(160deg,var(--ink) 0%,var(--ink2) 100%);
+  min-height:100vh;
+}
+
+/* ===== floating rave ornaments ===== */
+.bg-blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.smiley-float{position:absolute;font-size:clamp(40px,7vw,90px);opacity:.10;animation:spin 22s linear infinite}
+.smiley-float.s2{top:60%;left:80%;animation-duration:30s;animation-direction:reverse}
+.smiley-float.s3{top:78%;left:8%;animation-duration:26s}
+.smiley-float.s1{top:8%;left:70%}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* scanline / crt overlay */
+.crt{position:fixed;inset:0;z-index:60;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.06) 2px 4px);
+  mix-blend-mode:multiply}
+
+/* ===== marquee top ===== */
+.ticker{position:relative;z-index:5;background:var(--acid);color:var(--ink);
+  font-family:'Bungee',sans-serif;font-size:13px;letter-spacing:1px;
+  border-bottom:4px solid var(--ink);overflow:hidden;white-space:nowrap;padding:7px 0}
+.ticker .run{display:inline-block;animation:slide 24s linear infinite}
+.ticker span{padding:0 22px}
+.ticker .dot{color:var(--pink)}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ===== layout shell ===== */
+.shell{position:relative;z-index:5;max-width:1280px;margin:0 auto;padding:22px clamp(14px,3vw,34px) 60px;
+  display:grid;grid-template-columns:260px 1fr;gap:26px}
+
+/* ===== sidebar nav ===== */
+.side{position:relative}
+.side-inner{position:sticky;top:18px}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.mark{width:62px;height:62px;flex:none;border-radius:16px;
+  background:conic-gradient(from 0deg,var(--pink),var(--orange),var(--acid),var(--cyan),var(--purple),var(--pink));
+  display:grid;place-items:center;border:3px solid var(--ink);
+  box-shadow:0 0 0 3px var(--acid),6px 6px 0 var(--pink);position:relative}
+.mark span{font-family:'Bungee Shade',sans-serif;font-size:34px;color:var(--ink);line-height:1;text-shadow:0 0 6px rgba(255,255,255,.5)}
+.logo h1{font-family:'Bungee',sans-serif;font-size:18px;line-height:1;letter-spacing:.5px}
+.logo h1 b{color:var(--acid);display:block;font-size:22px}
+.logo .tag{font-size:10px;color:var(--cyan);margin-top:4px;letter-spacing:1px}
+
+.nav-card{background:rgba(10,0,20,.78);border:3px solid var(--acid);border-radius:18px;
+  padding:16px;box-shadow:6px 6px 0 var(--pink),0 0 24px rgba(232,255,0,.18);backdrop-filter:blur(4px)}
+.nav-label{font-family:'Bungee',sans-serif;font-size:12px;color:var(--ink);background:var(--cyan);
+  display:inline-block;padding:4px 12px;border-radius:20px;margin:4px 0 12px;transform:rotate(-2deg);
+  border:2px solid var(--ink);box-shadow:2px 2px 0 var(--pink)}
+.nav-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.nav-list a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--white);
+  font-size:13px;font-weight:700;padding:9px 11px;border-radius:11px;border:2px solid transparent;
+  transition:.16s;letter-spacing:.3px}
+.nav-list a .bul{width:13px;height:13px;border-radius:4px;flex:none;transform:rotate(45deg)}
+.nav-list a:hover{background:var(--acid);color:var(--ink);border-color:var(--ink);transform:translateX(4px) skewX(-4deg)}
+.nav-list a:hover .bul{background:var(--ink)!important}
+.b1{background:var(--pink)} .b2{background:var(--cyan)} .b3{background:var(--orange)}
+.b4{background:var(--lime)} .b5{background:var(--purple)} .b6{background:var(--acid)}
+
+.side-foot{margin-top:16px;font-size:11px;color:#9a7fb5;text-align:center;line-height:1.6}
+.side-foot .heart{color:var(--pink)}
+
+/* ===== main ===== */
+.main{display:flex;flex-direction:column;gap:24px;min-width:0}
+
+/* hero */
+.hero{position:relative;border:4px solid var(--ink);border-radius:24px;overflow:hidden;
+  background:
+    repeating-linear-gradient(135deg,rgba(0,0,0,.18) 0 22px,transparent 22px 44px),
+    linear-gradient(120deg,var(--pink) 0%,var(--purple) 45%,var(--cyan) 100%);
+  box-shadow:8px 8px 0 var(--acid),0 0 40px rgba(255,43,214,.35);padding:clamp(22px,4vw,40px)}
+.hero::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%,rgba(232,255,0,.5),transparent 45%);mix-blend-mode:screen;pointer-events:none}
+.greet{display:inline-flex;align-items:center;gap:9px;font-family:'Bungee',sans-serif;font-size:13px;
+  background:var(--acid);color:var(--ink);padding:6px 16px;border-radius:30px;border:3px solid var(--ink);
+  box-shadow:3px 3px 0 var(--ink);transform:rotate(-1.5deg);position:relative;z-index:2}
+.greet .smi{font-size:18px}
+.hero h2{position:relative;z-index:2;font-family:'Bungee',sans-serif;font-size:clamp(34px,6vw,64px);
+  line-height:.96;margin:18px 0 6px;color:var(--white);
+  text-shadow:4px 4px 0 var(--ink),7px 7px 0 var(--acid),-2px -2px 0 var(--cyan)}
+.hero h2 em{font-style:normal;color:var(--acid);display:inline-block;
+  text-shadow:4px 4px 0 var(--ink),-3px -3px 0 var(--pink)}
+.hero p{position:relative;z-index:2;max-width:62ch;font-size:15px;line-height:1.65;margin-top:14px;
+  color:#fff;background:rgba(10,0,20,.55);padding:12px 16px;border-left:5px solid var(--acid);border-radius:8px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.stat{position:relative;border:3px solid var(--ink);border-radius:18px;padding:18px;overflow:hidden;
+  box-shadow:5px 5px 0 var(--ink)}
+.stat.a{background:var(--acid);color:var(--ink)}
+.stat.b{background:var(--cyan);color:var(--ink)}
+.stat.c{background:var(--pink);color:var(--ink)}
+.stat .k{font-family:'Bungee',sans-serif;font-size:clamp(30px,5vw,46px);line-height:1}
+.stat .l{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.stat .s{font-size:11px;margin-top:2px;opacity:.8}
+.stat .em{position:absolute;right:8px;top:6px;font-size:34px;opacity:.35}
+.bar{height:9px;background:rgba(10,0,20,.25);border-radius:20px;margin-top:10px;overflow:hidden;border:2px solid var(--ink)}
+.bar i{display:block;height:100%;width:72%;background:repeating-linear-gradient(45deg,var(--ink) 0 6px,var(--purple) 6px 12px)}
+
+/* grid of content cards */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:rgba(13,0,28,.85);border:3px solid var(--cyan);border-radius:20px;padding:20px;
+  box-shadow:6px 6px 0 var(--cyan),0 0 22px rgba(0,240,255,.12);backdrop-filter:blur(3px)}
+.card.wide{grid-column:1/-1}
+.card-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pill{font-family:'Bungee',sans-serif;font-size:11px;padding:5px 12px;border-radius:20px;border:2px solid var(--ink);
+  background:var(--acid);color:var(--ink);transform:rotate(-2deg);box-shadow:2px 2px 0 var(--ink)}
+.card h3{font-family:'Bungee',sans-serif;font-size:18px;color:var(--white);letter-spacing:.3px}
+.card .lede{font-size:13px;line-height:1.6;color:#d9c7ee;margin-bottom:14px}
+
+/* exam fam card */
+.exam{border-color:var(--orange);box-shadow:6px 6px 0 var(--orange),0 0 22px rgba(255,122,0,.15)}
+.exam .pill{background:var(--orange)}
+.exam-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.exam-meta span{font-size:11px;font-weight:700;padding:5px 11px;border-radius:10px;border:2px solid var(--ink);
+  background:var(--ink2);color:var(--cyan)}
+.exam-meta span.hot{background:var(--lime);color:var(--ink)}
+.exam-big{font-family:'Bungee Shade',sans-serif;font-size:clamp(40px,7vw,68px);color:var(--acid);
+  line-height:.9;margin-top:8px;text-shadow:3px 3px 0 var(--ink)}
+
+/* formula block */
+.formula{background:var(--ink);border:3px dashed var(--acid);border-radius:14px;padding:16px;margin-top:6px}
+.formula .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  font-family:'Space Mono',monospace;font-size:16px;color:var(--acid);font-weight:700}
+.formula code{background:rgba(232,255,0,.08);padding:8px 14px;border-radius:8px;border:1px solid rgba(232,255,0,.3);
+  white-space:nowrap;color:#fff}
+.formula code b{color:var(--cyan)}
+.formula .x{color:var(--pink);font-family:'Bungee',sans-serif;font-size:14px}
+
+/* trap callout */
+.trap{grid-column:1/-1;background:
+  repeating-linear-gradient(-45deg,var(--ink) 0 18px,#1c0014 18px 36px);
+  border:4px solid var(--pink);border-radius:18px;padding:18px 20px;
+  box-shadow:0 0 26px rgba(255,43,214,.35),6px 6px 0 var(--ink);display:flex;gap:16px;align-items:flex-start}
+.trap .icon{font-size:38px;flex:none;animation:wob 1.4s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.trap-t{font-family:'Bungee',sans-serif;color:var(--pink);font-size:15px;letter-spacing:.5px;
+  text-shadow:2px 2px 0 var(--ink)}
+.trap p{font-size:13.5px;line-height:1.6;color:#ffd6f5;margin-top:6px}
+.trap p b{color:var(--acid)}
+
+/* worked example teaser + CTAs */
+.work{border-color:var(--lime);box-shadow:6px 6px 0 var(--lime),0 0 22px rgba(57,255,20,.13)}
+.work .pill{background:var(--lime)}
+.work .ex{display:flex;align-items:center;gap:12px;background:var(--ink);border:2px dashed var(--lime);
+  border-radius:12px;padding:14px;margin:6px 0 16px}
+.work .ex .n{font-family:'Bungee',sans-serif;font-size:24px;color:var(--lime);flex:none}
+.work .ex .t{font-size:13px;color:#cfe}
+.work .ex .t b{display:block;font-family:'Bungee',sans-serif;font-size:14px;color:#fff;margin-bottom:2px}
+.ctas{display:flex;gap:14px;flex-wrap:wrap}
+.btn{font-family:'Bungee',sans-serif;font-size:14px;text-decoration:none;padding:13px 24px;border-radius:30px;
+  border:3px solid var(--ink);cursor:pointer;transition:.15s;letter-spacing:.5px;display:inline-flex;align-items:center;gap:8px}
+.btn-go{background:var(--acid);color:var(--ink);box-shadow:4px 4px 0 var(--pink)}
+.btn-go:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--pink)}
+.btn-re{background:var(--ink2);color:var(--cyan);border-color:var(--cyan);box-shadow:4px 4px 0 var(--cyan)}
+.btn-re:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--cyan)}
+
+/* footer */
+.foot{position:relative;z-index:5;text-align:center;padding:26px 14px 40px;border-top:4px solid var(--acid);
+  margin-top:10px;background:rgba(10,0,20,.6)}
+.foot .fm{font-family:'Bungee',sans-serif;font-size:20px;color:var(--acid);letter-spacing:1px}
+.foot .ft{font-size:12px;color:var(--cyan);margin-top:4px}
+.foot .fs{font-size:11px;color:#8a6fa5;margin-top:10px;letter-spacing:1px}
+.foot .smis{font-size:22px;letter-spacing:6px;margin-top:12px}
+
+@media(max-width:880px){
+  .shell{grid-template-columns:1fr}
+  .side-inner{position:static}
+  .cards{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .nav-list{flex-direction:row;flex-wrap:wrap}
+  .nav-list a{flex:1 1 45%}
+}
+@media(max-width:700px){
+  .formula .row{font-size:13px}
+  .formula code{font-size:12.5px;white-space:normal}
+}
+</style>
+</head>
+<body>
+<div class="crt"></div>
+<div class="bg-blobs">
+  <div class="smiley-float s1">🙂</div>
+  <div class="smiley-float s2">😃</div>
+  <div class="smiley-float s3">🙂</div>
+</div>
+
+<!-- ticker -->
+<div class="ticker">
+  <div class="run">
+    <span>★ STUDY SMARTER <span class="dot">●</span> PASS EXAMS</span>
+    <span>★ SOA EXAM FAM <span class="dot">●</span> 86 DAYS TO GO</span>
+    <span>★ NOTES • FORMULAS • WORKED PROBLEMS</span>
+    <span>★ KEEP IT CALM, KEEP IT MOVING</span>
+    <span>★ STUDY SMARTER <span class="dot">●</span> PASS EXAMS</span>
+    <span>★ SOA EXAM FAM <span class="dot">●</span> 86 DAYS TO GO</span>
+    <span>★ NOTES • FORMULAS • WORKED PROBLEMS</span>
+    <span>★ KEEP IT CALM, KEEP IT MOVING</span>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="side-inner">
+      <div class="logo">
+        <div class="mark"><span>M</span></div>
+        <div>
+          <h1>Me Studing<b>Stuff</b></h1>
+          <div class="tag">STUDY SMARTER. PASS EXAMS.</div>
+        </div>
+      </div>
+
+      <nav class="nav-card">
+        <div class="nav-label">▶ FAM-L / FAM-S</div>
+        <ul class="nav-list">
+          <li><a href="#"><span class="bul b1"></span>Survival Models</a></li>
+          <li><a href="#"><span class="bul b2"></span>Life Tables</a></li>
+          <li><a href="#"><span class="bul b3"></span>Life Insurance</a></li>
+          <li><a href="#"><span class="bul b4"></span>Life Annuities</a></li>
+          <li><a href="#"><span class="bul b5"></span>Premiums</a></li>
+          <li><a href="#"><span class="bul b6"></span>Policy Values</a></li>
+        </ul>
+      </nav>
+
+      <div class="side-foot">
+        — rave on, study on —<br>made with <span class="heart">♥</span> &amp; acid yellow
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="greet"><span class="smi">🙂</span> GOOD EVENING</div>
+      <h2>Let's get you<br>that <em>pass.</em></h2>
+      <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat a">
+        <div class="em">📈</div>
+        <div class="k">72%</div>
+        <div class="l">Overall progress</div>
+        <div class="s">12 of 17 topics</div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="stat b">
+        <div class="em">⏳</div>
+        <div class="k">86</div>
+        <div class="l">Exam countdown</div>
+        <div class="s">days remaining</div>
+      </div>
+      <div class="stat c">
+        <div class="em">💪</div>
+        <div class="k">8</div>
+        <div class="l">Topics solid</div>
+        <div class="s">locked &amp; loaded</div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="cards">
+      <!-- EXAM FAM -->
+      <div class="card exam">
+        <div class="card-h"><span class="pill">EXAM</span><h3>Exam FAM</h3></div>
+        <p class="lede">Fundamentals of Actuarial Mathematics — the big one. Here's the rundown.</p>
+        <div class="exam-big">FAM</div>
+        <div class="exam-meta">
+          <span>SOA</span>
+          <span>34 questions</span>
+          <span class="hot">pass = 6/10</span>
+        </div>
+      </div>
+
+      <!-- TOPIC PREVIEW + FORMULA -->
+      <div class="card">
+        <div class="card-h"><span class="pill">TOPIC</span><h3>Life Insurance PV</h3></div>
+        <p class="lede">Life Insurance Present Values — link EPVs, annuities and variance into one clean toolkit.</p>
+        <div class="formula">
+          <div class="row">
+            <code><b>A_x</b> = 1 − d·ä_x</code>
+            <span class="x">·</span>
+            <code><b>Var(Z)</b> = ²A_x − (A_x)²</code>
+            <span class="x">·</span>
+            <code><b>ä_x</b> = (1 − A_x) / d</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMON TRAP -->
+      <div class="trap">
+        <div class="icon">⚠️</div>
+        <div>
+          <div class="trap-t">COMMON TRAP</div>
+          <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </div>
+
+      <!-- WORKED EXAMPLE + CTA -->
+      <div class="card work wide">
+        <div class="card-h"><span class="pill">WORKED</span><h3>Worked example teaser</h3></div>
+        <div class="ex">
+          <div class="n">1</div>
+          <div class="t"><b>Example 1 — Whole life EPV &amp; variance</b>Compute A_x, then ä_x and Var(Z) for a whole life policy — step by step.</div>
+        </div>
+        <div class="ctas">
+          <a href="#" class="btn btn-go">▶ Start studying</a>
+          <a href="#" class="btn btn-re">↻ Resume</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="fm">🙂 ME STUDING STUFF</div>
+  <div class="ft">Study smarter. Pass exams.</div>
+  <div class="smis">🙂 😃 🙂 😃 🙂</div>
+  <div class="fs">SOA EXAM FAM HUB · NOTES · FORMULAS · WORKED PROBLEMS · A PLAN</div>
+</footer>
+</body>
+</html>

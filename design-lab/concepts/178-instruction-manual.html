@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Assembly Guide to Passing FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#15171a;
+    --paper:#f4f1ea;
+    --card:#fbfaf6;
+    --line:#15171a;
+    --blue:#2f5cff;
+    --yellow:#ffd400;
+    --red:#ff4d2e;
+    --muted:#6f6c63;
+    --hair:1.5px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(rgba(21,23,26,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(21,23,26,.035) 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ============ SHELL ============ */
+  .sheet{
+    max-width:1280px;
+    margin:24px auto;
+    background:var(--paper);
+    border:3px solid var(--ink);
+    box-shadow:14px 14px 0 var(--ink);
+  }
+
+  /* ============ MASTHEAD ============ */
+  .masthead{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:stretch;
+    border-bottom:3px solid var(--ink);
+  }
+  .brand{
+    display:flex;align-items:center;gap:16px;
+    padding:18px 26px;
+    border-right:3px solid var(--ink);
+    background:var(--yellow);
+  }
+  .mmark{
+    width:52px;height:52px;flex:none;
+    border:3px solid var(--ink);
+    background:var(--paper);
+    display:grid;place-items:center;
+    position:relative;
+  }
+  .mmark svg{width:34px;height:34px;display:block;}
+  .brand-txt b{
+    display:block;font-weight:900;font-size:18px;letter-spacing:-.02em;
+    text-transform:uppercase;line-height:1;
+  }
+  .brand-txt span{
+    display:block;font-family:'Space Mono',monospace;font-size:10.5px;
+    letter-spacing:.04em;color:var(--muted);margin-top:5px;
+  }
+  .doc-meta{
+    display:flex;align-items:center;justify-content:flex-end;gap:0;
+    font-family:'Space Mono',monospace;font-size:11px;
+  }
+  .doc-meta .cell{
+    padding:0 22px;height:100%;display:flex;flex-direction:column;justify-content:center;
+    border-left:var(--hair) solid var(--ink);
+  }
+  .doc-meta .cell .k{color:var(--muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase;}
+  .doc-meta .cell .v{font-weight:700;font-size:13px;margin-top:2px;}
+  .doc-title{
+    display:flex;flex-direction:column;justify-content:center;
+    padding:14px 28px;
+  }
+  .doc-title .eyebrow{
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--blue);font-weight:700;
+  }
+  .doc-title h1{
+    margin:4px 0 0;font-size:21px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;
+  }
+
+  /* ============ BODY GRID ============ */
+  .frame{display:grid;grid-template-columns:248px 1fr;}
+  /* ---- SIDEBAR / parts list ---- */
+  .parts{
+    border-right:3px solid var(--ink);
+    background:var(--card);
+  }
+  .parts .phead{
+    padding:16px 20px 12px;
+    border-bottom:var(--hair) solid var(--ink);
+    display:flex;align-items:center;gap:10px;
+  }
+  .parts .phead .icn{
+    width:26px;height:26px;border:2px solid var(--ink);border-radius:50%;
+    display:grid;place-items:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;flex:none;
+  }
+  .parts .phead .lbl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:1.3;}
+  .parts .phead .lbl b{display:block;color:var(--ink);font-size:12px;letter-spacing:.05em;}
+
+  .seclabel{
+    padding:14px 20px 6px;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--blue);font-weight:700;
+    display:flex;align-items:center;gap:8px;
+  }
+  .seclabel::after{content:"";flex:1;height:2px;background:var(--blue);opacity:.35;}
+
+  nav ul{list-style:none;margin:0;padding:0;}
+  nav li a{
+    display:grid;grid-template-columns:34px 1fr auto;align-items:center;
+    padding:11px 20px;
+    border-bottom:var(--hair) solid rgba(21,23,26,.16);
+    transition:background .12s,padding .12s;
+    position:relative;
+  }
+  nav li a .num{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:12px;
+    width:24px;height:24px;border:2px solid var(--ink);border-radius:50%;
+    display:grid;place-items:center;background:var(--paper);
+  }
+  nav li a .nm{font-weight:600;font-size:13.5px;letter-spacing:-.01em;}
+  nav li a .dot{
+    width:11px;height:11px;border:2px solid var(--ink);
+    border-radius:50%;background:var(--ink);
+  }
+  nav li a .dot.open{background:transparent;}
+  nav li a .dot.half{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%);}
+  nav li a:hover{background:var(--yellow);padding-left:26px;}
+  nav li a.active{background:var(--blue);color:#fff;}
+  nav li a.active .num{background:#fff;border-color:#fff;}
+  nav li a.active .dot{border-color:#fff;background:#fff;}
+
+  .legend{
+    padding:14px 20px;border-top:var(--hair) solid var(--ink);
+    font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);line-height:1.9;
+  }
+  .legend .row{display:flex;align-items:center;gap:8px;}
+  .legend .dot{width:10px;height:10px;border:2px solid var(--ink);border-radius:50%;}
+  .legend .dot.solid{background:var(--ink);}
+  .legend .dot.half{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%);}
+  .legend .dot.open{background:transparent;}
+
+  /* ============ MAIN ============ */
+  main{padding:0;}
+
+  /* hero / step 0 */
+  .hero{
+    padding:30px 36px 28px;
+    border-bottom:3px solid var(--ink);
+    position:relative;
+    background:
+      radial-gradient(circle at 92% 18%, rgba(47,92,255,.07), transparent 38%);
+  }
+  .step-tag{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;margin-bottom:14px;
+  }
+  .step-tag .badge{
+    width:30px;height:30px;background:var(--ink);color:var(--yellow);
+    display:grid;place-items:center;font-size:14px;font-weight:700;border-radius:50%;
+  }
+  .greeting{
+    font-family:'Space Mono',monospace;font-size:14px;color:var(--blue);font-weight:700;letter-spacing:.02em;
+    display:flex;align-items:center;gap:9px;
+  }
+  .greeting .moon{font-size:15px;}
+  .hero h2{
+    font-size:clamp(34px,5.2vw,62px);line-height:.94;font-weight:900;
+    letter-spacing:-.03em;text-transform:uppercase;margin:8px 0 14px;max-width:14ch;
+  }
+  .hero p.lede{
+    max-width:60ch;font-size:15.5px;line-height:1.55;color:#33342f;margin:0;
+  }
+  .hero .arrowfig{
+    position:absolute;top:24px;right:30px;width:120px;height:120px;display:none;
+  }
+  @media(min-width:1080px){.hero .arrowfig{display:block;}}
+
+  /* stats — gauges */
+  .gauges{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-bottom:3px solid var(--ink);
+  }
+  .gauge{
+    padding:22px 24px;border-right:var(--hair) solid var(--ink);
+    display:flex;gap:18px;align-items:center;
+  }
+  .gauge:last-child{border-right:none;}
+  .gauge .ring{flex:none;}
+  .gauge .meta .step{
+    font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  }
+  .gauge .meta .big{font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1;margin:3px 0 4px;}
+  .gauge .meta .sub{font-size:12px;color:var(--muted);font-weight:500;}
+
+  /* content columns */
+  .cols{display:grid;grid-template-columns:1.4fr 1fr;}
+  .col-l{border-right:3px solid var(--ink);}
+  .panel{padding:26px 30px;border-bottom:var(--hair) solid var(--ink);}
+  .panel:last-child{border-bottom:none;}
+  .panel-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:16px;
+  }
+  .panel-head .n{
+    width:34px;height:34px;flex:none;background:var(--ink);color:#fff;
+    display:grid;place-items:center;font-family:'Space Mono',monospace;font-weight:700;font-size:15px;border-radius:50%;
+  }
+  .panel-head h3{margin:0;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:-.01em;}
+  .panel-head .sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;}
+
+  /* exam card */
+  .examcard{
+    border:2px solid var(--ink);background:var(--card);
+    display:grid;grid-template-columns:auto 1fr;align-items:stretch;
+  }
+  .examcard .left{
+    background:var(--blue);color:#fff;padding:20px 22px;display:flex;flex-direction:column;justify-content:center;gap:6px;
+    border-right:2px solid var(--ink);min-width:128px;
+  }
+  .examcard .left .tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;opacity:.85;}
+  .examcard .left .code{font-size:40px;font-weight:900;letter-spacing:-.03em;line-height:.9;}
+  .examcard .right{padding:18px 22px;display:flex;flex-direction:column;gap:12px;justify-content:center;}
+  .examcard .right .name{font-size:15px;font-weight:800;}
+  .spec{display:flex;flex-wrap:wrap;gap:8px;}
+  .spec .chip{
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    border:2px solid var(--ink);padding:5px 10px;background:var(--paper);
+    display:flex;align-items:center;gap:7px;
+  }
+  .spec .chip .ico{font-size:13px;}
+  .spec .chip.pass{background:var(--yellow);}
+
+  /* formula block */
+  .lede-sm{font-size:14px;color:#33342f;line-height:1.5;margin:0 0 16px;}
+  .formula{
+    border:2px dashed var(--ink);background:var(--paper);
+    padding:0;position:relative;
+  }
+  .formula .ftab{
+    position:absolute;top:-12px;left:18px;background:var(--yellow);
+    border:2px solid var(--ink);padding:2px 12px;
+    font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .formula .frow{
+    display:flex;align-items:center;gap:14px;
+    padding:18px 22px;border-bottom:var(--hair) solid rgba(21,23,26,.25);
+  }
+  .formula .frow:last-child{border-bottom:none;}
+  .formula .frow .fnum{
+    flex:none;width:26px;height:26px;border:2px solid var(--ink);border-radius:50%;
+    display:grid;place-items:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+  }
+  .formula .frow .eq{
+    font-family:'Space Mono',monospace;font-size:16px;font-weight:700;letter-spacing:-.01em;
+  }
+  .formula .frow .eq sup{font-size:.7em;}
+
+  /* trap callout */
+  .trap{
+    border:2px solid var(--ink);background:var(--red);color:#fff;
+    display:grid;grid-template-columns:auto 1fr;gap:0;align-items:stretch;
+  }
+  .trap .warn{
+    background:var(--yellow);color:var(--ink);border-right:2px solid var(--ink);
+    display:grid;place-items:center;padding:0 20px;
+  }
+  .trap .warn svg{width:46px;height:46px;}
+  .trap .body{padding:16px 20px;}
+  .trap .body .lbl{
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:7px;
+  }
+  .trap .body p{margin:0;font-size:14.5px;line-height:1.5;font-weight:500;}
+  .trap .body p code{
+    font-family:'Space Mono',monospace;background:rgba(255,255,255,.18);padding:1px 5px;border-radius:2px;font-weight:700;
+  }
+
+  /* worked example teaser */
+  .example{
+    border:2px solid var(--ink);background:var(--card);overflow:hidden;
+  }
+  .example .ehead{
+    background:var(--ink);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;
+  }
+  .example .ehead .num{
+    width:30px;height:30px;flex:none;border:2px solid var(--yellow);color:var(--yellow);border-radius:50%;
+    display:grid;place-items:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;
+  }
+  .example .ehead .t{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:-.01em;}
+  .example .ehead .t span{display:block;font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:#bdbdbd;font-weight:400;text-transform:none;margin-top:2px;}
+  .example .ebody{padding:18px;}
+  /* mini wordless diagram */
+  .diagram{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:var(--hair) solid var(--ink);
+    margin-bottom:18px;background:var(--paper);
+  }
+  .diagram .cell{
+    padding:16px 10px;text-align:center;border-right:var(--hair) solid var(--ink);position:relative;
+  }
+  .diagram .cell:last-child{border-right:none;}
+  .diagram .cell .st{
+    position:absolute;top:6px;left:8px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--muted);
+  }
+  .diagram .cell svg{width:100%;height:54px;display:block;margin-top:6px;}
+
+  .btns{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn{
+    flex:1;min-width:140px;
+    border:2px solid var(--ink);padding:14px 18px;
+    font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.02em;
+    display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+    transition:transform .08s,box-shadow .08s;
+  }
+  .btn:active{transform:translate(3px,3px);box-shadow:none !important;}
+  .btn.primary{background:var(--blue);color:#fff;box-shadow:4px 4px 0 var(--ink);}
+  .btn.ghost{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 var(--ink);}
+  .btn .arr{font-size:16px;}
+
+  /* footer */
+  footer{
+    border-top:3px solid var(--ink);background:var(--ink);color:var(--paper);
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+    padding:18px 30px;flex-wrap:wrap;
+  }
+  footer .fbrand{display:flex;align-items:center;gap:12px;}
+  footer .fbrand .fm{
+    width:34px;height:34px;border:2px solid var(--yellow);display:grid;place-items:center;
+  }
+  footer .fbrand .fm svg{width:22px;height:22px;}
+  footer .fbrand b{font-weight:900;text-transform:uppercase;font-size:14px;letter-spacing:-.01em;}
+  footer .fbrand span{font-family:'Space Mono',monospace;font-size:10px;color:#a9a59a;display:block;}
+  footer .fmono{font-family:'Space Mono',monospace;font-size:10px;color:#a9a59a;letter-spacing:.1em;}
+
+  /* responsive */
+  @media(max-width:960px){
+    .frame{grid-template-columns:1fr;}
+    .parts{border-right:none;border-bottom:3px solid var(--ink);}
+    .cols{grid-template-columns:1fr;}
+    .col-l{border-right:none;border-bottom:3px solid var(--ink);}
+    .doc-meta{display:none;}
+  }
+  @media(max-width:760px){
+    .sheet{margin:10px;box-shadow:8px 8px 0 var(--ink);}
+    .masthead{grid-template-columns:1fr;}
+    .brand{border-right:none;border-bottom:3px solid var(--ink);}
+    .gauges{grid-template-columns:1fr;}
+    .gauge{border-right:none;border-bottom:var(--hair) solid var(--ink);}
+    .examcard{grid-template-columns:1fr;}
+    .examcard .left{border-right:none;border-bottom:2px solid var(--ink);flex-direction:row;align-items:center;gap:14px;}
+    .hero h2{font-size:36px;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="brand">
+      <div class="mmark">
+        <svg viewBox="0 0 34 34" fill="none" stroke="#15171a" stroke-width="3" stroke-linecap="square">
+          <path d="M4 28 V8 L17 20 L30 8 V28"/>
+        </svg>
+      </div>
+      <div class="brand-txt">
+        <b>Me Studing Stuff</b>
+        <span>Study smarter. Pass exams.</span>
+      </div>
+    </div>
+
+    <div class="doc-title">
+      <div class="eyebrow">Assembly Guide · Rev. 2026</div>
+      <h1>How to Pass SOA Exam FAM</h1>
+    </div>
+
+    <div class="doc-meta">
+      <div class="cell"><span class="k">Sheet</span><span class="v">01 / 17</span></div>
+      <div class="cell"><span class="k">Parts</span><span class="v">06 topics</span></div>
+      <div class="cell"><span class="k">Tools</span><span class="v">Pen · Brain</span></div>
+    </div>
+  </header>
+
+  <!-- ============ FRAME ============ -->
+  <div class="frame">
+
+    <!-- ---- PARTS LIST / NAV ---- -->
+    <aside class="parts">
+      <div class="phead">
+        <div class="icn">i</div>
+        <div class="lbl"><b>Parts List</b>Read before assembly</div>
+      </div>
+
+      <div class="seclabel">FAM-L / FAM-S</div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active"><span class="num">1</span><span class="nm">Survival Models</span><span class="dot"></span></a></li>
+          <li><a href="#"><span class="num">2</span><span class="nm">Life Tables</span><span class="dot"></span></a></li>
+          <li><a href="#"><span class="num">3</span><span class="nm">Life Insurance</span><span class="dot half"></span></a></li>
+          <li><a href="#"><span class="num">4</span><span class="nm">Life Annuities</span><span class="dot half"></span></a></li>
+          <li><a href="#"><span class="num">5</span><span class="nm">Premiums</span><span class="dot open"></span></a></li>
+          <li><a href="#"><span class="num">6</span><span class="nm">Policy Values</span><span class="dot open"></span></a></li>
+        </ul>
+      </nav>
+
+      <div class="legend">
+        <div class="row"><span class="dot solid"></span> = topic solid</div>
+        <div class="row"><span class="dot half"></span> = in progress</div>
+        <div class="row"><span class="dot open"></span> = not started</div>
+      </div>
+    </aside>
+
+    <!-- ---- MAIN ---- -->
+    <main>
+
+      <!-- STEP 0 — hero -->
+      <section class="hero">
+        <svg class="arrowfig" viewBox="0 0 120 120" fill="none" stroke="#2f5cff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="36" cy="34" r="13"/>
+          <path d="M36 47 V84 M36 60 L18 74 M36 60 L58 70"/>
+          <path d="M36 84 L24 110 M36 84 L50 110"/>
+          <path d="M70 30 H104 M104 30 L92 20 M104 30 L92 40"/>
+          <rect x="74" y="56" width="34" height="44" rx="2" stroke-dasharray="4 4"/>
+          <path d="M82 70 H100 M82 80 H100 M82 90 H94"/>
+        </svg>
+
+        <div class="step-tag"><span class="badge">0</span> Begin here · unpack your study kit</div>
+        <div class="greeting"><span class="moon">🌙</span> Good evening</div>
+        <h2>Let's get you that pass.</h2>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      </section>
+
+      <!-- STATS — gauges -->
+      <section class="gauges">
+        <div class="gauge">
+          <svg class="ring" width="76" height="76" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r="32" fill="none" stroke="#d9d6cd" stroke-width="7"/>
+            <circle cx="38" cy="38" r="32" fill="none" stroke="#2f5cff" stroke-width="7"
+              stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="56"
+              transform="rotate(-90 38 38)"/>
+            <text x="38" y="43" text-anchor="middle" font-family="Space Mono, monospace" font-size="17" font-weight="700" fill="#15171a">72%</text>
+          </svg>
+          <div class="meta">
+            <div class="step">A · Overall progress</div>
+            <div class="big">72%</div>
+            <div class="sub">12 of 17 topics done</div>
+          </div>
+        </div>
+
+        <div class="gauge">
+          <svg class="ring" width="76" height="76" viewBox="0 0 76 76">
+            <rect x="9" y="9" width="58" height="58" rx="4" fill="none" stroke="#15171a" stroke-width="3"/>
+            <path d="M22 9 V3 M54 9 V3" stroke="#15171a" stroke-width="3" stroke-linecap="round"/>
+            <line x1="9" y1="24" x2="67" y2="24" stroke="#15171a" stroke-width="2.5"/>
+            <text x="38" y="52" text-anchor="middle" font-family="Space Mono, monospace" font-size="20" font-weight="700" fill="#ff4d2e">86</text>
+          </svg>
+          <div class="meta">
+            <div class="step">B · Exam countdown</div>
+            <div class="big">86<small style="font-size:14px;font-weight:600;"> days</small></div>
+            <div class="sub">until exam day</div>
+          </div>
+        </div>
+
+        <div class="gauge">
+          <svg class="ring" width="76" height="76" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r="32" fill="none" stroke="#d9d6cd" stroke-width="7"/>
+            <circle cx="38" cy="38" r="32" fill="none" stroke="#15171a" stroke-width="7"
+              stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="106"
+              transform="rotate(-90 38 38)"/>
+            <path d="M28 38 l7 8 l14 -16" fill="none" stroke="#15171a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="meta">
+            <div class="step">C · Topics solid</div>
+            <div class="big">8</div>
+            <div class="sub">fully locked in</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENT COLUMNS -->
+      <div class="cols">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-l">
+
+          <!-- exam card -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="n">1</div>
+              <div>
+                <h3>Identify the Exam</h3>
+                <div class="sub">Confirm you have the right kit</div>
+              </div>
+            </div>
+            <div class="examcard">
+              <div class="left">
+                <span class="tag">EXAM</span>
+                <span class="code">FAM</span>
+              </div>
+              <div class="right">
+                <div class="name">Fundamentals of Actuarial Mathematics</div>
+                <div class="spec">
+                  <span class="chip"><span class="ico">🏛️</span> SOA</span>
+                  <span class="chip"><span class="ico">❓</span> 34 questions</span>
+                  <span class="chip pass"><span class="ico">✓</span> pass = 6/10</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- topic preview + formula -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="n">2</div>
+              <div>
+                <h3>Life Insurance Present Values</h3>
+                <div class="sub">Topic 3 · the core machinery</div>
+              </div>
+            </div>
+            <p class="lede-sm">Value a death benefit today by discounting it back across the survival distribution — three identities do most of the heavy lifting.</p>
+
+            <div class="formula">
+              <span class="ftab">Fasteners — memorise</span>
+              <div class="frow">
+                <span class="fnum">i</span>
+                <span class="eq">A<sub>x</sub> = 1 &minus; d&middot;&auml;<sub>x</sub></span>
+              </div>
+              <div class="frow">
+                <span class="fnum">ii</span>
+                <span class="eq">Var(Z) = <sup>2</sup>A<sub>x</sub> &minus; (A<sub>x</sub>)&sup2;</span>
+              </div>
+              <div class="frow">
+                <span class="fnum">iii</span>
+                <span class="eq">&auml;<sub>x</sub> = (1 &minus; A<sub>x</sub>) / d</span>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-l" style="border-right:none;">
+
+          <!-- trap -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="n">!</div>
+              <div>
+                <h3>Common Trap</h3>
+                <div class="sub">Where most candidates lose a mark</div>
+              </div>
+            </div>
+            <div class="trap">
+              <div class="warn">
+                <svg viewBox="0 0 48 48" fill="none" stroke="#15171a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M24 5 L44 41 H4 Z"/>
+                  <line x1="24" y1="18" x2="24" y2="30"/>
+                  <circle cx="24" cy="36" r="1.6" fill="#15171a" stroke="none"/>
+                </svg>
+              </div>
+              <div class="body">
+                <div class="lbl">⚠ Under UDD</div>
+                <p>Multiply <code>ONLY</code> the term/death piece by <code>i/&delta;</code> — the pure endowment is never rescaled.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- worked example teaser -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="n">3</div>
+              <div>
+                <h3>Try It Yourself</h3>
+                <div class="sub">Follow the steps, then check</div>
+              </div>
+            </div>
+
+            <div class="example">
+              <div class="ehead">
+                <div class="num">EX</div>
+                <div class="t">Example 1 — Whole life EPV &amp; variance
+                  <span>Compute A_x, then Var(Z) from the table</span>
+                </div>
+              </div>
+              <div class="ebody">
+                <!-- wordless diagram: 3 steps -->
+                <div class="diagram">
+                  <div class="cell">
+                    <span class="st">1</span>
+                    <svg viewBox="0 0 60 54" fill="none" stroke="#15171a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="14" y="8" width="32" height="40" rx="2"/>
+                      <line x1="20" y1="18" x2="40" y2="18"/>
+                      <line x1="20" y1="26" x2="40" y2="26"/>
+                      <line x1="20" y1="34" x2="34" y2="34"/>
+                    </svg>
+                  </div>
+                  <div class="cell">
+                    <span class="st">2</span>
+                    <svg viewBox="0 0 60 54" fill="none" stroke="#2f5cff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="22" cy="22" r="13"/>
+                      <line x1="32" y1="32" x2="48" y2="48"/>
+                      <line x1="16" y1="22" x2="28" y2="22"/>
+                      <line x1="22" y1="16" x2="22" y2="28"/>
+                    </svg>
+                  </div>
+                  <div class="cell">
+                    <span class="st">3</span>
+                    <svg viewBox="0 0 60 54" fill="none" stroke="#15171a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 30 l10 12 l28 -32"/>
+                      <path d="M44 14 l6 -2 l-2 6" stroke="#ff4d2e"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="btns">
+                  <a class="btn primary"><span>Start studying</span><span class="arr">→</span></a>
+                  <a class="btn ghost"><span class="arr">↺</span><span>Resume</span></a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="fbrand">
+      <div class="fm">
+        <svg viewBox="0 0 34 34" fill="none" stroke="#ffd400" stroke-width="3" stroke-linecap="square">
+          <path d="M4 28 V8 L17 20 L30 8 V28"/>
+        </svg>
+      </div>
+      <div>
+        <b>Me Studing Stuff</b>
+        <span>Study smarter. Pass exams.</span>
+      </div>
+    </div>
+    <div class="fmono">© 2026 · Assembly Guide to SOA Exam FAM · no tools but your brain required</div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Policy Values (Reserves) · FAM-L · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="lt-06" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Long-Term · Topic 6</div>
+      <h1>Policy Values (Reserves)</h1>
+      <p class="lede">Level premiums overshoot the cost of insurance early and fall short late; the policy value $\,_tV$ is the money the insurer must hold to bridge the gap. Master the prospective definition, the one-year recursion, and the FPT shortcut and you own most of the reserve questions on the exam.</p>
+      <div class="meta-row">
+        <span class="chip">📖 AMLCR · Ch. 7</span>
+        <span class="chip">⏱️ ~5–6 hrs</span>
+        <span class="chip">🔑 prospective · retrospective · recursion</span>
+        <span class="chip">🔑 gross · expense reserve · variance</span>
+        <span class="chip">🔑 interim · FPT · modified · Thiele</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>By the end of this topic you should be able to:</p>
+        <ul>
+          <li><strong>Define</strong> the time-$t$ net future loss random variable ${}_tL$ (conditional on the policy being in force) and the net premium policy value ${}_tV = \mathrm{E}[{}_tL]$, and explain why an insurer must hold a reserve.</li>
+          <li><strong>Compute</strong> net premium policy values using the <strong>prospective</strong> formula (EPV future benefits − EPV future net premiums) and the <strong>retrospective</strong> formula (AV past premiums − AV past benefits), and state precisely when they are equal.</li>
+          <li><strong>Apply the two special (shortcut) formulas</strong> for whole life and endowment policy values — the <em>annuity-ratio</em> form and the <em>insurance-ratio</em> form.</li>
+          <li><strong>Compute the variance</strong> of the time-$t$ future loss $\mathrm{Var}[{}_tL]$ for whole life and endowment insurance, and from basic principles for special (non-level) plans.</li>
+          <li><strong>Apply the recursive relationship</strong> between successive policy values (net, gross, and expense versions), adapt it for <strong>annuities</strong> (annuity benefit = negative premium), and use the Fackler accumulation form.</li>
+          <li><strong>Calculate gross (expense-loaded) premium policy values</strong> and the <strong>expense reserve</strong> ${}_tV^e = {}_tV^g-{}_tV^n$, decompose the gross premium $P^g=P^n+P^e$, and explain why the expense reserve is normally negative.</li>
+          <li><strong>Compute interim (mid-year) reserves</strong> ${}_{t+s}V$ by the exact recursion (both directions) and by linear interpolation, using UDD where needed.</li>
+          <li><strong>State and apply Thiele's differential equation</strong> for the continuous policy value, including a numerical Euler step.</li>
+          <li><strong>Compute modified reserves</strong> in general ($\alpha,\beta$ valuation premiums) and the <strong>Full Preliminary Term (FPT)</strong> method as the special case, and explain why insurers use them (new-business strain).</li>
+          <li><strong>Evaluate the effect of changing assumptions</strong> (interest, mortality, expenses) on the reserve, and handle <strong>policy alterations</strong> using the current policy value as the available asset.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>Why reserves exist</h3>
+      <p>For most life insurance and annuity products, the <strong>premium is level</strong> but the <strong>expected cost of providing the benefit rises with age</strong> (mortality increases). At issue, under the equivalence principle, future premiums exactly fund future benefits:</p>
+      <div class="formula">$$ \text{EPV}_0(\text{future benefits}) = \text{EPV}_0(\text{future premiums}). $$</div>
+      <p>But after some years the insured is older, mortality is higher, and that balance breaks. For a policy still in force at time $t$,</p>
+      <div class="formula">$$ \text{EPV}_t(\text{future benefits}) > \text{EPV}_t(\text{future premiums}). $$</div>
+      <p>Future premiums alone are no longer enough. The shortfall the insurer must already be holding is the <strong>reserve</strong> (policy value) ${}_tV$, so that reserve plus future premiums funds future benefits:</p>
+      <div class="formula">$$ \text{EPV}_t(\text{future benefits}) = \text{EPV}_t(\text{future premiums}) + {}_tV \;\;\Longrightarrow\;\; {}_tV = \text{EPV}_t(\text{future benefits}) - \text{EPV}_t(\text{future premiums}). $$</div>
+      <p>It is a <em>balance-sheet liability</em> of the insurer — money owed, on average, to the block of policyholders still alive.</p>
+
+      <h3>The future loss random variable ${}_tL$</h3>
+      <p>The policy value is the <em>expected value of a random variable</em>. Recall ${}_0L$ is the present-value-at-issue of (future benefits − future premiums). Generalize it to time $t$, <strong>conditional on the policy being in force</strong> (the insured alive) at time $t$:</p>
+      <div class="formula">$$ {}_tL = \text{PV}_t(\text{future benefits}) - \text{PV}_t(\text{future premiums}), \qquad {}_tV = \mathrm{E}[{}_tL \mid T_x > t]. $$</div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — ${}_tL$ only exists for in-force policies</div>
+        <p>The time-$t$ future loss is only meaningful while the policy is still active at time $t$. Once a policy has expired there are no further cash flows, so ${}_tV$ is effectively a <strong>conditional</strong> expectation ($\,{}_tL \mid T_x>t$); we usually drop the condition and write it implicitly. Standard FAM terminology is <em>policy value</em> (AMLCR); older LTAM material says <em>reserve</em>. The two are used interchangeably here.</p>
+      </div>
+
+      <h3>Cash-flow timing conventions at time $t$</h3>
+      <p>When the valuation date $t$ coincides with a premium/benefit date, you must decide which cash flows are "future." Unless told otherwise, the reserve is taken <strong>"at the end of year $t$"</strong> and:</p>
+      <ul>
+        <li>Death benefits and <strong>claim/settlement expenses at time $t$ are treated as <em>past</em></strong> (already paid to year-$t$ deaths) — excluded.</li>
+        <li>Premiums and premium-date expenses at time $t$ are treated as <strong><em>future</em></strong> (they start year $t{+}1$) — included.</li>
+        <li>Endowment / pure-endowment maturity payments at time $t$ are <strong>future</strong> — included.</li>
+        <li>Annuity payments at time $t$ are ambiguous: <strong>state explicitly</strong> whether they are past or future for the case at hand.</li>
+      </ul>
+
+      <h3>Net vs. gross</h3>
+      <ul>
+        <li><strong>Net premium policy value</strong> ${}_tV^n$ (or just ${}_tV$): ignores expenses entirely. Uses the <strong>net premium</strong> $P$ (equivalence principle, no expense loading) in <em>both</em> the premium leg and the valuation.</li>
+        <li><strong>Gross premium policy value</strong> ${}_tV^g$: uses the actual <strong>gross premium</strong> $G$ and explicitly includes <strong>future expenses</strong> in the EPV of outgo. The gross premium need <em>not</em> come from the equivalence principle.</li>
+      </ul>
+      <p>A heavily tested subtlety: a <strong>net premium reserve is computed with the net premium, not the gross premium</strong>, even if the contract actually charges a gross premium. If the problem says "net premium policy value," back out / use $P$, not $G$.</p>
+
+      <h3>Premium basis vs. reserve basis</h3>
+      <p>The mortality/interest assumptions used for the premium (<strong>premium basis</strong>) need not match those used for the reserve (<strong>reserve basis</strong>). <em>On the exam, assume they are the same unless told otherwise.</em></p>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Coach's Remark — why bases differ in practice</div>
+        <p>Reserve assumptions are often set by <strong>regulation</strong> and are deliberately <strong>conservative</strong> (e.g. lower interest). For pricing, insurers use more realistic assumptions tuned to their own block of business. Hence the reserve basis is frequently more cautious than the premium basis — which is also why a regulator-prescribed net premium reserve can run high and create new-business strain (the motivation for modified reserves later).</p>
+      </div>
+
+      <h3>Prospective vs. retrospective</h3>
+      <p>Two equivalent ways to look forward or backward:</p>
+      <ul>
+        <li><strong>Prospective</strong> (looking forward):
+          $$ {}_tV = \text{EPV future benefits} - \text{EPV future net premiums.} $$
+        </li>
+        <li><strong>Retrospective</strong> (looking backward):
+          $$ {}_tV = \text{AV of past premiums} - \text{AV of past benefit outgo (cost of insurance)}, $$
+          where "AV" is the <strong>actuarial accumulated value</strong> — accumulated with interest <strong>and</strong> survivorship (divide a time-0 EPV by ${}_tE_x$).
+        </li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Key theorem — when prospective = retrospective</div>
+        <p>The prospective and retrospective policy values are <strong>equal</strong> <em>if and only if</em> (1) the <strong>same basis</strong> (interest and mortality) is used for the premium and the reserve, <strong>and</strong> (2) the premium was set by the <strong>equivalence principle</strong>. When the bases differ, use the <strong>prospective</strong> method — it is the definition.</p>
+      </div>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Coach's Remark — when retrospective is the faster tool</div>
+        <p>Although the retrospective method is technically off-syllabus, it is fair game on multiple-choice and is often <em>much</em> faster when there are <strong>no past benefits</strong> to accumulate. Classic cases: a <strong>deferred</strong> insurance or <strong>deferred annuity during the deferral period</strong> (zero past benefits), or a plan whose benefit <em>changes</em> only after time $t$ — the retrospective view only sees the simpler early benefits.</p>
+      </div>
+
+      <h3>The recursion — the most important computational tool</h3>
+      <p>Over one policy year, the reserve at the start, plus the premium, earns interest; out of that the insurer pays expected death benefits, and what survives is shared among survivors as the next reserve. Derived from a cohort of $\ell_{x+t}$ identical policies (divide through by $\ell_{x+t}$), for a fully discrete insurance with death benefit $b$ at end of year:</p>
+      <div class="formula">$$ ({}_tV + P)(1+i) = q_{x+t}\, b + p_{x+t}\,{}_{t+1}V. $$</div>
+      <p>Read it: <strong>(reserve brought forward + premium) accumulated one year = expected death outgo + expected reserve carried forward for survivors.</strong> This single equation underlies Fackler, Thiele (its continuous limit), interim reserves, and nearly every reserve exam question.</p>
+
+      <h3>Expense reserve</h3>
+      <p>The gross premium policy value splits as</p>
+      <div class="formula">$$ {}_tV^{g} = {}_tV^{n} + {}_tV^{e}, \qquad {}_tV^{e} = \text{EPV}_t(\text{future expenses}) - \text{EPV}_t(\text{future expense loadings}). $$</div>
+      <p>The gross premium itself splits $P^g = P^n + P^e$, where the <strong>expense loading</strong> $P^e = P^g - P^n$ is the level amount funding expenses. Because <strong>acquisition expenses are front-loaded</strong>, the level loading falls <em>short</em> of expenses in year 1 and <em>exceeds</em> them later, so the expense reserve starts <strong>negative</strong> and climbs toward 0. Consequently ${}_tV^n \ge {}_tV^g$ in general.</p>
+
+      <h3>Interim (mid-year) reserves</h3>
+      <p>For a non-integer time $t+s$ ($t$ integer, $0\lt s<1$), value with the same one-year recursion logic but accumulate/discount over the fractional period, and convert mortality with UDD ($\,_s q_{x+t}=s\,q_{x+t}$). You can step <em>forward</em> from ${}_tV$ or <em>backward</em> from ${}_{t+1}V$; both give the same answer. The exact method is the modern exam default; linear interpolation is a quick approximation.</p>
+
+      <h3>Modified reserves (FPT)</h3>
+      <p>Holding a full net premium reserve from day 1 strains a new insurer's surplus because of acquisition costs ("new-business strain"). U.S. regulators allow <strong>modified reserves</strong>: replace the level net premium with <em>non-level valuation premiums</em> — a <strong>lower</strong> first-year premium $\alpha$ and a <strong>higher</strong> renewal premium $\beta$ — so the reserve at the end of year 1 is lower (often 0), freeing cash for acquisition expenses. Modified reserves still <strong>ignore expenses</strong> (the adjustment is implicit, through the premiums).</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The universal modified-reserve constraint</div>
+        <p>For <em>any</em> modified method, the time-0 EPV of the valuation premiums must equal the EPV of benefits, which equals the EPV of level net premiums:</p>
+        $$ \text{EPV}_0(\text{modified premiums}) = \text{EPV}_0(\text{net premiums}) = \text{EPV}_0(\text{benefits}). $$
+        <p>So $\alpha + \beta\,a_x = P\,\ddot a_x$ — one equation, two unknowns; the method fixes one of $\alpha,\beta$. On the exam a modified net premium is often called the <strong>valuation premium</strong>.</p>
+      </div>
+      <p>The <strong>Full Preliminary Term (FPT)</strong> method is the special case that treats the first year as <strong>one-year term insurance</strong>:</p>
+      <ul>
+        <li>First-year valuation premium $\alpha = $ net premium for <strong>1-year term</strong> on $(x)$, i.e. $\alpha = v\,q_x = A^{1}_{x:\overline{1|}}$ (the first-year cost of insurance), making ${}_1V^{FPT}=0$.</li>
+        <li>Renewal valuation premium $\beta = $ net premium for the <strong>same contract issued to $(x+1)$</strong>.</li>
+      </ul>
+      <p>So FPT reserves for the original policy equal the net premium reserves of an <strong>identical policy issued one year later</strong>, shifted by a year. (For an $n$-year endowment, the "contract on $(x+1)$" is the $(n{-}1)$-year endowment.)</p>
+
+      <h3>Thiele's differential equation (continuous)</h3>
+      <p>The continuous-time analogue of the recursion. For a policy with continuous premium rate $P_t$, force of interest $\delta$, death benefit $S_t$ paid at the moment of death:</p>
+      <div class="formula">$$ \frac{d}{dt}\,{}_tV = \delta\,{}_tV + P_t - \mu_{x+t}\,(S_t - {}_tV). $$</div>
+      <p>Interpretation: the reserve grows by <strong>interest</strong> ($\delta\,{}_tV$) plus <strong>premium inflow</strong> ($P_t$), and is depleted by the <strong>net cost of dying</strong> — the <em>net amount at risk</em> $(S_t - {}_tV)$ paid out at rate $\mu_{x+t}$.</p>
+
+      <h3>Policy alterations &amp; changing assumptions</h3>
+      <p>When a policyholder alters a contract (converts to paid-up, reduces benefit, changes term), the insurer uses the <strong>current policy value as the available asset</strong> and re-applies the equivalence principle to the <em>new</em> contract. Changing the <strong>valuation assumptions</strong> — e.g. <strong>lowering</strong> the interest rate, or strengthening mortality — generally <strong>increases</strong> the reserve, because lower interest means premiums accumulate less and benefits are discounted less.</p>
+
+      <h2>Formulas</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$(x)$ is the issue age, $t$ the duration, $i$ the effective annual rate, $v=1/(1+i)$, $d=iv=1-v$, $\delta=\ln(1+i)$, $b$ the death benefit. ${}_tE_x=v^t\,{}_tp_x$ is the $t$-year pure endowment (the interest-plus-survivorship factor). A superscript ${}^2$ on $A$ (written ${}^2A$) denotes evaluation at double the force of interest, for variances.</p>
+      </div>
+
+      <h3>Net premium (equivalence principle)</h3>
+      <p>For a fully discrete whole life on $(x)$ with unit benefit:</p>
+      <div class="formula">$$ P_x = \frac{A_x}{\ddot a_x} = \frac{1}{\ddot a_x} - d, \qquad d = iv = 1 - v. $$</div>
+
+      <h3>Prospective net premium policy value</h3>
+      <p>General contract:</p>
+      <div class="formula">$$ {}_tV = \text{EPV}_t(\text{future benefits}) - \text{EPV}_t(\text{future net premiums}). $$</div>
+      <p>Fully discrete whole life, unit benefit, issued at age $x$, valued at duration $t$:</p>
+      <div class="formula">$$ {}_tV_x = A_{x+t} - P_x\,\ddot a_{x+t}. $$</div>
+
+      <h3>Special (shortcut) formulas — whole life</h3>
+      <p>For a fully discrete whole life of $b$ on $(x)$ with an ordinary level premium and level benefit:</p>
+      <div class="formula">
+        <span class="formula-label">Annuity-ratio form</span>
+        $$ {}_tV = b\left(1 - \frac{\ddot a_{x+t}}{\ddot a_x}\right), $$
+        <span class="formula-label">Insurance-ratio form</span>
+        $$ {}_tV = b\left(\frac{A_{x+t} - A_x}{1 - A_x}\right). $$
+      </div>
+      <p>(They follow from $A_{x+t}=1-d\,\ddot a_{x+t}$ and $P_x=\tfrac{1}{\ddot a_x}-d$.) An equivalent <strong>premium-difference</strong> form: ${}_tV_x = (P_{x+t}-P_x)\,\ddot a_{x+t}$.</p>
+
+      <h3>Special (shortcut) formulas — endowment &amp; continuous</h3>
+      <p>For a fully discrete <strong>$n$-year endowment</strong> of $b$ — use $n{-}t$ on the remaining-term symbols:</p>
+      <div class="formula">
+        $$ {}_tV = b\left(1 - \frac{\ddot a_{x+t:\overline{n-t|}}}{\ddot a_{x:\overline{n|}}}\right) = b\left(\frac{A_{x+t:\overline{n-t|}} - A_{x:\overline{n|}}}{1 - A_{x:\overline{n|}}}\right). $$
+      </div>
+      <p>For <strong>fully continuous</strong> versions, replace $A\!\to\!\bar A$, $\ddot a\!\to\!\bar a$, $d\!\to\!\delta$ throughout. These shortcuts only work for ordinary level whole life and endowment plans — for special (non-level) plans, revert to basic principles.</p>
+
+      <h3>Retrospective net premium policy value</h3>
+      <div class="formula">$$ {}_tV_x = \frac{P_x\,\ddot a_{x:\overline{t|}} - A^{1}_{x:\overline{t|}}}{{}_tE_x} = P_x\,\ddot s_{x:\overline{t|}} - {}_tk_x, $$</div>
+      <p>where dividing by ${}_tE_x=v^t\,{}_tp_x$ converts a time-0 EPV into an actuarial accumulated value at time $t$:</p>
+      <div class="formula">$$ \ddot s_{x:\overline{t|}} = \frac{\ddot a_{x:\overline{t|}}}{{}_tE_x}, \qquad {}_tk_x = \frac{A^{1}_{x:\overline{t|}}}{{}_tE_x}. $$</div>
+
+      <h3>Boundary values (use these to anchor recursions)</h3>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The three boundary conditions</div>
+        $$ {}_0V = 0 \;\;(\text{equiv. principle}), \qquad {}_nV = 0 \;\;(n\text{-year term}), \qquad {}_nV = \text{endowment benefit} \;\;(n\text{-year endowment}). $$
+      </div>
+
+      <h3>Recursion (fully discrete net premium reserve)</h3>
+      <p>Death benefit $b$ at end of year, premium $P$ at start of year:</p>
+      <div class="callout key" data-icon="🔁">
+        <div class="callout-title">The reserve recursion — memorize this one</div>
+        $$ \boxed{\,({}_tV + P)(1+i) = q_{x+t}\,b + p_{x+t}\,{}_{t+1}V\,} $$
+      </div>
+      <p>Solved forward for the next reserve:</p>
+      <div class="formula">$$ {}_{t+1}V = \frac{({}_tV + P)(1+i) - q_{x+t}\,b}{p_{x+t}}. $$</div>
+      <p>NAR (net-amount-at-risk) form — handy for solving for $q_{x+t}$:</p>
+      <div class="formula">$$ ({}_tV + P)(1+i) = q_{x+t}\,(b - {}_{t+1}V) + {}_{t+1}V, \qquad \text{NAR} = b - {}_{t+1}V. $$</div>
+
+      <h3>Recursion adapted for annuities</h3>
+      <p>An annuity payment $B_t$ at time $t$ is a <strong>negative premium</strong>; set $b=0$ if there is no death benefit:</p>
+      <div class="formula">$$ ({}_tV + P_t - B_t)(1+i) = q_{x+t}\,b + p_{x+t}\,{}_{t+1}V. $$</div>
+
+      <h3>Gross premium reserve, expense reserve &amp; their recursions</h3>
+      <p>Gross premium $G$, premium-date expense $e$, settlement expense $E$ (added to the death benefit):</p>
+      <div class="formula">$$ {}_tV^{g} = \text{EPV}_t(\text{benefits}) + \text{EPV}_t(\text{expenses}) - G\cdot\text{EPV}_t(\text{premiums}). $$</div>
+      <div class="formula">
+        <span class="formula-label">Gross — benefits AND expenses</span>
+        $$ ({}_tV^{g} + G - e)(1+i) = q_{x+t}\,(b+E) + p_{x+t}\,{}_{t+1}V^{g}, $$
+        <span class="formula-label">Net — benefits only</span>
+        $$ ({}_tV + P)(1+i) = q_{x+t}\,b + p_{x+t}\,{}_{t+1}V, $$
+        <span class="formula-label">Expense — expenses only (gross minus net)</span>
+        $$ ({}_tV^{e} + P^e - e)(1+i) = q_{x+t}\,E + p_{x+t}\,{}_{t+1}V^{e}. $$
+      </div>
+      <p>Decomposition and a useful special case:</p>
+      <div class="formula">$$ {}_tV^{e} = {}_tV^{g} - {}_tV^{n}; \qquad \text{if expenses are a level }100e\%\text{ of premium, } {}_tV^{e}=0 \text{ and } {}_tV^{g}={}_tV^{n}. $$</div>
+
+      <h3>Variance of the future loss ${}_tL$</h3>
+      <p>Just shift the at-issue variance formula's age from $x$ to $x+t$. Fully continuous whole life / endowment with premium $P$:</p>
+      <div class="formula">$$ \mathrm{Var}[{}_tL] = \left(b + \frac{P}{\delta}\right)^{2}\mathrm{Var}[Z], \quad \mathrm{Var}[Z]= {}^2\bar A_{x+t} - (\bar A_{x+t})^2 \;\;(\text{WL}),\;\; {}^2\bar A_{x+t:\overline{n-t|}} - (\bar A_{x+t:\overline{n-t|}})^2\;(\text{end.}). $$</div>
+      <p>If the <strong>equivalence principle</strong> holds, the premium term collapses (denominator uses age $x$):</p>
+      <div class="formula">$$ \mathrm{Var}[{}_tL] = b^2\,\frac{{}^2\bar A_{x+t} - (\bar A_{x+t})^2}{(1-\bar A_x)^2}\;(\text{WL}), \qquad \mathrm{Var}[{}_tL] = b^2\,\frac{{}^2\bar A_{x+t:\overline{n-t|}} - (\bar A_{x+t:\overline{n-t|}})^2}{(1-\bar A_{x:\overline{n|}})^2}\;(\text{end.}). $$</div>
+      <p>For fully discrete insurance, drop the bars and use $d$ in place of $\delta$. For a <strong>gross</strong> loss, replace $b$ with $\big(b+E+\tfrac{G-e_r}{d}\big)$ (renewal expense $e_r$; the initial expense, being a known constant, does not enter the variance).</p>
+
+      <h3>Interim (mid-year) reserves — exact &amp; interpolation</h3>
+      <p>For $t$ integer, $0\lt s<1$, death benefit $b$ at year-end. Step <strong>forward</strong> from ${}_tV$ (premium $P$ included at time $t$):</p>
+      <div class="formula">$$ ({}_tV + P)(1+i)^{s} = {}_s q_{x+t}\,b\,v^{\,1-s} + {}_s p_{x+t}\,{}_{t+s}V. $$</div>
+      <p>Step <strong>backward</strong> from ${}_{t+1}V$ (no premium at the interim point):</p>
+      <div class="formula">$$ ({}_{t+s}V)(1+i)^{1-s} = {}_{1-s} q_{x+t+s}\,b + {}_{1-s} p_{x+t+s}\,{}_{t+1}V. $$</div>
+      <p>Under UDD, ${}_s q_{x+t}=s\,q_{x+t}$ and ${}_{1-s}q_{x+t+s}=\dfrac{(1-s)\,q_{x+t}}{1-s\,q_{x+t}}$. Linear-interpolation approximation:</p>
+      <div class="formula">$$ {}_{t+s}V \approx ({}_tV + P)(1-s) + s\cdot{}_{t+1}V. $$</div>
+
+      <h3>Fackler / actuarial accumulated value form</h3>
+      <p>Rearranged using $p_{x+t}=1-q_{x+t}$ (end-of-year benefit):</p>
+      <div class="formula">$$ {}_{t+1}V = ({}_tV + P)\,u_{x+t} - b\,k_{x+t}, \qquad u_{x+t} = \frac{1+i}{p_{x+t}}, \quad k_{x+t} = \frac{(1+i)\,q_{x+t}}{p_{x+t}}. $$</div>
+
+      <h3>Thiele's differential equation (continuous)</h3>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Thiele's ODE</div>
+        $$ \boxed{\,\frac{d}{dt}\,{}_tV = \delta_t\,{}_tV + P_t - \mu_{x+t}\,(S_t - {}_tV)\,} $$
+      </div>
+      <ul>
+        <li>Boundary: at maturity $n$, ${}_nV=$ survival benefit (e.g. $0$ for term, $1$ per unit for an $n$-year endowment).</li>
+        <li>Euler step: $ {}_{t+h}V \approx {}_tV + h\big[\delta_t\,{}_tV + P_t - \mu_{x+t}(S_t - {}_tV)\big].$</li>
+      </ul>
+
+      <h3>Modified reserves — general &amp; Full Preliminary Term</h3>
+      <p>General constraint and prospective valuation (whole life of $b$, valuation premiums $\alpha$ year 1, $\beta$ thereafter):</p>
+      <div class="formula">$$ \alpha + \beta\,a_x = P\,\ddot a_x, \qquad {}_tV^{\text{mod}} = \text{EPV}_t(\text{benefits}) - \text{EPV}_t(\text{modified premiums}). $$</div>
+      <p>FPT is the special case $\alpha = v\,q_x = A^{1}_{x:\overline{1|}}$ (so ${}_0V^{FPT}={}_1V^{FPT}=0$), with $\beta=A_{x+1}/\ddot a_{x+1}$ (the renewal valuation premium for the plan on $(x+1)$). Then for $t\ge 1$:</p>
+      <div class="formula">$$ {}_tV^{FPT}_{x} = {}_{t-1}V^{n}_{x+1} = b\left(1 - \frac{\ddot a_{x+t}}{\ddot a_{x+1}}\right) \;\;(\text{whole life}), \qquad {}_0V^{FPT}={}_1V^{FPT}=0. $$</div>
+
+      <h3>Policy alteration (asset = current reserve)</h3>
+      <div class="formula">$$ {}_tV^{\text{(old, as asset)}} + \text{EPV(future altered premiums)} = \text{EPV(future altered benefits + expenses)}. $$</div>
+      <p>For a <strong>paid-up</strong> alteration (no future premiums) to reduced sum insured $S'$:</p>
+      <div class="formula">$$ S' = \frac{{}_tV}{A_{x+t}} \quad(\text{paid-up whole life, ignoring expenses}). $$</div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Prospective net premium reserve (whole life) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully discrete whole life insurance of \$1 is issued to $(40)$. You are given $A_{40}=0.20$, $A_{50}=0.30$, and $i=0.05$ so $d=0.05/1.05=0.047619$. Find ${}_{10}V_{40}$.</p>
+          <p><strong>Step 1 — annuities from the $A$'s.</strong> $\ddot a_{40}=(1-A_{40})/d=0.80/0.047619=16.8$ and $\ddot a_{50}=(1-A_{50})/d=0.70/0.047619=14.7$.</p>
+          <p><strong>Step 2 — net premium.</strong> $P_{40}=A_{40}/\ddot a_{40}=0.20/16.8=0.0119048.$</p>
+          <p><strong>Step 3 — prospective reserve.</strong></p>
+          $$ {}_{10}V_{40} = A_{50} - P_{40}\,\ddot a_{50} = 0.30 - 0.0119048(14.7) = 0.30 - 0.175 = 0.125. $$
+          <p><strong>Check — insurance-ratio shortcut:</strong> ${}_{10}V=(A_{50}-A_{40})/(1-A_{40})=(0.30-0.20)/0.80=0.125.$ They agree, because the data are internally consistent and the equivalence-principle premium was used.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_{10}V_{40} = 0.125$ per \$1 of insurance.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Recursion from both ends — endowment reserves <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>(150-81-94:3 adapted.) A fully discrete 3-year endowment of \$1{,}000 on $(x)$, $i=0.06$, net premium $P=332.51$, with $\ell_x=1000,\ \ell_{x+1}=900,\ \ell_{x+2}=810$. Find ${}_1V$ and ${}_2V$.</p>
+          <p><strong>${}_1V$ — recurse from ${}_0V=0$.</strong> Here $q_x=(1000-900)/1000=0.10$, $p_x=0.90$.</p>
+          $$ (0+332.51)(1.06) = 0.10(1000) + 0.90\,{}_1V \;\Rightarrow\; 352.46 = 100 + 0.90\,{}_1V \;\Rightarrow\; {}_1V = 280.51. $$
+          <p><strong>${}_2V$ — recurse from the boundary ${}_3V=1000$</strong> (endowment maturity). The death and survival outgo at year-end both total \$1{,}000:</p>
+          $$ ({}_2V + 332.51)(1.06) = 1000 \;\Rightarrow\; {}_2V = \frac{1000}{1.06} - 332.51 = 610.89. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_1V = \$280.51$, ${}_2V = \$610.89$. Anchoring the recursion at <em>both</em> ends (${}_0V=0$ and ${}_nV=$ maturity) is the key move.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Annuity reserve recursion (negative premium) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully discrete 10-year deferred whole life annuity-due of \$1{,}000 on $(x)$. Net premiums $X$ are paid during the deferral period only; $i=0.06$; $q_{x+9}=0.012$, $q_{x+10}=0.014$; ${}_9V=8{,}683.07$, ${}_{11}V=9{,}675.46$. No death benefit ($b=0$). Find $X$.</p>
+          <p>Recursion: $({}_tV + P_t - B_t)(1.06) = p_{x+t}\,{}_{t+1}V$, with $B_t=0$ for $t\le 9$ and $B_t=1000$ for $t\ge 10$, $P_t=X$ for $t\le 9$ else $0$.</p>
+          <p><strong>Step 1 — connect ${}_{10}V$ and ${}_{11}V$</strong> (payment at 10, no premium):</p>
+          $$ ({}_{10}V + 0 - 1000)(1.06) = (1-0.014)(9{,}675.46) \;\Rightarrow\; {}_{10}V = 10{,}000. $$
+          <p><strong>Step 2 — connect ${}_9V$ and ${}_{10}V$</strong> (premium $X$, no payment at 9):</p>
+          $$ (8{,}683.07 + X)(1.06) = (1-0.012)(10{,}000) \;\Rightarrow\; X = 637.70. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$X = \$637.70$. Treat each \$1{,}000 annuity payout as a negative premium and the standard recursion still works.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Gross premium &amp; expense reserve (SOA Sample 7.9) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Fully discrete whole life of \$2{,}000 on $(45)$, gross premium by equivalence principle, SULT, $i=0.05$ so $\ddot a_{45}=17.8162$, $\ddot a_{55}=16.0599$, $A_{45}=0.15161$, $A_{55}=0.23524$. Expenses (start of year): first year 25% of premium + 1.5 per 1{,}000 + 30 per policy; renewal 5% + 0.5 per 1{,}000 + 10 per policy.</p>
+          <p><strong>Step 1 — gross premium.</strong> EPV premiums = EPV benefits + EPV expenses:</p>
+          $$ G(17.8162) = 2000(0.15161) + [0.05G(17.8162)+0.20G] + [0.5(2)(17.8162)+1.0(2)] + [10(17.8162)+20]. $$
+          $$ \Rightarrow G = 31.16. $$
+          <p><strong>Step 2 — net premium &amp; loading.</strong> $P^n = 2000(0.15161)/17.8162 = 17.02$, so $P^e = 31.16 - 17.02 = 14.14$.</p>
+          <p><strong>Step 3 — gross reserve at $t=10$.</strong> Future renewal expense at age 55 is $0.05G + 0.5(2)+10 = 12.558$ per year:</p>
+          $$ {}_{10}V^{g} = 2000(0.23524) + [0.05(31.16)+0.5(2)+10](16.0599) - 31.16(16.0599) = 470.48 + 201.68 - 500.43 = 171.73. $$
+          <p><strong>Step 4 — expense reserve.</strong> Either ${}_{10}V^e = \text{EPV(exp)}-\text{EPV(loading)} = 201.68 - 14.14(16.0599) = 201.68 - 227.09 = -25.4$, or ${}_{10}V^e = {}_{10}V^g - {}_{10}V^n = 171.73 - 197.14 = -25.4$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G=\$31.16$, ${}_{10}V^g=\$171.73$, ${}_{10}V^e=-\$25.4$. The negative expense reserve reflects the heavy first-year expense (\$40.79) vs. the level loading (\$14.14) — "new-business strain."</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Solving for the gross premium via recursion (F14:13) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Fully discrete whole life of \$100{,}000 on $(45)$. ${}_5V^g=5{,}500$, ${}_6V^g=7{,}100$, $q_{50}=0.009$, $i=0.05$, renewal expense $50 + 4\%$ of $G$, claim expense $E=200$. Find $G$.</p>
+          <p>Gross recursion linking years 5 and 6:</p>
+          $$ [5500 + G - (50 + 0.04G)](1.05) = 0.009(100{,}000 + 200) + (1-0.009)(7100). $$
+          $$ (5450 + 0.96G)(1.05) = 901.8 + 7035.9 \;\Rightarrow\; 5722.5 + 1.008G = 7937.7 \;\Rightarrow\; G = 2{,}197.82. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G = \$2{,}197.82$. Settlement expense rides on the death-benefit term $(b+E)$; premium-date expense $e$ rides with $G$ on the left.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Interim reserve — exact (both directions) vs. interpolation <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>(4-S86:16 adapted.) Fully discrete whole life of \$1{,}000 on $(x)$. ${}_{10}V=311.00$, ${}_{11}V=340.86$, $P=60$, $q_{x+10}=0.08$, $i=0.0609$, UDD. Find ${}_{10.75}V$.</p>
+          <p><strong>Exact, forward from ${}_{10}V$</strong> ($s=0.75$): under UDD ${}_{0.75}q_{x+10}=0.75(0.08)=0.06$, ${}_{0.75}p=0.94$.</p>
+          $$ (311+60)(1.0609)^{0.75} = 0.06(1000)v^{0.25} + 0.94\,{}_{10.75}V \;\Rightarrow\; {}_{10.75}V = 349.68. $$
+          <p><strong>Exact, backward from ${}_{11}V$</strong> ($1-s=0.25$): ${}_{0.25}q_{x+10.75}=\dfrac{0.25(0.08)}{1-0.75(0.08)}=0.021277$, complement $0.978723$.</p>
+          $$ {}_{10.75}V(1.0609)^{0.25} = 0.021277(1000) + 0.978723(340.86) \;\Rightarrow\; {}_{10.75}V = 349.68. $$
+          <p><strong>Linear interpolation</strong> (weight $1-s$ on the earlier point):</p>
+          $$ {}_{10.75}V \approx (311+60)(0.25) + 0.75(340.86) = 348.40. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Exact $=349.68$ (both directions agree); interpolation $=348.40$. Use the <strong>exact</strong> method unless told otherwise.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> FPT reserve via the "issued one year later" shortcut (SOA Sample 312) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Fully discrete whole life of \$1{,}000 on $(80)$: $i=0.06$, $\ddot a_{80}=5.89$, $\ddot a_{90}=3.65$, $q_{80}=0.077$. Find ${}_{10}V^{FPT}$.</p>
+          <p>FPT treats year 1 as 1-year term, so ${}_{10}V^{FPT}$ equals the net reserve at duration 9 of whole life on $(81)$. Need $\ddot a_{81}$ — recurse $\ddot a_{80}=1+v\,p_{80}\,\ddot a_{81}$:</p>
+          $$ 5.89 = 1 + \tfrac{1}{1.06}(1-0.077)\,\ddot a_{81} \;\Rightarrow\; \ddot a_{81}=5.6158. $$
+          $$ {}_{10}V^{FPT} = {}_{9}V^{n}_{81} = 1000\left(1 - \frac{\ddot a_{90}}{\ddot a_{81}}\right) = 1000\left(1 - \frac{3.65}{5.6158}\right) = 350.05. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_{10}V^{FPT} = \$350.05$. The shortcut ${}_tV^{FPT}=b\big(1-\ddot a_{x+t}/\ddot a_{x+1}\big)$ avoids ever computing $\alpha$ and $\beta$ separately.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> General (non-FPT) modified reserve (SOA MLC 314) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Fully discrete whole life of \$1{,}000 on $(40)$, SULT, $i=0.05$. Valuation premiums: year 1 = FPT first-year premium $W$; years 2–20 level $X$; years 21+ level net premium $Y$. Find ${}_{15}V^{\text{mod}}$.</p>
+          <p><strong>Year-1 (FPT):</strong> $W = 1000\,v\,q_{40} = 1000(0.000527)/1.05 = 0.502$ (using $q_{40}=0.000527$).</p>
+          <p><strong>Years 21+:</strong> $Y = P = 1000\,A_{40}/\ddot a_{40} = 121.06/18.4578 = 6.56$.</p>
+          <p><strong>Solve $X$ from the EPV constraint</strong> $W + X\,a_{40:\overline{19|}} + Y\cdot {}_{20|}\ddot a_{40} = 1000A_{40}$, with $a_{40:\overline{19|}}=\ddot a_{40:\overline{20|}}-1=11.9935$ and ${}_{20|}\ddot a_{40}={}_{20}E_{40}\,\ddot a_{60}=0.36663(14.9041)=5.4643$:</p>
+          $$ 0.502 + X(11.9935) + 6.56(5.4643) = 121.06 \;\Rightarrow\; X = 7.06. $$
+          <p><strong>Prospective at $t=15$</strong> (premiums $X$ through year 20, then $Y$): with $\ddot a_{55:\overline{5|}}=4.5268$ and ${}_{5|}\ddot a_{55}=11.5331$,</p>
+          $$ {}_{15}V^{\text{mod}} = 1000A_{55} - \big(X\,\ddot a_{55:\overline{5|}} + Y\cdot {}_{5|}\ddot a_{55}\big) = 235.24 - 7.06(4.5268) - 6.56(11.5331) = 127.62. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_{15}V^{\text{mod}} = \$127.62$. Any non-FPT method is solved the same way: pin the valuation premiums from the EPV constraint, then value prospectively — ignoring expenses throughout.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Variance of the future loss via recursion (150-S87:9) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Fully discrete whole life of \$1 on $(x)$, equivalence-principle premium. Given $v^2=0.75$, $q_{x+t}=0.2$, $A_{x+t+1}=0.5$, ${}^2A_{x+t+1}=0.3$. Find $\dfrac{\mathrm{Var}[{}_tL]}{\mathrm{Var}[{}_{t+1}L]}$.</p>
+          <p>With the equivalence principle, the constant $(1+P/d)^2$ cancels in the ratio, leaving the $\mathrm{Var}[Z]$ pieces:</p>
+          $$ \frac{\mathrm{Var}[{}_tL]}{\mathrm{Var}[{}_{t+1}L]} = \frac{{}^2A_{x+t}-(A_{x+t})^2}{{}^2A_{x+t+1}-(A_{x+t+1})^2}. $$
+          <p>Recurse the moments down one age ($v=\sqrt{0.75}$): $A_{x+t}=v\,q_{x+t}+v\,p_{x+t}A_{x+t+1}=0.75(0.2)+0.75(0.8)(0.5)=0.51962$; and ${}^2A_{x+t}=v^2 q_{x+t}+v^2 p_{x+t}\,{}^2A_{x+t+1}=0.75(0.2)+0.75(0.8)(0.3)=0.33.$</p>
+          $$ \frac{\mathrm{Var}[{}_tL]}{\mathrm{Var}[{}_{t+1}L]} = \frac{0.33 - 0.51962^2}{0.30 - 0.5^2} = \frac{0.06}{0.05} = 1.2. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Ratio $=1.2$. For special (non-level) plans the variance formula fails — compute $\mathrm{E}[{}_tL]$ and $\mathrm{E}[{}_tL^2]$ from a probability table of outcomes instead.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Thiele's equation by Euler's method <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A continuous whole life on $(x)$ has $\mu = 0.02$, $\delta = 0.05$, $S = 1$, continuous premium $P = 0.0204$. Given ${}_5V = 0.0500$, estimate ${}_6V$ with one Euler step $h=1$.</p>
+          $$ \frac{d}{dt}{}_tV\Big|_{5} = \delta\,{}_5V + P - \mu(S - {}_5V) = 0.05(0.05) + 0.0204 - 0.02(0.95) = 0.0039. $$
+          $$ {}_6V \approx {}_5V + h\cdot 0.0039 = 0.0500 + 0.0039 = 0.0539. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_6V \approx 0.0539$. Watch the <strong>minus</strong> sign on the net-amount-at-risk term.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> A <em>realized</em> ${}_tL$ — the loss as a random variable (M-S05:1) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For a fully discrete 3-year endowment of \$1{,}000 on $(x)$ you are given $i=0.10$, $\ddot a_{x:\overline{3|}}=2.70182$, and equivalence-principle premiums. <strong>Calculate ${}_1L$ given that $(x)$ dies in the second policy year.</strong></p>
+          <p>This is not asking for ${}_1V=\mathrm{E}[{}_1L]$ — it asks for the <em>actual value</em> the random variable ${}_1L$ takes on one specific death path. ${}_tL$ is a random variable; ${}_tV$ is only its mean.</p>
+          <p><strong>Step 1 — net premium.</strong> With $d=\tfrac{0.10}{1.10}$ and $A_{x:\overline{3|}}=1-d\,\ddot a_{x:\overline{3|}}$:</p>
+          $$ P=\frac{1000\,A_{x:\overline{3|}}}{\ddot a_{x:\overline{3|}}}=\frac{1000\left(1-\tfrac{0.10}{1.10}(2.70182)\right)}{2.70182}=279.2118. $$
+          <p><strong>Step 2 — evaluate the path.</strong> Standing at time 1 with $(x)$ alive, death in year 2 means the \$1{,}000 death benefit is paid at <strong>time 2</strong>, and the only future premium is the one due at <strong>time 1</strong> (premiums at the valuation date are <em>future</em> by convention):</p>
+          $$ {}_1L = \text{PV}_1(\text{f. benefits}) - \text{PV}_1(\text{f. premiums}) = 1000\,v - P = \frac{1000}{1.10} - 279.2118 = 629.88. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_1L = 629.88$ on this death path. Different death years give different ${}_1L$ values; averaging them (weighted by their conditional probabilities) returns ${}_1V$. Always read whether the question wants a <em>realized</em> ${}_tL$ or its expectation ${}_tV$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Retrospective shortcut on a changing-benefit whole life (SOA Sample 7.1) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A special fully discrete whole life on $(40)$: death benefit \$50{,}000 in the first 20 years and \$100{,}000 thereafter; level net premiums of \$875 payable for 20 years; SULT, $i=0.05$. Given $\ddot a_{40:\overline{10|}}=8.0863$, $A_{40:\overline{10|}}=0.61494$, ${}_{10}E_{40}=0.60920$. Find ${}_{10}V$.</p>
+          <p><strong>Why retrospective wins here.</strong> Prospectively at time 10 you would face the benefit <em>change</em> (50k through year 20, then 100k) — two pieces. Retrospectively you look only at the past, where the benefit is a flat \$50{,}000, so the change never enters the calculation.</p>
+          <p><strong>AV of past premiums</strong> (premiums were paid all 10 years):</p>
+          $$ 875\,\ddot a_{40:\overline{10|}} = 875(8.0863) = 7{,}075.51. $$
+          <p><strong>AV of past benefits</strong> — only the flat \$50{,}000 term cost through time 10, using $A^{1}_{40:\overline{10|}}=A_{40:\overline{10|}}-{}_{10}E_{40}$:</p>
+          $$ 50{,}000\,A^{1}_{40:\overline{10|}} = 50{,}000(0.61494-0.60920)=287. $$
+          <p><strong>Accumulate the difference</strong> with interest and survivorship (divide by ${}_{10}E_{40}$):</p>
+          $$ {}_{10}V = \frac{875\,\ddot a_{40:\overline{10|}} - 50{,}000\,A^{1}_{40:\overline{10|}}}{{}_{10}E_{40}} = \frac{7{,}075.51 - 287}{0.60920} = 11{,}143. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_{10}V \approx \$11{,}143$. The prospective route gives \$11{,}152 (small rounding gap) but forces you to split the future benefit at the change point. <strong>When the benefit changes only <em>after</em> $t$, look backward — the retrospective view sees only the simpler early benefits.</strong></div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Fully continuous reserve via $\bar a_{x:\overline{n|}}=\bar a_x(1-{}_nE_x)$ (150-S98:17) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully continuous 25-year, 15-pay endowment on $(35)$ with face \$1{,}000: $\mu_{35+t}=0.03$ for $t\ge0$, $\delta=0.05$, $1000\,\bar A^{1}_{35:\overline{25|}}=324.25$, $\bar a_{35:\overline{15|}}=8.7351$. Find the net premium reserve ${}_5V$.</p>
+          <p><strong>Key tool.</strong> Under a force of mortality that is constant <em>during</em> the term, the term symbols factor cleanly — and (per the source's first-principles proof) this holds even if $\mu$ changes after the term:</p>
+          <div class="formula">$$ \bar a_{x:\overline{n|}}=\bar a_x\,(1-{}_nE_x), \qquad \bar A^{1}_{x:\overline{n|}}=\bar A_x\,(1-{}_nE_x), $$</div>
+          <p>where $\bar a_x=\tfrac1{\mu+\delta}$, $\bar A_x=\tfrac{\mu}{\mu+\delta}$, and ${}_nE_x=e^{-(\mu+\delta)n}$ all use the in-term force $\mu=0.03$.</p>
+          <p><strong>Step 1 — net premium</strong> (15-pay; benefit is the full 25-year endowment $=\bar A^{1}_{35:\overline{25|}}+{}_{25}E_{35}$):</p>
+          $$ P=\frac{1000\,\bar A_{35:\overline{25|}}}{\bar a_{35:\overline{15|}}}=\frac{324.25 + 1000\,e^{-(0.08)(25)}}{8.7351}=\frac{324.25+135.34}{8.7351}=52.61. $$
+          <p><strong>Step 2 — reserve at time 5</strong> (remaining: 20-year endowment benefit, 10 years of premiums). Apply the factoring with $\mu+\delta=0.08$, $\bar A_{40}^{\!*}=\tfrac{0.03}{0.08}=0.375$, $\bar a_{40}^{\!*}=\tfrac1{0.08}=12.5$, ${}_{20}E_{40}=e^{-1.6}=0.20190$, ${}_{10}E_{40}=e^{-0.8}=0.44933$:</p>
+          $$ {}_5V = 1000\big[\bar A_{40}^{\!*}(1-{}_{20}E_{40})+{}_{20}E_{40}\big] - P\big[\bar a_{40}^{\!*}(1-{}_{10}E_{40})\big]. $$
+          $$ {}_5V = 1000\big[0.375(0.79810)+0.20190\big] - 52.61\big[12.5(0.55067)\big] = 501.19 - 362.16 = 139.03. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>${}_5V \approx \$139.03$. The identities $\bar a_{x:\overline{n|}}=\bar a_x(1-{}_nE_x)$ and $\bar A^{1}_{x:\overline{n|}}=\bar A_x(1-{}_nE_x)$ turn every continuous term symbol into a one-line constant-force evaluation — and the post-term force is irrelevant to the <em>term</em> piece.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> Variance from a probability table — special non-level endowment (basic principles) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Adam, age 31, buys a special fully discrete 3-year endowment paying a death benefit of \$500 / \$750 / \$1{,}000 if death is in year 1 / 2 / 3, and a pure endowment of \$1{,}500 on survival. $p_{31}=0.90,\ p_{32}=0.80,\ p_{33}=0.70$; $i=0.05$; level premium \$300. Find the <strong>standard deviation of ${}_1L$</strong> (Adam alive at time 1).</p>
+          <div class="callout note" data-icon="🧾"><div class="callout-title">Why no closed form</div><p>The benefit is <strong>non-level</strong>, so the $\big(b+\tfrac{P}{d}\big)^2\mathrm{Var}[Z]$ shortcut does <em>not</em> apply. Build a table of every outcome's ${}_1L$ and probability, then compute $\mathrm{E}[{}_1L]$ and $\mathrm{E}[{}_1L^2]$ directly.</p></div>
+          <p>Standing at time 1 (age 32), there are three mutually exclusive futures. With $v=\tfrac1{1.05}$:</p>
+          <ul>
+            <li><strong>Dies in year 2</strong> (DB \$750 at time 2): ${}_1L=750v-300=\dfrac{750}{1.05}-300=414.2857$, prob $1-p_{32}=0.20$.</li>
+            <li><strong>Survives 1, dies in year 3</strong> (DB \$1{,}000 at time 3): ${}_1L=1000v^2-300(1+v)=\dfrac{1000}{1.05^2}-300(1.95238)=321.3152$, prob $p_{32}(1-p_{33})=0.80(0.30)=0.24$.</li>
+            <li><strong>Survives to time 3</strong> (PE \$1{,}500 at time 3): ${}_1L=1500v^2-300(1+v)=\dfrac{1500}{1.05^2}-585.714=774.8299$, prob $p_{32}\,p_{33}=0.80(0.70)=0.56$.</li>
+          </ul>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Event</th><th>${}_1L$</th><th>Probability</th></tr></thead>
+            <tbody>
+              <tr><td>Die within year 2</td><td>414.2857</td><td>0.20</td></tr>
+              <tr><td>Die within year 3</td><td>321.3152</td><td>0.24</td></tr>
+              <tr><td>Survive two years</td><td>774.8299</td><td>0.56</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Moments.</strong></p>
+          $$ \mathrm{E}[{}_1L]=\textstyle\sum {}_1L\cdot p = 414.2857(0.20)+321.3152(0.24)+774.8299(0.56)=593.8775, $$
+          $$ \mathrm{E}[{}_1L^2]=\textstyle\sum {}_1L^2\cdot p = 395{,}307.36, \qquad \mathrm{Var}[{}_1L]=395{,}307.36-593.8775^2=42{,}616. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\mathrm{SD}[{}_1L]=\sqrt{42{,}616}=206.44$. For any non-level-benefit plan, a probability table over the in-force futures is the <em>only</em> reliable route to the variance.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 15</span> FPT-endowment renewal equation &amp; the gross NAR rearrangement <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p><strong>Part A — FPT for an endowment.</strong> A fully discrete 10-year endowment of \$1{,}000 on $(40)$, $i=0.05$ ($d=\tfrac{0.05}{1.05}=0.047619$). After the first year (treated as 1-year term), the contract is the <strong>9-year endowment on $(41)$</strong>. You are given $\ddot a_{41:\overline{9|}}=7.50$ and $\ddot a_{45:\overline{5|}}=4.50$. Find the renewal valuation premium $\beta$ and ${}_5V^{FPT}$.</p>
+          <p>The FPT renewal premium for an endowment is fixed by equating EPV of renewal premiums to EPV of benefits <em>on the shifted plan</em>:</p>
+          <div class="formula"><span class="formula-label">FPT-endowment renewal equation</span>$$ \beta\,\ddot a_{x+1:\overline{n-1|}} = A_{x+1:\overline{n-1|}}. $$</div>
+          <p>With $A_{41:\overline{9|}}=1-d\,\ddot a_{41:\overline{9|}}=1-0.047619(7.50)=0.642857$:</p>
+          $$ \beta = 1000\cdot\frac{A_{41:\overline{9|}}}{\ddot a_{41:\overline{9|}}}=1000\cdot\frac{0.642857}{7.50}=85.71. $$
+          <p>Because ${}_1V^{FPT}=0$, the policy "restarts" at time 1, so ${}_5V^{FPT}={}_4V^{n}_{41}$ (duration 4 of the 9-year endowment on $(41)$):</p>
+          $$ {}_5V^{FPT}={}_4V^{n}_{41}=1000\left(1-\frac{\ddot a_{45:\overline{5|}}}{\ddot a_{41:\overline{9|}}}\right)=1000\left(1-\frac{4.50}{7.50}\right)=400.00. $$
+          <p><strong>Part B — gross recursion in net-amount-at-risk form.</strong> Start from the gross recursion (premium-date expense $e$, settlement expense $E$, death benefit $b$):</p>
+          $$ ({}_tV^{g}+G-e)(1+i)=q_{x+t}(b+E)+p_{x+t}\,{}_{t+1}V^{g}. $$
+          <p>Substitute $p_{x+t}=1-q_{x+t}$ on the right and collect the $q_{x+t}$ terms to expose the <strong>gross net amount at risk</strong>:</p>
+          <div class="formula"><span class="formula-label">Gross recursion, NAR form</span>$$ ({}_tV^{g}+G-e)(1+i)=q_{x+t}\big(b+E-{}_{t+1}V^{g}\big)+{}_{t+1}V^{g}, \qquad \text{NAR}^{g}=b+E-{}_{t+1}V^{g}. $$</div>
+          <p>So the settlement expense $E$ rides <em>with</em> the death benefit inside the amount at risk, exactly as in Example 5. This rearrangement is the fast way to solve for $G$, $q_{x+t}$, or ${}_{t+1}V^g$ when the others are known.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\beta=\$85.71$, ${}_5V^{FPT}=\$400.00$; gross NAR $=b+E-{}_{t+1}V^{g}$. For an $n$-year endowment, FPT shifts the plan to the $(n{-}1)$-year endowment on $(x+1)$ and pins $\beta$ via $\beta\,\ddot a_{x+1:\overline{n-1|}}=A_{x+1:\overline{n-1|}}$.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ul>
+          <li><strong>Using the gross premium in a "net premium reserve."</strong> If asked for the <em>net</em> premium policy value, compute the net premium $P$ (no expenses) and use it both in the premium leg and the valuation — even if the contract charges a gross premium $G$.</li>
+          <li><strong>Wrong cash-flow timing at duration $t$.</strong> By convention the time-$t$ benefit/claim expense is <em>past</em> (excluded); the time-$t$ premium and its expense are <em>future</em> (included); endowment maturities are future. Annuity payments at $t$ are ambiguous — decide explicitly.</li>
+          <li><strong>Mixing premium and valuation bases, then using retrospective.</strong> Prospective = retrospective <em>only</em> when the bases match and an equivalence-principle premium was used. When bases differ, use <strong>prospective</strong>.</li>
+          <li><strong>Dividing by $p_{x+t}$ vs. $q_{x+t}$ in the recursion.</strong> The survivor term is $p_{x+t}\,{}_{t+1}V$; to solve forward you divide by $p_{x+t}$.</li>
+          <li><strong>Forgetting boundary conditions.</strong> ${}_0V=0$; for $n$-year term ${}_nV=0$; for $n$-year endowment ${}_nV=$ maturity benefit. Anchoring the recursion at the right end is half the battle.</li>
+          <li><strong>Annuity sign error.</strong> An annuity payment is a <em>negative</em> premium in the recursion: $({}_tV + P_t - B_t)(1+i)=\dots$. Set $b=0$ if there is no death benefit.</li>
+          <li><strong>Sign of the expense reserve.</strong> Early on it is <strong>negative</strong> (acquisition cost not yet recovered) — don't "fix" a negative answer. Hence ${}_tV^n \ge {}_tV^g$. (Exception: level-percent-of-premium expenses give ${}_tV^e=0$.)</li>
+          <li><strong>Initial expense in the variance.</strong> The initial expense is a known constant and <strong>does not</strong> appear in $\mathrm{Var}[{}_tL^g]$ — only the renewal expense $e_r$ does.</li>
+          <li><strong>Closed-form $\mathrm{Var}[{}_tL]$ fails for non-level plans — build a probability table.</strong> The $\big(b+\tfrac{P}{d}\big)^2\mathrm{Var}[Z]$ (and its equivalence-principle) shortcut applies <em>only</em> to ordinary level whole life and endowment. For a special non-level benefit (e.g. a 3-year endowment with changing death benefit), enumerate every in-force outcome's ${}_tL$ with its conditional probability, then compute $\mathrm{E}[{}_tL]$ and $\mathrm{E}[{}_tL^2]$ from the table — don't force the formula.</li>
+          <li><strong>Interim reserve — UDD direction.</strong> Stepping forward uses ${}_s q_{x+t}=s\,q$; stepping backward uses ${}_{1-s}q_{x+t+s}=\dfrac{(1-s)q}{1-s\,q}$. Don't reuse $s\,q$ for the backward step.</li>
+          <li><strong>Modified reserves ignore expenses.</strong> Even if the question lists expenses, FPT/modified reserves disregard them — the expense allowance is implicit in the lowered first-year valuation premium. Also enforce $\alpha+\beta a_x = P\ddot a_x$.</li>
+          <li><strong>FPT off-by-one.</strong> ${}_tV^{FPT}_x = {}_{t-1}V_{x+1}$, not ${}_tV_{x+1}$; and ${}_1V^{FPT}=0$, not ${}_0V$. For an $n$-year endowment, the shifted plan on $(x+1)$ is the $(n{-}1)$-year endowment.</li>
+          <li><strong>Net amount at risk uses ${}_{t+1}V$.</strong> $\text{NAR}=b-{}_{t+1}V$ (the <em>end-of-year</em> reserve), since the death benefit and the surviving reserve both occur at year-end.</li>
+          <li><strong>Direction of the interest assumption.</strong> <em>Lowering</em> the valuation interest rate <em>raises</em> the reserve (benefits discounted less, premiums accumulate less). Several candidates get this backwards.</li>
+          <li><strong>Thiele's sign.</strong> It is $-\mu_{x+t}(S_t - {}_tV)$, <em>minus</em>: the reserve is reduced by paying the net amount at risk.</li>
+        </ul>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Define the time-$t$ net future loss ${}_tL$ and the net premium policy value. What conditioning is implied?</summary>
+        <div class="qa-answer">${}_tL = \text{PV}_t(\text{future benefits}) - \text{PV}_t(\text{future premiums})$, defined only for a policy in force at $t$. The policy value is ${}_tV = \mathrm{E}[{}_tL \mid T_x>t]$ — a conditional expectation, since the random variable is meaningful only while the insured is alive at time $t$.</div>
+      </details>
+      <details class="qa"><summary>State the prospective formula for a fully discrete whole life of \$1 on $(x)$ at duration $t$, and name every symbol.</summary>
+        <div class="qa-answer">${}_tV_x = A_{x+t} - P_x\,\ddot a_{x+t}$, where $A_{x+t}$ is the EPV of the future unit death benefit at age $x+t$, $\ddot a_{x+t}$ the EPV of a unit whole-life annuity-due, and $P_x=A_x/\ddot a_x$ the level net annual premium set at issue.</div>
+      </details>
+      <details class="qa"><summary>Give the two special (shortcut) formulas for the whole life reserve, and one restriction.</summary>
+        <div class="qa-answer">Annuity-ratio: ${}_tV=b\big(1-\ddot a_{x+t}/\ddot a_x\big)$. Insurance-ratio: ${}_tV=b\big((A_{x+t}-A_x)/(1-A_x)\big)$. They hold only for ordinary level whole life / endowment (for endowment, use $n{-}t$ on the remaining-term symbols); for special non-level plans, revert to basic principles.</div>
+      </details>
+      <details class="qa"><summary>At what times are the boundary values of the net premium reserve known, and what are they?</summary>
+        <div class="qa-answer">${}_0V=0$ (equivalence principle); for $n$-year term ${}_nV=0$; for $n$-year endowment ${}_nV=$ the endowment benefit. These anchor recursions from either end.</div>
+      </details>
+      <details class="qa"><summary>Write the one-year net premium recursion (end-of-year benefit $b$, start-of-year premium $P$) and solve it for ${}_{t+1}V$. What is the NAR form?</summary>
+        <div class="qa-answer">$({}_tV + P)(1+i) = q_{x+t}\,b + p_{x+t}\,{}_{t+1}V$, so ${}_{t+1}V = \dfrac{({}_tV+P)(1+i) - q_{x+t}\,b}{p_{x+t}}$. NAR form: $({}_tV+P)(1+i)=q_{x+t}(b-{}_{t+1}V)+{}_{t+1}V$, with net amount at risk $b-{}_{t+1}V$.</div>
+      </details>
+      <details class="qa"><summary>How do you adapt the recursion for an annuity that pays $B_t$ at time $t$?</summary>
+        <div class="qa-answer">Treat the annuity payment as a negative premium: $({}_tV + P_t - B_t)(1+i) = q_{x+t}\,b + p_{x+t}\,{}_{t+1}V$. If there is no death benefit, $b=0$; if no premium at $t$, $P_t=0$.</div>
+      </details>
+      <details class="qa"><summary>Under what condition are the prospective and retrospective policy values equal? When is retrospective faster?</summary>
+        <div class="qa-answer">Equal iff the same basis is used for premium and reserve <em>and</em> the premium came from the equivalence principle. Retrospective is faster when there are no past benefits to accumulate — e.g. deferred insurance/annuity in the deferral period, or plans whose benefit only changes after time $t$.</div>
+      </details>
+      <details class="qa"><summary>Give the net, gross, and expense reserve recursions side by side. Which expenses appear in each?</summary>
+        <div class="qa-answer">Net (benefits only): $({}_tV+P)(1+i)=q\,b+p\,{}_{t+1}V$. Gross (benefits + expenses): $({}_tV^g+G-e)(1+i)=q(b+E)+p\,{}_{t+1}V^g$. Expense (expenses only): $({}_tV^e+P^e-e)(1+i)=q\,E+p\,{}_{t+1}V^e$, where $P^e=G-P$.</div>
+      </details>
+      <details class="qa"><summary>Is the early-duration expense reserve positive or negative, and why? When is it identically zero?</summary>
+        <div class="qa-answer"><strong>Negative.</strong> The level expense loading is less than the front-loaded acquisition expenses early on; the deficit is recovered by later loadings, so ${}_tV^e$ rises from negative toward 0. It is identically 0 (so ${}_tV^g={}_tV^n$) when expenses are a level percentage of premium.</div>
+      </details>
+      <details class="qa"><summary>Give the formula for $\mathrm{Var}[{}_tL]$ for fully discrete whole life under the equivalence principle. Why does the initial expense not appear in the gross-loss variance?</summary>
+        <div class="qa-answer">$\mathrm{Var}[{}_tL]=b^2\,\dfrac{{}^2A_{x+t}-(A_{x+t})^2}{(1-A_x)^2}$ (numerator at age $x+t$, denominator at $x$). The initial expense is a known constant incurred at issue; a constant has zero variance, so only the future (renewal) expense enters $\mathrm{Var}[{}_tL^g]$.</div>
+      </details>
+      <details class="qa"><summary>Compute an interim reserve ${}_{t+s}V$ both ways. What UDD factor does each direction use?</summary>
+        <div class="qa-answer">Forward: $({}_tV+P)(1+i)^{s}={}_sq_{x+t}\,b\,v^{1-s}+{}_sp_{x+t}\,{}_{t+s}V$ with ${}_sq_{x+t}=s\,q$. Backward: ${}_{t+s}V(1+i)^{1-s}={}_{1-s}q_{x+t+s}\,b+{}_{1-s}p_{x+t+s}\,{}_{t+1}V$ with ${}_{1-s}q_{x+t+s}=\frac{(1-s)q}{1-s\,q}$. Both give the same exact value; interpolation $\approx ({}_tV+P)(1-s)+s\,{}_{t+1}V$.</div>
+      </details>
+      <details class="qa"><summary>State Thiele's differential equation and identify the net amount at risk.</summary>
+        <div class="qa-answer">$\dfrac{d}{dt}{}_tV = \delta_t\,{}_tV + P_t - \mu_{x+t}(S_t - {}_tV)$. The net amount at risk is $S_t - {}_tV$: the cash beyond the reserve already held that the insurer must find at a death.</div>
+      </details>
+      <details class="qa"><summary>What constraint must every modified reserve satisfy, and how is FPT a special case? Do modified reserves include expenses?</summary>
+        <div class="qa-answer">$\alpha + \beta a_x = P\ddot a_x$, i.e. EPV(modified premiums) = EPV(net premiums) = EPV(benefits) at issue. FPT fixes $\alpha=v\,q_x$ (1-year term cost), forcing ${}_1V^{FPT}=0$, and $\beta=A_{x+1}/\ddot a_{x+1}$. Modified reserves <strong>ignore expenses</strong> — the allowance is implicit in the lower first-year valuation premium.</div>
+      </details>
+      <details class="qa"><summary>Why does FPT give ${}_tV^{FPT}_x = {}_{t-1}V^n_{x+1}$, and what is the whole-life shortcut?</summary>
+        <div class="qa-answer">Because ${}_1V^{FPT}=0$ the policy "restarts" at time 1 as whole life on $(x+1)$; hence the duration-$t$ FPT reserve equals the duration-$(t{-}1)$ net reserve of that plan. Shortcut: ${}_tV^{FPT}_x = b\big(1-\ddot a_{x+t}/\ddot a_{x+1}\big)$.</div>
+      </details>
+      <details class="qa"><summary>A 3-year endowment of \$1{,}000 has $i=0.10$, equivalence-principle premium \$279.21. If $(x)$ dies in year 2, what is the <em>realized</em> ${}_1L$, and how does it relate to ${}_1V$?</summary>
+        <div class="qa-answer">Death benefit \$1{,}000 is paid at time 2; the only future premium is the one at time 1 (future by convention). So ${}_1L=1000v-P=\tfrac{1000}{1.10}-279.21=629.88$. This is one <em>realized</em> value of the random variable ${}_1L$; ${}_1V=\mathrm{E}[{}_1L\mid T_x>1]$ is the probability-weighted average over all death/survival paths, not this single number.</div>
+      </details>
+      <details class="qa"><summary>On a whole life whose death benefit jumps from \$50{,}000 to \$100{,}000 after year 20, why is the retrospective method easier for ${}_{10}V$?</summary>
+        <div class="qa-answer">Prospectively at time 10 you must split the future benefit at the year-20 change point. Retrospectively you only accumulate the <em>past</em>, where the benefit is a flat \$50{,}000 — the change never enters. ${}_{10}V=\big(875\,\ddot a_{40:\overline{10|}}-50{,}000\,A^{1}_{40:\overline{10|}}\big)/{}_{10}E_{40}\approx\$11{,}143$. Use retrospective whenever the benefit changes only <em>after</em> the valuation date.</div>
+      </details>
+      <details class="qa"><summary>Under a constant in-term force $\mu$ with force of interest $\delta$, how do you evaluate $\bar a_{x:\overline{n|}}$ and $\bar A^{1}_{x:\overline{n|}}$? Does a post-term change in $\mu$ matter?</summary>
+        <div class="qa-answer">$\bar a_{x:\overline{n|}}=\bar a_x(1-{}_nE_x)$ and $\bar A^{1}_{x:\overline{n|}}=\bar A_x(1-{}_nE_x)$, with $\bar a_x=\tfrac1{\mu+\delta}$, $\bar A_x=\tfrac{\mu}{\mu+\delta}$, ${}_nE_x=e^{-(\mu+\delta)n}$ all using the in-term $\mu$. A change in $\mu$ <em>after</em> the term does <strong>not</strong> affect the term symbols — the integral only runs over $[0,n]$ — so the factoring still holds.</div>
+      </details>
+      <details class="qa"><summary>Why can't you use the $\big(b+\tfrac{P}{d}\big)^2\mathrm{Var}[Z]$ formula for a special endowment with non-level death benefits? What do you do instead?</summary>
+        <div class="qa-answer">That closed form assumes a level benefit (and level premium); with changing benefits the future loss is not an affine function of a single $Z$, so it fails. Instead enumerate every in-force outcome — each death year and survival — with its ${}_tL$ and conditional probability, then compute $\mathrm{E}[{}_tL]$ and $\mathrm{E}[{}_tL^2]$ from the table and take $\mathrm{Var}=\mathrm{E}[{}_tL^2]-\mathrm{E}[{}_tL]^2$.</div>
+      </details>
+      <details class="qa"><summary>State the FPT renewal equation for an $n$-year endowment, and rearrange the gross recursion into net-amount-at-risk form.</summary>
+        <div class="qa-answer">FPT-endowment renewal premium: $\beta\,\ddot a_{x+1:\overline{n-1|}}=A_{x+1:\overline{n-1|}}$ (the shifted plan is the $(n{-}1)$-year endowment on $(x+1)$, since the first year is 1-year term). Gross recursion NAR form: substituting $p=1-q$ into $({}_tV^g+G-e)(1+i)=q(b+E)+p\,{}_{t+1}V^g$ gives $({}_tV^g+G-e)(1+i)=q\big(b+E-{}_{t+1}V^g\big)+{}_{t+1}V^g$, so the gross net amount at risk is $b+E-{}_{t+1}V^g$ — the settlement expense $E$ rides with the death benefit.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

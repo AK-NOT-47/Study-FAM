@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Comic Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Anton&family=Archivo+Black&family=Nunito:ital,wght@0,400;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16110d;
+    --paper:#f4ead0;
+    --paper2:#efe2c0;
+    --red:#ec1c24;
+    --blue:#1a4ed8;
+    --yellow:#ffd200;
+    --pink:#ff4f9a;
+    --cyan:#22b6e6;
+    --green:#1fae5a;
+    --halftone: radial-gradient(circle, rgba(0,0,0,.18) 22%, transparent 23%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    background-image:
+      var(--halftone);
+    background-size:9px 9px;
+    line-height:1.5;
+    padding:18px;
+    min-height:100vh;
+  }
+
+  /* ---------- shared comic bits ---------- */
+  .ink{ border:4px solid var(--ink); }
+  .panel{
+    background:var(--paper);
+    border:4px solid var(--ink);
+    border-radius:6px;
+    box-shadow:10px 10px 0 var(--ink);
+    position:relative;
+  }
+  .tape{
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    background:rgba(255,210,0,.75); border:2px solid rgba(0,0,0,.25);
+    padding:3px 26px; font-family:'Bangers'; letter-spacing:2px;
+    box-shadow:2px 2px 0 rgba(0,0,0,.25);
+  }
+  .bang{
+    font-family:'Bangers',cursive;
+    letter-spacing:1.5px;
+    -webkit-text-stroke:2px var(--ink);
+    line-height:.95;
+  }
+  .anton{ font-family:'Anton',sans-serif; }
+
+  /* layout grid */
+  .book{
+    max-width:1280px; margin:0 auto;
+    display:grid; gap:18px;
+  }
+
+  /* ---------- MASTHEAD ---------- */
+  header.mast{
+    background:var(--yellow);
+    border:5px solid var(--ink);
+    box-shadow:12px 12px 0 var(--ink);
+    border-radius:8px;
+    position:relative;
+    overflow:hidden;
+    padding:18px 22px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:18px;
+  }
+  header.mast::before{
+    content:""; position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0 10px, transparent 10px 20px);
+    pointer-events:none;
+  }
+  .logo{
+    display:flex; align-items:center; gap:14px; z-index:1;
+  }
+  .mmark{
+    width:74px; height:74px; flex:0 0 74px;
+    background:var(--red);
+    border:4px solid var(--ink);
+    border-radius:50%;
+    display:grid; place-items:center;
+    box-shadow:5px 5px 0 var(--ink);
+    transform:rotate(-6deg);
+  }
+  .mmark span{
+    font-family:'Archivo Black'; color:var(--paper); font-size:42px;
+    -webkit-text-stroke:1.5px var(--ink); line-height:1;
+  }
+  .brandblock h1{
+    font-family:'Bangers'; font-size:clamp(30px,5vw,52px);
+    -webkit-text-stroke:2px var(--ink);
+    color:var(--paper);
+    letter-spacing:2px;
+    text-shadow:3px 3px 0 var(--red);
+    line-height:.9;
+  }
+  .brandblock .tag{
+    font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:1px;
+    background:var(--ink); color:var(--yellow); display:inline-block;
+    padding:2px 10px; margin-top:4px; transform:rotate(-1deg);
+  }
+  .issue{
+    z-index:1; text-align:center; justify-self:end;
+  }
+  .issue .bubble{
+    background:var(--paper); border:4px solid var(--ink); border-radius:50%;
+    width:96px; height:96px; display:grid; place-items:center; transform:rotate(8deg);
+    box-shadow:4px 4px 0 var(--ink);
+  }
+  .issue .bubble b{ font-family:'Bangers'; font-size:13px; letter-spacing:1px; line-height:1; text-align:center;}
+  .issue .bubble b small{ display:block; font-size:30px; -webkit-text-stroke:1px var(--ink); color:var(--red); }
+
+  /* ---------- NAV STRIP ---------- */
+  nav.topics{
+    background:var(--blue);
+    border:5px solid var(--ink);
+    box-shadow:10px 10px 0 var(--ink);
+    border-radius:8px;
+    padding:12px 14px;
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  }
+  .navlabel{
+    font-family:'Bangers'; letter-spacing:1.5px; color:var(--yellow);
+    -webkit-text-stroke:1px var(--ink); font-size:20px;
+    background:var(--red); border:3px solid var(--ink); padding:4px 12px;
+    transform:rotate(-2deg); box-shadow:3px 3px 0 var(--ink);
+  }
+  nav.topics a{
+    text-decoration:none; color:var(--ink);
+    background:var(--paper); border:3px solid var(--ink);
+    font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.5px;
+    padding:7px 12px; border-radius:4px;
+    box-shadow:3px 3px 0 var(--ink);
+    transition:transform .08s, box-shadow .08s, background .12s;
+  }
+  nav.topics a:hover{ transform:translate(3px,3px); box-shadow:0 0 0 var(--ink); background:var(--yellow); }
+  nav.topics a:nth-child(3n){ background:var(--cyan); }
+  nav.topics a:nth-child(3n):hover{ background:var(--yellow); }
+
+  /* ---------- MAIN GRID ---------- */
+  .stage{
+    display:grid;
+    grid-template-columns:1.55fr 1fr;
+    gap:18px;
+  }
+
+  /* HERO PANEL */
+  .hero{
+    grid-column:1/-1;
+    background:var(--paper);
+    border:5px solid var(--ink);
+    box-shadow:12px 12px 0 var(--ink);
+    border-radius:8px;
+    padding:28px 30px 30px;
+    position:relative; overflow:hidden;
+    background-image:
+      radial-gradient(circle at 85% 18%, var(--cyan) 0 60px, transparent 61px),
+      var(--halftone);
+    background-size:auto, 9px 9px;
+  }
+  .hero::after{ /* action lines */
+    content:""; position:absolute; top:-40%; right:-10%;
+    width:60%; height:180%;
+    background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(0,0,0,.06) 0deg 4deg, transparent 4deg 8deg);
+    pointer-events:none;
+  }
+  .greet{
+    display:inline-block; font-family:'Bangers'; letter-spacing:2px; font-size:22px;
+    background:var(--pink); color:var(--paper); -webkit-text-stroke:1.2px var(--ink);
+    border:3px solid var(--ink); padding:4px 16px; transform:rotate(-2deg);
+    box-shadow:4px 4px 0 var(--ink); position:relative; z-index:2;
+  }
+  .hero h2{
+    font-family:'Anton'; text-transform:uppercase;
+    font-size:clamp(40px,8vw,86px); line-height:.92; letter-spacing:1px;
+    margin:16px 0 6px; position:relative; z-index:2;
+    color:var(--ink);
+    text-shadow:5px 5px 0 var(--yellow), 9px 9px 0 var(--red);
+  }
+  .hero p.lede{
+    max-width:640px; font-size:18px; font-weight:700; position:relative; z-index:2;
+    background:var(--paper); border-left:6px solid var(--blue); padding:8px 0 8px 14px;
+  }
+  .pow{
+    position:absolute; z-index:3; right:26px; bottom:18px;
+    font-family:'Bangers'; -webkit-text-stroke:2px var(--ink); color:var(--yellow);
+    font-size:54px; transform:rotate(-12deg);
+    filter:drop-shadow(4px 4px 0 var(--red));
+  }
+
+  /* STATS ROW */
+  .stats{ grid-column:1/-1; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .stat{
+    border:5px solid var(--ink); border-radius:8px; box-shadow:9px 9px 0 var(--ink);
+    padding:18px 16px 16px; position:relative; overflow:hidden;
+  }
+  .stat:nth-child(1){ background:var(--red); color:var(--paper); }
+  .stat:nth-child(2){ background:var(--cyan); }
+  .stat:nth-child(3){ background:var(--green); color:var(--paper); }
+  .stat .label{ font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:13px; }
+  .stat .big{ font-family:'Anton'; font-size:58px; line-height:.95; -webkit-text-stroke:2px var(--ink); }
+  .stat:nth-child(2) .big{ color:var(--ink); }
+  .stat .sub{ font-weight:800; font-size:13px; }
+  .stat .burst{
+    position:absolute; right:-18px; top:-18px; width:80px; height:80px;
+    background:var(--yellow); border:4px solid var(--ink);
+    clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  }
+  .meter{ margin-top:10px; height:16px; background:var(--paper); border:3px solid var(--ink); border-radius:10px; overflow:hidden;}
+  .meter i{ display:block; height:100%; width:72%; background:var(--ink);
+    background-image:repeating-linear-gradient(45deg, var(--yellow) 0 6px, var(--ink) 6px 12px); }
+
+  /* LEFT COLUMN: TOPIC PREVIEW + FORMULA */
+  .formulapanel{ padding:0; overflow:hidden; }
+  .formulapanel .head{
+    background:var(--ink); color:var(--paper); padding:12px 18px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .formulapanel .head h3{ font-family:'Bangers'; letter-spacing:1.5px; font-size:26px; color:var(--yellow); -webkit-text-stroke:.5px var(--ink); }
+  .formulapanel .head .pill{ background:var(--cyan); color:var(--ink); font-weight:800; font-size:12px; text-transform:uppercase; padding:3px 10px; border:2px solid var(--paper); border-radius:20px;}
+  .formulapanel .body{ padding:18px; }
+  .formulapanel .lede{ font-weight:700; font-style:italic; margin-bottom:14px; }
+  .formula{
+    background:var(--paper2);
+    border:3px dashed var(--ink);
+    border-radius:6px;
+    padding:16px;
+    display:grid; gap:12px;
+  }
+  .formula .row{
+    display:flex; align-items:center; gap:12px;
+    font-family:'Nunito'; font-weight:800; font-size:20px;
+    background:var(--paper); border:3px solid var(--ink); border-radius:6px;
+    padding:10px 14px; box-shadow:4px 4px 0 var(--ink);
+  }
+  .formula .row .tag{
+    font-family:'Bangers'; font-size:16px; letter-spacing:1px;
+    background:var(--red); color:var(--paper); -webkit-text-stroke:.5px var(--ink);
+    border:2px solid var(--ink); padding:1px 8px; flex:0 0 auto;
+  }
+  .formula .row:nth-child(2) .tag{ background:var(--blue); }
+  .formula .row:nth-child(3) .tag{ background:var(--green); }
+  .formula sub{ font-size:.7em; }
+  .formula sup{ font-size:.7em; }
+  .var-italic{ font-style:italic; }
+
+  /* RIGHT COLUMN: EXAM CARD + TRAP + EXAMPLE */
+  .rightcol{ display:grid; gap:18px; align-content:start; }
+
+  .examcard{
+    background:var(--blue); color:var(--paper);
+    padding:0; overflow:hidden;
+  }
+  .examcard .cap{
+    background:var(--yellow); color:var(--ink); padding:8px 16px;
+    font-family:'Bangers'; letter-spacing:2px; font-size:22px; -webkit-text-stroke:.5px var(--ink);
+    border-bottom:4px solid var(--ink);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .examcard .cap em{ font-style:normal; font-family:'Nunito'; font-weight:800; font-size:12px; background:var(--ink); color:var(--yellow); padding:2px 8px; }
+  .examcard .inner{ padding:16px 18px; }
+  .examcard h3{ font-family:'Anton'; font-size:40px; line-height:.95; text-shadow:3px 3px 0 var(--ink); letter-spacing:1px; }
+  .examcard .meta{ margin-top:6px; font-weight:700; font-size:14px; }
+  .examcard .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .examcard .chips span{
+    background:var(--paper); color:var(--ink); border:3px solid var(--ink);
+    font-weight:800; font-size:12px; text-transform:uppercase; padding:4px 10px; border-radius:20px;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+
+  .trap{
+    background:var(--red); color:var(--paper);
+    padding:18px; position:relative;
+  }
+  .trap .hdr{
+    font-family:'Bangers'; letter-spacing:2px; font-size:30px; -webkit-text-stroke:1.5px var(--ink);
+    color:var(--yellow); transform:rotate(-2deg); display:inline-block; margin-bottom:8px;
+    filter:drop-shadow(3px 3px 0 var(--ink));
+  }
+  .trap p{ font-weight:800; font-size:16px; line-height:1.4; }
+  .trap p b{ background:var(--ink); color:var(--yellow); padding:0 4px; }
+  .trap .skull{ position:absolute; top:10px; right:14px; font-size:34px; transform:rotate(12deg);}
+
+  .example{
+    background:var(--paper);
+    padding:18px;
+  }
+  .example .kicker{ font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:12px; color:var(--blue); }
+  .example h4{ font-family:'Anton'; font-size:26px; line-height:1; margin:4px 0 6px; letter-spacing:.5px; }
+  .example p{ font-weight:700; font-size:14px; }
+  .example .speech{
+    position:relative; background:var(--yellow); border:4px solid var(--ink); border-radius:14px;
+    padding:12px 14px; margin-top:12px; font-weight:800; font-style:italic; box-shadow:5px 5px 0 var(--ink);
+  }
+  .example .speech::after{
+    content:""; position:absolute; left:30px; bottom:-18px; width:0;height:0;
+    border:14px solid transparent; border-top-color:var(--ink); border-bottom:0;
+  }
+
+  /* BUTTONS */
+  .actions{ grid-column:1/-1; display:flex; flex-wrap:wrap; gap:18px; align-items:center; }
+  .btn{
+    font-family:'Bangers'; letter-spacing:2px; font-size:30px;
+    border:5px solid var(--ink); border-radius:10px; cursor:pointer;
+    padding:12px 34px; text-decoration:none; color:var(--ink);
+    box-shadow:8px 8px 0 var(--ink); -webkit-text-stroke:.5px var(--ink);
+    transition:transform .08s, box-shadow .08s; display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn.start{ background:var(--green); color:var(--paper); -webkit-text-stroke:1px var(--ink); }
+  .btn.resume{ background:var(--paper); }
+  .btn:hover{ transform:translate(4px,4px); box-shadow:2px 2px 0 var(--ink); }
+  .btn:active{ transform:translate(8px,8px); box-shadow:0 0 0 var(--ink); }
+  .actions .zap{ font-family:'Bangers'; font-size:40px; color:var(--pink); -webkit-text-stroke:2px var(--ink); transform:rotate(-8deg);}
+
+  /* FOOTER */
+  footer{
+    grid-column:1/-1;
+    background:var(--ink); color:var(--paper);
+    border:5px solid var(--ink); border-radius:8px;
+    box-shadow:9px 9px 0 var(--red);
+    padding:18px 22px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;
+  }
+  footer .fb{ display:flex; align-items:center; gap:12px; }
+  footer .fmark{
+    width:44px;height:44px;background:var(--red);border:3px solid var(--paper);border-radius:50%;
+    display:grid;place-items:center; transform:rotate(-6deg);
+  }
+  footer .fmark span{ font-family:'Archivo Black'; color:var(--paper); font-size:24px; }
+  footer .fname{ font-family:'Bangers'; letter-spacing:2px; font-size:26px; color:var(--yellow); }
+  footer small{ font-weight:700; opacity:.85; }
+
+  /* RESPONSIVE */
+  @media (max-width:860px){
+    .stage{ grid-template-columns:1fr; }
+    .stats{ grid-template-columns:1fr; }
+    header.mast{ grid-template-columns:1fr; text-align:center; justify-items:center; }
+    .issue{ justify-self:center; }
+    .hero h2{ text-shadow:4px 4px 0 var(--yellow), 7px 7px 0 var(--red); }
+  }
+  @media (max-width:480px){
+    body{ padding:10px; }
+    .formula .row{ font-size:16px; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+
+  <!-- MASTHEAD -->
+  <header class="mast">
+    <div class="logo">
+      <div class="mmark"><span>M</span></div>
+      <div class="brandblock">
+        <h1>ME STUDING STUFF</h1>
+        <span class="tag">Study smarter. Pass exams.</span>
+      </div>
+    </div>
+    <div></div>
+    <div class="issue">
+      <div class="bubble"><b>ISSUE<small>#FAM</small>2026</b></div>
+    </div>
+  </header>
+
+  <!-- TOPICS NAV -->
+  <nav class="topics">
+    <span class="navlabel">FAM-L / FAM-S</span>
+    <a href="#">Survival Models</a>
+    <a href="#">Life Tables</a>
+    <a href="#">Life Insurance</a>
+    <a href="#">Life Annuities</a>
+    <a href="#">Premiums</a>
+    <a href="#">Policy Values</a>
+  </nav>
+
+  <div class="stage">
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="greet">Good evening</span>
+      <h2>Let's get you<br>that pass.</h2>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="pow">POW!</div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat">
+        <div class="burst"></div>
+        <div class="label">Overall progress</div>
+        <div class="big">72%</div>
+        <div class="sub">12 of 17 topics</div>
+        <div class="meter"><i></i></div>
+      </div>
+      <div class="stat">
+        <div class="burst"></div>
+        <div class="label">Exam countdown</div>
+        <div class="big">86</div>
+        <div class="sub">days to go — keep moving!</div>
+      </div>
+      <div class="stat">
+        <div class="burst"></div>
+        <div class="label">Topics solid</div>
+        <div class="big">8</div>
+        <div class="sub">locked &amp; loaded</div>
+      </div>
+    </section>
+
+    <!-- LEFT: TOPIC PREVIEW + FORMULA -->
+    <section class="panel formulapanel">
+      <span class="tape">TOPIC PREVIEW</span>
+      <div class="head">
+        <h3>Life Insurance Present Values</h3>
+        <span class="pill">EPV &amp; Variance</span>
+      </div>
+      <div class="body">
+        <p class="lede">The benefit's present value is random — so we track its expected value and its variance.</p>
+        <div class="formula">
+          <div class="row">
+            <span class="tag">EPV</span>
+            <span><span class="var-italic">A<sub>x</sub></span> = 1 − <span class="var-italic">d</span>·<span class="var-italic">ä<sub>x</sub></span></span>
+          </div>
+          <div class="row">
+            <span class="tag">VAR</span>
+            <span>Var(<span class="var-italic">Z</span>) = <sup>2</sup><span class="var-italic">A<sub>x</sub></span> − (<span class="var-italic">A<sub>x</sub></span>)<sup>2</sup></span>
+          </div>
+          <div class="row">
+            <span class="tag">ANN</span>
+            <span><span class="var-italic">ä<sub>x</sub></span> = (1 − <span class="var-italic">A<sub>x</sub></span>) / <span class="var-italic">d</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <div class="rightcol">
+
+      <!-- EXAM CARD -->
+      <section class="panel examcard">
+        <div class="cap">EXAM FAM <em>SOA</em></div>
+        <div class="inner">
+          <h3>FUNDAMENTALS OF<br>ACTUARIAL MATH</h3>
+          <p class="meta">Fundamentals of Actuarial Mathematics · SOA</p>
+          <div class="chips">
+            <span>34 questions</span>
+            <span>Pass = 6/10</span>
+            <span>FAM-L / FAM-S</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMMON TRAP -->
+      <section class="panel trap">
+        <span class="skull">💀</span>
+        <span class="hdr">COMMON TRAP!</span>
+        <p>Under UDD, multiply <b>ONLY</b> the term/death piece by <b>i/δ</b> — the pure endowment is never rescaled.</p>
+      </section>
+
+      <!-- WORKED EXAMPLE -->
+      <section class="panel example">
+        <span class="kicker">Worked example · teaser</span>
+        <h4>Example 1 — Whole life EPV &amp; variance</h4>
+        <p>Walk a clean computation from first principles, then sanity-check with the recursion.</p>
+        <div class="speech">"Same data, two answers — the EPV tells you the price, the variance tells you the risk."</div>
+      </section>
+
+    </div>
+
+    <!-- ACTIONS -->
+    <section class="actions">
+      <a href="#" class="btn start">▶ Start studying</a>
+      <a href="#" class="btn resume">⟳ Resume</a>
+      <span class="zap">ZAP!</span>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fb">
+        <div class="fmark"><span>M</span></div>
+        <div>
+          <div class="fname">Me Studing Stuff</div>
+          <small>Study smarter. Pass exams. · SOA Exam FAM hub</small>
+        </div>
+      </div>
+      <small>© 2026 Me Studing Stuff — a calm place to pass.</small>
+    </footer>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Atomic Study Hub for SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Oswald:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1411;
+    --cream:#f3e6c8;
+    --paper:# efe2c0;
+    --atomic-teal:#2ec3c0;
+    --atomic-teal-d:#15807e;
+    --coral:#ff5a3c;
+    --coral-d:#c43417;
+    --mustard:#f6b43a;
+    --pink:#f06ea9;
+    --void:#16100c;
+    --void2:#241813;
+    --line:rgba(26,20,17,.35);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Oswald',sans-serif;
+    background:var(--void);
+    color:var(--ink);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ====== ATOMIC BACKDROP ====== */
+  .stage{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(46,195,192,.18), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(255,90,60,.16), transparent 42%),
+      repeating-conic-gradient(from 0deg at 50% -20%, rgba(255,255,255,.025) 0deg 6deg, transparent 6deg 12deg),
+      linear-gradient(160deg,#1d130e 0%, #2a1b13 50%, #1a110c 100%);
+    position:relative;
+    padding:0 0 60px;
+  }
+
+  /* starburst ornaments */
+  .burst{position:absolute;pointer-events:none;opacity:.9;}
+  .burst svg{display:block;}
+  .burst.b1{top:90px;right:60px;width:120px;height:120px;}
+  .burst.b2{top:46%;left:-30px;width:90px;height:90px;opacity:.5;}
+  .burst.b3{bottom:120px;right:14%;width:70px;height:70px;opacity:.6;}
+
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.05;
+    background-image:radial-gradient(rgba(255,255,255,.8) .5px, transparent .6px);
+    background-size:3px 3px;mix-blend-mode:overlay;
+  }
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 26px;position:relative;z-index:2;}
+
+  /* ====== TOP BAR / BRAND ====== */
+  header.bar{
+    border-bottom:3px solid var(--mustard);
+    background:linear-gradient(180deg, rgba(20,13,9,.9), rgba(20,13,9,.55));
+    position:sticky;top:0;z-index:30;
+    backdrop-filter:blur(6px);
+  }
+  .bar-in{display:flex;align-items:center;gap:22px;padding:14px 26px;max-width:1240px;margin:0 auto;}
+
+  .logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+  .logo .atom{
+    width:52px;height:52px;position:relative;flex:0 0 auto;
+    display:grid;place-items:center;
+  }
+  .logo .atom .nucleus{
+    width:18px;height:18px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffe9a8, var(--coral));
+    box-shadow:0 0 12px var(--coral);z-index:2;
+  }
+  .logo .atom .ring{
+    position:absolute;inset:0;border:2px solid var(--atomic-teal);
+    border-radius:50%;
+  }
+  .logo .atom .ring.r1{transform:rotate(0deg) scaleY(.4);}
+  .logo .atom .ring.r2{transform:rotate(60deg) scaleY(.4);border-color:var(--mustard);}
+  .logo .atom .ring.r3{transform:rotate(120deg) scaleY(.4);border-color:var(--pink);}
+
+  .logo .word{line-height:1;}
+  .logo .word .m{
+    font-family:'Monoton',cursive;font-size:26px;color:var(--mustard);
+    letter-spacing:1px;text-shadow:0 0 14px rgba(246,180,58,.5);
+  }
+  .logo .word small{
+    display:block;font-size:9.5px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--atomic-teal);margin-top:3px;font-weight:600;
+  }
+
+  nav.top{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  nav.top .sect{
+    font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:2px;
+    color:var(--void);background:var(--mustard);padding:4px 9px;border-radius:2px;
+    text-transform:uppercase;font-weight:600;
+    clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);
+  }
+  nav.top a{
+    color:var(--cream);text-decoration:none;font-size:13px;letter-spacing:1px;
+    text-transform:uppercase;padding:6px 10px;font-weight:500;position:relative;
+    transition:color .2s;
+  }
+  nav.top a::after{
+    content:"";position:absolute;left:10px;right:10px;bottom:2px;height:2px;
+    background:var(--coral);transform:scaleX(0);transform-origin:left;transition:transform .25s;
+  }
+  nav.top a:hover{color:var(--mustard);}
+  nav.top a:hover::after{transform:scaleX(1);}
+
+  /* ====== HERO ====== */
+  .hero{padding:54px 0 30px;display:grid;grid-template-columns:1.25fr .85fr;gap:34px;align-items:start;}
+
+  .greet{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:4px;
+    text-transform:uppercase;color:var(--atomic-teal);margin-bottom:10px;
+  }
+  .greet::before{content:"";width:34px;height:2px;background:var(--atomic-teal);}
+  .greet .blip{width:9px;height:9px;border-radius:50%;background:var(--coral);box-shadow:0 0 10px var(--coral);}
+
+  h1.head{
+    font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(42px,6.4vw,82px);line-height:.95;color:var(--cream);
+    text-transform:uppercase;letter-spacing:-1px;
+    text-shadow:4px 4px 0 var(--coral-d), 8px 8px 0 rgba(0,0,0,.3);
+  }
+  h1.head .hl{color:var(--mustard);display:block;}
+
+  .lede{
+    margin-top:20px;max-width:560px;font-size:17px;color:#e7d6b2;
+    border-left:3px solid var(--coral);padding-left:16px;font-weight:400;
+  }
+
+  .cta-row{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+    letter-spacing:2px;font-size:14px;text-decoration:none;cursor:pointer;
+    padding:14px 26px;border:0;position:relative;display:inline-flex;align-items:center;gap:9px;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .btn .ic{font-size:15px;}
+  .btn-primary{
+    background:var(--coral);color:#fff8ec;
+    clip-path:polygon(6% 0,100% 0,94% 100%,0 100%);
+    box-shadow:5px 5px 0 var(--coral-d);
+  }
+  .btn-primary:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--coral-d);}
+  .btn-ghost{
+    background:transparent;color:var(--atomic-teal);
+    border:2px solid var(--atomic-teal);
+    clip-path:polygon(6% 0,100% 0,94% 100%,0 100%);
+  }
+  .btn-ghost:hover{background:var(--atomic-teal);color:var(--void);transform:translate(-2px,-2px);}
+
+  /* ====== EXAM CARD (hero right) ====== */
+  .exam-card{
+    background:
+      repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0 10px, transparent 10px 20px),
+      linear-gradient(165deg,#fff4d9,var(--cream));
+    color:var(--ink);border-radius:6px;position:relative;
+    box-shadow:0 18px 40px rgba(0,0,0,.45), inset 0 0 0 3px var(--void);
+    padding:24px 24px 22px;overflow:hidden;
+  }
+  .exam-card::before{
+    content:"";position:absolute;top:-40px;right:-40px;width:130px;height:130px;
+    background:repeating-conic-gradient(var(--mustard) 0 12deg, transparent 12deg 24deg);
+    border-radius:50%;opacity:.35;
+  }
+  .exam-tag{
+    display:inline-block;font-family:'Spline Sans Mono',monospace;font-size:10px;
+    letter-spacing:2px;text-transform:uppercase;background:var(--void);color:var(--mustard);
+    padding:5px 11px;border-radius:2px;font-weight:600;position:relative;z-index:2;
+  }
+  .exam-card h3{
+    font-size:34px;text-transform:uppercase;font-weight:700;line-height:1;margin:14px 0 4px;
+    color:var(--void);position:relative;z-index:2;
+  }
+  .exam-card .sub{font-size:13px;color:#5a4733;font-weight:500;letter-spacing:.5px;position:relative;z-index:2;}
+  .exam-specs{
+    margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:1px;
+    background:var(--line);border:1px solid var(--line);position:relative;z-index:2;
+  }
+  .exam-specs div{background:var(--cream);padding:10px 12px;}
+  .exam-specs span{display:block;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--atomic-teal-d);}
+  .exam-specs strong{font-size:20px;font-weight:700;color:var(--void);}
+
+  /* ====== STATS STRIP ====== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:30px 0 8px;
+  }
+  .stat{
+    background:linear-gradient(170deg,var(--void2),#1a110c);
+    border:1px solid rgba(246,180,58,.25);border-radius:6px;
+    padding:22px 22px 20px;position:relative;overflow:hidden;
+  }
+  .stat::after{
+    content:"";position:absolute;left:0;top:0;width:6px;height:100%;
+  }
+  .stat.s1::after{background:var(--atomic-teal);}
+  .stat.s2::after{background:var(--coral);}
+  .stat.s3::after{background:var(--mustard);}
+  .stat .label{
+    font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;color:#cbb88f;
+  }
+  .stat .big{
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:52px;line-height:1;
+    margin:6px 0 2px;color:var(--cream);
+  }
+  .stat.s1 .big{color:var(--atomic-teal);}
+  .stat.s2 .big{color:var(--coral);}
+  .stat.s3 .big{color:var(--mustard);}
+  .stat .meta{font-size:13px;color:#9c8a68;letter-spacing:.5px;}
+  .gauge{
+    margin-top:12px;height:9px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;
+  }
+  .gauge i{display:block;height:100%;background:linear-gradient(90deg,var(--atomic-teal),var(--mustard));}
+
+  .countdown-atom{position:absolute;right:14px;bottom:10px;font-size:30px;opacity:.7;}
+
+  /* ====== MAIN GRID ====== */
+  .grid{display:grid;grid-template-columns:230px 1fr;gap:26px;margin-top:34px;align-items:start;}
+
+  /* sidebar nav */
+  aside{
+    background:linear-gradient(180deg,var(--void2),#19110c);
+    border:1px solid rgba(46,195,192,.22);border-radius:8px;
+    padding:18px 16px;position:sticky;top:88px;
+  }
+  aside .sect-label{
+    font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;color:var(--void);background:var(--atomic-teal);
+    padding:6px 12px;border-radius:3px;display:inline-block;margin-bottom:14px;font-weight:600;
+    clip-path:polygon(6% 0,100% 0,94% 100%,0 100%);
+  }
+  aside ul{list-style:none;}
+  aside li a{
+    display:flex;align-items:center;gap:11px;text-decoration:none;
+    color:var(--cream);padding:9px 8px;border-radius:4px;font-size:15px;
+    letter-spacing:.5px;border-left:3px solid transparent;transition:.2s;
+  }
+  aside li a .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+  aside li:nth-child(1) a .dot{background:var(--atomic-teal);}
+  aside li:nth-child(2) a .dot{background:var(--mustard);}
+  aside li:nth-child(3) a .dot{background:var(--coral);}
+  aside li:nth-child(4) a .dot{background:var(--pink);}
+  aside li:nth-child(5) a .dot{background:var(--atomic-teal);}
+  aside li:nth-child(6) a .dot{background:var(--mustard);}
+  aside li a:hover{background:rgba(255,255,255,.05);border-left-color:var(--coral);color:var(--mustard);transform:translateX(3px);}
+  aside li a.active{background:rgba(46,195,192,.12);border-left-color:var(--atomic-teal);}
+  aside li a .chk{margin-left:auto;font-size:12px;color:var(--atomic-teal);}
+
+  aside .divider{height:1px;background:rgba(255,255,255,.1);margin:16px 4px;}
+  aside .solid-note{font-size:12px;color:#9c8a68;line-height:1.5;letter-spacing:.4px;font-family:'Spline Sans Mono',monospace;}
+
+  /* content column */
+  .content{display:flex;flex-direction:column;gap:24px;}
+
+  .panel{
+    background:linear-gradient(170deg,#fff5da,var(--cream));
+    color:var(--ink);border-radius:8px;position:relative;overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,.4), inset 0 0 0 3px var(--void);
+  }
+  .panel-head{
+    display:flex;align-items:center;gap:12px;padding:18px 22px 0;
+  }
+  .panel-head .kicker{
+    font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;color:var(--atomic-teal-d);font-weight:600;
+  }
+  .panel-head .pill{
+    margin-left:auto;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+    background:var(--coral);color:#fff;padding:4px 10px;border-radius:20px;font-weight:600;
+  }
+  .panel h2{
+    font-size:30px;text-transform:uppercase;font-weight:700;line-height:1;
+    margin:6px 22px 0;color:var(--void);letter-spacing:-.5px;
+  }
+  .panel .pl-lede{margin:8px 22px 0;font-size:15px;color:#5a4733;font-weight:400;}
+
+  /* formula block */
+  .formula{
+    margin:18px 22px 22px;background:var(--void);border-radius:6px;
+    border:2px solid var(--mustard);padding:18px 20px;position:relative;
+  }
+  .formula .fl-title{
+    font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:3px;
+    text-transform:uppercase;color:var(--mustard);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  }
+  .formula .fl-title::before{content:"⚛";font-size:14px;}
+  .formula .rows{display:flex;flex-direction:column;gap:10px;}
+  .formula .row{
+    font-family:'Spline Sans Mono',monospace;font-size:17px;color:var(--atomic-teal);
+    letter-spacing:.5px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .formula .row .num{
+    color:var(--coral);font-size:11px;border:1px solid var(--coral);border-radius:50%;
+    width:20px;height:20px;display:inline-grid;place-items:center;flex:0 0 auto;
+  }
+  .formula .row b{color:var(--mustard);}
+
+  /* common trap */
+  .trap{
+    margin:0;background:
+      repeating-linear-gradient(-45deg,#1a1108 0 18px,#241710 18px 36px);
+    border-radius:8px;border:2px solid var(--coral);
+    padding:20px 22px;position:relative;overflow:hidden;
+  }
+  .trap .warn{
+    position:absolute;top:-10px;right:18px;font-size:46px;opacity:.25;
+  }
+  .trap .tt{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:2px;color:var(--coral);font-size:15px;display:flex;align-items:center;gap:10px;margin-bottom:8px;
+  }
+  .trap .tt .badge{
+    background:var(--coral);color:#fff;font-size:10px;padding:3px 8px;border-radius:3px;letter-spacing:1px;
+  }
+  .trap p{color:#f0e2c2;font-size:16px;line-height:1.55;max-width:680px;}
+  .trap p em{color:var(--mustard);font-style:normal;font-weight:600;text-decoration:underline;text-decoration-color:var(--coral);}
+
+  /* worked example teaser */
+  .example{
+    background:linear-gradient(150deg,var(--atomic-teal-d),#0e5f5d);
+    border-radius:8px;padding:22px 24px;position:relative;overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,.4);
+    display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+  }
+  .example::before{
+    content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;
+    background:repeating-conic-gradient(rgba(255,255,255,.12) 0 10deg, transparent 10deg 20deg);
+    border-radius:50%;
+  }
+  .example .ex-body{position:relative;z-index:2;flex:1 1 320px;}
+  .example .ex-kicker{
+    font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:3px;
+    text-transform:uppercase;color:#bff5f3;
+  }
+  .example h3{
+    font-size:26px;text-transform:uppercase;color:#fff;font-weight:700;line-height:1.05;margin-top:6px;
+  }
+  .example p{color:#d4f6f5;font-size:14px;margin-top:6px;max-width:480px;}
+  .example .ex-cta{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px;}
+  .example .ex-cta .btn{justify-content:center;min-width:170px;}
+
+  /* footer */
+  footer{
+    margin-top:48px;border-top:3px solid var(--mustard);
+    background:rgba(20,13,9,.7);
+  }
+  .foot-in{
+    max-width:1240px;margin:0 auto;padding:26px;display:flex;align-items:center;
+    gap:18px;flex-wrap:wrap;justify-content:space-between;
+  }
+  .foot-in .fbrand{display:flex;align-items:center;gap:12px;}
+  .foot-in .fbrand .m{font-family:'Monoton',cursive;font-size:20px;color:var(--mustard);}
+  .foot-in .ftag{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:2px;color:#9c8a68;text-transform:uppercase;}
+  .foot-in .fstars{color:var(--coral);font-size:18px;letter-spacing:4px;}
+
+  /* ====== RESPONSIVE ====== */
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;}
+    .grid{grid-template-columns:1fr;}
+    aside{position:static;}
+    .stats{grid-template-columns:1fr;}
+  }
+  @media(max-width:700px){
+    .bar-in{flex-wrap:wrap;gap:12px;padding:12px 18px;}
+    nav.top{width:100%;justify-content:flex-start;}
+    h1.head{text-shadow:3px 3px 0 var(--coral-d);}
+    .burst.b1{display:none;}
+    .wrap{padding:0 16px;}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="stage">
+
+  <!-- starburst ornaments -->
+  <div class="burst b1" aria-hidden="true">
+    <svg viewBox="0 0 100 100"><g fill="#f6b43a">
+      <path d="M50 0 L57 38 L95 30 L62 50 L95 70 L57 62 L50 100 L43 62 L5 70 L38 50 L5 30 L43 38 Z"/>
+    </g><circle cx="50" cy="50" r="9" fill="#ff5a3c"/></svg>
+  </div>
+  <div class="burst b2" aria-hidden="true">
+    <svg viewBox="0 0 100 100"><g fill="#2ec3c0">
+      <path d="M50 6 L56 44 L92 50 L56 56 L50 94 L44 56 L8 50 L44 44 Z"/>
+    </g></svg>
+  </div>
+  <div class="burst b3" aria-hidden="true">
+    <svg viewBox="0 0 100 100"><g fill="#f06ea9">
+      <path d="M50 10 L55 45 L90 50 L55 55 L50 90 L45 55 L10 50 L45 45 Z"/>
+    </g></svg>
+  </div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="bar">
+    <div class="bar-in">
+      <a class="logo" href="#">
+        <span class="atom">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <span class="nucleus"></span>
+        </span>
+        <span class="word">
+          <span class="m">M</span>
+          <small>Me Studing Stuff</small>
+        </span>
+      </a>
+      <nav class="top">
+        <span class="sect">FAM-L / FAM-S</span>
+        <a href="#">Survival Models</a>
+        <a href="#">Life Tables</a>
+        <a href="#">Life Insurance</a>
+        <a href="#">Life Annuities</a>
+        <a href="#">Premiums</a>
+        <a href="#">Policy Values</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div>
+        <div class="greet"><span class="blip"></span> Good evening, ready for re-entry</div>
+        <h1 class="head">Let's get you<span class="hl">that pass.</span></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#"><span class="ic">▸</span> Start studying</a>
+          <a class="btn btn-ghost" href="#"><span class="ic">↻</span> Resume</a>
+        </div>
+      </div>
+
+      <!-- exam card -->
+      <div class="exam-card">
+        <span class="exam-tag">⚛ Mission Brief</span>
+        <h3>Exam FAM</h3>
+        <div class="sub">Fundamentals of Actuarial Mathematics · SOA</div>
+        <div class="exam-specs">
+          <div><span>Format</span><strong>34 Qs</strong></div>
+          <div><span>Pass mark</span><strong>6 / 10</strong></div>
+          <div><span>Sitting</span><strong>FAM-L+S</strong></div>
+          <div><span>Status</span><strong>Active</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATS ===== -->
+    <section class="stats">
+      <div class="stat s1">
+        <div class="label">Overall Progress</div>
+        <div class="big">72%</div>
+        <div class="meta">12 of 17 topics charted</div>
+        <div class="gauge"><i style="width:72%"></i></div>
+      </div>
+      <div class="stat s2">
+        <div class="label">Exam Countdown</div>
+        <div class="big">86</div>
+        <div class="meta">days until launch</div>
+        <span class="countdown-atom">☢</span>
+      </div>
+      <div class="stat s3">
+        <div class="label">Topics Solid</div>
+        <div class="big">8</div>
+        <div class="meta">locked &amp; shielded</div>
+        <span class="countdown-atom">★</span>
+      </div>
+    </section>
+
+    <!-- ===== MAIN GRID ===== -->
+    <div class="grid">
+
+      <!-- SIDEBAR -->
+      <aside>
+        <span class="sect-label">FAM-L / FAM-S</span>
+        <ul>
+          <li><a class="active" href="#"><span class="dot"></span>Survival Models <span class="chk">✓</span></a></li>
+          <li><a href="#"><span class="dot"></span>Life Tables <span class="chk">✓</span></a></li>
+          <li><a href="#"><span class="dot"></span>Life Insurance</a></li>
+          <li><a href="#"><span class="dot"></span>Life Annuities</a></li>
+          <li><a href="#"><span class="dot"></span>Premiums</a></li>
+          <li><a href="#"><span class="dot"></span>Policy Values</a></li>
+        </ul>
+        <div class="divider"></div>
+        <p class="solid-note">8 / 17 topics shielded.<br>Next reactor: Life Insurance present values.</p>
+      </aside>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- topic preview panel -->
+        <div class="panel">
+          <div class="panel-head">
+            <span class="kicker">Topic Preview · Reactor 03</span>
+            <span class="pill">In progress</span>
+          </div>
+          <h2>Life Insurance Present Values</h2>
+          <p class="pl-lede">The expected present value of a benefit, its variance, and the annuity it's bonded to — the atomic core of FAM-L.</p>
+
+          <div class="formula">
+            <div class="fl-title">Core formulas · whole life</div>
+            <div class="rows">
+              <div class="row"><span class="num">1</span> A<sub>x</sub> = 1 − <b>d</b>·ä<sub>x</sub></div>
+              <div class="row"><span class="num">2</span> Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²</div>
+              <div class="row"><span class="num">3</span> ä<sub>x</sub> = (1 − A<sub>x</sub>) / <b>d</b></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- common trap -->
+        <div class="trap">
+          <span class="warn">☢</span>
+          <div class="tt"><span class="badge">Common trap</span> UDD rescaling</div>
+          <p>Under UDD, multiply <em>ONLY</em> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+
+        <!-- worked example -->
+        <div class="example">
+          <div class="ex-body">
+            <div class="ex-kicker">Worked example · teaser</div>
+            <h3>Example 1 — Whole life EPV &amp; variance</h3>
+            <p>Walk the full computation: build A<sub>x</sub> from the life table, recover ä<sub>x</sub>, then derive Var(Z) step by step.</p>
+          </div>
+          <div class="ex-cta">
+            <a class="btn btn-primary" href="#"><span class="ic">▸</span> Start studying</a>
+            <a class="btn btn-ghost" href="#" style="border-color:#bff5f3;color:#fff;"><span class="ic">↻</span> Resume</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot-in">
+    <div class="fbrand">
+      <span class="m">M</span>
+      <span>
+        <span class="ftag" style="color:#f3e6c8;display:block;">Me Studing Stuff</span>
+        <span class="ftag">Study smarter. Pass exams.</span>
+      </span>
+    </div>
+    <div class="fstars">★ ✦ ☆ ✦ ★</div>
+  </div>
+</footer>
+</body>
+</html>

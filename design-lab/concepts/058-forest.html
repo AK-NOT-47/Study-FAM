@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Deep Forest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Spline+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bark-900:#1b2118;
+    --bark-800:#222a1d;
+    --bark-700:#2c3625;
+    --moss-600:#3f5235;
+    --moss-500:#52704180;
+    --moss-400:#6f9356;
+    --moss-300:#92b977;
+    --fern:#b6d99a;
+    --light:#e7f2d6;
+    --dapple:#f5d97b;
+    --dapple-soft:#e9c95a;
+    --mushroom:#c98a5e;
+    --bark:#7c5a3c;
+    --bark-light:#a07a52;
+    --cream:#eef3e3;
+    --shadow:rgba(12,18,8,.45);
+    --line:rgba(182,217,154,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Spline Sans',system-ui,sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(1200px 700px at 78% -8%, rgba(245,217,123,.16), transparent 60%),
+      radial-gradient(900px 600px at 12% 8%, rgba(146,185,119,.10), transparent 55%),
+      linear-gradient(160deg,#1b2118 0%, #232c1c 45%, #1a2016 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+    line-height:1.5;
+  }
+
+  /* dappled light layer */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(140px 90px at 20% 14%, rgba(245,217,123,.12), transparent 70%),
+      radial-gradient(180px 120px at 86% 30%, rgba(245,217,123,.10), transparent 72%),
+      radial-gradient(120px 80px at 64% 78%, rgba(182,217,154,.08), transparent 70%),
+      radial-gradient(90px 60px at 8% 70%, rgba(245,217,123,.07), transparent 72%);
+    mix-blend-mode:screen;
+    z-index:0;
+  }
+  /* faint canopy texture */
+  body::after{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:radial-gradient(circle at 50% 50%, rgba(255,255,255,.025) 1px, transparent 1.4px);
+    background-size:7px 7px;
+  }
+
+  .wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 26px 60px}
+
+  /* ---------------- Top bar ---------------- */
+  header.bar{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:24px 0 18px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{
+    width:50px;height:50px;border-radius:16px;flex:none;
+    background:linear-gradient(150deg,var(--moss-400),var(--moss-600));
+    border:1px solid rgba(182,217,154,.4);
+    box-shadow:0 8px 22px var(--shadow), inset 0 1px 0 rgba(231,242,214,.25);
+    display:grid;place-items:center;position:relative;
+  }
+  .mark svg{width:30px;height:30px}
+  .brand .txt b{font-family:'Fraunces',serif;font-weight:600;font-size:1.28rem;letter-spacing:.2px;display:block;line-height:1.05;color:var(--light)}
+  .brand .txt span{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--moss-300)}
+
+  nav.top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  nav.top a{
+    font-size:.82rem;color:var(--fern);text-decoration:none;padding:9px 13px;border-radius:11px;
+    letter-spacing:.01em;transition:.18s;white-space:nowrap;
+  }
+  nav.top a:hover{background:rgba(111,147,86,.18);color:var(--light)}
+  nav.top a.live{background:rgba(245,217,123,.14);color:var(--dapple);font-weight:600}
+  .canopy-rule{height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent);margin-bottom:30px}
+
+  /* ---------------- Layout grid ---------------- */
+  .grid{display:grid;grid-template-columns:236px 1fr;gap:30px;align-items:start}
+
+  /* Sidebar */
+  aside{
+    position:sticky;top:22px;
+    background:linear-gradient(170deg,rgba(44,54,37,.85),rgba(27,33,24,.85));
+    border:1px solid var(--line);
+    border-radius:22px;padding:22px 18px;
+    box-shadow:0 18px 40px var(--shadow);
+    backdrop-filter:blur(4px);
+  }
+  .sect-label{
+    font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--moss-300);
+    display:flex;align-items:center;gap:8px;margin:4px 0 14px;
+  }
+  .sect-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dapple);box-shadow:0 0 10px var(--dapple)}
+  .navlist{list-style:none;display:flex;flex-direction:column;gap:3px}
+  .navlist a{
+    display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--cream);
+    padding:10px 11px;border-radius:12px;font-size:.92rem;transition:.18s;position:relative;
+  }
+  .navlist a .leaf{font-size:.95rem;opacity:.85}
+  .navlist a:hover{background:rgba(111,147,86,.2);transform:translateX(3px)}
+  .navlist a.active{
+    background:linear-gradient(100deg,rgba(111,147,86,.32),rgba(245,217,123,.10));
+    color:var(--light);font-weight:600;
+  }
+  .navlist a.active::before{
+    content:"";position:absolute;left:-18px;top:50%;transform:translateY(-50%);
+    width:4px;height:22px;border-radius:4px;background:var(--dapple);box-shadow:0 0 12px var(--dapple);
+  }
+  .navlist .done{margin-left:auto;font-size:.7rem;color:var(--moss-300)}
+  .aside-foot{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line);font-size:.74rem;color:var(--moss-300);display:flex;align-items:center;gap:8px}
+
+  /* ---------------- Main column ---------------- */
+  main{display:flex;flex-direction:column;gap:26px;min-width:0}
+
+  /* Hero */
+  .hero{
+    position:relative;overflow:hidden;border-radius:26px;
+    background:
+      radial-gradient(560px 300px at 88% -10%, rgba(245,217,123,.22), transparent 62%),
+      linear-gradient(150deg,#2f4127 0%, #243019 55%, #1c2516 100%);
+    border:1px solid var(--line);
+    box-shadow:0 24px 60px var(--shadow);
+    padding:38px 40px 34px;
+  }
+  /* tree silhouette ornament */
+  .hero .trees{position:absolute;right:0;bottom:0;width:340px;height:100%;opacity:.5;pointer-events:none}
+  .hero .glow{position:absolute;left:-60px;top:-80px;width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(245,217,123,.18),transparent 65%);filter:blur(6px)}
+  .greeting{font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dapple);display:flex;align-items:center;gap:9px}
+  .greeting::before{content:"";display:inline-block;width:18px;height:1px;background:var(--dapple)}
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2.1rem,5vw,3.4rem);
+    line-height:1.03;letter-spacing:-.5px;margin:14px 0 14px;color:var(--light);max-width:14ch;
+  }
+  h1 em{font-style:italic;color:var(--fern)}
+  .hero p.lede{max-width:54ch;color:#d4e3c2;font-size:1.02rem}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px;position:relative;z-index:2}
+  .stat{
+    background:linear-gradient(165deg,rgba(27,33,24,.72),rgba(44,54,37,.5));
+    border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;
+    backdrop-filter:blur(3px);
+  }
+  .stat .lab{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--moss-300)}
+  .stat .big{font-family:'Fraunces',serif;font-size:2.1rem;font-weight:600;color:var(--light);line-height:1.1;margin-top:4px}
+  .stat .sub{font-size:.78rem;color:var(--fern);margin-top:2px}
+  .stat.accent .big{color:var(--dapple)}
+  .ring{height:7px;border-radius:6px;background:rgba(146,185,119,.18);margin-top:11px;overflow:hidden}
+  .ring i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--moss-300),var(--dapple))}
+
+  /* card rows */
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .panel{
+    background:linear-gradient(170deg,rgba(44,54,37,.62),rgba(27,33,24,.78));
+    border:1px solid var(--line);border-radius:22px;padding:26px 26px 24px;
+    box-shadow:0 16px 38px var(--shadow);position:relative;overflow:hidden;
+  }
+  .eyebrow{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--moss-300);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--moss-400)}
+  .panel h2{font-family:'Fraunces',serif;font-weight:600;font-size:1.45rem;color:var(--light);line-height:1.12;letter-spacing:-.2px}
+  .panel h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.2rem;color:var(--light)}
+
+  /* Exam card */
+  .exam{display:flex;flex-direction:column;justify-content:space-between}
+  .exam .badge{
+    display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+    background:rgba(245,217,123,.14);border:1px solid rgba(245,217,123,.3);
+    color:var(--dapple);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    padding:6px 12px;border-radius:999px;font-weight:600;margin-bottom:16px;
+  }
+  .exam .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .chip{
+    font-size:.78rem;color:var(--fern);background:rgba(111,147,86,.16);
+    border:1px solid var(--line);padding:7px 12px;border-radius:11px;
+  }
+  .chip b{color:var(--light)}
+
+  /* Topic preview + formula */
+  .topic .lede{color:#cfe0bd;font-size:.96rem;margin-top:4px}
+  .formula{
+    margin-top:18px;border-radius:16px;
+    background:linear-gradient(180deg,rgba(20,26,16,.85),rgba(27,33,24,.7));
+    border:1px solid rgba(182,217,154,.22);
+    padding:18px 18px;
+    position:relative;
+  }
+  .formula::before{
+    content:"ƒ";position:absolute;top:10px;right:14px;font-family:'Fraunces',serif;
+    font-size:1.4rem;color:rgba(245,217,123,.4);
+  }
+  .formula .fline{
+    font-family:'Fraunces',serif;font-size:1.06rem;color:var(--light);
+    padding:9px 4px;display:flex;align-items:center;gap:10px;letter-spacing:.2px;
+  }
+  .formula .fline + .fline{border-top:1px dashed var(--line)}
+  .formula .fline .tag{
+    font-family:'Spline Sans';font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--moss-300);background:rgba(111,147,86,.18);padding:3px 8px;border-radius:7px;flex:none;
+  }
+  sub{font-size:.62em}
+  sup{font-size:.62em}
+
+  /* Trap callout */
+  .trap{
+    grid-column:1/-1;
+    background:
+      linear-gradient(150deg,rgba(201,138,94,.16),rgba(44,54,37,.6));
+    border:1px solid rgba(201,138,94,.4);
+    border-radius:20px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;
+    box-shadow:0 14px 34px var(--shadow);
+  }
+  .trap .ic{
+    width:44px;height:44px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:1.3rem;
+    background:linear-gradient(150deg,var(--mushroom),#8d5836);
+    border:1px solid rgba(245,217,123,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  .trap .tlab{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dapple-soft);font-weight:600;margin-bottom:5px}
+  .trap p{color:#e8dcc7;font-size:.98rem;line-height:1.55}
+  .trap b{color:var(--dapple)}
+
+  /* Example teaser */
+  .example{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .example .left{min-width:260px;flex:1}
+  .example .num{
+    display:inline-flex;align-items:center;gap:9px;font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--moss-300);margin-bottom:8px;
+  }
+  .example .num .seed{font-size:1rem}
+  .example h2{margin-bottom:8px}
+  .example p{color:#cfe0bd;font-size:.92rem;max-width:46ch}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{
+    font-family:'Spline Sans';font-weight:600;font-size:.94rem;border:none;cursor:pointer;
+    padding:14px 24px;border-radius:14px;text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+    transition:.18s;
+  }
+  .btn.primary{
+    background:linear-gradient(135deg,var(--dapple),var(--dapple-soft));
+    color:#2a2410;box-shadow:0 12px 26px rgba(245,217,123,.28);
+  }
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(245,217,123,.36)}
+  .btn.ghost{
+    background:rgba(111,147,86,.18);color:var(--light);border:1px solid var(--line);
+  }
+  .btn.ghost:hover{background:rgba(111,147,86,.32);transform:translateY(-2px)}
+
+  /* footer */
+  footer{margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    padding-top:22px;border-top:1px solid var(--line);color:var(--moss-300);font-size:.82rem}
+  footer .fb{display:flex;align-items:center;gap:11px}
+  footer .fm{width:32px;height:32px;border-radius:9px;background:linear-gradient(150deg,var(--moss-400),var(--moss-600));display:grid;place-items:center}
+  footer .fm svg{width:18px;height:18px}
+  footer .leaves{letter-spacing:.3em}
+
+  @media(max-width:900px){
+    .grid{grid-template-columns:1fr}
+    aside{position:static}
+    .row{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    nav.top{display:none}
+  }
+  @media(max-width:700px){
+    .hero{padding:30px 24px}
+    .panel{padding:22px 20px}
+    .hero .trees{width:200px;opacity:.3}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Top bar -->
+  <header class="bar">
+    <div class="brand">
+      <div class="mark">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M5 26V8l6 8 5-7 5 7 6-8v18" stroke="#eef3e3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="16" cy="6" r="2" fill="#f5d97b"/>
+        </svg>
+      </div>
+      <div class="txt">
+        <b>Me Studing Stuff</b>
+        <span>Study smarter · Pass exams</span>
+      </div>
+    </div>
+    <nav class="top">
+      <a href="#" class="live">Dashboard</a>
+      <a href="#">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </nav>
+  </header>
+  <div class="canopy-rule"></div>
+
+  <div class="grid">
+
+    <!-- Sidebar -->
+    <aside>
+      <div class="sect-label">FAM-L / FAM-S</div>
+      <ul class="navlist">
+        <li><a href="#"><span class="leaf">🌿</span> Survival Models <span class="done">done</span></a></li>
+        <li><a href="#"><span class="leaf">🍃</span> Life Tables <span class="done">done</span></a></li>
+        <li><a href="#" class="active"><span class="leaf">🌲</span> Life Insurance</a></li>
+        <li><a href="#"><span class="leaf">🌱</span> Life Annuities</a></li>
+        <li><a href="#"><span class="leaf">🍄</span> Premiums</a></li>
+        <li><a href="#"><span class="leaf">🌳</span> Policy Values</a></li>
+      </ul>
+      <div class="aside-foot"><span>🦌</span> 12 of 17 topics rooted</div>
+    </aside>
+
+    <!-- Main -->
+    <main>
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="glow"></div>
+        <svg class="trees" viewBox="0 0 340 280" preserveAspectRatio="xMaxYMax meet">
+          <g fill="#16200f" opacity=".9">
+            <path d="M70 280 L70 200 L40 200 L60 160 L36 160 L60 120 L40 120 L70 70 L100 120 L80 120 L104 160 L80 160 L100 200 L70 200 Z"/>
+          </g>
+          <g fill="#1d2914" opacity=".95">
+            <path d="M180 280 L180 180 L150 180 L172 140 L150 140 L176 95 L154 95 L180 45 L206 95 L184 95 L210 140 L188 140 L210 180 L180 180 Z"/>
+          </g>
+          <g fill="#23311a">
+            <path d="M280 280 L280 210 L256 210 L274 178 L256 178 L278 142 L260 142 L280 100 L300 142 L282 142 L304 178 L286 178 L304 210 L280 210 Z"/>
+          </g>
+          <rect x="66" y="200" width="8" height="80" fill="#3a2a1a"/>
+          <rect x="176" y="180" width="8" height="100" fill="#3a2a1a"/>
+          <rect x="276" y="210" width="8" height="70" fill="#3a2a1a"/>
+        </svg>
+
+        <div class="greeting">Good evening</div>
+        <h1>Let's get you <em>that pass.</em></h1>
+        <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+        <div class="stats">
+          <div class="stat accent">
+            <div class="lab">Overall progress</div>
+            <div class="big">72%</div>
+            <div class="sub">12 of 17 topics</div>
+            <div class="ring"><i style="width:72%"></i></div>
+          </div>
+          <div class="stat">
+            <div class="lab">Exam countdown</div>
+            <div class="big">86 <span style="font-size:1rem;color:var(--fern)">days</span></div>
+            <div class="sub">keep the streak alive</div>
+            <div class="ring"><i style="width:43%"></i></div>
+          </div>
+          <div class="stat">
+            <div class="lab">Topics solid</div>
+            <div class="big">8</div>
+            <div class="sub">deeply rooted</div>
+            <div class="ring"><i style="width:47%"></i></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exam + Topic preview row -->
+      <div class="row">
+
+        <!-- Exam card -->
+        <section class="panel exam">
+          <div>
+            <div class="eyebrow"><span class="dot"></span> Your exam</div>
+            <span class="badge">🌲 Exam FAM</span>
+            <h2>Fundamentals of Actuarial Mathematics</h2>
+          </div>
+          <div class="meta">
+            <span class="chip"><b>SOA</b> sitting</span>
+            <span class="chip"><b>34</b> questions</span>
+            <span class="chip">Pass = <b>6 / 10</b></span>
+          </div>
+        </section>
+
+        <!-- Topic preview -->
+        <section class="panel topic">
+          <div class="eyebrow"><span class="dot"></span> Topic preview</div>
+          <h2>Life Insurance Present Values</h2>
+          <p class="lede">The expected present value of a benefit paid on death — the trunk every other formula branches from.</p>
+          <div class="formula">
+            <div class="fline"><span class="tag">EPV</span> A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+            <div class="fline"><span class="tag">Var</span> Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²</div>
+            <div class="fline"><span class="tag">Annuity</span> ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+          </div>
+        </section>
+
+        <!-- Trap callout -->
+        <section class="trap">
+          <div class="ic">🍄</div>
+          <div>
+            <div class="tlab">Common trap</div>
+            <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+          </div>
+        </section>
+
+        <!-- Example teaser -->
+        <section class="panel example">
+          <div class="left">
+            <div class="num"><span class="seed">🌰</span> Worked example</div>
+            <h2>Example 1 — Whole life EPV &amp; variance</h2>
+            <p>Walk through A<sub>x</sub>, ä<sub>x</sub> and Var(Z) end-to-end, then check yourself against the model solution.</p>
+          </div>
+          <div class="cta">
+            <a href="#" class="btn primary">🌲 Start studying</a>
+            <a href="#" class="btn ghost">↻ Resume</a>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <div class="fb">
+          <div class="fm">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M5 26V8l6 8 5-7 5 7 6-8v18" stroke="#eef3e3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span><b style="color:var(--light)">Me Studing Stuff</b> — Study smarter. Pass exams.</span>
+        </div>
+        <span class="leaves">🌿 🍃 🌲</span>
+      </footer>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000000;
+    --fg:#ffffff;
+    --panel:#0a0a0a;
+    --panel-2:#111111;
+    --line:#262626;
+    --line-2:#1a1a1a;
+    --muted:#8f8f8f;
+    --muted-2:#666666;
+    --accent:#ffffff;
+    --grad:linear-gradient(90deg,#fff,#999);
+    --r:8px;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    letter-spacing:-0.011em;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  ::selection{background:#fff;color:#000}
+  a{color:inherit;text-decoration:none}
+
+  /* ====== APP SHELL ====== */
+  .app{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    min-height:100vh;
+  }
+
+  /* ====== SIDEBAR ====== */
+  .side{
+    border-right:1px solid var(--line);
+    background:#000;
+    padding:22px 18px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    overflow-y:auto;
+  }
+  .brand{
+    display:flex;align-items:center;gap:11px;
+    padding-bottom:4px;
+  }
+  .mark{
+    width:34px;height:34px;flex:none;
+    border:1px solid var(--line);
+    border-radius:7px;
+    background:linear-gradient(145deg,#111,#000);
+    display:grid;place-items:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .mark svg{width:18px;height:18px}
+  .mark::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(120% 120% at 30% 0%,rgba(255,255,255,.14),transparent 60%);
+  }
+  .brand .name{font-weight:700;font-size:14px;letter-spacing:-0.02em}
+  .brand .tag{font-size:11px;color:var(--muted-2);font-family:var(--mono);letter-spacing:0}
+
+  .navgroup{display:flex;flex-direction:column;gap:2px}
+  .navlabel{
+    font-family:var(--mono);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.16em;
+    color:var(--muted-2);
+    padding:0 10px 8px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .navlabel .pill{
+    border:1px solid var(--line);border-radius:5px;
+    padding:1px 6px;font-size:9px;color:var(--muted);letter-spacing:.08em;
+  }
+  .navitem{
+    display:flex;align-items:center;gap:10px;
+    padding:8px 10px;border-radius:6px;
+    font-size:13px;color:var(--muted);
+    font-weight:450;
+    border:1px solid transparent;
+    transition:.15s;
+  }
+  .navitem:hover{color:#fff;background:var(--panel)}
+  .navitem.active{
+    color:#fff;background:var(--panel-2);
+    border-color:var(--line);font-weight:550;
+  }
+  .navitem .dot{
+    width:6px;height:6px;border-radius:1px;
+    background:var(--line);transform:rotate(45deg);flex:none;
+    transition:.15s;
+  }
+  .navitem:hover .dot,.navitem.active .dot{background:#fff}
+  .navitem .n{
+    margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted-2);
+  }
+
+  .side-foot{margin-top:auto;border-top:1px solid var(--line-2);padding-top:16px}
+  .userbox{
+    display:flex;align-items:center;gap:10px;
+    padding:8px;border:1px solid var(--line);border-radius:7px;background:var(--panel);
+  }
+  .ava{width:28px;height:28px;border-radius:6px;background:#fff;color:#000;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+  .userbox .u1{font-size:12px;font-weight:600}
+  .userbox .u2{font-size:10px;color:var(--muted-2);font-family:var(--mono)}
+
+  /* ====== MAIN ====== */
+  .main{
+    min-width:0;
+    display:flex;flex-direction:column;
+  }
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:16px;
+    padding:0 28px;height:56px;
+    border-bottom:1px solid var(--line);
+    background:rgba(0,0,0,.7);
+    backdrop-filter:blur(10px);
+  }
+  .crumb{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    display:flex;align-items:center;gap:8px;
+  }
+  .crumb b{color:#fff;font-weight:600}
+  .crumb .sl{color:var(--line)}
+  .topbar .spacer{flex:1}
+  .search{
+    display:flex;align-items:center;gap:8px;
+    border:1px solid var(--line);border-radius:7px;
+    padding:6px 10px;background:var(--panel);
+    font-size:12px;color:var(--muted-2);font-family:var(--mono);
+    min-width:180px;
+  }
+  .search .k{
+    margin-left:auto;border:1px solid var(--line);border-radius:4px;
+    padding:0 5px;font-size:10px;color:var(--muted-2);
+  }
+  .tbtn{
+    border:1px solid var(--line);border-radius:7px;
+    height:32px;padding:0 12px;display:flex;align-items:center;gap:7px;
+    font-size:12px;font-weight:600;background:#fff;color:#000;cursor:pointer;
+    transition:.15s;
+  }
+  .tbtn.ghost{background:transparent;color:#fff}
+  .tbtn.ghost:hover{background:var(--panel-2)}
+  .tbtn:hover{opacity:.85}
+
+  .canvas{padding:28px;max-width:1240px;width:100%;margin:0 auto}
+
+  /* ====== HERO ====== */
+  .hero{
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    background:
+      linear-gradient(180deg,#0b0b0b,#000),
+      radial-gradient(80% 120% at 100% 0%,rgba(255,255,255,.06),transparent 55%);
+    padding:34px;
+    position:relative;overflow:hidden;
+    margin-bottom:22px;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-2) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+    background-size:34px 34px;
+    mask-image:radial-gradient(80% 100% at 80% 0%,#000,transparent 70%);
+    opacity:.5;
+  }
+  .hero-inner{position:relative;z-index:1;max-width:760px}
+  .greet{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11.5px;color:var(--muted);
+    border:1px solid var(--line);border-radius:99px;
+    padding:5px 12px;margin-bottom:20px;
+    text-transform:uppercase;letter-spacing:.14em;
+  }
+  .greet .led{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+  .hero h1{
+    font-size:clamp(30px,4.6vw,52px);
+    line-height:1.02;font-weight:800;letter-spacing:-0.035em;
+    margin-bottom:16px;
+  }
+  .hero h1 .fade{
+    background:linear-gradient(90deg,#fff 30%,#5a5a5a);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p{font-size:15.5px;color:var(--muted);max-width:620px;line-height:1.6}
+  .hero .acts{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .btn{
+    height:40px;padding:0 18px;border-radius:8px;
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid transparent;
+    transition:.15s;
+  }
+  .btn-primary{background:#fff;color:#000}
+  .btn-primary:hover{box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+  .btn-ghost{background:transparent;color:#fff;border-color:var(--line)}
+  .btn-ghost:hover{background:var(--panel-2);border-color:#3a3a3a}
+  .btn .arr{font-family:var(--mono);font-size:12px}
+
+  /* ====== STATS ====== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px;
+  }
+  .stat{
+    border:1px solid var(--line);border-radius:var(--r);
+    background:linear-gradient(180deg,#080808,#000);
+    padding:18px 18px 16px;position:relative;overflow:hidden;
+  }
+  .stat .lbl{
+    font-family:var(--mono);font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.14em;color:var(--muted-2);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .stat .lbl .ic{color:var(--muted)}
+  .stat .big{font-size:34px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+  .stat .sub{font-size:12px;color:var(--muted);margin-top:7px;font-family:var(--mono)}
+  .bar{height:5px;border-radius:99px;background:var(--line-2);margin-top:14px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,#fff,#888);border-radius:99px}
+  .dots{display:flex;gap:4px;margin-top:14px}
+  .dots span{width:13px;height:6px;border-radius:2px;background:var(--line)}
+  .dots span.on{background:#fff}
+
+  /* ====== GRID LAYOUT ====== */
+  .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;align-items:start}
+  .card{
+    border:1px solid var(--line);border-radius:var(--r);
+    background:var(--panel);overflow:hidden;
+  }
+  .card-h{
+    display:flex;align-items:center;gap:10px;
+    padding:16px 20px;border-bottom:1px solid var(--line);
+  }
+  .card-h .t{font-size:14px;font-weight:650;letter-spacing:-0.01em}
+  .card-h .t small{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted-2);font-weight:400;letter-spacing:0;margin-top:2px}
+  .card-h .badge{
+    margin-left:auto;font-family:var(--mono);font-size:10px;
+    border:1px solid var(--line);border-radius:5px;padding:3px 8px;color:var(--muted);
+    letter-spacing:.06em;
+  }
+  .card-b{padding:20px}
+  .lede{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+
+  /* ====== FORMULA BLOCK ====== */
+  .formula{
+    border:1px solid var(--line);border-radius:7px;
+    background:#000;
+    font-family:var(--mono);
+    overflow:hidden;
+  }
+  .formula .fh{
+    display:flex;align-items:center;gap:6px;
+    padding:9px 12px;border-bottom:1px solid var(--line-2);
+    font-size:10px;color:var(--muted-2);letter-spacing:.1em;text-transform:uppercase;
+  }
+  .formula .fh .d{width:9px;height:9px;border-radius:50%;border:1px solid var(--line)}
+  .formula .fh .nm{margin-left:auto;letter-spacing:0;text-transform:none}
+  .formula .row{
+    display:flex;align-items:center;gap:14px;
+    padding:11px 14px;font-size:13.5px;color:#eaeaea;
+    border-bottom:1px solid var(--line-2);
+  }
+  .formula .row:last-child{border-bottom:0}
+  .formula .row .ln{color:var(--muted-2);font-size:11px;width:18px;flex:none;text-align:right;user-select:none}
+  .formula .row b{color:#fff;font-weight:700}
+  .formula .row .cm{color:var(--muted-2)}
+
+  /* ====== TRAP CALLOUT ====== */
+  .trap{
+    margin-top:18px;
+    border:1px solid var(--line);border-left:3px solid #fff;
+    border-radius:7px;background:linear-gradient(90deg,#0d0d0d,#000);
+    padding:14px 16px;display:flex;gap:13px;
+  }
+  .trap .ti{
+    width:26px;height:26px;flex:none;border:1px solid var(--line);border-radius:6px;
+    display:grid;place-items:center;font-weight:800;font-size:14px;
+  }
+  .trap .th{
+    font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;
+    color:var(--muted-2);margin-bottom:5px;
+  }
+  .trap p{font-size:13px;color:#d4d4d4;line-height:1.55}
+  .trap p em{color:#fff;font-style:normal;font-weight:600;border-bottom:1px solid #444}
+
+  /* ====== EXAM CARD ====== */
+  .exam{
+    border:1px solid var(--line);border-radius:var(--r);
+    background:
+      radial-gradient(100% 100% at 100% 0%,rgba(255,255,255,.05),transparent 60%),
+      #050505;
+    padding:20px;
+  }
+  .exam .tagrow{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+  .exam .chip{
+    font-family:var(--mono);font-size:10px;border:1px solid var(--line);
+    border-radius:5px;padding:3px 8px;color:var(--muted);letter-spacing:.04em;
+  }
+  .exam .chip.solid{background:#fff;color:#000;border-color:#fff;font-weight:700}
+  .exam h3{font-size:21px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+  .exam .ex-sub{font-size:12px;color:var(--muted);font-family:var(--mono)}
+  .exam .meta{
+    display:grid;grid-template-columns:1fr 1fr;gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:8px;
+    overflow:hidden;margin-top:18px;
+  }
+  .exam .meta div{background:#000;padding:12px 14px}
+  .exam .meta .mv{font-size:18px;font-weight:800;letter-spacing:-0.02em}
+  .exam .meta .ml{font-family:var(--mono);font-size:10px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+
+  /* ====== EXAMPLE TEASER ====== */
+  .ex-teaser{
+    margin-top:20px;border:1px solid var(--line);border-radius:7px;
+    background:var(--panel-2);padding:16px;
+  }
+  .ex-teaser .et-tag{font-family:var(--mono);font-size:10px;color:var(--muted-2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+  .ex-teaser .et-t{font-size:14px;font-weight:650;margin-bottom:14px;letter-spacing:-0.01em}
+  .ex-teaser .et-t code{font-family:var(--mono);font-weight:400;color:var(--muted)}
+  .ex-acts{display:flex;gap:9px}
+  .ex-acts .btn{height:36px;font-size:12.5px;padding:0 14px;flex:1;justify-content:center}
+
+  .twocol{display:flex;flex-direction:column;gap:20px}
+
+  /* ====== MINI TOPIC LIST ====== */
+  .minilist .mi{
+    display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2);
+  }
+  .minilist .mi:last-child{border-bottom:0;padding-bottom:0}
+  .minilist .mi:first-child{padding-top:0}
+  .minilist .idx{font-family:var(--mono);font-size:11px;color:var(--muted-2);width:22px;flex:none}
+  .minilist .mt{font-size:13px;font-weight:500}
+  .minilist .ms{font-family:var(--mono);font-size:10.5px;color:var(--muted-2);margin-top:1px}
+  .minilist .stt{margin-left:auto;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+  .minilist .stt.done{background:#fff;color:#000;border-color:#fff;font-weight:700}
+
+  /* ====== FOOTER ====== */
+  footer{
+    border-top:1px solid var(--line);
+    margin-top:30px;padding:22px 28px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    color:var(--muted-2);font-size:12px;
+  }
+  footer .fbrand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:13px}
+  footer .fmark{width:22px;height:22px;border:1px solid var(--line);border-radius:5px;display:grid;place-items:center}
+  footer .fmark svg{width:12px;height:12px}
+  footer .sp{flex:1}
+  footer .flink{font-family:var(--mono);font-size:11px}
+  footer .flink:hover{color:#fff}
+  footer .copy{font-family:var(--mono);font-size:11px}
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width:980px){
+    .grid{grid-template-columns:1fr}
+    .app{grid-template-columns:1fr}
+    .side{
+      position:fixed;left:0;top:0;width:260px;z-index:50;
+      transform:translateX(-100%);transition:transform .2s;
+    }
+    .menutgl{display:flex !important}
+  }
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr}
+    .canvas{padding:18px}
+    .hero{padding:24px}
+    .topbar{padding:0 16px}
+    .search{display:none}
+  }
+  .menutgl{display:none;border:1px solid var(--line);border-radius:7px;width:32px;height:32px;place-items:center;background:var(--panel);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 19V6l8 9 8-9v13" stroke="#fff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="name">Me Studing Stuff</div>
+        <div class="tag">study smarter · pass</div>
+      </div>
+    </div>
+
+    <nav class="navgroup">
+      <div class="navlabel">Dashboard</div>
+      <a class="navitem active"><span class="dot"></span> Overview <span class="n">⌘1</span></a>
+      <a class="navitem"><span class="dot"></span> Study plan <span class="n">⌘2</span></a>
+    </nav>
+
+    <nav class="navgroup">
+      <div class="navlabel">Topics <span class="pill">FAM-L / FAM-S</span></div>
+      <a class="navitem"><span class="dot"></span> Survival Models <span class="n">01</span></a>
+      <a class="navitem"><span class="dot"></span> Life Tables <span class="n">02</span></a>
+      <a class="navitem active"><span class="dot"></span> Life Insurance <span class="n">03</span></a>
+      <a class="navitem"><span class="dot"></span> Life Annuities <span class="n">04</span></a>
+      <a class="navitem"><span class="dot"></span> Premiums <span class="n">05</span></a>
+      <a class="navitem"><span class="dot"></span> Policy Values <span class="n">06</span></a>
+    </nav>
+
+    <nav class="navgroup">
+      <div class="navlabel">Practice</div>
+      <a class="navitem"><span class="dot"></span> Worked Problems <span class="n">⌘P</span></a>
+      <a class="navitem"><span class="dot"></span> Formula Sheet <span class="n">⌘F</span></a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="userbox">
+        <div class="ava">A</div>
+        <div>
+          <div class="u1">Ashraf M.</div>
+          <div class="u2">free · FAM track</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <header class="topbar">
+      <div class="menutgl" onclick="document.querySelector('.side').style.transform='translateX(0)'">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="crumb"><b>FAM</b> <span class="sl">/</span> Topics <span class="sl">/</span> <b>Life Insurance</b></div>
+      <div class="spacer"></div>
+      <div class="search"><span>⌕</span> Search topics… <span class="k">⌘K</span></div>
+      <button class="tbtn ghost">Docs</button>
+      <button class="tbtn">Resume study ↵</button>
+    </header>
+
+    <div class="canvas">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-inner">
+          <span class="greet"><span class="led"></span> Good evening</span>
+          <h1>Let's get you<br><span class="fade">that pass.</span></h1>
+          <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          <div class="acts">
+            <button class="btn btn-primary">Start studying <span class="arr">→</span></button>
+            <button class="btn btn-ghost">Resume <span class="arr">↳</span></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat">
+          <div class="lbl"><span class="ic">▦</span> Overall progress</div>
+          <div class="big">72<span style="font-size:18px;color:var(--muted)">%</span></div>
+          <div class="bar"><i style="width:72%"></i></div>
+          <div class="sub">12 of 17 topics</div>
+        </div>
+        <div class="stat">
+          <div class="lbl"><span class="ic">◷</span> Exam countdown</div>
+          <div class="big">86<span style="font-size:18px;color:var(--muted)"> d</span></div>
+          <div class="dots">
+            <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span><span></span>
+          </div>
+          <div class="sub">days remaining</div>
+        </div>
+        <div class="stat">
+          <div class="lbl"><span class="ic">◆</span> Topics solid</div>
+          <div class="big">8<span style="font-size:18px;color:var(--muted)"> / 17</span></div>
+          <div class="bar"><i style="width:47%"></i></div>
+          <div class="sub">mastered &amp; reviewed</div>
+        </div>
+      </section>
+
+      <!-- GRID -->
+      <section class="grid">
+
+        <!-- LEFT: TOPIC PREVIEW -->
+        <div class="card">
+          <div class="card-h">
+            <div class="t">Life Insurance Present Values <small>topic 03 · core formulas</small></div>
+            <div class="badge">FAM-L</div>
+          </div>
+          <div class="card-b">
+            <p class="lede">The expected present value (EPV) of a benefit paid at death, plus its variance — the backbone of premium and reserve calculations.</p>
+
+            <div class="formula">
+              <div class="fh"><span class="d"></span> formulas.fam <span class="nm">life-insurance.md</span></div>
+              <div class="row"><span class="ln">1</span> <b>A_x</b> = 1 − d·ä_x</div>
+              <div class="row"><span class="ln">2</span> <b>Var(Z)</b> = ²A_x − (A_x)²</div>
+              <div class="row"><span class="ln">3</span> <b>ä_x</b> = (1 − A_x) / d</div>
+            </div>
+
+            <div class="trap">
+              <div class="ti">!</div>
+              <div>
+                <div class="th">Common trap</div>
+                <p>Under UDD, multiply <em>ONLY</em> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+              </div>
+            </div>
+
+            <div class="ex-teaser">
+              <div class="et-tag">Worked example</div>
+              <div class="et-t">Example 1 — Whole life EPV &amp; variance <code>// computes A_x, ²A_x, Var(Z)</code></div>
+              <div class="ex-acts">
+                <button class="btn btn-primary">Start studying <span class="arr">→</span></button>
+                <button class="btn btn-ghost">Resume <span class="arr">↳</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: EXAM + LIST -->
+        <div class="twocol">
+
+          <div class="exam">
+            <div class="tagrow">
+              <span class="chip solid">Exam FAM</span>
+              <span class="chip">SOA</span>
+              <span class="chip">2 hr 30 min</span>
+            </div>
+            <h3>Fundamentals of Actuarial Mathematics</h3>
+            <div class="ex-sub">Fundamentals of Actuarial Mathematics · SOA</div>
+            <div class="meta">
+              <div><div class="mv">34</div><div class="ml">Questions</div></div>
+              <div><div class="mv">6 / 10</div><div class="ml">Pass mark</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <div class="t">Topic status</div>
+              <div class="badge">8 solid</div>
+            </div>
+            <div class="card-b">
+              <div class="minilist">
+                <div class="mi"><span class="idx">01</span><div><div class="mt">Survival Models</div><div class="ms">force of mortality</div></div><span class="stt done">done</span></div>
+                <div class="mi"><span class="idx">02</span><div><div class="mt">Life Tables</div><div class="ms">l_x · select &amp; ultimate</div></div><span class="stt done">done</span></div>
+                <div class="mi"><span class="idx">03</span><div><div class="mt">Life Insurance</div><div class="ms">A_x · ²A_x · Var(Z)</div></div><span class="stt">active</span></div>
+                <div class="mi"><span class="idx">04</span><div><div class="mt">Life Annuities</div><div class="ms">ä_x · m-thly</div></div><span class="stt">queued</span></div>
+                <div class="mi"><span class="idx">05</span><div><div class="mt">Premiums</div><div class="ms">equivalence principle</div></div><span class="stt">queued</span></div>
+                <div class="mi"><span class="idx">06</span><div><div class="mt">Policy Values</div><div class="ms">Thiele · reserves</div></div><span class="stt">queued</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fbrand">
+        <span class="fmark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V6l8 9 8-9v13" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+        Me Studing Stuff
+      </div>
+      <span class="copy">— Study smarter. Pass exams.</span>
+      <span class="sp"></span>
+      <a class="flink">SOA Exam FAM</a>
+      <a class="flink">Formula sheet</a>
+      <span class="copy">© 2026</span>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

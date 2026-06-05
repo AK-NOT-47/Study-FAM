@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Crystal Mineral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,500&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0b0716;
+    --bg-1:#140d29;
+    --amethyst:#9d6bff;
+    --amethyst-deep:#6f3df0;
+    --quartz:#e8c7ff;
+    --rose:#ff8fd6;
+    --cyan:#6ff0e8;
+    --gold:#ffd98a;
+    --ink:#f4ecff;
+    --muted:#b29ddb;
+    --facet-line:rgba(232,199,255,.16);
+    --glass:rgba(157,107,255,.07);
+    --glass-2:rgba(232,199,255,.05);
+    --edge:rgba(232,199,255,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background:
+      radial-gradient(1200px 800px at 12% -8%, rgba(157,107,255,.32), transparent 55%),
+      radial-gradient(1000px 720px at 96% 4%, rgba(255,143,214,.18), transparent 50%),
+      radial-gradient(900px 900px at 60% 120%, rgba(111,240,232,.12), transparent 55%),
+      linear-gradient(160deg, var(--bg-0), var(--bg-1) 70%);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Faceted prismatic backdrop */
+  .prism-field{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;}
+  .prism-field svg{width:100%;height:100%;}
+
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:screen;
+    background-image:repeating-linear-gradient(115deg,#fff 0 1px,transparent 1px 3px);}
+
+  .shell{position:relative;z-index:2;max-width:1320px;margin:0 auto;padding:26px 30px 60px;}
+
+  /* ===== Header / Nav ===== */
+  header.top{
+    display:flex;align-items:center;gap:26px;
+    padding:14px 22px;margin-bottom:30px;
+    border:1px solid var(--facet-line);
+    background:linear-gradient(120deg, rgba(232,199,255,.06), rgba(157,107,255,.04));
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    clip-path:polygon(0 22px,22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%);
+  }
+  .brand{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+  .gem-mark{width:46px;height:46px;flex-shrink:0;filter:drop-shadow(0 4px 14px rgba(157,107,255,.6));}
+  .brand .name{font-family:'Fraunces',serif;font-weight:800;font-size:1.22rem;letter-spacing:.3px;line-height:1;}
+  .brand .tag{font-size:.66rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+  nav.primary{margin-left:auto;display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end;}
+  .seclabel{
+    font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;
+    color:var(--bg-0);background:linear-gradient(120deg,var(--quartz),var(--rose));
+    padding:6px 11px;border-radius:2px;font-weight:600;margin-right:8px;
+    clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+  }
+  nav.primary a{
+    position:relative;color:var(--muted);text-decoration:none;font-size:.82rem;font-weight:500;
+    padding:8px 13px;border-radius:3px;transition:.25s;white-space:nowrap;
+  }
+  nav.primary a::before{content:"◈";font-size:.5rem;color:var(--amethyst);opacity:0;margin-right:5px;transition:.25s;}
+  nav.primary a:hover{color:var(--ink);background:var(--glass);}
+  nav.primary a:hover::before{opacity:1;}
+  nav.primary a.active{color:var(--quartz);background:linear-gradient(120deg,rgba(157,107,255,.18),rgba(255,143,214,.1));}
+  nav.primary a.active::before{opacity:1;}
+
+  /* ===== Layout grid ===== */
+  .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:26px;}
+  @media(max-width:900px){.grid{grid-template-columns:1fr;}}
+
+  .crystal{
+    position:relative;
+    border:1px solid var(--facet-line);
+    background:linear-gradient(150deg, var(--glass), var(--glass-2));
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    clip-path:polygon(0 26px,26px 0,100% 0,100% calc(100% - 26px),calc(100% - 26px) 100%,0 100%);
+    overflow:hidden;
+  }
+  .crystal::after{ /* prismatic edge sheen */
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(125deg,transparent 0 40%,rgba(232,199,255,.10) 48%,rgba(111,240,232,.06) 52%,transparent 60%);
+  }
+  .crystal .facet{position:absolute;inset:0;pointer-events:none;opacity:.4;}
+
+  /* ===== Hero ===== */
+  .hero{padding:38px 40px 40px;}
+  .greet{display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;
+    font-size:.74rem;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:20px;}
+  .greet .dot{width:7px;height:7px;background:var(--cyan);transform:rotate(45deg);box-shadow:0 0 12px var(--cyan);}
+  .hero h1{
+    font-family:'Fraunces',serif;font-weight:800;font-size:clamp(2.4rem,5.4vw,4.1rem);line-height:.98;
+    letter-spacing:-1px;margin-bottom:22px;
+    background:linear-gradient(108deg,#fff 0%,var(--quartz) 30%,var(--amethyst) 58%,var(--rose) 82%,var(--cyan) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero h1 em{font-style:italic;font-weight:500;}
+  .hero .lede{font-size:1.02rem;line-height:1.65;color:var(--muted);max-width:54ch;}
+  .hero .lede b{color:var(--quartz);font-weight:600;}
+
+  /* ===== Stats ===== */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px;}
+  @media(max-width:560px){.stats{grid-template-columns:1fr;}}
+  .stat{
+    position:relative;padding:20px 18px;
+    border:1px solid var(--edge);
+    background:linear-gradient(155deg,rgba(157,107,255,.14),rgba(11,7,22,.2));
+    clip-path:polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+  }
+  .stat .num{font-family:'Fraunces',serif;font-weight:800;font-size:2.5rem;line-height:1;
+    background:linear-gradient(120deg,var(--quartz),var(--rose));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat .lab{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:9px;line-height:1.4;}
+  .stat .sub{font-size:.7rem;color:var(--amethyst);margin-top:5px;font-family:'JetBrains Mono',monospace;}
+  .stat:nth-child(2) .num{background:linear-gradient(120deg,var(--cyan),var(--amethyst));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat:nth-child(3) .num{background:linear-gradient(120deg,var(--gold),var(--rose));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+
+  /* progress bar inside first stat */
+  .bar{margin-top:12px;height:6px;background:rgba(232,199,255,.12);border-radius:20px;overflow:hidden;}
+  .bar > i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--amethyst),var(--rose),var(--gold));}
+
+  /* ===== Right column ===== */
+  .stack{display:flex;flex-direction:column;gap:26px;}
+
+  /* Exam card */
+  .exam{padding:0;}
+  .exam .band{
+    padding:22px 26px 20px;position:relative;
+    background:linear-gradient(125deg,var(--amethyst-deep),var(--rose) 130%);
+  }
+  .exam .band::after{content:"";position:absolute;inset:0;opacity:.5;pointer-events:none;
+    background:linear-gradient(120deg,transparent 45%,rgba(255,255,255,.18) 50%,transparent 56%);}
+  .exam .kicker{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8);}
+  .exam h2{font-family:'Fraunces',serif;font-weight:800;font-size:2rem;line-height:1;margin-top:8px;color:#fff;}
+  .exam .full{font-size:.84rem;color:rgba(255,255,255,.86);margin-top:6px;}
+  .exam .meta{display:flex;flex-wrap:wrap;gap:8px;padding:18px 26px 22px;}
+  .chip{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:7px 12px;border:1px solid var(--edge);
+    color:var(--quartz);background:var(--glass);
+    clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);}
+  .chip b{color:var(--gold);}
+
+  /* trap callout */
+  .trap{padding:22px 24px;border:1px solid rgba(255,217,138,.4);
+    background:linear-gradient(150deg,rgba(255,217,138,.1),rgba(255,143,214,.05));
+    clip-path:polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);}
+  .trap .h{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:700;font-style:italic;
+    font-size:1.05rem;color:var(--gold);margin-bottom:9px;}
+  .trap .h span{font-style:normal;}
+  .trap p{font-size:.86rem;line-height:1.6;color:var(--ink);}
+  .trap p u{text-decoration-color:var(--rose);text-underline-offset:3px;}
+
+  /* ===== Topic preview (full width) ===== */
+  .topic{margin-top:26px;padding:34px 40px 38px;}
+  .topic .eyebrow{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);}
+  .topic h3{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.02;margin:10px 0 8px;
+    background:linear-gradient(108deg,#fff,var(--quartz) 60%,var(--amethyst));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .topic .lede{font-size:.92rem;color:var(--muted);max-width:60ch;line-height:1.6;}
+
+  .formula{
+    margin-top:24px;display:flex;flex-wrap:wrap;gap:14px;
+  }
+  .fcard{
+    flex:1 1 200px;position:relative;padding:20px 18px;
+    border:1px solid var(--edge);
+    background:
+      linear-gradient(155deg,rgba(157,107,255,.16),rgba(11,7,22,.35));
+    clip-path:polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .fcard::before{content:"◇";position:absolute;top:10px;right:12px;color:var(--amethyst);font-size:.7rem;opacity:.7;}
+  .fcard .ftag{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:10px;}
+  .fcard .feq{font-size:1.05rem;color:var(--quartz);line-height:1.4;font-weight:600;letter-spacing:.3px;}
+  .fcard .feq sub{font-size:.7em;}
+  .fcard .feq sup{font-size:.72em;color:var(--cyan);}
+
+  /* worked example teaser + buttons */
+  .example{
+    margin-top:26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+    padding:22px 24px;border:1px solid var(--facet-line);
+    background:linear-gradient(150deg,rgba(232,199,255,.05),rgba(111,240,232,.04));
+    clip-path:polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+  }
+  .example .ico{width:54px;height:54px;flex-shrink:0;}
+  .example .txt .et{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);}
+  .example .txt h4{font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem;margin-top:4px;color:var(--ink);}
+  .btns{margin-left:auto;display:flex;gap:12px;flex-wrap:wrap;}
+  .btn{
+    cursor:pointer;border:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.86rem;
+    padding:13px 24px;color:#0b0716;letter-spacing:.4px;position:relative;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    background:linear-gradient(120deg,var(--quartz),var(--rose) 60%,var(--gold));
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+    transition:.25s;
+  }
+  .btn:hover{filter:brightness(1.12);transform:translateY(-2px);}
+  .btn.ghost{background:transparent;color:var(--quartz);border:1px solid var(--edge);
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);}
+  .btn.ghost:hover{background:var(--glass);color:#fff;}
+
+  /* topic chips strip */
+  .toprail{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;}
+  .trail-item{font-size:.78rem;color:var(--muted);padding:9px 15px;border:1px solid var(--facet-line);
+    background:var(--glass-2);transition:.25s;cursor:default;
+    clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%);}
+  .trail-item:hover{color:var(--quartz);border-color:var(--edge);background:var(--glass);}
+  .trail-item b{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:.7rem;}
+
+  /* footer */
+  footer{margin-top:44px;padding-top:26px;border-top:1px solid var(--facet-line);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.78rem;}
+  footer .gem-mark{width:30px;height:30px;}
+  footer .fbrand{font-family:'Fraunces',serif;font-weight:700;color:var(--ink);font-size:.95rem;}
+  footer .fspace{margin-left:auto;font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;font-size:.68rem;}
+
+  @keyframes shimmer{0%{transform:translateX(-30%);}100%{transform:translateX(30%);}}
+  .glint{position:absolute;top:0;left:0;width:60%;height:100%;pointer-events:none;
+    background:linear-gradient(110deg,transparent,rgba(255,255,255,.07),transparent);
+    animation:shimmer 7s ease-in-out infinite alternate;}
+</style>
+</head>
+<body>
+
+<!-- prismatic faceted backdrop -->
+<div class="prism-field" aria-hidden="true">
+<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9d6bff" stop-opacity=".5"/><stop offset="1" stop-color="#ff8fd6" stop-opacity=".05"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#6ff0e8" stop-opacity=".4"/><stop offset="1" stop-color="#6f3df0" stop-opacity=".05"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd98a" stop-opacity=".25"/><stop offset="1" stop-color="#9d6bff" stop-opacity=".05"/>
+    </linearGradient>
+  </defs>
+  <g stroke="rgba(232,199,255,.18)" stroke-width="1">
+    <polygon points="-50,120 220,40 360,260 120,360" fill="url(#g1)"/>
+    <polygon points="220,40 360,260 540,120 460,-30" fill="url(#g3)"/>
+    <polygon points="1180,-40 1500,90 1420,360 1160,260" fill="url(#g1)"/>
+    <polygon points="1160,260 1420,360 1500,640 1220,560" fill="url(#g2)"/>
+    <polygon points="1420,360 1500,90 1520,640" fill="url(#g3)"/>
+    <polygon points="80,640 360,560 480,820 140,920" fill="url(#g2)"/>
+    <polygon points="360,560 480,820 700,720 560,500" fill="url(#g1)"/>
+    <polygon points="660,860 940,760 1080,980 760,1000" fill="url(#g3)"/>
+    <polygon points="940,760 1080,980 1300,860 1180,640" fill="url(#g2)"/>
+  </g>
+</svg>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <!-- ===== Header ===== -->
+  <header class="top">
+    <div class="brand">
+      <svg class="gem-mark" viewBox="0 0 60 60" aria-hidden="true">
+        <defs>
+          <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#e8c7ff"/><stop offset=".5" stop-color="#9d6bff"/><stop offset="1" stop-color="#ff8fd6"/>
+          </linearGradient>
+        </defs>
+        <g stroke="rgba(255,255,255,.5)" stroke-width="1">
+          <polygon points="30,4 50,18 30,30 10,18" fill="url(#mg)"/>
+          <polygon points="10,18 30,30 24,56 8,40" fill="#6f3df0"/>
+          <polygon points="50,18 30,30 36,56 52,40" fill="#7c4ff5"/>
+          <polygon points="24,56 30,30 36,56" fill="#e8c7ff"/>
+        </g>
+        <line x1="30" y1="4" x2="30" y2="30" stroke="rgba(255,255,255,.4)"/>
+      </svg>
+      <div>
+        <div class="name">Me Studing Stuff</div>
+        <div class="tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <nav class="primary">
+      <span class="seclabel">FAM-L / FAM-S</span>
+      <a href="#" class="active">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </nav>
+  </header>
+
+  <!-- ===== Main grid ===== -->
+  <div class="grid">
+
+    <!-- LEFT: hero + stats -->
+    <section class="crystal hero">
+      <div class="facet"></div><div class="glint"></div>
+      <div class="greet"><span class="dot"></span>Good evening</div>
+      <h1>Let's get you <em>that</em> pass.</h1>
+      <p class="lede">Your focused hub for <b>SOA Exam FAM</b> — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="num">72%</div>
+          <div class="lab">Overall progress</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="bar"><i></i></div>
+        </div>
+        <div class="stat">
+          <div class="num">86</div>
+          <div class="lab">Exam countdown</div>
+          <div class="sub">days to go</div>
+        </div>
+        <div class="stat">
+          <div class="num">8</div>
+          <div class="lab">Topics solid</div>
+          <div class="sub">mastered &amp; locked</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: exam card + trap -->
+    <aside class="stack">
+      <div class="crystal exam">
+        <div class="band">
+          <div class="kicker">Now sitting</div>
+          <h2>Exam FAM</h2>
+          <div class="full">Fundamentals of Actuarial Mathematics</div>
+        </div>
+        <div class="meta">
+          <span class="chip">Body · <b>SOA</b></span>
+          <span class="chip"><b>34</b> questions</span>
+          <span class="chip">Pass = <b>6 / 10</b></span>
+        </div>
+      </div>
+
+      <div class="trap crystal" style="clip-path:polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)">
+        <div class="h"><span>⚠</span>Common trap</div>
+        <p>Under UDD, multiply <u>ONLY the term/death piece</u> by <em>i/δ</em> — the pure endowment is never rescaled.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===== Topic preview ===== -->
+  <section class="crystal topic">
+    <div class="facet"></div>
+    <div class="eyebrow">Topic preview · Life Insurance</div>
+    <h3>Life Insurance Present Values</h3>
+    <p class="lede">The expected present value of a benefit, and how its variance falls out of the second moment — the three identities you reach for on almost every problem.</p>
+
+    <div class="formula">
+      <div class="fcard">
+        <div class="ftag">EPV identity</div>
+        <div class="feq">A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+      </div>
+      <div class="fcard">
+        <div class="ftag">Variance of Z</div>
+        <div class="feq">Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)²</div>
+      </div>
+      <div class="fcard">
+        <div class="ftag">Annuity from EPV</div>
+        <div class="feq">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <svg class="ico" viewBox="0 0 60 60" aria-hidden="true">
+        <g stroke="rgba(255,255,255,.45)" stroke-width="1">
+          <polygon points="30,6 48,22 30,38 12,22" fill="#9d6bff"/>
+          <polygon points="12,22 30,38 30,54 14,42" fill="#6f3df0"/>
+          <polygon points="48,22 30,38 30,54 46,42" fill="#ff8fd6"/>
+        </g>
+      </svg>
+      <div class="txt">
+        <div class="et">Worked example</div>
+        <h4>Example 1 — Whole life EPV &amp; variance</h4>
+      </div>
+      <div class="btns">
+        <a href="#" class="btn">◆ Start studying</a>
+        <a href="#" class="btn ghost">Resume</a>
+      </div>
+    </div>
+
+    <div class="toprail">
+      <span class="trail-item"><b>01</b> · Survival Models</span>
+      <span class="trail-item"><b>02</b> · Life Tables</span>
+      <span class="trail-item"><b>03</b> · Life Insurance</span>
+      <span class="trail-item"><b>04</b> · Life Annuities</span>
+      <span class="trail-item"><b>05</b> · Premiums</span>
+      <span class="trail-item"><b>06</b> · Policy Values</span>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <svg class="gem-mark" viewBox="0 0 60 60" aria-hidden="true">
+      <g stroke="rgba(255,255,255,.4)" stroke-width="1">
+        <polygon points="30,4 50,18 30,30 10,18" fill="url(#mg)"/>
+        <polygon points="10,18 30,30 24,56 8,40" fill="#6f3df0"/>
+        <polygon points="50,18 30,30 36,56 52,40" fill="#7c4ff5"/>
+      </g>
+    </svg>
+    <span class="fbrand">Me Studing Stuff</span>
+    <span>Study smarter. Pass exams.</span>
+    <span class="fspace">CRYSTAL · SOA EXAM FAM</span>
+  </footer>
+
+</div>
+</body>
+</html>

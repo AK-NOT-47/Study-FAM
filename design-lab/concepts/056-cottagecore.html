@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f7f1e3;
+    --cream-2:#fbf6ea;
+    --paper:#fffdf7;
+    --sage:#8aa07a;
+    --sage-deep:#5f7a52;
+    --sage-soft:#cdd9bf;
+    --rose:#d08b8b;
+    --rose-deep:#b56a6a;
+    --rose-soft:#f2d7d4;
+    --ink:#4a3f38;
+    --ink-soft:#7a6c61;
+    --gold:#d9a441;
+    --gingham:#9bb085;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(208,139,139,.10), transparent 22%),
+      radial-gradient(circle at 88% 18%, rgba(138,160,122,.12), transparent 24%),
+      var(--cream);
+    min-height:100vh;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* gingham tablecloth strip behind everything */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;opacity:.5;
+    background-image:
+      linear-gradient(rgba(155,176,133,.22) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(155,176,133,.22) 2px, transparent 2px),
+      linear-gradient(rgba(155,176,133,.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(155,176,133,.10) 1px, transparent 1px);
+    background-size:48px 48px,48px 48px,16px 16px,16px 16px;
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%);
+            mask-image:linear-gradient(180deg, transparent, #000 60%);
+  }
+  a{color:inherit;text-decoration:none}
+
+  .shell{
+    max-width:1240px;margin:0 auto;padding:28px 22px 60px;
+    display:grid;grid-template-columns:264px 1fr;gap:26px;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    align-self:start;position:sticky;top:22px;
+    background:var(--paper);
+    border:2px solid var(--sage-soft);
+    border-radius:26px;
+    padding:24px 20px 26px;
+    box-shadow:0 18px 40px -26px rgba(95,122,82,.55);
+    overflow:hidden;
+  }
+  .sidebar::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:14px;
+    background:
+      repeating-linear-gradient(45deg, var(--rose-soft) 0 12px, var(--cream-2) 12px 24px);
+    opacity:.8;
+  }
+  .brand{display:flex;align-items:center;gap:12px;margin-top:10px;margin-bottom:6px}
+  .mark{
+    width:52px;height:52px;flex:none;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, var(--rose-soft));
+    border:2px solid var(--rose);
+    display:grid;place-items:center;position:relative;
+    box-shadow:0 6px 14px -8px rgba(181,106,106,.8);
+  }
+  .mark span{font-family:'Gloock',serif;font-size:1.7rem;color:var(--rose-deep);line-height:1}
+  .petal{position:absolute;width:11px;height:11px;border-radius:60% 0;background:var(--sage);opacity:.9}
+  .mark .p1{top:-4px;left:50%;transform:translateX(-50%) rotate(45deg)}
+  .mark .p2{bottom:-4px;left:50%;transform:translateX(-50%) rotate(45deg)}
+  .brand-txt b{font-family:'Gloock',serif;font-weight:400;font-size:1.18rem;display:block;letter-spacing:.2px}
+  .brand-txt small{font-size:.72rem;color:var(--ink-soft);font-style:italic;font-family:'Fraunces',serif}
+
+  .nav-label{
+    margin:24px 4px 10px;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--sage-deep);font-weight:700;display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--sage-soft) 0 4px,transparent 4px 8px)}
+  .nav-section-tag{
+    display:inline-block;margin:0 4px 14px;padding:5px 12px;border-radius:999px;
+    background:var(--sage-soft);color:var(--sage-deep);font-weight:700;font-size:.72rem;
+    border:1.5px dashed var(--sage-deep);
+  }
+  nav ul{list-style:none}
+  nav li a{
+    display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:14px;
+    font-weight:600;font-size:.94rem;color:var(--ink);margin-bottom:3px;
+    transition:.18s;position:relative;
+  }
+  nav li a .ic{font-size:1rem;width:20px;text-align:center}
+  nav li a:hover{background:var(--cream-2);transform:translateX(3px)}
+  nav li a.active{background:var(--rose-soft);color:var(--rose-deep)}
+  nav li a.active::before{content:"";position:absolute;left:-20px;top:0;bottom:0;width:5px;border-radius:0 6px 6px 0;background:var(--rose)}
+
+  .seed-card{
+    margin-top:22px;padding:16px;border-radius:18px;text-align:center;
+    background:linear-gradient(180deg,var(--cream-2),#fff);
+    border:1.5px solid var(--rose-soft);
+  }
+  .seed-card .big{font-family:'Gloock',serif;font-size:1.9rem;color:var(--sage-deep);line-height:1}
+  .seed-card small{font-size:.74rem;color:var(--ink-soft);display:block;margin-top:4px}
+
+  /* ============ MAIN ============ */
+  main{display:flex;flex-direction:column;gap:24px;min-width:0}
+
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:6px 4px;
+  }
+  .greet{font-family:'Fraunces',serif;font-style:italic;color:var(--sage-deep);font-size:1.05rem}
+  .greet .moon{margin-right:6px}
+  .pill-row{display:flex;gap:10px;flex-wrap:wrap}
+  .mini-pill{
+    background:var(--paper);border:1.5px solid var(--sage-soft);border-radius:999px;
+    padding:7px 14px;font-size:.82rem;font-weight:700;color:var(--sage-deep);
+    display:flex;align-items:center;gap:7px;box-shadow:0 8px 18px -14px rgba(95,122,82,.6);
+  }
+
+  /* HERO */
+  .hero{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(circle at 90% 0%, var(--rose-soft), transparent 40%),
+      linear-gradient(135deg,#fffdf7,#f4eedd);
+    border:2px solid var(--rose-soft);border-radius:30px;
+    padding:38px 40px 34px;
+    box-shadow:0 26px 50px -34px rgba(181,106,106,.6);
+  }
+  .hero::after{
+    content:"❀";position:absolute;right:26px;bottom:14px;font-size:9rem;color:var(--rose);
+    opacity:.10;transform:rotate(-12deg);pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-family:'Fraunces',serif;font-style:italic;
+    color:var(--rose-deep);font-size:.95rem;margin-bottom:10px;
+  }
+  .eyebrow::before,.eyebrow::after{content:"✿";font-size:.85rem;color:var(--sage)}
+  .hero h1{
+    font-family:'Gloock',serif;font-weight:400;font-size:clamp(2.1rem,5vw,3.4rem);
+    line-height:1.06;color:var(--ink);max-width:18ch;letter-spacing:.3px;
+  }
+  .hero h1 em{font-style:italic;font-family:'Fraunces',serif;color:var(--rose-deep)}
+  .hero p.lede{margin-top:16px;max-width:54ch;font-size:1.04rem;color:var(--ink-soft)}
+  .hero-actions{margin-top:24px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:.98rem;
+    padding:13px 26px;border-radius:999px;display:inline-flex;align-items:center;gap:9px;
+    transition:.2s;position:relative;
+  }
+  .btn-primary{background:var(--sage-deep);color:#fdfbf2;box-shadow:0 12px 22px -12px rgba(95,122,82,.9)}
+  .btn-primary:hover{background:var(--sage);transform:translateY(-2px)}
+  .btn-ghost{background:#fff;color:var(--rose-deep);border:2px solid var(--rose)}
+  .btn-ghost:hover{background:var(--rose-soft);transform:translateY(-2px)}
+
+  /* STATS row */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{
+    background:var(--paper);border-radius:22px;padding:20px 20px 18px;position:relative;overflow:hidden;
+    border:2px solid var(--cream-2);box-shadow:0 16px 30px -26px rgba(74,63,56,.7);
+  }
+  .stat .scallop{position:absolute;top:0;left:0;right:0;height:10px;
+    background:radial-gradient(circle at 8px -3px, var(--sage-soft) 7px, transparent 7px) 0 0/16px 12px}
+  .stat .lbl{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-top:6px}
+  .stat .num{font-family:'Gloock',serif;font-size:2.6rem;line-height:1;color:var(--sage-deep);margin:6px 0 4px}
+  .stat .sub{font-size:.84rem;color:var(--ink-soft);font-style:italic;font-family:'Fraunces',serif}
+  .stat.rose .num{color:var(--rose-deep)}
+  .stat .ring{position:absolute;right:14px;top:16px;font-size:1.3rem}
+  .progress-track{height:9px;border-radius:99px;background:var(--cream);margin-top:10px;overflow:hidden;border:1px solid var(--sage-soft)}
+  .progress-fill{height:100%;width:72%;border-radius:99px;
+    background:repeating-linear-gradient(45deg,var(--sage) 0 8px,var(--sage-deep) 8px 16px)}
+
+  /* content grid */
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:24px}
+  .card{
+    background:var(--paper);border-radius:26px;padding:26px 26px 24px;
+    border:2px solid var(--cream-2);box-shadow:0 20px 40px -32px rgba(74,63,56,.8);position:relative;
+  }
+  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .card-head .badge{
+    font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;font-weight:800;
+    padding:5px 11px;border-radius:999px;background:var(--sage-soft);color:var(--sage-deep);
+  }
+  .card-head h2{font-family:'Gloock',serif;font-weight:400;font-size:1.5rem;color:var(--ink);letter-spacing:.2px}
+  .lede2{color:var(--ink-soft);font-size:.96rem;margin-bottom:16px}
+
+  /* exam card */
+  .exam-card{
+    background:linear-gradient(150deg,#fff,var(--rose-soft));
+    border:2px solid var(--rose);
+  }
+  .exam-badge{
+    width:64px;height:64px;border-radius:18px;flex:none;display:grid;place-items:center;
+    background:var(--rose-deep);color:#fff;font-family:'Gloock',serif;font-size:1.5rem;
+    transform:rotate(-5deg);box-shadow:0 10px 20px -10px rgba(181,106,106,.9);
+  }
+  .exam-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{
+    background:#fff;border:1.5px solid var(--rose-soft);border-radius:999px;padding:6px 13px;
+    font-size:.8rem;font-weight:700;color:var(--rose-deep);
+  }
+  .chip.pass{background:var(--sage-deep);color:#fff;border-color:var(--sage-deep)}
+
+  /* FORMULA */
+  .formula-block{
+    margin-top:14px;background:var(--cream-2);border:1.5px dashed var(--sage-deep);border-radius:18px;
+    padding:18px 20px;font-family:'Fraunces',serif;
+  }
+  .formula-block .frow{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:9px 0;
+    font-size:1.12rem;color:var(--ink);
+  }
+  .formula-block .frow+.frow{border-top:1px dotted var(--sage)}
+  .formula-block .frow .dot{color:var(--rose)}
+  .formula-block sup,.formula-block sub{font-size:.7em}
+
+  /* trap callout */
+  .trap{
+    margin-top:18px;border-radius:18px;padding:16px 18px 16px 54px;position:relative;
+    background:linear-gradient(180deg,#fff,#fdf3e6);
+    border:1.5px solid var(--gold);
+  }
+  .trap::before{content:"🐝";position:absolute;left:16px;top:15px;font-size:1.5rem}
+  .trap b{font-family:'Fraunces',serif;color:var(--rose-deep);display:block;margin-bottom:3px;font-size:.95rem}
+  .trap p{font-size:.92rem;color:var(--ink)}
+
+  /* worked example */
+  .example{
+    margin-top:6px;background:var(--cream-2);border-radius:18px;border:1.5px solid var(--sage-soft);
+    padding:16px 18px;display:flex;align-items:flex-start;gap:14px;
+  }
+  .example .num-tag{
+    flex:none;width:44px;height:44px;border-radius:12px;background:var(--sage);color:#fff;
+    display:grid;place-items:center;font-family:'Gloock',serif;font-size:1.2rem;transform:rotate(4deg);
+  }
+  .example b{font-family:'Fraunces',serif;font-size:1.02rem;color:var(--ink)}
+  .example small{display:block;color:var(--ink-soft);font-size:.84rem;margin-top:2px}
+
+  /* the two study buttons in example card */
+  .study-actions{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
+
+  /* decorative sprig divider */
+  .sprig{text-align:center;color:var(--sage);font-size:1.1rem;letter-spacing:6px;opacity:.7}
+
+  /* FOOTER */
+  footer{
+    margin-top:8px;text-align:center;padding:26px 20px 6px;color:var(--ink-soft);
+    border-top:2px dotted var(--sage-soft);
+  }
+  footer .fbrand{font-family:'Gloock',serif;font-size:1.3rem;color:var(--sage-deep)}
+  footer .fbrand em{font-style:italic;font-family:'Fraunces',serif;color:var(--rose-deep)}
+  footer p{font-size:.84rem;margin-top:6px;font-style:italic;font-family:'Fraunces',serif}
+  footer .row{margin-top:10px;font-size:1.1rem;color:var(--rose);letter-spacing:8px}
+
+  @media (max-width:920px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{position:static;top:0}
+    .stats{grid-template-columns:1fr}
+    .grid{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    .hero{padding:28px 22px}
+    .formula-block .frow{font-size:1rem}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">
+        <span class="petal p1"></span>
+        <span class="petal p2"></span>
+        <span>M</span>
+      </div>
+      <div class="brand-txt">
+        <b>Me Studing Stuff</b>
+        <small>Study smarter. Pass exams.</small>
+      </div>
+    </div>
+
+    <span class="nav-section-tag">✿ FAM-L / FAM-S</span>
+
+    <div class="nav-label">The Garden of Topics</div>
+    <nav>
+      <ul>
+        <li><a href="#" class="active"><span class="ic">🌿</span> Survival Models</a></li>
+        <li><a href="#"><span class="ic">📖</span> Life Tables</a></li>
+        <li><a href="#"><span class="ic">🕯️</span> Life Insurance</a></li>
+        <li><a href="#"><span class="ic">🌾</span> Life Annuities</a></li>
+        <li><a href="#"><span class="ic">🍯</span> Premiums</a></li>
+        <li><a href="#"><span class="ic">🧺</span> Policy Values</a></li>
+      </ul>
+    </nav>
+
+    <div class="seed-card">
+      <div class="big">8 / 17</div>
+      <small>topics tended &amp; solid — keep planting</small>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <div class="topbar">
+      <div class="greet"><span class="moon">🌙</span> Good evening — the kettle's on.</div>
+      <div class="pill-row">
+        <span class="mini-pill">🌼 86 days to exam</span>
+        <span class="mini-pill">🍃 Day 41 of your plan</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="eyebrow">a calm little study cottage</span>
+      <h1>Let's get you <em>that pass.</em></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      <div class="hero-actions">
+        <a href="#example" class="btn btn-primary">🕯️ Start studying</a>
+        <a href="#example" class="btn btn-ghost">↻ Resume where you left off</a>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat">
+        <div class="scallop"></div>
+        <span class="ring">🌻</span>
+        <div class="lbl">Overall progress</div>
+        <div class="num">72%</div>
+        <div class="sub">12 of 17 topics in bloom</div>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+      </div>
+      <div class="stat rose">
+        <div class="scallop"></div>
+        <span class="ring">🌷</span>
+        <div class="lbl">Exam countdown</div>
+        <div class="num">86</div>
+        <div class="sub">days until the big day</div>
+      </div>
+      <div class="stat">
+        <div class="scallop"></div>
+        <span class="ring">🌿</span>
+        <div class="lbl">Topics solid</div>
+        <div class="num">8</div>
+        <div class="sub">rooted, reviewed &amp; ready</div>
+      </div>
+    </section>
+
+    <div class="sprig">❀ ✿ ❀ ✿ ❀</div>
+
+    <!-- CONTENT GRID -->
+    <section class="grid">
+
+      <!-- LEFT: topic preview + formula + trap -->
+      <div class="card">
+        <div class="card-head">
+          <span class="badge">Life Insurance</span>
+          <h2>Present Values</h2>
+        </div>
+        <p class="lede2">The little recipes that turn future benefits into today's tidy sum — keep these on the windowsill.</p>
+
+        <div class="formula-block">
+          <div class="frow">A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+          <div class="frow">Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></div>
+          <div class="frow">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+        </div>
+
+        <div class="trap">
+          <b>Common trap</b>
+          <p>Under UDD, multiply ONLY the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: exam card + worked example -->
+      <div style="display:flex;flex-direction:column;gap:24px">
+
+        <div class="card exam-card">
+          <div style="display:flex;gap:16px;align-items:center">
+            <div class="exam-badge">FAM</div>
+            <div>
+              <div class="card-head" style="margin-bottom:2px">
+                <h2 style="font-size:1.35rem">Exam FAM</h2>
+              </div>
+              <div style="font-family:'Fraunces',serif;font-style:italic;color:var(--rose-deep);font-size:.92rem">
+                Fundamentals of Actuarial Mathematics
+              </div>
+            </div>
+          </div>
+          <div class="exam-meta">
+            <span class="chip">SOA</span>
+            <span class="chip">34 questions</span>
+            <span class="chip pass">pass = 6/10</span>
+          </div>
+        </div>
+
+        <div class="card" id="example">
+          <div class="card-head">
+            <span class="badge" style="background:var(--rose-soft);color:var(--rose-deep)">Worked example</span>
+          </div>
+          <div class="example">
+            <div class="num-tag">1</div>
+            <div>
+              <b>Example 1 — Whole life EPV &amp; variance</b>
+              <small>Compute A<sub>x</sub>, then turn the crank for Var(Z) using ²A<sub>x</sub>.</small>
+            </div>
+          </div>
+          <div class="study-actions">
+            <a href="#" class="btn btn-primary">🕯️ Start studying</a>
+            <a href="#" class="btn btn-ghost">↻ Resume</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fbrand">Me Studing <em>Stuff</em></div>
+      <p>Study smarter. Pass exams. — brewed with chamomile &amp; quiet focus.</p>
+      <div class="row">✿ ❀ ✿</div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

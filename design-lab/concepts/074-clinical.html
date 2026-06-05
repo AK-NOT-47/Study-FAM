@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --teal-900:#063b3b;
+    --teal-700:#0a6b6b;
+    --teal-500:#12a3a3;
+    --teal-400:#1cc0bf;
+    --teal-200:#9fe4e2;
+    --teal-50:#e8f7f6;
+    --ink:#0c1c1f;
+    --slate:#5b6e72;
+    --line:#d4e3e2;
+    --line-strong:#b9d2d0;
+    --white:#ffffff;
+    --paper:#f4faf9;
+    --amber:#b97400;
+    --amber-bg:#fff6e6;
+    --radius:3px;
+    --grid:rgba(18,163,163,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:28px 28px;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .layout{
+    display:grid;
+    grid-template-columns:264px 1fr;
+    min-height:100vh;
+    max-width:1440px;
+    margin:0 auto;
+    background:var(--white);
+    border-left:1px solid var(--line);
+    border-right:1px solid var(--line);
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{
+    border-right:1px solid var(--line);
+    background:var(--white);
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:22px 24px;
+    border-bottom:1px solid var(--line);
+  }
+  .mmark{
+    width:40px;height:40px;flex:0 0 40px;
+    border:1.5px solid var(--teal-500);
+    border-radius:var(--radius);
+    display:grid;place-items:center;
+    color:var(--teal-700);
+    font-weight:700;
+    font-size:20px;
+    position:relative;
+    background:
+      linear-gradient(135deg,var(--teal-50),var(--white));
+  }
+  .mmark::after{
+    content:"";position:absolute;inset:5px;
+    border:1px solid var(--teal-200);
+    border-radius:2px;
+  }
+  .mmark span{position:relative;z-index:1;font-family:'IBM Plex Mono',monospace}
+  .brand-text b{display:block;font-size:14px;letter-spacing:.2px;line-height:1.2}
+  .brand-text small{
+    display:block;font-size:10px;color:var(--slate);
+    text-transform:uppercase;letter-spacing:.13em;margin-top:3px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  .nav-section{padding:18px 16px 6px}
+  .nav-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--teal-700);
+    padding:0 8px 8px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .nav-label::before{
+    content:"";width:6px;height:6px;background:var(--teal-400);
+    border-radius:50%;flex:0 0 6px;
+    box-shadow:0 0 0 3px var(--teal-50);
+  }
+  .nav a{
+    display:flex;align-items:center;gap:11px;
+    padding:9px 8px;
+    text-decoration:none;color:var(--ink);
+    font-size:13.5px;
+    border-radius:var(--radius);
+    position:relative;
+    transition:background .12s,color .12s;
+  }
+  .nav a .idx{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--slate);
+    min-width:22px;
+  }
+  .nav a:hover{background:var(--teal-50);color:var(--teal-700)}
+  .nav a.active{
+    background:var(--teal-50);
+    color:var(--teal-900);font-weight:600;
+  }
+  .nav a.active::before{
+    content:"";position:absolute;left:-16px;top:6px;bottom:6px;
+    width:3px;background:var(--teal-500);border-radius:0 2px 2px 0;
+  }
+  .nav a.active .idx{color:var(--teal-500)}
+  .nav .dot{
+    margin-left:auto;width:7px;height:7px;border-radius:50%;
+    border:1px solid var(--line-strong);
+  }
+  .nav .dot.done{background:var(--teal-400);border-color:var(--teal-400)}
+
+  .sidebar-foot{
+    margin-top:auto;
+    padding:16px;
+    border-top:1px solid var(--line);
+  }
+  .vitals{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--slate);
+    display:flex;justify-content:space-between;
+    padding:4px 8px;
+  }
+  .vitals b{color:var(--teal-700)}
+
+  /* ===== MAIN ===== */
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{
+    display:flex;align-items:center;gap:16px;
+    padding:14px 32px;
+    border-bottom:1px solid var(--line);
+    background:rgba(255,255,255,.85);
+    backdrop-filter:blur(4px);
+    position:sticky;top:0;z-index:5;
+  }
+  .crumb{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:var(--slate);letter-spacing:.05em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .crumb .sep{color:var(--line-strong)}
+  .status-pill{
+    margin-left:auto;
+    display:flex;align-items:center;gap:8px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:var(--teal-700);
+    border:1px solid var(--line);
+    padding:6px 12px;border-radius:100px;
+    background:var(--white);
+  }
+  .live{width:7px;height:7px;border-radius:50%;background:var(--teal-400);
+    box-shadow:0 0 0 0 rgba(28,192,191,.6);
+    animation:pulse 2.2s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(28,192,191,.5)}
+    70%{box-shadow:0 0 0 8px rgba(28,192,191,0)}
+    100%{box-shadow:0 0 0 0 rgba(28,192,191,0)}
+  }
+  .topbar .search{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:var(--slate);border:1px solid var(--line);
+    padding:6px 12px;border-radius:var(--radius);background:var(--paper);
+    min-width:160px;
+  }
+
+  .content{padding:32px;display:flex;flex-direction:column;gap:22px;flex:1}
+
+  /* HERO */
+  .hero{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--white);
+    overflow:hidden;
+    position:relative;
+  }
+  .hero-top{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 18px;
+    border-bottom:1px solid var(--line);
+    background:var(--paper);
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--slate);
+  }
+  .hero-top .corner{display:flex;gap:6px}
+  .hero-top .corner i{
+    width:8px;height:8px;border:1px solid var(--line-strong);border-radius:1px;
+    display:inline-block;
+  }
+  .hero-body{padding:34px 36px 36px;position:relative}
+  .greeting{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.1em;
+    color:var(--teal-700);text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:14px;
+  }
+  .greeting::before{content:"◷";font-size:15px}
+  .hero h1{
+    font-size:clamp(30px,4.4vw,52px);
+    line-height:1.02;letter-spacing:-1.4px;
+    font-weight:700;
+    max-width:16ch;
+  }
+  .hero h1 em{
+    font-style:normal;color:var(--teal-500);
+    position:relative;
+  }
+  .hero p.lede{
+    margin-top:18px;
+    font-size:16px;color:var(--slate);
+    max-width:58ch;line-height:1.6;
+  }
+  .hero-actions{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+
+  .btn{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:14px;font-weight:600;
+    padding:12px 22px;border-radius:var(--radius);
+    border:1px solid transparent;cursor:pointer;
+    text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+    transition:transform .1s,box-shadow .15s,background .15s;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{
+    background:var(--teal-500);color:#fff;
+    box-shadow:0 1px 0 var(--teal-700) inset, 0 8px 18px -10px var(--teal-500);
+  }
+  .btn-primary:hover{background:var(--teal-700)}
+  .btn-ghost{
+    background:var(--white);color:var(--teal-700);
+    border-color:var(--line-strong);
+  }
+  .btn-ghost:hover{background:var(--teal-50);border-color:var(--teal-200)}
+  .btn .ar{font-family:'IBM Plex Mono',monospace}
+
+  /* hero side readout */
+  .hero-readout{
+    position:absolute;right:36px;top:34px;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    color:var(--slate);text-align:right;line-height:1.9;
+    border-right:2px solid var(--teal-200);padding-right:14px;
+  }
+  .hero-readout b{color:var(--teal-700);display:block;font-size:11px}
+
+  /* STATS */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--white);overflow:hidden;
+  }
+  .stat{
+    padding:22px 24px;
+    border-right:1px solid var(--line);
+    position:relative;
+  }
+  .stat:last-child{border-right:none}
+  .stat .k{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--slate);
+    display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  }
+  .stat .k .tag{
+    margin-left:auto;font-size:9px;border:1px solid var(--line);
+    padding:2px 6px;border-radius:2px;color:var(--teal-700);
+  }
+  .stat .v{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:38px;font-weight:600;letter-spacing:-1px;
+    color:var(--ink);line-height:1;
+  }
+  .stat .v small{font-size:18px;color:var(--teal-500)}
+  .stat .sub{font-size:12px;color:var(--slate);margin-top:8px}
+  .meter{
+    height:6px;background:var(--teal-50);border-radius:100px;
+    margin-top:14px;overflow:hidden;border:1px solid var(--line);
+  }
+  .meter i{display:block;height:100%;background:
+    repeating-linear-gradient(45deg,var(--teal-500),var(--teal-500) 6px,var(--teal-400) 6px,var(--teal-400) 12px);
+    border-radius:100px;}
+  .ticks{display:flex;gap:3px;margin-top:14px}
+  .ticks span{flex:1;height:18px;background:var(--teal-50);border-radius:1px}
+  .ticks span.on{background:var(--teal-400)}
+
+  /* GRID OF CARDS */
+  .grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:22px}
+  .card{
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--white);overflow:hidden;display:flex;flex-direction:column;
+  }
+  .card-head{
+    padding:14px 20px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:10px;
+    background:var(--paper);
+  }
+  .card-head h3{font-size:14px;font-weight:600;letter-spacing:.2px}
+  .card-head .badge{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--slate);
+    margin-left:auto;border:1px solid var(--line);padding:3px 8px;border-radius:2px;
+  }
+  .card-body{padding:22px 20px;flex:1}
+
+  /* EXAM card */
+  .exam-id{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:46px;font-weight:600;letter-spacing:-1.5px;
+    color:var(--teal-700);line-height:.9;
+  }
+  .exam-name{font-size:15px;font-weight:600;margin-top:6px}
+  .exam-meta{
+    display:grid;grid-template-columns:1fr 1fr;gap:1px;
+    margin-top:20px;background:var(--line);border:1px solid var(--line);
+    border-radius:var(--radius);overflow:hidden;
+  }
+  .exam-meta div{
+    background:var(--white);padding:11px 14px;
+  }
+  .exam-meta .lbl{
+    font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--slate);
+  }
+  .exam-meta .val{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);margin-top:3px}
+  .exam-meta .val.pass{color:var(--teal-600,#0a6b6b)}
+
+  /* TOPIC PREVIEW + FORMULA */
+  .topic-lede{font-size:14px;color:var(--slate);margin-bottom:18px;line-height:1.6}
+  .formula{
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    background:var(--teal-900);
+    color:#dffaf8;
+    overflow:hidden;
+  }
+  .formula-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 14px;background:rgba(255,255,255,.05);
+    border-bottom:1px solid rgba(255,255,255,.12);
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--teal-200);
+  }
+  .formula-bar i{width:8px;height:8px;border-radius:50%;background:var(--teal-400);display:inline-block}
+  .formula-rows{display:flex;flex-direction:column}
+  .formula-row{
+    display:flex;align-items:center;gap:14px;
+    padding:13px 16px;
+    font-family:'IBM Plex Mono',monospace;font-size:14.5px;
+    border-bottom:1px dashed rgba(255,255,255,.1);
+  }
+  .formula-row:last-child{border-bottom:none}
+  .formula-row .ln{
+    color:var(--teal-400);font-size:11px;min-width:26px;
+    opacity:.8;
+  }
+  .formula-row .eq{color:#eafffd;letter-spacing:.3px}
+  .formula-row .eq b{color:var(--teal-200);font-weight:500}
+
+  /* TRAP CALLOUT */
+  .trap{
+    border:1px solid #f0d9a8;
+    border-left:4px solid var(--amber);
+    background:var(--amber-bg);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .trap .ico{
+    flex:0 0 34px;width:34px;height:34px;border-radius:50%;
+    background:#fff;border:1px solid #f0d9a8;
+    display:grid;place-items:center;font-size:17px;
+  }
+  .trap .t-label{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--amber);
+    font-weight:600;margin-bottom:5px;
+  }
+  .trap p{font-size:13.5px;color:#5a4a26;line-height:1.55}
+  .trap code{font-family:'IBM Plex Mono',monospace;background:#fff;
+    border:1px solid #f0d9a8;border-radius:2px;padding:0 4px;color:var(--amber)}
+
+  /* WORKED EXAMPLE */
+  .example{
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--white);overflow:hidden;
+    display:flex;align-items:stretch;
+  }
+  .example .tab{
+    background:var(--teal-900);color:#dffaf8;
+    padding:22px 22px;display:flex;flex-direction:column;justify-content:center;
+    min-width:150px;
+  }
+  .example .tab .et{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--teal-200);
+  }
+  .example .tab .en{
+    font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:600;
+    margin-top:4px;letter-spacing:-1px;
+  }
+  .example .ebody{padding:22px 24px;flex:1;display:flex;flex-direction:column;justify-content:center}
+  .example .ebody h4{font-size:16px;font-weight:600}
+  .example .ebody p{font-size:13px;color:var(--slate);margin-top:6px}
+  .example .eact{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .example .chips{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    border:1px solid var(--line);border-radius:100px;padding:4px 10px;
+    color:var(--teal-700);background:var(--paper);
+  }
+
+  /* FOOTER */
+  footer{
+    border-top:1px solid var(--line);
+    padding:22px 32px;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    background:var(--paper);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);
+  }
+  footer .fmark{
+    width:26px;height:26px;border:1.5px solid var(--teal-500);border-radius:2px;
+    display:grid;place-items:center;color:var(--teal-700);font-weight:700;font-size:13px;
+  }
+  footer b{color:var(--ink)}
+  footer .spacer{margin-left:auto}
+
+  /* RESPONSIVE */
+  @media(max-width:980px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{position:static;height:auto;
+      flex-direction:row;flex-wrap:wrap;align-items:center;
+      border-right:none;border-bottom:1px solid var(--line);}
+    .brand{border-bottom:none;flex:1 1 100%}
+    .nav-section{padding:8px 12px}
+    .nav{display:flex;flex-wrap:wrap;gap:4px}
+    .nav a.active::before{display:none}
+    .sidebar-foot{display:none}
+    .nav-label{width:100%}
+    .grid2{grid-template-columns:1fr}
+    .hero-readout{display:none}
+  }
+  @media(max-width:700px){
+    .content{padding:18px}
+    .topbar{padding:12px 18px}
+    .topbar .search{display:none}
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:1px solid var(--line)}
+    .stat:last-child{border-bottom:none}
+    .hero-body{padding:24px 22px 28px}
+    .example{flex-direction:column}
+    .example .tab{flex-direction:row;align-items:center;gap:14px;min-width:0}
+    .example .tab .en{font-size:24px}
+    .formula-row{font-size:12.5px;flex-wrap:wrap}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mmark"><span>M</span></div>
+      <div class="brand-text">
+        <b>Me Studing Stuff</b>
+        <small>Study smarter · Pass exams</small>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">FAM-L / FAM-S</div>
+      <nav class="nav">
+        <a href="#" class="active"><span class="idx">01</span> Survival Models <span class="dot done"></span></a>
+        <a href="#"><span class="idx">02</span> Life Tables <span class="dot done"></span></a>
+        <a href="#"><span class="idx">03</span> Life Insurance <span class="dot done"></span></a>
+        <a href="#"><span class="idx">04</span> Life Annuities <span class="dot"></span></a>
+        <a href="#"><span class="idx">05</span> Premiums <span class="dot done"></span></a>
+        <a href="#"><span class="idx">06</span> Policy Values <span class="dot"></span></a>
+      </nav>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Resources</div>
+      <nav class="nav">
+        <a href="#"><span class="idx">→</span> Formula Sheet</a>
+        <a href="#"><span class="idx">→</span> Worked Problems</a>
+        <a href="#"><span class="idx">→</span> Study Plan</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="vitals"><span>SESSION</span><b>FAM-2026</b></div>
+      <div class="vitals"><span>STATUS</span><b>● STABLE</b></div>
+      <div class="vitals"><span>UPDATED</span><b>05.06.26</b></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <span>HUB</span><span class="sep">/</span>
+        <span>FAM</span><span class="sep">/</span>
+        <span style="color:var(--teal-700)">DASHBOARD</span>
+      </div>
+      <div class="search mono">⌕ search topics…</div>
+      <div class="status-pill"><span class="live"></span> SYSTEMS NOMINAL</div>
+    </div>
+
+    <div class="content">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-top">
+          <span>DASHBOARD · CANDIDATE OVERVIEW</span>
+          <span class="corner"><i></i><i></i><i></i></span>
+        </div>
+        <div class="hero-body">
+          <div class="hero-readout mono">
+            <b>72%</b> ready
+            <div>86d to exam</div>
+            <div>8/17 solid</div>
+          </div>
+          <div class="greeting mono">Good evening</div>
+          <h1>Let's get you that <em>pass.</em></h1>
+          <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          <div class="hero-actions">
+            <a href="#" class="btn btn-primary">Start studying <span class="ar">→</span></a>
+            <a href="#" class="btn btn-ghost">Resume <span class="ar mono">⟲</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat">
+          <div class="k mono">Overall progress <span class="tag">LIVE</span></div>
+          <div class="v mono">72<small>%</small></div>
+          <div class="sub">12 of 17 topics complete</div>
+          <div class="meter"><i style="width:72%"></i></div>
+        </div>
+        <div class="stat">
+          <div class="k mono">Exam countdown <span class="tag">T-MINUS</span></div>
+          <div class="v mono">86<small> days</small></div>
+          <div class="sub">Sitting window scheduled</div>
+          <div class="meter"><i style="width:42%"></i></div>
+        </div>
+        <div class="stat">
+          <div class="k mono">Topics solid <span class="tag">CONF.</span></div>
+          <div class="v mono">8<small> / 17</small></div>
+          <div class="sub">Marked high-confidence</div>
+          <div class="ticks">
+            <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+            <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROW: TOPIC PREVIEW + EXAM CARD -->
+      <section class="grid2">
+        <!-- TOPIC PREVIEW + FORMULA -->
+        <article class="card">
+          <div class="card-head">
+            <h3>Life Insurance Present Values</h3>
+            <span class="badge">TOPIC 03</span>
+          </div>
+          <div class="card-body">
+            <p class="topic-lede">The expected present value of a benefit paid on death — the backbone of every premium and reserve you'll compute.</p>
+            <div class="formula">
+              <div class="formula-bar"><i></i> KEY IDENTITIES · WHOLE LIFE</div>
+              <div class="formula-rows">
+                <div class="formula-row"><span class="ln">01</span><span class="eq"><b>A_x</b> = 1 − d·ä_x</span></div>
+                <div class="formula-row"><span class="ln">02</span><span class="eq"><b>Var(Z)</b> = ²A_x − (A_x)²</span></div>
+                <div class="formula-row"><span class="ln">03</span><span class="eq"><b>ä_x</b> = (1 − A_x) / d</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- EXAM CARD -->
+        <article class="card">
+          <div class="card-head">
+            <h3>Exam FAM</h3>
+            <span class="badge">SOA · ACTIVE</span>
+          </div>
+          <div class="card-body">
+            <div class="exam-id mono">FAM</div>
+            <div class="exam-name">Fundamentals of Actuarial Mathematics</div>
+            <div class="exam-meta">
+              <div><div class="lbl">Provider</div><div class="val">SOA</div></div>
+              <div><div class="lbl">Questions</div><div class="val">34</div></div>
+              <div><div class="lbl">Pass mark</div><div class="val pass">6 / 10</div></div>
+              <div><div class="lbl">Sections</div><div class="val">L · S</div></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- TRAP CALLOUT -->
+      <section class="trap">
+        <div class="ico">⚠</div>
+        <div>
+          <div class="t-label">Common trap</div>
+          <p>Under UDD, multiply <code>ONLY</code> the term/death piece by <code>i/δ</code> — the pure endowment is never rescaled.</p>
+        </div>
+      </section>
+
+      <!-- WORKED EXAMPLE -->
+      <section class="example">
+        <div class="tab">
+          <span class="et mono">EXAMPLE</span>
+          <span class="en mono">01</span>
+        </div>
+        <div class="ebody">
+          <h4>Whole life EPV &amp; variance</h4>
+          <p>Compute A_x and Var(Z) for a whole life benefit, then read off ä_x from the identity.</p>
+          <div class="chips">
+            <span class="chip">A_x</span>
+            <span class="chip">Var(Z)</span>
+            <span class="chip">²A_x</span>
+            <span class="chip">ä_x</span>
+          </div>
+          <div class="eact">
+            <a href="#" class="btn btn-primary">Start studying <span class="ar">→</span></a>
+            <a href="#" class="btn btn-ghost">Resume <span class="ar mono">⟲</span></a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="fmark">M</div>
+      <span><b>Me Studing Stuff</b> — Study smarter. Pass exams.</span>
+      <span class="spacer">© 2026 · SOA EXAM FAM · BUILT CALM</span>
+    </footer>
+  </main>
+
+</div>
+</body>
+</html>

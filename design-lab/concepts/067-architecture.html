@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202b;
+    --ink2:#3a4a5a;
+    --paper:#eef1ec;
+    --paper2:#e4e8e1;
+    --line:#9aa8a0;
+    --line-strong:#5a6b62;
+    --blue:#15405e;
+    --blue2:#1f5d86;
+    --accent:#c8451f;
+    --accent2:#d9742a;
+    --grid:rgba(90,107,98,.16);
+    --grid-fine:rgba(90,107,98,.08);
+    --solid:#2e7d59;
+    --shadow:0 0 0 1px var(--line-strong);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Archivo',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-fine) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px),
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:20px 20px,20px 20px,100px 100px,100px 100px;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+  }
+  .mono{font-family:'JetBrains Mono',monospace}
+  .up{text-transform:uppercase;letter-spacing:.18em}
+
+  /* ===== TITLE BLOCK BORDER (drafting sheet) ===== */
+  .sheet{
+    max-width:1320px;
+    margin:18px auto;
+    background:var(--paper);
+    border:2px solid var(--ink);
+    box-shadow:0 18px 50px -22px rgba(22,32,43,.5);
+    position:relative;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute;inset:7px;
+    border:1px solid var(--line-strong);
+    pointer-events:none;
+  }
+  /* corner section markers */
+  .corner{position:absolute;width:30px;height:30px;z-index:3;pointer-events:none}
+  .corner svg{display:block}
+  .corner.tl{top:-2px;left:-2px}
+  .corner.tr{top:-2px;right:-2px;transform:scaleX(-1)}
+  .corner.bl{bottom:-2px;left:-2px;transform:scaleY(-1)}
+  .corner.br{bottom:-2px;right:-2px;transform:scale(-1,-1)}
+
+  .frame{position:relative;z-index:2;padding:18px}
+
+  /* ===== TITLE STRIP ===== */
+  .titlestrip{
+    display:flex;align-items:stretch;
+    border:1.5px solid var(--ink);
+    background:var(--paper2);
+  }
+  .ts-logo{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 22px;
+    border-right:1.5px solid var(--ink);
+    min-width:300px;
+  }
+  .mmark{
+    width:52px;height:52px;flex:0 0 auto;
+    border:2px solid var(--ink);
+    display:grid;place-items:center;
+    background:var(--paper);
+    position:relative;
+  }
+  .mmark::after{
+    content:"";position:absolute;inset:4px;border:1px solid var(--line);
+  }
+  .mmark svg{position:relative;z-index:1}
+  .brand h1{font-size:19px;font-weight:800;letter-spacing:.01em;line-height:1}
+  .brand .tag{font-size:10.5px;color:var(--ink2);margin-top:5px;letter-spacing:.16em}
+  .ts-meta{
+    flex:1;display:grid;
+    grid-template-columns:repeat(4,1fr);
+  }
+  .ts-cell{
+    padding:9px 16px;
+    border-right:1px solid var(--line-strong);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .ts-cell:last-child{border-right:none}
+  .ts-cell .k{font-size:8.5px;color:var(--ink2);letter-spacing:.16em}
+  .ts-cell .v{font-size:13px;font-weight:700;margin-top:3px;color:var(--blue)}
+
+  /* ===== MAIN GRID: PLAN LAYOUT ===== */
+  .plan{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    gap:18px;
+    margin-top:18px;
+  }
+
+  /* ===== LEGEND / NAV (sidebar) ===== */
+  .legend{
+    border:1.5px solid var(--ink);
+    background:var(--paper);
+    align-self:start;
+    position:relative;
+  }
+  .legend-head{
+    padding:12px 16px;
+    border-bottom:1.5px solid var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .legend-head .t{font-size:11px;font-weight:700;letter-spacing:.18em}
+  .legend-head .n{font-size:10px;opacity:.7}
+  .sect-label{
+    padding:8px 16px;
+    font-size:9px;letter-spacing:.2em;color:var(--accent);
+    border-bottom:1px dashed var(--line);
+    background:var(--paper2);
+    display:flex;align-items:center;gap:8px;
+  }
+  .sect-label .sq{width:9px;height:9px;border:1px solid var(--accent);background:repeating-linear-gradient(45deg,var(--accent),var(--accent) 1px,transparent 1px,transparent 3px)}
+  nav a{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 16px;
+    text-decoration:none;color:var(--ink);
+    border-bottom:1px solid var(--grid);
+    font-size:13px;font-weight:500;
+    position:relative;
+    transition:background .15s,padding .15s;
+  }
+  nav a .rn{font-size:10px;color:var(--ink2);width:22px;flex:0 0 auto}
+  nav a .dot{
+    width:10px;height:10px;flex:0 0 auto;
+    border:1.5px solid var(--line-strong);border-radius:50%;
+    background:var(--paper);
+    position:relative;
+  }
+  nav a.solid .dot{background:var(--solid);border-color:var(--solid)}
+  nav a.active{background:var(--ink);color:var(--paper);padding-left:22px}
+  nav a.active .rn{color:rgba(238,241,236,.6)}
+  nav a.active .dot{border-color:var(--accent2);background:var(--accent2)}
+  nav a:hover:not(.active){background:var(--paper2);padding-left:22px}
+  nav a .lbl{flex:1}
+  nav a .ck{font-size:11px;color:var(--solid);font-weight:700}
+  nav a.active .ck{color:var(--accent2)}
+
+  .legend-key{padding:12px 16px;border-top:1.5px solid var(--ink);font-size:9.5px;color:var(--ink2)}
+  .legend-key .row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .legend-key .row:last-child{margin-bottom:0}
+  .legend-key .s-solid{width:11px;height:11px;border-radius:50%;background:var(--solid)}
+  .legend-key .s-open{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--line-strong)}
+  .legend-key .s-cur{width:11px;height:11px;border-radius:50%;background:var(--accent2)}
+
+  /* ===== CANVAS (main rooms) ===== */
+  .canvas{display:flex;flex-direction:column;gap:18px;min-width:0}
+
+  .room{
+    border:1.5px solid var(--ink);
+    background:var(--paper);
+    position:relative;
+  }
+  .room-tab{
+    position:absolute;top:-1.5px;left:18px;
+    transform:translateY(-100%);
+    background:var(--ink);color:var(--paper);
+    font-size:9px;letter-spacing:.18em;font-weight:600;
+    padding:4px 12px;
+  }
+
+  /* ===== HERO / DASHBOARD ===== */
+  .hero{padding:30px 28px 26px}
+  .greet{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--ink2);letter-spacing:.2em;margin-bottom:14px}
+  .greet .ln{flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line-strong),var(--line-strong) 4px,transparent 4px,transparent 8px)}
+  .hero h2{
+    font-size:clamp(34px,5.2vw,58px);
+    font-weight:900;line-height:.96;letter-spacing:-.02em;
+    color:var(--ink);max-width:14ch;
+  }
+  .hero h2 em{font-style:normal;color:var(--accent);position:relative}
+  .hero h2 em::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:6px;background:rgba(200,69,31,.18);z-index:-1}
+  .hero p{margin-top:18px;max-width:60ch;font-size:14.5px;color:var(--ink2);line-height:1.6}
+
+  /* dimension line under hero */
+  .dimline{display:flex;align-items:center;margin-top:22px;color:var(--line-strong);font-size:9px}
+  .dimline .tick{width:1px;height:9px;background:var(--line-strong)}
+  .dimline .bar{flex:1;height:1px;background:var(--line-strong);position:relative}
+  .dimline .cap{padding:0 10px;letter-spacing:.18em;color:var(--ink2)}
+
+  /* ===== STATS ===== */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr)}
+  .stat{
+    padding:22px 22px 18px;
+    border-right:1.5px solid var(--ink);
+    position:relative;
+    background:
+      linear-gradient(var(--grid-fine) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);
+    background-size:18px 18px;
+  }
+  .stat:last-child{border-right:none}
+  .stat .lab{font-size:9px;color:var(--ink2);letter-spacing:.18em;display:flex;align-items:center;gap:7px}
+  .stat .lab::before{content:"";width:6px;height:6px;background:var(--accent);transform:rotate(45deg)}
+  .stat .big{font-size:46px;font-weight:800;line-height:1;margin-top:12px;letter-spacing:-.02em;color:var(--blue)}
+  .stat .big .u{font-size:18px;color:var(--ink2);font-weight:600;margin-left:3px}
+  .stat .sub{font-size:11px;color:var(--ink2);margin-top:7px}
+  /* progress meter */
+  .meter{margin-top:14px;height:9px;border:1px solid var(--line-strong);background:var(--paper2);position:relative;overflow:hidden}
+  .meter .fill{position:absolute;inset:0;width:72%;background:repeating-linear-gradient(45deg,var(--blue2),var(--blue2) 3px,transparent 3px,transparent 6px);border-right:2px solid var(--blue)}
+  .countdown-vis{margin-top:14px;display:flex;gap:3px;align-items:flex-end;height:18px}
+  .countdown-vis i{flex:1;background:var(--line);height:40%}
+  .countdown-vis i:nth-child(3n){height:90%;background:var(--accent2)}
+  .countdown-vis i:nth-child(2n){height:65%}
+  .solid-vis{margin-top:14px;display:flex;gap:5px;flex-wrap:wrap}
+  .solid-vis b{width:12px;height:12px;border:1px solid var(--line-strong);border-radius:50%;background:var(--paper2)}
+  .solid-vis b.on{background:var(--solid);border-color:var(--solid)}
+
+  /* ===== ROW: EXAM CARD + TOPIC ===== */
+  .row2{display:grid;grid-template-columns:320px 1fr;gap:18px}
+
+  .exam{
+    border:1.5px solid var(--ink);
+    background:var(--blue);
+    color:var(--paper);
+    padding:0;
+    display:flex;flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+  .exam::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(238,241,236,.07) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(238,241,236,.07) 1px,transparent 1px);
+    background-size:22px 22px;
+    pointer-events:none;
+  }
+  .exam-head{padding:16px 20px;border-bottom:1px solid rgba(238,241,236,.25);display:flex;align-items:center;justify-content:space-between;position:relative}
+  .exam-head .tg{font-size:9px;letter-spacing:.2em;opacity:.7}
+  .exam-head .rev{font-size:9px;border:1px solid rgba(238,241,236,.4);padding:2px 7px;letter-spacing:.1em}
+  .exam-body{padding:22px 20px 20px;position:relative;flex:1;display:flex;flex-direction:column}
+  .exam-body .code{font-size:13px;letter-spacing:.3em;opacity:.8}
+  .exam-body .name{font-size:30px;font-weight:800;line-height:1.02;margin-top:8px;letter-spacing:-.01em}
+  .exam-body .full{font-size:12px;opacity:.8;margin-top:8px;line-height:1.4}
+  .exam-specs{margin-top:auto;padding-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(238,241,236,.2);border:1px solid rgba(238,241,236,.2)}
+  .exam-specs div{background:var(--blue);padding:11px 13px}
+  .exam-specs .k{font-size:8.5px;opacity:.65;letter-spacing:.15em}
+  .exam-specs .v{font-size:17px;font-weight:700;margin-top:3px}
+  .exam-specs .v .accent{color:var(--accent2)}
+
+  .topic{padding:24px 26px;display:flex;flex-direction:column}
+  .topic .eyebrow{font-size:9px;letter-spacing:.2em;color:var(--accent);display:flex;align-items:center;gap:8px}
+  .topic .eyebrow::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line),var(--line) 3px,transparent 3px,transparent 6px)}
+  .topic h3{font-size:25px;font-weight:800;margin-top:10px;letter-spacing:-.01em}
+  .topic .lede{font-size:13px;color:var(--ink2);margin-top:7px;max-width:54ch}
+
+  .formula{
+    margin-top:16px;
+    border:1.5px solid var(--ink);
+    background:var(--paper2);
+    position:relative;
+  }
+  .formula::before{
+    content:"DETAIL — A";
+    position:absolute;top:-1.5px;right:14px;transform:translateY(-100%);
+    font-size:8px;letter-spacing:.18em;color:var(--paper);background:var(--ink);padding:3px 9px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .formula .fbar{
+    display:flex;align-items:center;gap:7px;
+    padding:7px 14px;border-bottom:1px dashed var(--line);
+    font-size:9px;letter-spacing:.15em;color:var(--ink2);
+  }
+  .formula .fbar .sq{width:7px;height:7px;background:var(--accent)}
+  .feq{
+    display:flex;flex-direction:column;
+  }
+  .feq .line{
+    padding:13px 16px;
+    font-size:15px;font-weight:600;color:var(--blue);
+    border-bottom:1px dashed var(--line);
+    display:flex;align-items:center;gap:10px;
+  }
+  .feq .line:last-child{border-bottom:none}
+  .feq .line .num{font-size:9px;color:var(--accent);background:var(--paper);border:1px solid var(--line);padding:2px 6px;flex:0 0 auto}
+  sub{font-size:.7em;vertical-align:-.2em}
+  sup{font-size:.7em}
+
+  .trap{
+    margin-top:16px;
+    border:1.5px solid var(--accent);
+    background:linear-gradient(0deg,rgba(200,69,31,.06),rgba(200,69,31,.06));
+    display:flex;
+    position:relative;
+  }
+  .trap .bang{
+    flex:0 0 auto;width:46px;
+    background:repeating-linear-gradient(45deg,var(--accent),var(--accent) 6px,var(--accent2) 6px,var(--accent2) 12px);
+    display:grid;place-items:center;
+    color:var(--paper);font-size:22px;font-weight:900;
+  }
+  .trap .tbody{padding:13px 16px}
+  .trap .tbody .h{font-size:9px;letter-spacing:.2em;color:var(--accent);font-weight:700}
+  .trap .tbody p{font-size:12.5px;color:var(--ink);margin-top:5px;line-height:1.5}
+  .trap .tbody p b{color:var(--accent);font-weight:700}
+
+  /* ===== EXAMPLE / CTA ROW ===== */
+  .actions{
+    border:1.5px solid var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+    display:grid;grid-template-columns:1fr auto;
+    align-items:center;gap:24px;
+    padding:20px 26px;
+    position:relative;
+  }
+  .actions::before{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(90deg,rgba(238,241,236,.06) 1px,transparent 1px);
+    background-size:22px 22px;pointer-events:none;
+  }
+  .ex-info{position:relative}
+  .ex-info .tag{font-size:9px;letter-spacing:.2em;color:var(--accent2);display:flex;align-items:center;gap:8px}
+  .ex-info .tag .sq{width:8px;height:8px;border:1px solid var(--accent2);background:var(--accent)}
+  .ex-info h4{font-size:22px;font-weight:800;margin-top:9px;letter-spacing:-.01em}
+  .ex-info .meta{font-size:11px;opacity:.7;margin-top:6px;letter-spacing:.04em}
+  .btns{display:flex;gap:12px;position:relative}
+  .btn{
+    font-family:'Archivo',sans-serif;
+    font-size:12px;font-weight:700;letter-spacing:.12em;
+    padding:13px 22px;
+    border:1.5px solid var(--paper);
+    background:var(--accent);color:var(--paper);
+    text-decoration:none;cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;
+    border-color:var(--accent);
+    transition:transform .12s,box-shadow .12s;
+    text-transform:uppercase;
+  }
+  .btn .arr{font-size:14px}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 rgba(238,241,236,.25)}
+  .btn.ghost{background:transparent;border-color:var(--paper);color:var(--paper)}
+  .btn.ghost:hover{box-shadow:4px 4px 0 rgba(238,241,236,.18)}
+
+  /* ===== FOOTER ===== */
+  .foot{
+    margin-top:18px;
+    border:1.5px solid var(--ink);
+    background:var(--paper2);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:13px 20px;
+    font-size:10px;color:var(--ink2);letter-spacing:.12em;
+  }
+  .foot .fb{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);letter-spacing:.02em}
+  .foot .fb .mini{width:20px;height:20px;border:1.5px solid var(--ink);display:grid;place-items:center;font-size:11px;font-weight:900;font-family:'JetBrains Mono',monospace}
+  .foot .scale{display:flex;align-items:center;gap:8px}
+  .foot .scale .sb{width:60px;height:7px;background:repeating-linear-gradient(90deg,var(--ink),var(--ink) 10px,var(--paper2) 10px,var(--paper2) 20px);border:1px solid var(--ink)}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:980px){
+    .plan{grid-template-columns:1fr}
+    .legend{order:2}
+    .row2{grid-template-columns:1fr}
+    .ts-meta{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:700px){
+    .sheet{margin:8px}
+    .frame{padding:12px}
+    .titlestrip{flex-direction:column}
+    .ts-logo{border-right:none;border-bottom:1.5px solid var(--ink);min-width:0}
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:1.5px solid var(--ink)}
+    .stat:last-child{border-bottom:none}
+    .actions{grid-template-columns:1fr;gap:18px}
+    .btns{flex-direction:column}
+    .btn{justify-content:center}
+    .exam-specs{grid-template-columns:1fr 1fr}
+    .ts-meta{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <!-- corner section markers -->
+  <div class="corner tl"><svg width="30" height="30"><path d="M0 12 V0 H12" stroke="#16202b" stroke-width="2" fill="none"/><circle cx="6" cy="6" r="2.5" fill="#c8451f"/></svg></div>
+  <div class="corner tr"><svg width="30" height="30"><path d="M0 12 V0 H12" stroke="#16202b" stroke-width="2" fill="none"/><circle cx="6" cy="6" r="2.5" fill="#c8451f"/></svg></div>
+  <div class="corner bl"><svg width="30" height="30"><path d="M0 12 V0 H12" stroke="#16202b" stroke-width="2" fill="none"/><circle cx="6" cy="6" r="2.5" fill="#c8451f"/></svg></div>
+  <div class="corner br"><svg width="30" height="30"><path d="M0 12 V0 H12" stroke="#16202b" stroke-width="2" fill="none"/><circle cx="6" cy="6" r="2.5" fill="#c8451f"/></svg></div>
+
+  <div class="frame">
+
+    <!-- ===== TITLE STRIP ===== -->
+    <div class="titlestrip">
+      <div class="ts-logo">
+        <div class="mmark">
+          <svg width="30" height="30" viewBox="0 0 30 30">
+            <path d="M4 26 V6 L15 18 L26 6 V26" stroke="#16202b" stroke-width="2.6" fill="none" stroke-linejoin="miter"/>
+            <circle cx="15" cy="18" r="2" fill="#c8451f"/>
+          </svg>
+        </div>
+        <div class="brand">
+          <h1>Me Studing Stuff</h1>
+          <div class="tag mono up">Study smarter. Pass exams.</div>
+        </div>
+      </div>
+      <div class="ts-meta">
+        <div class="ts-cell"><span class="k mono up">Project</span><span class="v">SOA Exam FAM</span></div>
+        <div class="ts-cell"><span class="k mono up">Sheet</span><span class="v mono">A-67 / PLAN</span></div>
+        <div class="ts-cell"><span class="k mono up">Scale</span><span class="v mono">1 : 100</span></div>
+        <div class="ts-cell"><span class="k mono up">Rev / Date</span><span class="v mono">R3 · 2026-06-05</span></div>
+      </div>
+    </div>
+
+    <!-- ===== PLAN ===== -->
+    <div class="plan">
+
+      <!-- LEGEND / NAV -->
+      <aside class="legend">
+        <div class="legend-head">
+          <span class="t mono up">Legend</span>
+          <span class="n mono">06 ROOMS</span>
+        </div>
+        <div class="sect-label mono"><span class="sq"></span>FAM-L / FAM-S SECTION</div>
+        <nav>
+          <a href="#" class="solid"><span class="rn mono">01</span><span class="dot"></span><span class="lbl">Survival Models</span><span class="ck">✓</span></a>
+          <a href="#" class="solid"><span class="rn mono">02</span><span class="dot"></span><span class="lbl">Life Tables</span><span class="ck">✓</span></a>
+          <a href="#" class="active"><span class="rn mono">03</span><span class="dot"></span><span class="lbl">Life Insurance</span></a>
+          <a href="#"><span class="rn mono">04</span><span class="dot"></span><span class="lbl">Life Annuities</span></a>
+          <a href="#"><span class="rn mono">05</span><span class="dot"></span><span class="lbl">Premiums</span></a>
+          <a href="#"><span class="rn mono">06</span><span class="dot"></span><span class="lbl">Policy Values</span></a>
+        </nav>
+        <div class="legend-key">
+          <div class="row"><span class="s-solid"></span><span class="mono up">Solid — mastered</span></div>
+          <div class="row"><span class="s-cur"></span><span class="mono up">Current — in progress</span></div>
+          <div class="row"><span class="s-open"></span><span class="mono up">Open — not started</span></div>
+        </div>
+      </aside>
+
+      <!-- CANVAS -->
+      <main class="canvas">
+
+        <!-- HERO -->
+        <section class="room hero">
+          <span class="room-tab mono">DASHBOARD — 00</span>
+          <div class="greet mono up">Good evening <span class="ln"></span> <span>STA. 0+00</span></div>
+          <h2>Let's get you that <em>pass.</em></h2>
+          <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+          <div class="dimline mono">
+            <span class="tick"></span>
+            <span class="bar"></span>
+            <span class="cap up">17 topics · 1 exam · 1 plan</span>
+            <span class="bar"></span>
+            <span class="tick"></span>
+          </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="room">
+          <span class="room-tab mono">SCHEDULE OF QUANTITIES — 01</span>
+          <div class="stats">
+            <div class="stat">
+              <div class="lab mono up">Overall progress</div>
+              <div class="big">72<span class="u">%</span></div>
+              <div class="sub mono">12 of 17 topics</div>
+              <div class="meter"><div class="fill"></div></div>
+            </div>
+            <div class="stat">
+              <div class="lab mono up">Exam countdown</div>
+              <div class="big">86<span class="u">days</span></div>
+              <div class="sub mono">to sitting</div>
+              <div class="countdown-vis"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="stat">
+              <div class="lab mono up">Topics solid</div>
+              <div class="big">8<span class="u">/17</span></div>
+              <div class="sub mono">fully mastered</div>
+              <div class="solid-vis"><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ROW: EXAM CARD + TOPIC -->
+        <div class="row2">
+
+          <!-- EXAM CARD -->
+          <section class="exam">
+            <div class="exam-head">
+              <span class="tg mono up">Exam Spec</span>
+              <span class="rev mono">SECTION A-A</span>
+            </div>
+            <div class="exam-body">
+              <div class="code mono">EXAM</div>
+              <div class="name">FAM</div>
+              <div class="full">Fundamentals of Actuarial Mathematics · SOA</div>
+              <div class="exam-specs">
+                <div><div class="k mono up">Questions</div><div class="v">34</div></div>
+                <div><div class="k mono up">Pass mark</div><div class="v"><span class="accent">6</span>/10</div></div>
+                <div><div class="k mono up">Body</div><div class="v">SOA</div></div>
+                <div><div class="k mono up">Format</div><div class="v">FAM-L/S</div></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TOPIC PREVIEW -->
+          <section class="room topic">
+            <span class="room-tab mono">ROOM 03 — DETAIL</span>
+            <div class="eyebrow mono up">Topic preview</div>
+            <h3>Life Insurance Present Values</h3>
+            <p class="lede">Expected present values of benefits paid on death — the building blocks for premiums and reserves.</p>
+
+            <div class="formula">
+              <div class="fbar mono up"><span class="sq"></span>Key relations · continuous &amp; discrete</div>
+              <div class="feq mono">
+                <div class="line"><span class="num">F1</span>A<sub>x</sub> = 1 − d·ä<sub>x</sub></div>
+                <div class="line"><span class="num">F2</span>Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></div>
+                <div class="line"><span class="num">F3</span>ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</div>
+              </div>
+            </div>
+
+            <div class="trap">
+              <div class="bang">!</div>
+              <div class="tbody">
+                <div class="h mono up">Common trap</div>
+                <p>Under UDD, multiply <b>ONLY</b> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- EXAMPLE / CTA -->
+        <section class="actions">
+          <div class="ex-info">
+            <div class="tag mono up"><span class="sq"></span>Worked example · keynote</div>
+            <h4>Example 1 — Whole life EPV &amp; variance</h4>
+            <div class="meta mono">A<sub>x</sub> → Var(Z) → ä<sub>x</sub> · fully annotated walk-through</div>
+          </div>
+          <div class="btns">
+            <a href="#" class="btn">Start studying <span class="arr">→</span></a>
+            <a href="#" class="btn ghost">Resume <span class="arr">↺</span></a>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="foot">
+      <div class="fb"><span class="mini">M</span><span>Me Studing Stuff</span></div>
+      <div class="mono up">Study smarter. Pass exams. · © 2026</div>
+      <div class="scale mono up"><span>0</span><span class="sb"></span><span>10m</span></div>
+    </footer>
+
+  </div>
+</div>
+</body>
+</html>

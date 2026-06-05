@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1a103c;          /* deep night purple */
+    --bg2:#241552;
+    --ink:#f4f1ff;
+    --green:#5dff9b;       /* progress / go */
+    --cyan:#3ad9ff;
+    --pink:#ff5ea3;
+    --yellow:#ffd23f;
+    --red:#ff4d5e;
+    --shadow:#0a0620;
+    --grid:#2e1d63;
+    --panel:#2a1a5e;
+    --panel2:#321f70;
+    --pixel: 4px;
+  }
+  *{box-sizing:border-box;}
+  html{ -webkit-font-smoothing:none; image-rendering:pixelated; }
+  body{
+    margin:0;
+    font-family:'VT323',monospace;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.10) 3px 4px),
+      radial-gradient(circle at 20% -10%, #3a1f7a 0%, transparent 55%),
+      radial-gradient(circle at 90% 0%, #4a1f6e 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    font-size:20px;
+    line-height:1.35;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* checker dither background overlay */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,.018) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.018) 75%),
+      linear-gradient(45deg, rgba(255,255,255,.018) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.018) 75%);
+    background-size:8px 8px;
+    background-position:0 0, 4px 4px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .pix{ font-family:'Press Start 2P',monospace; }
+
+  /* ===== Layout shell ===== */
+  .frame{
+    position:relative;
+    z-index:1;
+    max-width:1180px;
+    margin:0 auto;
+    padding:20px;
+  }
+
+  /* ===== Topbar ===== */
+  .topbar{
+    display:flex; align-items:center; gap:16px;
+    flex-wrap:wrap;
+    background:var(--panel);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 0 8px 0 var(--shadow), inset 0 0 0 4px var(--panel2);
+    padding:14px 18px;
+    margin-bottom:22px;
+  }
+  .logo{
+    display:flex; align-items:center; gap:14px;
+  }
+  .mmark{
+    width:46px; height:46px; flex:0 0 auto;
+    background:var(--yellow);
+    box-shadow:
+      inset 6px 0 0 #000, inset -6px 0 0 #000,
+      inset 0 6px 0 #000, inset 0 -6px 0 #000,
+      0 var(--pixel) 0 var(--shadow);
+    position:relative;
+    display:grid; place-items:center;
+  }
+  .mmark span{
+    font-family:'Press Start 2P',monospace;
+    font-size:14px; color:#000;
+  }
+  .brand-name{ font-family:'Press Start 2P',monospace; font-size:13px; letter-spacing:1px; }
+  .brand-tag{ color:var(--cyan); font-size:18px; margin-top:4px; letter-spacing:1px; }
+
+  .topbar .spacer{ flex:1 1 auto; }
+  .coins{
+    display:flex; gap:10px; align-items:center;
+    font-family:'Press Start 2P',monospace; font-size:11px;
+  }
+  .coin-pill{
+    background:var(--bg);
+    border:var(--pixel) solid #000;
+    padding:8px 10px;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+    color:var(--yellow);
+  }
+  .coin-pill.hp{ color:var(--green); }
+  .coin-pill.lv{ color:var(--pink); }
+
+  /* ===== Main grid ===== */
+  .grid{
+    display:grid;
+    grid-template-columns:230px 1fr;
+    gap:22px;
+    align-items:start;
+  }
+
+  /* ===== Sidebar nav ===== */
+  nav.side{
+    background:var(--panel);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 8px 8px 0 var(--shadow);
+    padding:16px 14px 20px;
+    position:sticky; top:20px;
+  }
+  .nav-label{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;
+    color:var(--pink);
+    background:#000;
+    padding:8px;
+    text-align:center;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+    margin-bottom:14px;
+    letter-spacing:1px;
+  }
+  ul.menu{ list-style:none; margin:0; padding:0; }
+  ul.menu li a{
+    display:flex; align-items:center; gap:10px;
+    text-decoration:none;
+    color:var(--ink);
+    font-size:21px;
+    padding:9px 8px;
+    margin-bottom:6px;
+    border:3px solid transparent;
+    letter-spacing:.5px;
+  }
+  ul.menu li a .ic{
+    width:18px; height:18px; flex:0 0 auto;
+    background:var(--cyan);
+    box-shadow:inset 0 0 0 3px #000, 3px 3px 0 #000;
+  }
+  ul.menu li:nth-child(2) a .ic{ background:var(--green); }
+  ul.menu li:nth-child(3) a .ic{ background:var(--pink); }
+  ul.menu li:nth-child(4) a .ic{ background:var(--yellow); }
+  ul.menu li:nth-child(5) a .ic{ background:var(--red); }
+  ul.menu li:nth-child(6) a .ic{ background:#b388ff; }
+  ul.menu li a:hover{
+    background:var(--bg);
+    border:3px solid #000;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+    color:var(--yellow);
+  }
+  ul.menu li a.active{
+    background:var(--green);
+    color:#03210f;
+    border:3px solid #000;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+    font-weight:bold;
+  }
+  ul.menu li a.active .ic{ background:#03210f; box-shadow:inset 0 0 0 3px var(--green),3px 3px 0 #000; }
+
+  .section-tag{
+    margin-top:18px;
+    font-family:'Press Start 2P',monospace;
+    font-size:8px; color:var(--cyan);
+    line-height:1.7;
+    border-top:3px dashed var(--grid);
+    padding-top:14px;
+  }
+  .badge-row{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .badge{
+    width:26px; height:26px;
+    border:3px solid #000;
+    box-shadow:3px 3px 0 var(--shadow);
+    display:grid; place-items:center; font-size:14px;
+    background:var(--bg);
+  }
+
+  /* ===== Content column ===== */
+  .content{ display:flex; flex-direction:column; gap:22px; min-width:0; }
+
+  /* Hero */
+  .hero{
+    position:relative;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 7px, rgba(0,0,0,.12) 7px 8px),
+      linear-gradient(180deg,#3a2080,#241552);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 8px 8px 0 var(--shadow), inset 0 0 0 4px #4a2a9e;
+    padding:26px 26px 24px;
+    overflow:hidden;
+  }
+  .hero .scan{ position:relative; z-index:2; }
+  .greeting{
+    font-family:'Press Start 2P',monospace; font-size:10px;
+    color:var(--yellow); letter-spacing:2px;
+    background:#000; display:inline-block; padding:8px 10px;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+  }
+  .greeting::before{ content:"\25B6 "; color:var(--green); }
+  h1.headline{
+    font-family:'Press Start 2P',monospace;
+    font-size:30px; line-height:1.3;
+    margin:18px 0 14px;
+    color:var(--ink);
+    text-shadow:4px 4px 0 var(--pink), 8px 8px 0 var(--shadow);
+  }
+  .lede{
+    font-size:23px; max-width:60ch; color:#d7ccff;
+    border-left:var(--pixel) solid var(--cyan);
+    padding-left:14px;
+  }
+  /* floating pixel sprites */
+  .sprite{
+    position:absolute; z-index:1; opacity:.9;
+    image-rendering:pixelated;
+  }
+  .sprite.coin{ top:22px; right:30px; animation:bob 1.6s steps(3) infinite; }
+  .sprite.star{ bottom:18px; right:120px; animation:bob 2.1s steps(4) infinite; }
+  @keyframes bob{ 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} }
+
+  /* Stats row */
+  .stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+  }
+  .stat{
+    background:var(--panel);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 6px 6px 0 var(--shadow);
+    padding:16px;
+    position:relative;
+  }
+  .stat .cap{
+    font-family:'Press Start 2P',monospace; font-size:8px;
+    color:var(--cyan); letter-spacing:1px; margin-bottom:10px;
+  }
+  .stat .big{
+    font-family:'Press Start 2P',monospace; font-size:26px;
+    color:var(--ink); line-height:1;
+  }
+  .stat.s1 .big{ color:var(--green); }
+  .stat.s2 .big{ color:var(--yellow); }
+  .stat.s3 .big{ color:var(--pink); }
+  .stat .sub{ font-size:18px; color:#b9aee6; margin-top:8px; }
+  /* pixel progress bar */
+  .pbar{
+    margin-top:12px; height:18px;
+    background:#000;
+    border:3px solid #000;
+    box-shadow:inset 0 0 0 3px var(--bg);
+    padding:0;
+    display:flex;
+  }
+  .pbar .fill{
+    width:72%;
+    background:
+      repeating-linear-gradient(90deg, var(--green) 0 8px, #2bd47a 8px 12px);
+    box-shadow:inset 0 -4px 0 rgba(0,0,0,.25);
+  }
+  .pchips{ display:flex; gap:3px; margin-top:10px; }
+  .pchips i{ width:13px; height:13px; background:var(--grid); box-shadow:inset 0 0 0 2px #000; }
+  .pchips i.on{ background:var(--green); }
+
+  /* Two-up row */
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start; }
+
+  .card{
+    background:var(--panel);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 8px 8px 0 var(--shadow);
+    padding:20px;
+  }
+  .card h2{
+    font-family:'Press Start 2P',monospace; font-size:13px;
+    margin:0 0 14px; color:var(--ink); line-height:1.5;
+  }
+  .card h2 .acc{ color:var(--cyan); }
+
+  /* Exam card */
+  .exam-head{
+    display:flex; align-items:center; gap:14px; margin-bottom:14px;
+  }
+  .cart{
+    width:52px;height:52px;flex:0 0 auto;
+    background:var(--red);
+    box-shadow:inset 0 8px 0 #000, inset 8px 0 0 rgba(0,0,0,.2), 0 var(--pixel) 0 var(--shadow);
+    display:grid;place-items:center;
+    font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;
+  }
+  .meta-list{ list-style:none;margin:0;padding:0;display:grid;gap:8px; }
+  .meta-list li{
+    display:flex;justify-content:space-between;align-items:center;
+    background:var(--bg);
+    border:3px solid #000;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+    padding:9px 11px; font-size:19px;
+  }
+  .meta-list li b{ color:var(--yellow); font-family:'Press Start 2P',monospace; font-size:10px; }
+  .pass-pill{
+    margin-top:14px;
+    background:var(--green); color:#03210f;
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 var(--shadow);
+    padding:11px; text-align:center;
+    font-family:'Press Start 2P',monospace; font-size:10px;
+  }
+
+  /* Topic / formula card */
+  .topic-lede{ font-size:20px; color:#cfc4f5; margin:0 0 14px; }
+  .formula{
+    background:#000;
+    border:var(--pixel) solid #000;
+    box-shadow:inset 0 0 0 3px #16331f, 0 var(--pixel) 0 var(--shadow);
+    padding:16px;
+    display:grid; gap:12px;
+  }
+  .formula .f{
+    color:var(--green);
+    font-size:24px;
+    letter-spacing:1px;
+    padding-bottom:10px;
+    border-bottom:3px dashed #1d4a2c;
+  }
+  .formula .f:last-child{ border-bottom:0; padding-bottom:0; }
+  .formula .f .lbl{
+    display:block; font-family:'Press Start 2P',monospace; font-size:8px;
+    color:var(--cyan); margin-bottom:7px;
+  }
+
+  /* Trap callout */
+  .trap{
+    grid-column:1 / -1;
+    background:
+      repeating-linear-gradient(45deg, #3a1414 0 14px, #4a1a1a 14px 28px);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 8px 8px 0 var(--shadow);
+    padding:18px 20px;
+    display:flex; gap:16px; align-items:flex-start;
+  }
+  .trap .skull{
+    width:48px;height:48px;flex:0 0 auto;
+    background:var(--red);
+    box-shadow:inset 0 0 0 4px #000, 0 var(--pixel) 0 var(--shadow);
+    display:grid;place-items:center;font-size:24px;
+  }
+  .trap .t-title{
+    font-family:'Press Start 2P',monospace;font-size:11px;color:var(--red);
+    margin-bottom:9px; letter-spacing:1px;
+  }
+  .trap p{ margin:0; font-size:21px; color:#ffd9de; }
+
+  /* Worked example teaser + buttons */
+  .quest{
+    background:linear-gradient(180deg,#2a1a5e,#22134f);
+    border:var(--pixel) solid #000;
+    box-shadow:0 var(--pixel) 0 #000, 8px 8px 0 var(--shadow), inset 0 0 0 4px #3a2580;
+    padding:22px;
+    display:flex; flex-wrap:wrap; align-items:center; gap:20px;
+  }
+  .quest .qicon{
+    width:64px;height:64px;flex:0 0 auto;
+    background:var(--yellow);
+    box-shadow:inset 0 0 0 5px #000, 0 var(--pixel) 0 var(--shadow);
+    display:grid;place-items:center;
+    font-family:'Press Start 2P',monospace;font-size:22px;color:#000;
+    animation:blink 1.2s steps(2) infinite;
+  }
+  @keyframes blink{ 50%{ background:#ffe88a; } }
+  .quest .qbody{ flex:1 1 240px; min-width:0; }
+  .quest .qtag{
+    font-family:'Press Start 2P',monospace;font-size:8px;color:var(--cyan);
+    letter-spacing:1px; margin-bottom:8px;
+  }
+  .quest .qname{
+    font-family:'Press Start 2P',monospace;font-size:14px;color:var(--ink);
+    line-height:1.5;
+  }
+  .btns{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    font-family:'Press Start 2P',monospace;
+    font-size:11px;
+    text-decoration:none;
+    padding:15px 20px;
+    border:var(--pixel) solid #000;
+    cursor:pointer;
+    box-shadow:0 6px 0 #000, 0 9px 0 var(--shadow);
+    transition:transform .04s steps(1), box-shadow .04s steps(1);
+    letter-spacing:1px;
+    display:inline-block;
+  }
+  .btn:active{ transform:translateY(6px); box-shadow:0 0 0 #000, 0 var(--pixel) 0 var(--shadow); }
+  .btn.start{ background:var(--green); color:#03210f; }
+  .btn.start:hover{ background:#7dffb1; }
+  .btn.resume{ background:var(--bg); color:var(--cyan); }
+  .btn.resume:hover{ background:#2a1a5e; color:#fff; }
+  .btn .pre{ color:#000; }
+  .btn.resume .pre{ color:var(--pink); }
+
+  /* Footer */
+  footer{
+    margin-top:26px;
+    background:#000;
+    border:var(--pixel) solid #000;
+    box-shadow:inset 0 0 0 4px var(--panel2);
+    padding:18px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:12px;
+  }
+  footer .f-brand{ display:flex; align-items:center; gap:12px; }
+  footer .mmark{ width:32px;height:32px; }
+  footer .mmark span{ font-size:10px; }
+  footer .f-name{ font-family:'Press Start 2P',monospace; font-size:10px; color:var(--ink); }
+  footer .f-tag{ font-size:18px; color:var(--cyan); }
+  footer .f-credit{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--grid); letter-spacing:1px; }
+  footer .f-credit b{ color:var(--pink); }
+
+  /* Responsive */
+  @media (max-width:860px){
+    .grid{ grid-template-columns:1fr; }
+    nav.side{ position:static; }
+    ul.menu{ display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
+  }
+  @media (max-width:700px){
+    body{ font-size:19px; }
+    .stats{ grid-template-columns:1fr; }
+    .row2{ grid-template-columns:1fr; }
+    h1.headline{ font-size:21px; }
+    .sprite.star{ display:none; }
+    ul.menu{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="mmark"><span>M</span></div>
+      <div>
+        <div class="brand-name">ME STUDING STUFF</div>
+        <div class="brand-tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="coins">
+      <span class="coin-pill hp">&#9829;&#9829;&#9829; HP</span>
+      <span class="coin-pill">&#9733; 8 SOLID</span>
+      <span class="coin-pill lv">LV.12</span>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- Sidebar -->
+    <nav class="side">
+      <div class="nav-label">FAM-L / FAM-S</div>
+      <ul class="menu">
+        <li><a href="#" class="active"><span class="ic"></span>Survival Models</a></li>
+        <li><a href="#"><span class="ic"></span>Life Tables</a></li>
+        <li><a href="#"><span class="ic"></span>Life Insurance</a></li>
+        <li><a href="#"><span class="ic"></span>Life Annuities</a></li>
+        <li><a href="#"><span class="ic"></span>Premiums</a></li>
+        <li><a href="#"><span class="ic"></span>Policy Values</a></li>
+      </ul>
+      <div class="section-tag">
+        WORLD 1-3<br>
+        SAVE FILE: AUTO<br>
+        NEXT: PREMIUMS
+      </div>
+      <div class="badge-row">
+        <span class="badge">&#127894;</span>
+        <span class="badge">&#11088;</span>
+        <span class="badge">&#9889;</span>
+        <span class="badge">&#128293;</span>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="sprite coin pix" style="font-size:26px;">&#129689;</div>
+        <div class="sprite star pix" style="font-size:22px;">&#11088;</div>
+        <div class="scan">
+          <span class="greeting">GOOD EVENING — PLAYER 1</span>
+          <h1 class="headline">Let's get you<br>that pass.</h1>
+          <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="stats">
+        <div class="stat s1">
+          <div class="cap">OVERALL PROGRESS</div>
+          <div class="big">72%</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="pbar"><div class="fill"></div></div>
+        </div>
+        <div class="stat s2">
+          <div class="cap">EXAM COUNTDOWN</div>
+          <div class="big">86</div>
+          <div class="sub">days remaining</div>
+          <div class="pchips">
+            <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+        <div class="stat s3">
+          <div class="cap">TOPICS SOLID</div>
+          <div class="big">8</div>
+          <div class="sub">locked &amp; loaded</div>
+          <div class="pchips">
+            <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- Two-up: Exam card + Topic/Formula -->
+      <section class="row2">
+
+        <!-- Exam FAM card -->
+        <div class="card">
+          <h2><span class="acc">&#9646;</span> EXAM <span class="acc">FAM</span></h2>
+          <div class="exam-head">
+            <div class="cart">CART</div>
+            <div style="font-size:19px;color:#cfc4f5;">Fundamentals of<br>Actuarial Mathematics</div>
+          </div>
+          <ul class="meta-list">
+            <li>Provider <b>SOA</b></li>
+            <li>Questions <b>34</b></li>
+            <li>Format <b>FAM-L / FAM-S</b></li>
+          </ul>
+          <div class="pass-pill">&#9733; PASS = 6 / 10 &#9733;</div>
+        </div>
+
+        <!-- Topic preview + formula -->
+        <div class="card">
+          <h2><span class="acc">&#9646;</span> Life Insurance<br>Present Values</h2>
+          <p class="topic-lede">EPV of a benefit paid on death — the backbone of every FAM-L question.</p>
+          <div class="formula">
+            <div class="f"><span class="lbl">WHOLE LIFE</span>A_x = 1 &minus; d&middot;&auml;_x</div>
+            <div class="f"><span class="lbl">VARIANCE</span>Var(Z) = &sup2;A_x &minus; (A_x)&sup2;</div>
+            <div class="f"><span class="lbl">ANNUITY LINK</span>&auml;_x = (1 &minus; A_x) / d</div>
+          </div>
+        </div>
+
+        <!-- Common trap -->
+        <div class="trap">
+          <div class="skull">&#128128;</div>
+          <div>
+            <div class="t-title">! COMMON TRAP !</div>
+            <p>Under UDD, multiply ONLY the term/death piece by i/&delta; — the pure endowment is never rescaled.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Worked example quest -->
+      <section class="quest">
+        <div class="qicon">?</div>
+        <div class="qbody">
+          <div class="qtag">WORKED EXAMPLE &middot; NEXT QUEST</div>
+          <div class="qname">Example 1 — Whole life EPV &amp; variance</div>
+        </div>
+        <div class="btns">
+          <a href="#" class="btn start"><span class="pre">&#9654;</span> START STUDYING</a>
+          <a href="#" class="btn resume"><span class="pre">&#10227;</span> RESUME</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="f-brand">
+      <div class="mmark"><span>M</span></div>
+      <div>
+        <div class="f-name">ME STUDING STUFF</div>
+        <div class="f-tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <div class="f-credit">INSERT COIN &middot; &copy; 20XX &middot; <b>FAM</b> EDITION</div>
+  </footer>
+
+</div>
+</body>
+</html>

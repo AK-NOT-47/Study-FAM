@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ratemaking · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="st-08" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 8</div>
+      <h1>Pricing / Ratemaking for Short-Term Insurance</h1>
+      <p class="lede">Ratemaking is prospective: take historical losses and premium, then aggregate, develop, trend, and on-level them forward so today's rate is adequate but not excessive. Master the data-prep pipeline and the two rate-change formulas drop out of one equation.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Werner &amp; Modlin · Friedland · Klugman</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 CY/AY/PY · develop · trend · on-level · parallelogram · extension of exposures · PLR · pure premium · loss ratio</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout note" data-icon="📌">
+        <p><strong>Reference framework:</strong> Werner &amp; Modlin / Friedland, <em>Fundamentals of General Insurance Ratemaking</em> and <em>Estimating Unpaid Claims Using Basic Techniques</em> (the SOA FAM short-term ratemaking syllabus). Severity/frequency notation follows Klugman/Panjer/Willmot, <em>Loss Models: From Data to Decisions</em>. Worked numbers below follow the Coaching-Actuaries-style data-prep and ratemaking sections (S5.2–S5.3).</p>
+      </div>
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After studying this note, for the FAM exam you should be able to:</p>
+        <ul>
+          <li>State and apply the <strong>fundamental insurance equation</strong> and explain what it means for a rate to be <em>adequate, not excessive, and not unfairly discriminatory</em>; list the <strong>essential and non-essential objectives</strong> of ratemaking.</li>
+          <li>Choose an appropriate <strong>exposure base</strong> and list the features of a good one.</li>
+          <li><strong>Aggregate losses</strong> by <strong>calendar year, accident year, and policy year</strong>, and compute incurred losses (paid + change in reserves vs paid + reserves at valuation).</li>
+          <li><strong>Develop</strong> aggregated losses to ultimate via age-to-age (link) ratios / chain ladder, rearranging calendar-year triangles into development-year form.</li>
+          <li><strong>Trend</strong> losses: find the <strong>trend period</strong> from the average loss date of the experience period to the average loss date of the expected effective period (handling AY vs PY data and the "written-only-on-effective-date" case), and apply effective or continuously-compounded trend, including <strong>creative</strong> linear/log-slope forms.</li>
+          <li>Separate <strong>variable vs fixed expenses</strong>, classify <strong>ALAE/ULAE</strong> and <strong>DCC/AAO</strong>, handle <strong>profit</strong> implicitly or explicitly, and compute the <strong>permissible loss ratio (PLR)</strong>.</li>
+          <li><strong>Aggregate premium</strong> (CY vs PY) into written/earned/unearned, using the UEP recursion.</li>
+          <li>Bring premium to <strong>current rate level</strong> by the <strong>extension of exposures</strong> method (base rate × relativities) and the <strong>parallelogram</strong> method (5-step on-level factor), including non-annual policy terms.</li>
+          <li>Compute the <strong>indicated overall average rate</strong> (pure premium / loss cost method) and the <strong>indicated average rate change</strong> (loss ratio method), and reconcile the two from the single solved fundamental equation.</li>
+          <li>Apply <strong>credibility</strong> ($Z$) to blend an experience-based indication with a <strong>complement of credibility</strong>.</li>
+        </ul>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. What ratemaking is &mdash; and its objectives</h3>
+      <p>Ratemaking is the determination of the rates/premiums to charge. Unlike a tangible product, the cost of an insurance policy is <strong>not known when it is sold</strong>, so the rate must be set <strong>prospectively</strong>: adequate to pay future losses and expenses and to generate profit on policies that will be <em>written in a future period</em> and earned over the policy term after that. Because we are predicting the future, we take <strong>historical data</strong> and adjust it forward. Four big adjustments recur:</p>
+      <ol>
+        <li><strong>Aggregate</strong> losses and premium into comparable annual buckets (CY / AY / PY).</li>
+        <li><strong>Develop</strong> losses to ultimate (immature accident/policy periods are still growing).</li>
+        <li><strong>Trend</strong> losses to the future cost level (inflation, frequency/severity drift).</li>
+        <li><strong>On-level</strong> premium to the current rate level (old premiums reflect old, superseded rates).</li>
+      </ol>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Objectives of ratemaking</div>
+        <p><strong>Essential:</strong> rates must (1) <em>cover expected losses &amp; expenses</em> (income — premium plus investment income — must equal or exceed expected costs, per class and for the whole book); (2) <em>make provision for contingencies</em> (unexpected costs); (3) <em>encourage loss control</em> (safe-driver/good-student discounts); (4) <em>satisfy regulators</em> — be <strong>adequate, not excessive, not unfairly discriminatory</strong>, supported by data and documentation.</p>
+        <p><strong>Non-essential (desirable):</strong> rates should be reasonably <em>stable</em> (reinsurance helps spread large losses), reasonably <em>responsive</em> to change, and <em>simple/easy to understand</em>.</p>
+      </div>
+      <p>The exam syllabus is the <strong>manual rating</strong> approach: risks with similar characteristics are grouped, and rates are based on the group's estimated future losses — <em>not</em> on an individual insured's experience. We compute the indicated <strong>overall</strong> average rate / rate change (the word "overall" is implied and usually dropped). "Indicated" means "as indicated by the data."</p>
+
+      <h3>2. The fundamental insurance equation</h3>
+      <p>The premium must cover everything plus a target profit:</p>
+      <div class="formula">
+        $$\text{Premium} = \text{Losses} + \text{Expenses} + \text{Profit}\;\Longrightarrow\; P = L + (V\!\cdot\!P + E_F) + Q_T\!\cdot\!P.$$
+      </div>
+      <ul>
+        <li>$L$ here <strong>includes LAE</strong> (loss adjustment expense) — we group "losses and LAE" together throughout.</li>
+        <li>$V\!\cdot\!P$ = variable expense (a fraction $V$ of premium); $E_F$ = fixed expense (dollars, not a fraction of premium); $Q_T\!\cdot\!P$ = profit &amp; contingency loading.</li>
+        <li>When the equation <strong>balances</strong> at the proposed rate, the rate is <em>just adequate</em>. Short → raise rates; surplus → can lower.</li>
+      </ul>
+
+      <h3>3. Exposure &mdash; the basic unit of risk</h3>
+      <p>The <strong>exposure base</strong> measures the amount of risk; rates are quoted <em>per unit of exposure</em>. A good exposure base should: accurately measure quantitative exposure to loss; be easy to determine at quoting; <strong>not be easily manipulated</strong> by the insured; be simple to record/administer; be easily understood by the policyholder; and ideally auto-adjust to inflation. Examples: car-years (auto), payroll (workers' comp), per \$1,000 of home value (homeowners). So "home value" is a good base; "cubic millimetres of closet space" is not.</p>
+      <div class="callout note" data-icon="📌">
+        <p>Example: a \$250,000 home rated at \$4.80 per \$1,000 of value → exposure base = home value, unit = \$1,000 of value, premium $=\frac{250{,}000}{1{,}000}\times 4.80 = \$1{,}200$. A one-year, one-car auto policy = 1 car-year; a three-year, two-car policy = 6 exposure units.</p>
+      </div>
+
+      <h3>4. Aggregating losses: calendar / accident / policy year</h3>
+      <p>Loss data are aggregated into 12-month buckets. (A fourth method, <strong>report year</strong>, is for claims-made policies and is <em>not on this exam</em>.) The 12-month window need not be Jan–Dec for AY/PY, but assume Jan 1–Dec 31 unless told otherwise.</p>
+      <ul>
+        <li><strong>Calendar year (CY):</strong> all loss <em>transactions</em> that occur Jan 1–Dec 31, regardless of accident or report date. CY figures are <strong>final at year-end</strong> (later development falls into the next CY).</li>
+        <li><strong>Accident year (AY):</strong> all transactions for accidents <em>occurring</em> in the 12-month window, regardless of policy issue or report date. AY losses keep developing, so a <strong>valuation date</strong> is required (it plays the role of the development age in chain ladder).</li>
+        <li><strong>Policy year (PY):</strong> all transactions for policies <em>issued</em> in the 12-month window, regardless of accident date. Also needs a valuation date.</li>
+      </ul>
+      <p><strong>Incurred-loss formulas.</strong> For calendar year $i$ (loss is the change across the year):</p>
+      <div class="formula">
+        <span class="formula-label">CY incurred</span>
+        $$L_i^{I} = L_i^{P} + R_i - R_{i-1},$$
+      </div>
+      <p>where $L_i^{P}$ = paid in CY $i$ and $R_i$ = reserves at the <em>end</em> of CY $i$. For accident year / policy year at a chosen valuation date:</p>
+      <div class="formula">
+        <span class="formula-label">AY / PY incurred (at a valuation date)</span>
+        $$L_i^{I} = L_i^{P} + R_i,$$
+      </div>
+      <p>where $L_i^{P}$ = cumulative paid as of the valuation date on that accident (or policy) year and $R_i$ = reserves as of that valuation date. (No subtraction of a prior reserve — AY/PY accumulate from the start of the cohort.)</p>
+      <div class="callout tip" data-icon="✅">
+        <div class="callout-title">Which to use, and what matches what</div>
+        <p>For ratemaking, <strong>AY and PY</strong> are the usual choices: AY is more <em>responsive</em> (recent data), PY is more <em>complete</em> (whole policy term) but less responsive (more outdated). <strong>CY is generally not used</strong> in ratemaking — premiums and losses are mismatched in timing. Matching rule: <strong>CY earned premium ↔ AY losses</strong>; <strong>PY earned premium ↔ PY losses</strong>.</p>
+      </div>
+
+      <h3>5. Developing losses</h3>
+      <p>Aggregated AY/PY losses are <strong>immature</strong> — more claims will be reported and known claims will change. Use <strong>age-to-age (link) ratios</strong> and the <strong>chain-ladder</strong> method (Topic 7) to project to <strong>ultimate</strong>. A practical step that often appears: the data may be given <em>by calendar valuation date</em>, so first <strong>rearrange the triangle into development-year form</strong> before computing link ratios. Since the same factors estimate reserves, pricing actuaries consult reserving actuaries when developing losses.</p>
+
+      <h3>6. Trending losses</h3>
+      <p>Even at ultimate, <em>past</em> losses reflect <em>past</em> cost levels. <strong>Trend</strong> projects the cost level from the <strong>experience (historical) period</strong> to the <strong>expected effective (forecast) period</strong>. Two ingredients: the <strong>trend period</strong> and the <strong>trend factor</strong>.</p>
+      <p><strong>Trend period</strong> = (average loss occurrence date of the forecast period) − (average loss occurrence date of the experience period). The "average loss occurrence date" is the <em>midpoint</em> of each period.</p>
+      <ul>
+        <li><strong>Experience period (AY data):</strong> a one-year window, so the midpoint is the middle of the year (e.g. AY2015 → Jul 1, 2015).</li>
+        <li><strong>Experience period (PY data):</strong> length $= 1 + (\text{policy term})$ years, because the last policy written must still run out its term. Annual policies, PY2015 → Jan 1, 2015 to Dec 31, 2016 (2 yrs), midpoint <strong>Jan 1, 2016</strong>. Six-month policies, PY2015 → Jan 1, 2015 to Jun 30, 2016 (18 mo), midpoint Oct 1, 2015.</li>
+        <li><strong>Expected effective (forecast) period:</strong> begins on the rates' effective date; length $= (\text{policy term}) + (\text{time the rates are in effect})$. Annual policies effective for one year → a 2-year window; effective Oct 1, 2018 → Oct 1, 2018 to Sep 30, 2020, midpoint <strong>Oct 1, 2019</strong>.</li>
+      </ul>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Special case &mdash; policies written only on the effective date</div>
+        <p>The default assumption is <strong>uniform writing</strong> through the year. But if policies are written <em>only</em> on the effective date, they all expire together, so the forecast period is <strong>only as long as the policy term</strong>, and its midpoint moves earlier. (Same logic shortens a PY experience window in that case.)</p>
+      </div>
+      <div class="callout note" data-icon="📌">
+        <p><strong>Overlap fallacy (Coach's Remark):</strong> a common myth says developing <em>and</em> trending double-counts inflation. It does not. <strong>Development</strong> brings <em>immature</em> losses up to their <em>ultimate</em> value; <strong>trend</strong> moves the <em>ultimate</em> value from the experience cost level to the forecast cost level. They are two <strong>independent</strong> steps, both required.</p>
+      </div>
+      <div class="callout note" data-icon="📌">
+        <p>You can equivalently trend <strong>pure premium</strong> (loss ÷ exposures) instead of losses — identical result if exposures are consistent. (Pure premium ≠ premium.)</p>
+      </div>
+
+      <h3>7. Expenses, LAE classification, and profit</h3>
+      <p><strong>Loss adjustment expense (LAE)</strong> is the cost of settling claims and is grouped <em>with losses</em>, not with other expenses:</p>
+      <ul>
+        <li><strong>ALAE</strong> — allocated to a specific claim (e.g. a lawyer's fee). <strong>ULAE</strong> — overhead not tied to one claim (e.g. claims-manager salary).</li>
+        <li>A U.S. reporting refinement: <strong>DCC</strong> (defense &amp; cost containment — claim-defense costs) is generally treated as <strong>ALAE</strong>; <strong>AAO</strong> (adjusting &amp; other) is generally treated as <strong>ULAE</strong>.</li>
+      </ul>
+      <p><strong>Other (underwriting) expenses</strong> split into:</p>
+      <ul>
+        <li><strong>Variable expenses</strong> $E_V$ — scale with premium (commissions, brokerage, premium taxes, licenses): a % of premium, $V = E_V/P$.</li>
+        <li><strong>Fixed expenses</strong> $E_F$ — roughly constant per exposure/policy (salaries outside claims, general overhead): a dollar amount, with fixed ratio $F = E_F/P$.</li>
+      </ul>
+      <p>So the expense provision is $\text{Expenses}=E_V+E_F = V\!\cdot\!P + E_F$.</p>
+      <p><strong>Profit</strong> can be loaded <strong>implicitly</strong> (conservative estimates for loss/premium/expense, so actual beats expected on average) or <strong>explicitly</strong> (add $Q_T\!\cdot\!P$, with $Q_T$ the target profit &amp; contingencies %). The <strong>permissible (expected) loss ratio</strong> is the share of premium left for losses + LAE after variable expense and profit:</p>
+      <div class="formula">
+        <span class="formula-label">Permissible loss ratio</span>
+        $$\text{PLR} = 1 - V - Q_T.$$
+      </div>
+      <p>Fixed expenses are <strong>accounted for separately</strong> (in the numerator), <em>not</em> inside the PLR.</p>
+
+      <h3>8. Aggregating premium (written / earned / unearned)</h3>
+      <p>Premium is aggregated by <strong>calendar year</strong> (premiums of all active policies in the CY) or <strong>policy year</strong> (premiums of policies issued in the window). Three definitions:</p>
+      <ul>
+        <li><strong>Written premium</strong> $P^{W}$ — full premium for all policies <em>issued</em> in the period (a "cash register" concept, recorded at sale).</li>
+        <li><strong>Earned premium</strong> $P^{E}$ — the portion for coverage that has <em>already elapsed</em> (an "accrual" concept; earned <em>pro rata</em> over the term). <strong>Losses are matched to earned premium.</strong></li>
+        <li><strong>Unearned premium</strong> $P^{U}$ — the not-yet-earned remainder, $P^U = P^W - P^E$ at a point in time (a liability — refunded on cancellation).</li>
+      </ul>
+      <p>The "point in time" is the <strong>end of the calendar year</strong> for CY aggregation, or the <strong>valuation date</strong> for PY. A handy roll-forward for total CY unearned premium:</p>
+      <div class="formula">
+        <span class="formula-label">UEP recursion</span>
+        $$P_i^{U} = P_i^{W} - P_i^{E} + P_{i-1}^{U}.$$
+      </div>
+      <p>The same written/earned/unearned logic applies to <strong>exposures</strong>; ratemaking uses <strong>earned</strong> exposures to match premium and losses.</p>
+
+      <h3>9. Premium at current rate level &mdash; two methods</h3>
+      <p>Historical premium was charged at <strong>old rates</strong>; to use it we restate it at <strong>today's rates</strong> (the current rate level, CRL) — analogous to developing losses to ultimate. Two approaches:</p>
+      <p><strong>(a) Extension of exposures</strong> — the <em>most accurate</em>. Take every historical policy's actual <strong>rating characteristics</strong> and <strong>recompute its premium at current rates</strong>. Each rating variable has a <strong>base cell</strong> (the most common class, relativity $1.00$) with <strong>relativities</strong> (multiplicative differentials); premium $=$ current base rate $\times$ relativities. The drawback: it needs granular historical rating data that companies often lack.</p>
+      <div class="callout note" data-icon="📌">
+        <p>Mini-example: base rate $100$, gender {Male $1.00$, Female $0.80$}, age {Under 25 $0.90$, 25–65 $1.00$, Over 65 $1.15$}. A female over 65 is charged $100(0.80)(1.15)=92$. To <strong>on-level</strong> an old policy, recompute with the <em>current</em> base rate and <em>current</em> relativities.</p>
+      </div>
+      <p><strong>(b) Parallelogram method</strong> — for <em>aggregate</em> premium when you lack granular data. It builds <strong>on-level factors</strong> from average rate changes, assuming policies are written <strong>uniformly</strong> through the year (so it is less accurate than extension of exposures). The diagram: x-axis = time, y-axis = % of policies earned; diagonal lines (ending one policy-term after each effective date) separate rate-level groups; each unit square is a calendar year.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Parallelogram method &mdash; the 5 steps</div>
+        <ol>
+          <li>Determine the <strong>timing and amount</strong> of each rate change; draw the diagram.</li>
+          <li>Compute the <strong>cumulative rate level index</strong> of each group (product of $1+\text{change}$ factors).</li>
+          <li>For each year, compute the <strong>portion of premium</strong> in each rate group via the geometry (triangle $\tfrac12 bh$, trapezoid $\tfrac12(b_1+b_2)h$, parallelogram $bh$).</li>
+          <li>Compute the year's <strong>weighted-average cumulative rate level index</strong> (portions × indices).</li>
+          <li><strong>On-level factor</strong> $=\dfrac{\text{current cumulative rate level index}}{\text{year's average index}}$; multiply earned premium by it.</li>
+        </ol>
+        <p>For <strong>non-annual</strong> policies the diagonals end after the <em>policy term</em>, not one year (semi-annual → twice as steep, rate change fully in effect after 6 months).</p>
+      </div>
+
+      <h3>10. Indicated rate vs indicated rate change &mdash; one equation, two methods</h3>
+      <p>Solve the fundamental equation for the indicated premium $P_I$ for the forecast period:</p>
+      <div class="formula">
+        $$P_I = L + V P_I + E_F + Q_T P_I \;\Longrightarrow\; P_I = \frac{L + E_F}{\,1 - V - Q_T\,}.$$
+      </div>
+      <p>The denominator is exactly the PLR. Both ratemaking methods are this one identity, divided by something:</p>
+      <ul>
+        <li><strong>Loss ratio method</strong> — divide by premium at current rate level $P^{C}$: produces an <strong>indicated rate <em>change</em></strong> (a multiplier on the current rate). Needs on-level premium but <strong>not</strong> exposures; the common method.</li>
+        <li><strong>Pure premium (loss cost) method</strong> — divide by exposures $n_e$: produces an <strong>indicated rate (level)</strong> in dollars per exposure. Needs well-defined exposures; used for new programs / no existing rate.</li>
+      </ul>
+      <p>They are <strong>algebraically identical</strong> only when consistent data/assumptions are used. If the on-level premium comes from the <em>parallelogram</em> method, the two will generally <strong>disagree slightly</strong> (parallelogram uses average factors, not exact extension of exposures).</p>
+
+      <h3>11. Credibility</h3>
+      <p>Experience for a small segment is volatile, so we blend it with a <strong>complement of credibility</strong> (last year's rate, a trended overall indication, or an industry/competitor rate):</p>
+      <div class="formula">
+        $$\text{Final} = Z \times (\text{Experience indication}) + (1-Z)\times(\text{Complement}),\qquad Z=\min\!\left(\sqrt{\tfrac{n}{n_{\text{full}}}},\,1\right),$$
+      </div>
+      <p>with $n$ = observed exposures/claims, $n_{\text{full}}$ = full-credibility standard.</p>
+
+      <h2>Formulas</h2>
+
+      <h3>Fundamental equation, solved</h3>
+      <div class="formula">
+        $$P_I=\frac{L+E_F}{1-V-Q_T},\qquad \text{denominator}=\text{PLR}=1-V-Q_T.$$
+      </div>
+
+      <h3>Loss aggregation (incurred)</h3>
+      <div class="formula">
+        $$\underbrace{L_i^{I}=L_i^{P}+R_i-R_{i-1}}_{\text{calendar year}}\qquad\qquad \underbrace{L_i^{I}=L_i^{P}+R_i}_{\text{accident / policy year, at valuation}}$$
+      </div>
+
+      <h3>Loss development (chain ladder)</h3>
+      <div class="formula">
+        $$f_{j\to j+1}=\frac{\sum \text{losses at age }(j{+}1)}{\sum \text{losses at age } j}\;(\text{matched years}),\quad
+        \text{CDF}_j=\prod_{k\ge j} f_k,\quad \widehat{L}^{\text{ult}}=(\text{loss at age }j)\times\text{CDF}_j.$$
+      </div>
+
+      <h3>Trend</h3>
+      <div class="formula">
+        $$\widehat{L}^{\text{ult}}_{\text{trended}}=L^{\text{ult}}\times(1+t)^{\,n}\quad(\text{effective}),\qquad
+        \widehat{L}^{\text{ult}}_{\text{trended}}=L^{\text{ult}}\, e^{\,r n}\quad(\text{continuous}),$$
+      </div>
+      <p>$n$ = trend period in years (avg loss date, forecast − avg loss date, experience).</p>
+      <div class="formula">
+        <span class="formula-label">Creative trend forms (Coach's Remark)</span>
+        $$\text{linear slope }m:\;\; \widehat L = L + m\,n;\qquad \text{slope }m\text{ on }\ln L:\;\; \widehat L = L\, e^{\,m n}.$$
+      </div>
+
+      <h3>Premium aggregation &amp; on-leveling</h3>
+      <div class="formula">
+        $$P^{U}=P^{W}-P^{E},\qquad P_i^{U}=P_i^{W}-P_i^{E}+P_{i-1}^{U}.$$
+        $$\text{On-Level Factor}_y=\frac{\text{current cumulative rate level index}}{\text{year's avg cumulative rate level index}},\qquad
+        P^{C}_y = P^{E}_y\times\text{On-Level Factor}_y.$$
+      </div>
+      <p>Extension of exposures: $\;\text{on-level premium} = (\text{current base rate})\times\prod(\text{current relativities}).$</p>
+
+      <h3>Expenses, PLR</h3>
+      <div class="formula">
+        $$V=\frac{E_V}{P},\qquad F=\frac{E_F}{P},\qquad \text{Expenses}=V P+E_F,\qquad \text{PLR}=1-V-Q_T.$$
+      </div>
+
+      <h3>The two ratemaking methods</h3>
+      <div class="formula">
+        <span class="formula-label">Loss ratio method (rate <em>change</em>)</span>
+        $$\text{Indicated Avg. Rate Change}=\frac{LR+F}{1-V-Q_T}-1,\qquad LR=\frac{L_{\text{dev,trend}}}{P^{C}}.$$
+      </div>
+      <div class="formula">
+        <span class="formula-label">Pure premium / loss cost method (rate <em>level</em>)</span>
+        $$\text{Indicated Avg. Rate}=\frac{\bar L+\bar E_F}{1-V-Q_T},\qquad \bar L=\frac{L_{\text{dev,trend}}}{n_e},\quad \bar E_F=\frac{E_F}{n_e}.$$
+      </div>
+      <p>Convert a change to a level: $\;\text{indicated rate}=(\text{current avg rate})\times(1+\text{indicated change}).$ With multiple years, compute $LR$ (or $\bar L$) per year, then take the <strong>weighted average</strong>.</p>
+
+      <h3>Credibility</h3>
+      <div class="formula">
+        $$Z=\min\!\left(\sqrt{\tfrac{n}{n_{\text{full}}}},\,1\right),\qquad \text{Final}=Z\,A+(1-Z)\,C.$$
+      </div>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Aggregating one claim by CY, AY, and PY <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An auto policy is issued 7/1/2015; a claim from a 2/2/2016 accident has these transactions (only claim; reserve on 1/1/2015 is 0):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Date</th><th>Incremental Paid</th><th>Case Reserve</th></tr></thead>
+            <tbody>
+              <tr><td>2/15/2016</td><td>0</td><td>1,000</td></tr>
+              <tr><td>11/15/2016</td><td>0</td><td>2,600</td></tr>
+              <tr><td>3/1/2017</td><td>500</td><td>2,100</td></tr>
+              <tr><td>8/1/2017</td><td>1,000</td><td>1,100</td></tr>
+              <tr><td>12/1/2017</td><td>0</td><td>3,000</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>CY2016:</strong> paid $=0$; reserve end of 2016 $=2{,}600$, end of 2015 $=0$. $L^I_{CY2016}=0+2{,}600-0=2{,}600$.</p>
+          <p><strong>CY2017:</strong> paid $=500+1{,}000=1{,}500$; reserve end 2017 $=3{,}000$, end 2016 $=2{,}600$. $L^I_{CY2017}=1{,}500+3{,}000-2{,}600=1{,}900$.</p>
+          <p><strong>AY2016 @ 12/31/2016:</strong> paid $=0$, reserve $=2{,}600$ → $0+2{,}600=2{,}600$. <strong>AY2016 @ 12/31/2017:</strong> paid $=1{,}500$, reserve $=3{,}000$ → $4{,}500$.</p>
+          <p><strong>PY2015 @ 12/31/2017:</strong> policy written 2015 → all transactions are PY2015: $1{,}500+3{,}000=4{,}500$. <strong>PY2016:</strong> nothing written in 2016 → $0$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Takeaway</div>CY uses the <em>change</em> in reserves; AY/PY add the <em>current</em> reserve to cumulative paid. The same dollars land in different buckets depending on the aggregation rule.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Develop losses from a calendar-dated triangle (chain ladder) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Cumulative incurred losses are given by <em>calendar valuation date</em> (losses don't develop after 3 years):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>12/31/CY2</th><th>12/31/CY3</th><th>12/31/CY4</th></tr></thead>
+            <tbody>
+              <tr><td>AY1</td><td>300,000</td><td>390,000</td><td>390,000</td></tr>
+              <tr><td>AY2</td><td>320,000</td><td>339,200</td><td>373,120</td></tr>
+              <tr><td>AY3</td><td>&ndash;</td><td>420,000</td><td>478,800</td></tr>
+              <tr><td>AY4</td><td>&ndash;</td><td>&ndash;</td><td>450,000</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 1 — rearrange into development-year form</strong> (age 0,1,2,3). AY4's only figure (450,000) is its age-0 value.</p>
+          <p><strong>Step 2 — age-to-age factors, average-factor model:</strong> selected $f_{0\to1}=1.1$, $f_{1\to2}=1.2$, $f_{2\to3}=1.0$.</p>
+          <p><strong>Step 3 — develop AY4:</strong></p>
+          $$\widehat L^{\text{ult}}_{AY4}=450{,}000\times1.1\times1.2\times1.0 = 594{,}000.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Ultimate AY4 losses $=\$594{,}000$. Always reshape calendar-dated data into development ages first.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Trend period: AY vs PY, and the trend factor <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>New rates effective <strong>Mar 1, 2018</strong>, annual policies effective one year, written uniformly. AY2014 ultimate losses $=1{,}393$ (thousands); selected annual <strong>effective</strong> trend $5\%$.</p>
+          <p>Midpoint AY2014 = Jul 1, 2014. Forecast window = Mar 1, 2018 → Feb 28, 2020, midpoint Mar 1, 2019. Trend period $n=4\tfrac{8}{12}=4.6667$ yrs (Jul 1, 2014 → Mar 1, 2019).</p>
+          $$\widehat L = 1{,}393\times(1.05)^{4.6667}=1{,}393\times1.2581 = 1{,}752.6 \text{ (thousands).}$$
+          <p><strong>AY vs PY trend window contrast</strong> (rates effective Oct 1, 2018, annual policies, 1-yr effective, forecast midpoint Oct 1, 2019):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Data</th><th>Trend from (exp. midpoint)</th><th>Trend to</th><th>Period</th></tr></thead>
+            <tbody>
+              <tr><td>AY2015</td><td>7/1/2015</td><td>10/1/2019</td><td>4.25 yrs</td></tr>
+              <tr><td>PY2015</td><td>1/1/2016</td><td>10/1/2019</td><td>3.75 yrs</td></tr>
+            </tbody>
+          </table></div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Takeaway</div>PY data start their clock later (midpoint Jan 1, 2016) because the PY experience window is $1+\text{term}=2$ years long. Get the midpoints right and the period falls out.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Weighted multi-year trend &mdash; uniform vs effective-date-only writing <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Ultimate losses (thousands): AY2015 $=3{,}188$, AY2016 $=3{,}242$, AY2017 $=3{,}427$. Rates effective <strong>Jun 1, 2018</strong> for one year; trend $6\%$ <strong>continuous</strong>; weights 20% / 30% / 50%. Annual policies.</p>
+          <p><strong>(1) Written uniformly</strong> → forecast midpoint Jun 1, 2019. Trend periods 3.9167 / 2.9167 / 1.9167 yrs:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Weight</th><th>Period</th><th>Trended ($e^{0.06 n}$)</th></tr></thead>
+            <tbody>
+              <tr><td>2015</td><td>20%</td><td>3.9167</td><td>4,032.53</td></tr>
+              <tr><td>2016</td><td>30%</td><td>2.9167</td><td>3,862.02</td></tr>
+              <tr><td>2017</td><td>50%</td><td>1.9167</td><td>3,844.66</td></tr>
+            </tbody>
+          </table></div>
+          $$\widehat L = 0.20(4{,}032.53)+0.30(3{,}862.02)+0.50(3{,}844.66)\approx 3{,}886 \text{ (thousands).}$$
+          <p><strong>(2) Written only on Jun 1, 2018</strong> → forecast window is just the 1-yr term, midpoint <strong>Dec 1, 2018</strong>, so every trend period shrinks by 6 months (3.4167 / 2.4167 / 1.4167):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Weight</th><th>Period</th><th>Trended</th></tr></thead>
+            <tbody>
+              <tr><td>2015</td><td>20%</td><td>3.4167</td><td>3,913.35</td></tr>
+              <tr><td>2016</td><td>30%</td><td>2.4167</td><td>3,747.88</td></tr>
+              <tr><td>2017</td><td>50%</td><td>1.4167</td><td>3,731.03</td></tr>
+            </tbody>
+          </table></div>
+          $$\widehat L = 0.20(3{,}913.35)+0.30(3{,}747.88)+0.50(3{,}731.03)= 3{,}773 \text{ (thousands).}$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) ≈ 3,886k; (2) 3,773k. The "written-only-on-effective-date" assumption pulls the forecast midpoint earlier and lowers trended losses.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Premium at current rate level &mdash; parallelogram method <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual policies. Rate changes: <strong>+5% on 4/1/2015</strong>, <strong>+10% on 1/1/2016</strong>, <strong>−2% on 7/1/2017</strong>. Find on-level factors for CY2015–2018.</p>
+          <p><strong>Step 2 — cumulative rate level indices:</strong> I $=1.0000$; II $=1.05$; III $=1.05(1.10)=1.1550$; IV $=1.1550(0.98)=1.1319$ (= current index).</p>
+          <p><strong>Step 3 — portions</strong> (unit-square geometry; e.g. CY2015 group II triangle $=\tfrac12(\tfrac34)(\tfrac34)=0.28125$, group I $=0.71875$):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>CY</th><th>I</th><th>II</th><th>III</th><th>IV</th><th>Avg index</th><th>On-level factor</th></tr></thead>
+            <tbody>
+              <tr><td>2015</td><td>0.71875</td><td>0.28125</td><td>&ndash;</td><td>&ndash;</td><td>1.01406</td><td>1.11620</td></tr>
+              <tr><td>2016</td><td>0.03125</td><td>0.46875</td><td>0.50000</td><td>&ndash;</td><td>1.10094</td><td>1.02812</td></tr>
+              <tr><td>2017</td><td>&ndash;</td><td>&ndash;</td><td>0.87500</td><td>0.12500</td><td>1.15211</td><td>0.98246</td></tr>
+              <tr><td>2018</td><td>&ndash;</td><td>&ndash;</td><td>0.12500</td><td>0.87500</td><td>1.13479</td><td>0.99746</td></tr>
+            </tbody>
+          </table></div>
+          <p>Each on-level factor $=\dfrac{1.1319}{\text{avg index}}$. E.g. CY2016: $\dfrac{1.1319}{1.10094}=1.02812$; multiply CY2016 earned premium by $1.02812$ to bring it to current level.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>On-level factors: 1.1162 (2015), 1.0281 (2016), 0.9825 (2017), 0.9975 (2018). Years before the big increases get factors &gt; 1; the most recent years (already near current level) sit near 1.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> Parallelogram &mdash; multiple changes in one year, annual vs semi-annual <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Rate changes: <strong>+3% (5/1/2015)</strong>, <strong>−1% (1/1/2016)</strong>, <strong>+5% (7/1/2016)</strong>. CY2016 earned premium $=5{,}400$. Find CRL premium for CY2016.</p>
+          <p><strong>Cumulative indices:</strong> A $=1.0000$, B $=1.0300$, C $=1.03(0.99)=1.0197$, D $=1.0197(1.05)=1.07069$ (current).</p>
+          <p><strong>Annual policies — CY2016 portions</strong> (triangle A: legs $\tfrac{4}{12}$ → $\tfrac12(\tfrac{4}{12})^2=0.0556$; A+B$=0.5$ so B$=0.4444$; triangle D legs $\tfrac12$ → $0.125$; C$=0.375$):</p>
+          $$\text{avg}=0.0556(1)+0.4444(1.03)+0.375(1.0197)+0.125(1.07069)=1.02956.$$
+          $$\text{On-level}= \tfrac{1.07069}{1.02956}=1.03995,\qquad P^{C}_{2016}=5{,}400(1.03995)=5{,}615.72.$$
+          <p><strong>Semi-annual policies:</strong> diagonals end after 6 months (twice as steep), so CY2016 portions become B$=0.25$, C$=0.50$, D$=0.25$ (group A no longer reaches 2016):</p>
+          $$\text{avg}=0.25(1.03)+0.50(1.0197)+0.25(1.07069)=1.03502,\quad P^{C}_{2016}=5{,}400\!\left(\tfrac{1.07069}{1.03502}\right)=5{,}586.07.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Annual: \$5,615.72. Semi-annual: \$5,586.07. Shorter terms reach the current rate level faster, so the on-level factor is closer to 1.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> Extension of exposures &mdash; on-level a single policy <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Rate history (base rate per exposure, with class &amp; territory relativities):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Effective</th><th>Base</th><th>Class Y</th><th>Terr C</th></tr></thead>
+            <tbody>
+              <tr><td>Initial</td><td>300</td><td>1.20</td><td>0.80</td></tr>
+              <tr><td>7/1/2017 (current)</td><td>330</td><td>1.30</td><td>0.70</td></tr>
+            </tbody>
+          </table></div>
+          <p>A policy written 1/1/2015 (before any change) with class Y, territory C was charged $300(1.20)(0.80)=288$.</p>
+          <p><strong>On-level</strong> with current base rate and current relativities:</p>
+          $$330(1.30)(0.70)=300.30.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>On-level premium $=\$300.30$. Repeat for every historical policy and re-aggregate to get CRL premium — the most accurate method (but data-hungry).</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Both methods at once &mdash; loss ratio &amp; pure premium <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Given: premium at current rate level $=120{,}000$; projected losses + LAE $=74{,}000$; exposures $=1{,}000$; $V=20\%$; fixed expense per exposure $=25$; $Q_T=5\%$; current average rate $=120$.</p>
+          <p><strong>Loss ratio method:</strong> $LR=\frac{74{,}000}{120{,}000}=0.61667$, $F=\frac{25(1{,}000)}{120{,}000}=0.20833$, PLR $=1-0.20-0.05=0.75$:</p>
+          $$\text{Indicated change}=\frac{0.61667+0.20833}{0.75}-1=\frac{0.825}{0.75}-1=0.10.$$
+          <p><strong>Pure premium method:</strong> $\bar L=\frac{74{,}000}{1{,}000}=74$, $\bar E_F=25$:</p>
+          $$\text{Indicated rate}=\frac{74+25}{0.75}=\frac{99}{0.75}=132.$$
+          <p><strong>Reconcile:</strong> apply the +10% change to the current rate: $120(1.10)=132.$ ✓</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>+10% rate change (loss ratio) ⇔ \$132 indicated rate (pure premium). They match here because the data are consistent — they would <em>not</em> if $P^C$ came from the parallelogram method.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Full loss-ratio indication (trend + parallelogram + weighted LR) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Annual policies effective 10/1/2018 (1 yr), uniform writing; loss trend $3\%$ effective; all expenses variable with PLR $=80\%$. Rate changes: +3% (7/1/2015), +5% (1/1/2017).</p>
+          <p><strong>Trended ultimate losses (thousands)</strong> from AY2015–17 ultimates (970/967/956), trend periods 4.25/3.25/2.25: $1{,}100$, $1{,}065$, $1{,}022$.</p>
+          <p><strong>Parallelogram CRL premium</strong> (indices A$=1$, B$=1.03$, C$=1.03(1.05)=1.0815$; current $=1.0815$):</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>CY</th><th>Avg index</th><th>On-level</th><th>EP (booked)</th><th>$P^C$</th><th>Trended L</th><th>LR</th></tr></thead>
+            <tbody>
+              <tr><td>2015</td><td>1.00375</td><td>1.0775</td><td>1,122</td><td>1,209</td><td>1,100</td><td>0.9098</td></tr>
+              <tr><td>2016</td><td>1.02625</td><td>1.0538</td><td>1,155</td><td>1,217</td><td>1,065</td><td>0.8746</td></tr>
+              <tr><td>2017</td><td>1.05575</td><td>1.0244</td><td>1,281</td><td>1,312</td><td>1,022</td><td>0.7786</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Projected LR</strong> = simple average $=\frac{0.9098+0.8746+0.7786}{3}=0.8543$. With $F=0$:</p>
+          $$\text{Indicated change}=\frac{0.8543}{0.80}-1=0.0679\;(\approx +6.8\%).$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>≈ +6.79%. This is the full pipeline: develop+trend losses, on-level premium by parallelogram, form per-year loss ratios, average, then apply the loss-ratio formula.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Pure premium for a brand-new product (continuous trend, weights) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Launch 4/1/2019, annual policies (1-yr effective, uniform). $V=33\%$, $Q_T=5\%$, fixed $=25$/exposure. Continuous trend $1.5\%$. Industry data:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>AY</th><th>Ult. Losses</th><th>Earned Exp.</th><th>Weight</th><th>Period</th><th>Trended L</th><th>Pure prem.</th></tr></thead>
+            <tbody>
+              <tr><td>2016</td><td>5,160,000</td><td>12,760</td><td>40%</td><td>3.75</td><td>5,458,569</td><td>427.79</td></tr>
+              <tr><td>2017</td><td>4,110,000</td><td>12,800</td><td>60%</td><td>2.75</td><td>4,283,083</td><td>334.62</td></tr>
+            </tbody>
+          </table></div>
+          <p>Forecast midpoint = Apr 1, 2020. $\bar L = 0.4(427.79)+0.6(334.62)=371.88$. Then:</p>
+          $$\text{Indicated rate}=\frac{371.88+25}{1-0.33-0.05}=\frac{396.88}{0.62}=640.14.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>\$640.14 per exposure. (Equivalent shortcut: trend each year's <em>pure premium</em> directly — same result, since exposures are consistent.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Credibility blend of a small-segment indication <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The on-leveled, developed, trended experience for a small segment indicates an average rate of \$820, with credibility $Z=0.6$. The complement (trended current rate) is \$760.</p>
+          $$\text{Final}=0.6(820)+0.4(760)=492+304=796.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Credibility-weighted indicated rate $=\$796$. $Z$ always multiplies the volatile <em>experience</em>; $(1-Z)$ the stable complement.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ol>
+          <li><strong>CY vs AY/PY incurred formula.</strong> CY incurred uses the <em>change</em> in reserves ($+R_i-R_{i-1}$); AY/PY incurred adds the <em>current</em> reserve to cumulative paid ($+R_i$, no subtraction). Mixing them is the classic aggregation error.</li>
+          <li><strong>Overlap fallacy.</strong> Developing and trending do <em>not</em> double-count inflation — development brings immature losses to ultimate; trend moves the ultimate from the experience to the forecast cost level. Apply <strong>both</strong>.</li>
+          <li><strong>Wrong trend period / wrong midpoints.</strong> Trend runs from the <strong>average loss date of the experience period</strong> to the <strong>average loss date of the forecast period</strong>, not "midpoint to today." Remember PY experience length $=1+\text{term}$ and forecast length $=\text{term}+\text{time-in-effect}$. If policies are written <em>only on the effective date</em>, the forecast window collapses to the policy term (midpoint moves earlier).</li>
+          <li><strong>Effective vs continuous trend.</strong> $(1+t)^n$ vs $e^{rn}$ — use whichever the problem states; don't silently convert. Watch the "creative" forms (slope on $L$ → linear; slope on $\ln L$ → exponential).</li>
+          <li><strong>Matching losses to the wrong premium.</strong> Developed/trended losses go against <strong>on-level earned premium</strong> (CY EP ↔ AY losses; PY EP ↔ PY losses) — never written or as-booked premium.</li>
+          <li><strong>Double-counting fixed expenses.</strong> Fixed expenses belong in the <strong>numerator</strong> (as $E_F$ / fixed ratio $F$), <em>not</em> inside the PLR denominator. The denominator $1-V-Q_T$ holds <strong>only variable</strong> expense and profit.</li>
+          <li><strong>Misclassifying expenses.</strong> Commissions/taxes scale with premium → <strong>variable</strong> (% of premium). Overhead per policy → <strong>fixed</strong> (dollars). LAE (ALAE/ULAE, DCC/AAO) sits with <strong>losses</strong>, not with underwriting expenses.</li>
+          <li><strong>Parallelogram geometry.</strong> Areas use <em>fractions of a year</em>; a change with $m$ months remaining gives a leg $m/12$ and a corner area $\tfrac12(m/12)^2$. Non-annual terms change the slope (semi-annual → diagonals end at 6 months). Forgetting to use the <strong>current</strong> cumulative index in the numerator of the on-level factor is common.</li>
+          <li><strong>Indicated rate vs rate change.</strong> Pure premium method → a rate (level, dollars). Loss ratio method → a change factor (subtract 1 for %). Reporting one when asked for the other loses the point. The two agree only with <em>consistent</em> data — expect a small gap when $P^C$ comes from the parallelogram method.</li>
+          <li><strong>On-leveling is a premium step.</strong> Never apply on-level factors to losses; losses get development + trend only.</li>
+          <li><strong>PLR sign.</strong> $\text{PLR}=1-V-Q_T$. Profit/contingency is a <em>loading</em>, so it <strong>reduces</strong> the permissible loss ratio. Don't subtract the actual loss ratio.</li>
+        </ol>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>Write the fundamental insurance equation and name the four essential objectives of ratemaking.</summary>
+        <div class="qa-answer">$P = L + (V P + E_F) + Q_T P$ (losses incl. LAE, variable + fixed expenses, profit/contingency). Essential objectives: rates must <strong>cover expected losses &amp; expenses</strong>, <strong>provide for contingencies</strong>, <strong>encourage loss control</strong>, and <strong>satisfy regulators</strong> (adequate, not excessive, not unfairly discriminatory).</div>
+      </details>
+      <details class="qa"><summary>Name the three loss-aggregation methods on the exam and the key difference among them.</summary>
+        <div class="qa-answer"><strong>Calendar year</strong> (all transactions in the CY — final at year-end), <strong>accident year</strong> (accidents occurring in the window — needs a valuation date), <strong>policy year</strong> (policies issued in the window — needs a valuation date). Report year (claims-made) is not tested.</div>
+      </details>
+      <details class="qa"><summary>Give the CY and AY/PY incurred-loss formulas.</summary>
+        <div class="qa-answer">CY: $L_i^I=L_i^P+R_i-R_{i-1}$ (change in reserves). AY/PY at a valuation date: $L_i^I=L_i^P+R_i$ (cumulative paid + current reserve, no subtraction).</div>
+      </details>
+      <details class="qa"><summary>A claim: paid 1,500 during 2017; case reserve 3,000 at 12/31/2017, 2,600 at 12/31/2016; accident in 2016, policy written 2015. Find CY2017, AY2016@12/31/17, and PY2016 incurred.</summary>
+        <div class="qa-answer">CY2017 $=1{,}500+3{,}000-2{,}600=1{,}900$. AY2016@12/31/17 (cumulative paid 1,500 + reserve 3,000) $=4{,}500$. PY2016 $=0$ (policy was written in 2015, not 2016).</div>
+      </details>
+      <details class="qa"><summary>What is the overlap fallacy, and why is it wrong?</summary>
+        <div class="qa-answer">The myth that developing <em>and</em> trending double-counts inflation. Wrong because development brings <em>immature</em> losses to <em>ultimate</em>, while trend moves the <em>ultimate</em> from the experience cost level to the forecast cost level — two independent adjustments.</div>
+      </details>
+      <details class="qa"><summary>Annual policies, rates effective 10/1/2018 for one year, uniform writing. Find the trend period for AY2015 and for PY2015 data.</summary>
+        <div class="qa-answer">Forecast midpoint = 10/1/2019. AY2015 midpoint = 7/1/2015 → period 4.25 yrs. PY2015 window = 1/1/2015–12/31/2016, midpoint 1/1/2016 → period 3.75 yrs.</div>
+      </details>
+      <details class="qa"><summary>AY2014 ultimate losses 1,393 (thousands); annual effective trend 5%; trend period 4.6667 years. Trend the losses.</summary>
+        <div class="qa-answer">$1{,}393\times(1.05)^{4.6667}=1{,}393\times1.2581\approx 1{,}752.6$ (thousands).</div>
+      </details>
+      <details class="qa"><summary>Define the variable and fixed expense ratios, and state the PLR. Where do fixed expenses go in the rate formula?</summary>
+        <div class="qa-answer">$V=E_V/P$, $F=E_F/P$. $\text{PLR}=1-V-Q_T$. Fixed expenses are handled <strong>separately in the numerator</strong> (as $E_F$ or $F$), <em>not</em> inside the PLR denominator.</div>
+      </details>
+      <details class="qa"><summary>State the UEP recursion and use it: CY2016 WP = 1,140, EP = 1,085, prior UEP = 225. Find CY2016 UEP.</summary>
+        <div class="qa-answer">$P_i^U=P_i^W-P_i^E+P_{i-1}^U = 1{,}140-1{,}085+225=280$.</div>
+      </details>
+      <details class="qa"><summary>Contrast the extension-of-exposures and parallelogram methods for bringing premium to current rate level.</summary>
+        <div class="qa-answer">Extension of exposures recomputes <em>each policy's</em> premium at current base rate × current relativities — most accurate, but needs granular rating data. Parallelogram applies <em>average</em> on-level factors to aggregate premium assuming uniform writing — less accurate, but works with aggregate data only.</div>
+      </details>
+      <details class="qa"><summary>Policy written before any change with class relativity 1.20 and territory 0.80 on a base rate of 300; current base 330, current relativities 1.30 and 0.70. What was the premium, and what is the on-level premium?</summary>
+        <div class="qa-answer">Charged: $300(1.20)(0.80)=288$. On-level: $330(1.30)(0.70)=300.30$.</div>
+      </details>
+      <details class="qa"><summary>Annual rate changes +5%(4/1/15), +10%(1/1/16), −2%(7/1/17). Find the current cumulative rate level index and the CY2016 on-level factor if its average index is 1.10094.</summary>
+        <div class="qa-answer">Current index $=1.05(1.10)(0.98)=1.1319$. On-level factor for CY2016 $=1.1319/1.10094=1.02812$.</div>
+      </details>
+      <details class="qa"><summary>$P^C=120{,}000$, losses+LAE $=74{,}000$, exposures 1,000, $V=20\%$, fixed 25/exposure, $Q_T=5\%$, current rate 120. Find the loss-ratio rate change and the pure-premium rate.</summary>
+        <div class="qa-answer">Loss ratio: $\frac{0.61667+0.20833}{0.75}-1=0.10$. Pure premium: $\frac{74+25}{0.75}=132$. Check: $120(1.10)=132$. ✓</div>
+      </details>
+      <details class="qa"><summary>Industry data, continuous trend 1.5%: $\bar L=371.88$, fixed 25, $V=33\%$, $Q_T=5\%$. Find the pure-premium indicated rate.</summary>
+        <div class="qa-answer">$\frac{371.88+25}{1-0.33-0.05}=\frac{396.88}{0.62}=640.14$ per exposure.</div>
+      </details>
+      <details class="qa"><summary>A 1-year policy is written 2025-10-01 for \$1,200. As of 2025-12-31, how much is earned and how much is unearned?</summary>
+        <div class="qa-answer">Three of 12 months elapsed → earned $=1{,}200\times\tfrac{3}{12}=\$300$; unearned $=\$900$.</div>
+      </details>
+      <details class="qa"><summary>Experience indication is a \$1,050 rate with $Z=0.3$; complement is \$900. Credibility-weighted rate?</summary>
+        <div class="qa-answer">$0.3(1050)+0.7(900)=315+630=\$945$.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>window.MSS_BASE="../../../";</script>
+  <script src="../../../assets/js/manifest.js"></script>
+  <script src="../../../assets/js/search-index.js"></script>
+  <script src="../../../assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2a2a;          /* deep two-color "black" plate (dark teal-black) */
+    --red:#a8362b;          /* second plate: vintage brick red */
+    --red-deep:#8a2a21;
+    --paper:#f2ead7;        /* aged paper */
+    --paper-2:#ece2c9;
+    --paper-3:#e6dabd;
+    --rule:#1c2a2a;
+    --rule-soft:rgba(28,42,42,.28);
+    --shadow:rgba(28,42,42,.16);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Spectral",Georgia,serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    /* paper grain + faint print misregistration */
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(168,54,43,.04), transparent 38%),
+      radial-gradient(circle at 82% 78%, rgba(28,42,42,.05), transparent 42%),
+      repeating-linear-gradient(0deg, rgba(28,42,42,.018) 0 1px, transparent 1px 4px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ====== PAGE FRAME — like a printed book plate ====== */
+  .plate{
+    max-width:1180px;
+    margin:26px auto;
+    background:var(--paper);
+    border:2px solid var(--ink);
+    box-shadow:0 0 0 1px var(--paper), 10px 14px 0 -2px rgba(28,42,42,.12), 0 24px 60px -28px rgba(28,42,42,.5);
+    position:relative;
+  }
+  .plate::before{
+    /* inner hairline rule frame */
+    content:"";position:absolute;inset:9px;border:1px solid var(--rule-soft);pointer-events:none;
+  }
+
+  /* ====== MASTHEAD ====== */
+  header.mast{
+    display:flex;align-items:stretch;justify-content:space-between;
+    border-bottom:2px solid var(--ink);
+    padding:0;
+  }
+  .mast-left{display:flex;align-items:center;gap:18px;padding:20px 26px;}
+  .mark{
+    width:62px;height:62px;flex:0 0 auto;border:2px solid var(--ink);
+    border-radius:50%;display:grid;place-items:center;position:relative;
+    background:var(--paper-2);
+    box-shadow:inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--rule-soft);
+  }
+  .mark span{
+    font-family:"Domine",serif;font-weight:700;font-size:30px;color:var(--red);
+    line-height:1;letter-spacing:.5px;
+  }
+  .mark::after{
+    content:"73";position:absolute;bottom:-9px;right:-9px;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
+    background:var(--ink);color:var(--paper);padding:2px 5px;letter-spacing:1px;
+  }
+  .brand h1{
+    font-family:"Domine",serif;font-weight:700;font-size:23px;margin:0;letter-spacing:.2px;
+    text-transform:uppercase;
+  }
+  .brand .tag{
+    font-style:italic;font-size:13.5px;color:var(--red);letter-spacing:.3px;margin-top:1px;
+  }
+  .mast-right{
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+    padding:14px 26px;border-left:2px solid var(--ink);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 7px, rgba(168,54,43,.06) 7px 8px);
+    min-width:230px;
+  }
+  .mast-right .vol{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:2.5px;
+    text-transform:uppercase;color:var(--ink);
+  }
+  .mast-right .edition{
+    font-family:"Domine",serif;font-weight:600;font-size:15px;color:var(--red);margin-top:3px;
+  }
+  .mast-right .sub{font-size:12px;font-style:italic;color:var(--ink);opacity:.8;}
+
+  /* ====== NAV — running header / table of contents ====== */
+  nav.toc{
+    display:flex;align-items:stretch;flex-wrap:wrap;
+    border-bottom:2px solid var(--ink);
+    background:var(--paper-2);
+  }
+  .toc-label{
+    display:flex;align-items:center;gap:8px;
+    background:var(--ink);color:var(--paper);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;
+    letter-spacing:2px;text-transform:uppercase;padding:10px 18px;
+  }
+  .toc-label b{color:var(--red);font-weight:700;}
+  nav.toc ul{
+    list-style:none;display:flex;flex-wrap:wrap;margin:0;padding:0;flex:1;
+  }
+  nav.toc li{border-right:1px solid var(--rule-soft);}
+  nav.toc li a{
+    display:flex;align-items:center;gap:8px;height:100%;
+    padding:10px 17px;font-size:13.5px;font-weight:500;
+    transition:background .12s,color .12s;
+  }
+  nav.toc li a .fig{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--red);
+    border:1px solid var(--rule-soft);padding:1px 4px;line-height:1;
+  }
+  nav.toc li a:hover{background:var(--ink);color:var(--paper);}
+  nav.toc li a:hover .fig{color:var(--paper);border-color:var(--paper);}
+  nav.toc li.active a{background:var(--red);color:var(--paper);}
+  nav.toc li.active a .fig{color:var(--paper);border-color:var(--paper);}
+
+  /* ====== BODY GRID ====== */
+  .body{display:grid;grid-template-columns:1.55fr 1fr;}
+  .col-main{padding:30px 32px 34px;border-right:2px solid var(--ink);}
+  .col-side{padding:30px 28px 34px;background:var(--paper-2);}
+
+  /* ====== HERO ====== */
+  .greeting{
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:3px;
+    text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:10px;
+  }
+  .greeting::before{content:"§";font-size:16px;}
+  .greeting::after{content:"";flex:1;height:1px;background:var(--rule-soft);}
+  h2.headline{
+    font-family:"Domine",serif;font-weight:700;font-size:clamp(34px,5vw,52px);
+    line-height:1.03;margin:14px 0 12px;letter-spacing:-.5px;
+  }
+  h2.headline em{
+    font-style:italic;color:var(--red);position:relative;font-family:"Spectral",serif;font-weight:500;
+  }
+  h2.headline em::after{
+    content:"";position:absolute;left:0;right:0;bottom:2px;height:6px;
+    background:repeating-linear-gradient(90deg,var(--red) 0 6px, transparent 6px 9px);opacity:.4;
+  }
+  .lede{
+    font-size:16.5px;max-width:54ch;color:var(--ink);
+    border-left:3px double var(--red);padding-left:14px;margin:6px 0 0;
+  }
+  .drop::first-letter{
+    font-family:"Domine",serif;font-weight:700;font-size:3.1em;float:left;line-height:.82;
+    padding:6px 10px 2px 0;color:var(--red);
+  }
+
+  /* ====== STATS — figure plates ====== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:26px 0 4px;
+    border:2px solid var(--ink);
+  }
+  .stat{padding:16px 16px 14px;position:relative;border-right:1px solid var(--ink);}
+  .stat:last-child{border-right:none;}
+  .stat .figcap{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--red);
+  }
+  .stat .num{
+    font-family:"Domine",serif;font-weight:700;font-size:38px;line-height:1;margin:6px 0 2px;
+  }
+  .stat .lbl{font-size:12.5px;font-style:italic;opacity:.85;}
+  .stat .meter{
+    height:8px;border:1px solid var(--ink);margin-top:9px;background:var(--paper);position:relative;overflow:hidden;
+  }
+  .stat .meter i{
+    position:absolute;inset:0;width:72%;
+    background:repeating-linear-gradient(45deg,var(--red) 0 4px, var(--red-deep) 4px 5px);
+  }
+  .stat .ticks{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:8px;color:var(--rule-soft);margin-top:2px;}
+
+  /* ====== TOPIC PREVIEW + FORMULA ====== */
+  .section-rule{
+    display:flex;align-items:center;gap:12px;margin:30px 0 14px;
+  }
+  .section-rule h3{
+    font-family:"Domine",serif;font-weight:600;font-size:18px;margin:0;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;
+  }
+  .section-rule .chap{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;background:var(--ink);color:var(--paper);padding:2px 7px;letter-spacing:1px;
+  }
+  .section-rule::after{content:"";flex:1;height:0;border-top:2px solid var(--ink);}
+
+  .topic-card{
+    border:2px solid var(--ink);background:var(--paper);position:relative;
+  }
+  .topic-head{padding:15px 18px 12px;border-bottom:1px solid var(--rule-soft);}
+  .topic-head .ttl{font-family:"Domine",serif;font-weight:600;font-size:19px;}
+  .topic-head .sub{font-size:13.5px;font-style:italic;opacity:.85;margin-top:2px;}
+
+  .formula{
+    padding:6px 16px 16px;
+  }
+  .formula .fcap{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--red);margin:12px 0 8px;display:flex;align-items:center;gap:8px;
+  }
+  .formula .fcap::after{content:"";flex:1;border-top:1px dotted var(--rule-soft);}
+  .feq{
+    display:flex;flex-direction:column;gap:0;border:1px solid var(--ink);
+    background:
+      linear-gradient(var(--paper-3),var(--paper-3)) ,
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(28,42,42,.10) 31px 32px);
+  }
+  .feq .row{
+    font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:16px;
+    padding:0 16px;height:48px;display:flex;align-items:center;gap:12px;
+    border-bottom:1px solid var(--rule-soft);
+  }
+  .feq .row:last-child{border-bottom:none;}
+  .feq .row .n{
+    font-size:10px;color:var(--paper);background:var(--red);width:20px;height:20px;
+    display:grid;place-items:center;flex:0 0 auto;border-radius:50%;
+  }
+  .feq .row code{font-family:"IBM Plex Mono",monospace;font-size:16px;letter-spacing:.3px;}
+  .feq .row em{font-style:normal;color:var(--red);}
+
+  /* ====== EXAMPLE TEASER ====== */
+  .example{
+    margin-top:20px;border:2px solid var(--ink);position:relative;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 27px, rgba(28,42,42,.07) 27px 28px);
+  }
+  .example .ex-tab{
+    position:absolute;top:-2px;right:18px;background:var(--red);color:var(--paper);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:1.5px;padding:4px 10px;
+    text-transform:uppercase;
+  }
+  .example .ex-body{padding:18px 18px 16px;}
+  .example .ex-no{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--red);letter-spacing:1.5px;text-transform:uppercase;}
+  .example h4{font-family:"Domine",serif;font-weight:600;font-size:18px;margin:5px 0 6px;}
+  .example p{font-size:14px;margin:0;max-width:52ch;font-style:italic;opacity:.9;}
+  .btns{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;}
+  .btn{
+    font-family:"Domine",serif;font-weight:600;font-size:14px;letter-spacing:.4px;
+    padding:11px 22px;border:2px solid var(--ink);cursor:pointer;text-transform:uppercase;
+    transition:transform .08s, box-shadow .1s;display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn .a{font-family:"IBM Plex Mono",monospace;font-size:11px;}
+  .btn-primary{background:var(--red);color:var(--paper);box-shadow:4px 4px 0 0 var(--ink);}
+  .btn-primary:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 0 var(--ink);}
+  .btn-ghost{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 0 var(--rule-soft);}
+  .btn-ghost:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 0 var(--ink);}
+
+  /* ====== SIDEBAR ====== */
+  .exam-card{
+    border:2px solid var(--ink);background:var(--ink);color:var(--paper);
+    position:relative;overflow:hidden;
+  }
+  .exam-card::before{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(45deg, transparent 0 9px, rgba(168,54,43,.16) 9px 10px);
+    pointer-events:none;
+  }
+  .exam-card .ec-top{padding:16px 18px 12px;border-bottom:1px solid rgba(242,234,215,.3);position:relative;}
+  .exam-card .kicker{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:2.5px;color:#e9b8b1;text-transform:uppercase;}
+  .exam-card .ec-ttl{font-family:"Domine",serif;font-weight:700;font-size:28px;margin:6px 0 2px;letter-spacing:.5px;}
+  .exam-card .ec-ttl b{color:var(--red);}
+  .exam-card .ec-name{font-style:italic;font-size:14px;opacity:.92;}
+  .exam-meta{display:grid;grid-template-columns:1fr 1fr;position:relative;}
+  .exam-meta .m{padding:12px 18px;border-right:1px solid rgba(242,234,215,.22);border-top:1px solid rgba(242,234,215,.22);}
+  .exam-meta .m:nth-child(2n){border-right:none;}
+  .exam-meta .m .k{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:1.5px;color:#e9b8b1;text-transform:uppercase;}
+  .exam-meta .m .v{font-family:"Domine",serif;font-weight:600;font-size:19px;margin-top:2px;}
+
+  /* RULED DIAGRAM — survival curve figure */
+  .figure{
+    margin-top:22px;border:2px solid var(--ink);background:var(--paper);
+  }
+  .figure .fig-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:9px 14px;border-bottom:1px solid var(--ink);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  }
+  .figure .fig-head b{color:var(--red);}
+  .figure svg{display:block;width:100%;height:auto;}
+  .figure .fig-cap{
+    padding:8px 14px 11px;font-size:12.5px;font-style:italic;border-top:1px solid var(--rule-soft);
+  }
+  .figure .fig-cap b{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--red);letter-spacing:1px;}
+
+  /* TRAP CALLOUT */
+  .trap{
+    margin-top:22px;border:2px solid var(--red);background:var(--paper);position:relative;
+    box-shadow:5px 5px 0 -1px rgba(168,54,43,.18);
+  }
+  .trap .t-head{
+    display:flex;align-items:center;gap:9px;background:var(--red);color:var(--paper);
+    padding:8px 14px;font-family:"Domine",serif;font-weight:700;font-size:13px;
+    text-transform:uppercase;letter-spacing:1.2px;
+  }
+  .trap .t-head .icn{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;border:1.5px solid var(--paper);
+    width:20px;height:20px;display:grid;place-items:center;border-radius:50%;
+  }
+  .trap p{padding:13px 15px 14px;margin:0;font-size:14px;line-height:1.5;}
+  .trap p u{text-decoration:none;color:var(--red);font-weight:600;border-bottom:2px solid var(--red);}
+  .trap p .frac{font-family:"IBM Plex Mono",monospace;font-style:normal;background:var(--paper-3);padding:0 4px;border:1px solid var(--rule-soft);}
+
+  /* progress mini list */
+  .prog{margin-top:22px;}
+  .prog .ph{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .prog .ph::after{content:"";flex:1;border-top:1px dotted var(--rule-soft);}
+  .prog ul{list-style:none;margin:0;padding:0;}
+  .prog li{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:5px 0;border-bottom:1px dotted var(--rule-soft);}
+  .prog li .dot{width:13px;height:13px;border:1.5px solid var(--ink);flex:0 0 auto;border-radius:50%;}
+  .prog li.done .dot{background:var(--red);border-color:var(--red);}
+  .prog li.done .nm{}
+  .prog li .nm{flex:1;}
+  .prog li .pg{font-family:"IBM Plex Mono",monospace;font-size:11px;opacity:.7;}
+
+  /* ====== FOOTER ====== */
+  footer.foot{
+    border-top:2px solid var(--ink);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+    padding:14px 26px;background:var(--paper-2);
+  }
+  footer .f-brand{display:flex;align-items:center;gap:10px;font-family:"Domine",serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.5px;}
+  footer .f-brand .m{width:26px;height:26px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;color:var(--red);font-weight:700;font-size:14px;font-family:"Domine",serif;}
+  footer .f-tag{font-style:italic;font-size:13px;color:var(--red);}
+  footer .f-meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:1.5px;color:var(--ink);opacity:.7;text-transform:uppercase;}
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width:880px){
+    .body{grid-template-columns:1fr;}
+    .col-main{border-right:none;border-bottom:2px solid var(--ink);}
+    .mast-right{display:none;}
+  }
+  @media (max-width:700px){
+    .plate{margin:10px;}
+    .stats{grid-template-columns:1fr;}
+    .stat{border-right:none;border-bottom:1px solid var(--ink);}
+    .stat:last-child{border-bottom:none;}
+    .feq .row{font-size:13.5px;height:auto;padding:11px 12px;flex-wrap:wrap;}
+    .exam-meta{grid-template-columns:1fr;}
+    .col-main,.col-side{padding:22px 18px;}
+  }
+</style>
+</head>
+<body>
+<main class="plate">
+
+  <!-- MASTHEAD -->
+  <header class="mast">
+    <div class="mast-left">
+      <div class="mark"><span>M</span></div>
+      <div class="brand">
+        <h1>Me Studing Stuff</h1>
+        <div class="tag">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <div class="mast-right">
+      <div class="vol">Vol. FAM · No. 73</div>
+      <div class="edition">The Vintage Edition</div>
+      <div class="sub">printed in two colours</div>
+    </div>
+  </header>
+
+  <!-- NAV / TABLE OF CONTENTS -->
+  <nav class="toc">
+    <div class="toc-label">Contents <b>·</b> FAM-L / FAM-S</div>
+    <ul>
+      <li class="active"><a href="#"><span class="fig">I</span>Survival Models</a></li>
+      <li><a href="#"><span class="fig">II</span>Life Tables</a></li>
+      <li><a href="#"><span class="fig">III</span>Life Insurance</a></li>
+      <li><a href="#"><span class="fig">IV</span>Life Annuities</a></li>
+      <li><a href="#"><span class="fig">V</span>Premiums</a></li>
+      <li><a href="#"><span class="fig">VI</span>Policy Values</a></li>
+    </ul>
+  </nav>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- MAIN COLUMN -->
+    <section class="col-main">
+      <div class="greeting">Good evening</div>
+      <h2 class="headline">Let&rsquo;s get you that <em>pass.</em></h2>
+      <p class="lede drop">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat">
+          <div class="figcap">Fig. 1 — Overall progress</div>
+          <div class="num">72<small style="font-size:18px">%</small></div>
+          <div class="lbl">12 of 17 topics</div>
+          <div class="meter"><i></i></div>
+          <div class="ticks"><span>0</span><span>50</span><span>100</span></div>
+        </div>
+        <div class="stat">
+          <div class="figcap">Fig. 2 — Exam countdown</div>
+          <div class="num">86</div>
+          <div class="lbl">days remaining</div>
+          <div class="meter"><i style="width:42%"></i></div>
+          <div class="ticks"><span>now</span><span>·</span><span>sit</span></div>
+        </div>
+        <div class="stat">
+          <div class="figcap">Fig. 3 — Topics solid</div>
+          <div class="num">8</div>
+          <div class="lbl">mastered &amp; retained</div>
+          <div class="meter"><i style="width:47%"></i></div>
+          <div class="ticks"><span>0</span><span>·</span><span>17</span></div>
+        </div>
+      </div>
+
+      <!-- TOPIC PREVIEW + FORMULA -->
+      <div class="section-rule">
+        <span class="chap">Ch. III</span>
+        <h3>Life Insurance Present Values</h3>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-head">
+          <div class="ttl">Life Insurance Present Values</div>
+          <div class="sub">The expected present value of a benefit paid on death — the spine of every FAM derivation.</div>
+        </div>
+        <div class="formula">
+          <div class="fcap">Plate III.a — Key identities</div>
+          <div class="feq">
+            <div class="row"><span class="n">1</span><code>A<em>ₓ</em> = 1 − d·ä<em>ₓ</em></code></div>
+            <div class="row"><span class="n">2</span><code>Var(Z) = ²A<em>ₓ</em> − (A<em>ₓ</em>)²</code></div>
+            <div class="row"><span class="n">3</span><code>ä<em>ₓ</em> = (1 − A<em>ₓ</em>) / d</code></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKED EXAMPLE -->
+      <div class="example">
+        <div class="ex-tab">Worked example</div>
+        <div class="ex-body">
+          <div class="ex-no">Example 1</div>
+          <h4>Whole life EPV &amp; variance</h4>
+          <p>Compute A&#8339; and Var(Z) for a unit whole-life benefit, then read back the annuity ä&#8339; via identity (3).</p>
+          <div class="btns">
+            <a href="#" class="btn btn-primary"><span class="a">&#9656;</span>Start studying</a>
+            <a href="#" class="btn btn-ghost"><span class="a">&#8634;</span>Resume</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIDEBAR -->
+    <aside class="col-side">
+
+      <!-- EXAM CARD -->
+      <div class="exam-card">
+        <div class="ec-top">
+          <div class="kicker">The Examination</div>
+          <div class="ec-ttl">Exam <b>FAM</b></div>
+          <div class="ec-name">Fundamentals of Actuarial Mathematics</div>
+        </div>
+        <div class="exam-meta">
+          <div class="m"><div class="k">Board</div><div class="v">SOA</div></div>
+          <div class="m"><div class="k">Questions</div><div class="v">34</div></div>
+          <div class="m"><div class="k">Pass mark</div><div class="v">6 / 10</div></div>
+          <div class="m"><div class="k">Tracks</div><div class="v">L &amp; S</div></div>
+        </div>
+      </div>
+
+      <!-- RULED DIAGRAM FIGURE -->
+      <div class="figure">
+        <div class="fig-head"><span>Fig. 4 — Survival function</span><b>S(x)</b></div>
+        <svg viewBox="0 0 320 180" role="img" aria-label="Ruled survival curve diagram">
+          <defs>
+            <pattern id="grid" width="32" height="24" patternUnits="userSpaceOnUse">
+              <path d="M32 0H0V24" fill="none" stroke="#1c2a2a" stroke-opacity="0.16" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect x="34" y="12" width="272" height="132" fill="url(#grid)"/>
+          <!-- axes -->
+          <line x1="34" y1="144" x2="306" y2="144" stroke="#1c2a2a" stroke-width="1.6"/>
+          <line x1="34" y1="12" x2="34" y2="144" stroke="#1c2a2a" stroke-width="1.6"/>
+          <!-- axis arrows -->
+          <path d="M306 144 l-7 -3.5 v7 z" fill="#1c2a2a"/>
+          <path d="M34 12 l-3.5 7 h7 z" fill="#1c2a2a"/>
+          <!-- survival curve (printed in red plate) -->
+          <path d="M34 18 C 120 22, 190 60, 240 110 S 296 142, 306 144"
+                fill="none" stroke="#a8362b" stroke-width="2.4"/>
+          <!-- dashed reference at x -->
+          <line x1="150" y1="144" x2="150" y2="62" stroke="#a8362b" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="34" y1="62" x2="150" y2="62" stroke="#a8362b" stroke-width="1" stroke-dasharray="4 3"/>
+          <circle cx="150" cy="62" r="3.2" fill="#a8362b"/>
+          <!-- labels -->
+          <text x="312" y="148" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1c2a2a">x</text>
+          <text x="20" y="20" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1c2a2a">1</text>
+          <text x="156" y="58" font-family="IBM Plex Mono, monospace" font-size="9" fill="#a8362b">S(x)</text>
+          <text x="142" y="158" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1c2a2a">x</text>
+        </svg>
+        <div class="fig-cap"><b>N.B.</b> The force of mortality μ&#8339; is the negative slope of ln S(x).</div>
+      </div>
+
+      <!-- COMMON TRAP -->
+      <div class="trap">
+        <div class="t-head"><span class="icn">!</span>Common trap</div>
+        <p>Under <u>UDD</u>, multiply <u>ONLY</u> the term/death piece by <span class="frac">i/&delta;</span> — the pure endowment is never rescaled.</p>
+      </div>
+
+      <!-- MINI PROGRESS LIST -->
+      <div class="prog">
+        <div class="ph">Reading log</div>
+        <ul>
+          <li class="done"><span class="dot"></span><span class="nm">Survival Models</span><span class="pg">solid</span></li>
+          <li class="done"><span class="dot"></span><span class="nm">Life Tables</span><span class="pg">solid</span></li>
+          <li class="done"><span class="dot"></span><span class="nm">Life Insurance</span><span class="pg">solid</span></li>
+          <li><span class="dot"></span><span class="nm">Life Annuities</span><span class="pg">p. 41</span></li>
+          <li><span class="dot"></span><span class="nm">Premiums</span><span class="pg">p. 58</span></li>
+          <li><span class="dot"></span><span class="nm">Policy Values</span><span class="pg">—</span></li>
+        </ul>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="f-brand"><span class="m">M</span>Me Studing Stuff</div>
+    <div class="f-tag">Study smarter. Pass exams.</div>
+    <div class="f-meta">Two-colour print · Vintage Textbook · No. 73</div>
+  </footer>
+
+</main>
+</body>
+</html>

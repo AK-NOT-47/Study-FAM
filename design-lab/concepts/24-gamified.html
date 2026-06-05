@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Me Studing Stuff — Study smarter. Pass exams.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --green:#58cc02;
+    --green-dark:#48a800;
+    --green-deep:#3a8a00;
+    --green-soft:#d7f7c4;
+    --blue:#1cb0f6;
+    --blue-dark:#1090d4;
+    --purple:#ce82ff;
+    --purple-dark:#a560cc;
+    --gold:#ffc800;
+    --gold-dark:#e0ab00;
+    --red:#ff4b4b;
+    --orange:#ff9600;
+    --ink:#3c3c3c;
+    --ink-soft:#777;
+    --bg:#fff;
+    --panel:#fff;
+    --line:#e5e5e5;
+    --line-dark:#cfcfcf;
+    --cream:#fffdf6;
+    --shadow-green:0 4px 0 var(--green-deep);
+    --r:18px;
+    --r-lg:26px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, #e8fbd8 0, transparent 38%),
+      radial-gradient(circle at 88% 4%, #def3ff 0, transparent 34%),
+      radial-gradient(circle at 78% 92%, #f6e6ff 0, transparent 40%),
+      #f7fbf0;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:18px;
+  }
+  h1,h2,h3,h4{font-family:'Baloo 2',cursive;line-height:1.08;letter-spacing:-.01em}
+  .shell{
+    max-width:1280px;margin:0 auto;
+    display:grid;
+    grid-template-columns:268px 1fr;
+    gap:20px;
+    align-items:start;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .side{
+    position:sticky;top:18px;
+    background:var(--panel);
+    border:2px solid var(--line);
+    border-radius:var(--r-lg);
+    padding:20px 16px;
+    box-shadow:0 8px 0 #ececec;
+  }
+  .brand{display:flex;align-items:center;gap:12px;padding:4px 6px 18px;border-bottom:2px dashed var(--line);margin-bottom:16px}
+  .logo{
+    width:50px;height:50px;border-radius:16px;flex:0 0 auto;
+    background:linear-gradient(160deg,var(--green),var(--green-dark));
+    box-shadow:0 4px 0 var(--green-deep);
+    display:grid;place-items:center;
+    font-family:'Baloo 2';font-weight:800;color:#fff;font-size:1.7rem;
+    transform:rotate(-4deg);
+  }
+  .brand-name{font-family:'Baloo 2';font-weight:800;font-size:1.25rem;color:var(--ink)}
+  .brand-tag{font-size:.72rem;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:.04em}
+
+  .section-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:linear-gradient(160deg,var(--purple),var(--purple-dark));
+    color:#fff;font-weight:800;font-size:.74rem;letter-spacing:.05em;
+    padding:8px 14px;border-radius:999px;box-shadow:0 4px 0 #8a4ab0;
+    margin:0 6px 18px;
+  }
+
+  .nav-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);padding:0 8px 8px}
+  nav ul{list-style:none}
+  nav li{margin-bottom:8px}
+  nav a{
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:var(--ink);font-weight:800;font-size:.95rem;
+    padding:11px 12px;border-radius:14px;border:2px solid transparent;
+    transition:.12s;
+  }
+  nav a .ic{
+    width:34px;height:34px;border-radius:11px;flex:0 0 auto;
+    display:grid;place-items:center;font-size:1.05rem;
+    background:#f0f0f0;box-shadow:inset 0 -3px 0 rgba(0,0,0,.06);
+  }
+  nav a .xp{margin-left:auto;font-size:.72rem;font-weight:900;color:var(--ink-soft)}
+  nav a:hover{background:#f3fbe9;border-color:var(--line)}
+  nav a.active{background:#eaffd6;border-color:var(--green);color:var(--green-deep)}
+  nav a.active .ic{background:var(--green);color:#fff;box-shadow:inset 0 -3px 0 var(--green-deep)}
+  .ic.b{background:#dcf3ff}.ic.p{background:#f5e3ff}.ic.g{background:#fff3cf}.ic.o{background:#ffe5cc}.ic.r{background:#ffdede}
+
+  .streak-box{
+    margin-top:18px;padding:14px;border-radius:18px;
+    background:linear-gradient(160deg,#fff6da,#ffe9b0);
+    border:2px solid var(--gold);text-align:center;
+    box-shadow:0 4px 0 var(--gold-dark);
+  }
+  .streak-num{font-family:'Baloo 2';font-weight:800;font-size:2rem;color:var(--orange);line-height:1}
+  .streak-num span{font-size:1.4rem}
+  .streak-lbl{font-size:.78rem;font-weight:800;color:#9a6b00;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ---------- MAIN ---------- */
+  main{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+  .topbar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--panel);border:2px solid var(--line);border-radius:var(--r-lg);
+    padding:12px 18px;box-shadow:0 6px 0 #ececec;
+  }
+  .chip{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:.85rem;padding:8px 14px;border-radius:999px}
+  .chip.heart{background:#ffe3e3;color:var(--red)}
+  .chip.gem{background:#dff4ff;color:var(--blue-dark)}
+  .chip.crown{background:#fff2c9;color:var(--gold-dark)}
+  .topbar .spacer{flex:1}
+  .avatar{
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.4rem;
+    background:linear-gradient(160deg,var(--blue),var(--blue-dark));box-shadow:0 4px 0 var(--blue-dark)
+  }
+
+  /* HERO */
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--green) 0%,var(--green-dark) 100%);
+    border-radius:var(--r-lg);padding:32px 34px;color:#fff;
+    box-shadow:0 10px 0 var(--green-deep);
+  }
+  .hero::after{
+    content:"";position:absolute;right:-40px;top:-40px;width:240px;height:240px;border-radius:50%;
+    background:rgba(255,255,255,.12)
+  }
+  .hero::before{
+    content:"";position:absolute;right:80px;bottom:-60px;width:160px;height:160px;border-radius:50%;
+    background:rgba(255,255,255,.08)
+  }
+  .hero-grid{position:relative;z-index:2;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .hero-text{flex:1 1 360px;min-width:0}
+  .greet{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);font-weight:800;font-size:.85rem;padding:6px 14px;border-radius:999px;margin-bottom:14px}
+  .hero h1{font-size:clamp(2.1rem,4.4vw,3.2rem);color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.12)}
+  .hero p{margin-top:12px;font-weight:700;font-size:1.02rem;max-width:46ch;color:#f3ffe9}
+  .hero h1 br{display:none}
+  .hero-xp{
+    position:relative;margin-top:18px;max-width:340px;height:22px;border-radius:999px;
+    background:rgba(0,0,0,.18);border:2px solid rgba(255,255,255,.45);overflow:hidden;
+  }
+  .hero-xp-fill{
+    position:absolute;inset:0;border-radius:999px;
+    background:linear-gradient(90deg,var(--gold),#ffdd55);
+    box-shadow:inset 0 -4px 0 rgba(0,0,0,.12);
+  }
+  .hero-xp-label{
+    position:absolute;inset:0;display:grid;place-items:center;z-index:2;
+    font-weight:900;font-size:.72rem;color:#3a2a00;letter-spacing:.02em;
+  }
+  .mascot{
+    position:relative;
+    flex:0 0 auto;width:150px;height:150px;border-radius:34px;
+    background:rgba(255,255,255,.16);border:3px solid rgba(255,255,255,.4);
+    display:grid;place-items:center;font-size:5rem;
+    box-shadow:inset 0 -8px 0 rgba(0,0,0,.08);
+    transform:rotate(4deg);
+  }
+  .mascot::after{
+    content:"LV 7";position:absolute;bottom:-12px;right:-10px;
+    background:var(--gold);color:#5a3d00;font-family:'Baloo 2';font-weight:800;
+    font-size:.82rem;padding:5px 12px;border-radius:999px;border:3px solid #fff;
+    box-shadow:0 3px 0 var(--gold-dark);transform:rotate(-6deg);
+  }
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .stat{
+    background:var(--panel);border:2px solid var(--line);border-radius:var(--r-lg);
+    padding:18px 20px;box-shadow:0 6px 0 #ececec;position:relative;
+  }
+  .stat .top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .stat .emoji{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:1.25rem}
+  .e-green{background:var(--green-soft)}.e-red{background:#ffe1e1}.e-gold{background:#fff1c4}
+  .stat .lbl{font-weight:800;font-size:.8rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
+  .stat .big{font-family:'Baloo 2';font-weight:800;font-size:2.4rem;line-height:1}
+  .stat .sub{font-weight:700;font-size:.85rem;color:var(--ink-soft);margin-top:4px}
+  .bar{height:14px;border-radius:999px;background:#eee;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+  .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--green),#7ee63c)}
+  .c-green{color:var(--green-dark)}.c-red{color:var(--red)}.c-gold{color:var(--gold-dark)}
+
+  /* CONTENT COLUMNS */
+  .cols{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;align-items:start}
+  .card{
+    background:var(--panel);border:2px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:0 6px 0 #ececec;overflow:hidden;
+  }
+  .card-pad{padding:22px 24px}
+
+  .exam-card{
+    background:linear-gradient(155deg,#1cb0f6,#1090d4);color:#fff;border:none;
+    box-shadow:0 8px 0 #0c79b3;
+  }
+  .exam-card .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.22);font-weight:800;font-size:.78rem;padding:6px 12px;border-radius:999px;letter-spacing:.04em}
+  .exam-card h3{font-size:1.9rem;color:#fff;margin:12px 0 6px;text-shadow:0 2px 0 rgba(0,0,0,.12)}
+  .exam-card .meta{font-weight:700;font-size:.92rem;color:#e7f7ff}
+  .exam-meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .mini{background:rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;font-weight:800;font-size:.82rem}
+  .mini b{display:block;font-family:'Baloo 2';font-size:1.15rem;font-weight:800}
+
+  .lesson-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .lesson-head .num{width:42px;height:42px;border-radius:14px;background:var(--purple);color:#fff;display:grid;place-items:center;font-family:'Baloo 2';font-weight:800;font-size:1.1rem;box-shadow:0 4px 0 var(--purple-dark)}
+  .lesson-head h3{font-size:1.5rem}
+  .lede{font-weight:700;color:var(--ink-soft);margin-bottom:18px;font-size:.98rem}
+
+  .formula{
+    background:var(--cream);border:2px solid var(--line);border-radius:18px;
+    padding:6px;margin-bottom:18px;
+  }
+  .formula .frow{
+    display:flex;align-items:center;gap:12px;padding:14px 16px;
+    border-bottom:2px dashed var(--line);
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .tag{
+    flex:0 0 auto;font-weight:900;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;
+    padding:5px 10px;border-radius:8px;color:#fff;
+  }
+  .t-green{background:var(--green)}.t-blue{background:var(--blue)}.t-purple{background:var(--purple)}
+  .formula .eq{
+    font-family:'Cambria Math','Georgia',serif;font-size:1.32rem;font-weight:600;color:#2a2a2a;
+  }
+  .formula .eq sup{font-size:.62em}
+
+  .trap{
+    display:flex;gap:14px;align-items:flex-start;
+    background:linear-gradient(160deg,#fff4e2,#ffe6c7);
+    border:2px solid var(--orange);border-radius:18px;padding:16px 18px;
+    box-shadow:0 4px 0 #e08400;
+  }
+  .trap .icon{font-size:1.8rem;flex:0 0 auto;line-height:1}
+  .trap .ttl{font-family:'Baloo 2';font-weight:800;color:#b35a00;font-size:1.05rem;margin-bottom:2px}
+  .trap p{font-weight:700;color:#7a4a10;font-size:.92rem}
+
+  /* SIDE COLUMN cards */
+  .quest{
+    background:linear-gradient(160deg,#fbf0ff,#f1e0ff);
+    border:2px solid var(--purple);box-shadow:0 6px 0 var(--purple-dark);
+  }
+  .quest .qtop{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .quest .qbadge{background:var(--purple);color:#fff;font-weight:900;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:999px}
+  .quest h3{font-size:1.25rem;color:#6a2a8c}
+  .quest .qsub{font-weight:700;font-size:.9rem;color:#8a5aa8;margin:6px 0 16px}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    font-family:'Baloo 2';font-weight:800;font-size:1.05rem;text-decoration:none;
+    padding:14px 18px;border-radius:16px;border:none;cursor:pointer;letter-spacing:.02em;
+    text-transform:uppercase;
+  }
+  .btn-green{background:var(--green);color:#fff;box-shadow:0 5px 0 var(--green-deep)}
+  .btn-blue{background:#fff;color:var(--blue-dark);box-shadow:0 5px 0 var(--line-dark);border:2px solid var(--line)}
+  .btn-green:hover,.btn-blue:hover{transform:translateY(2px)}
+  .btn-green:hover{box-shadow:0 3px 0 var(--green-deep)}
+  .btn-blue:hover{box-shadow:0 3px 0 var(--line-dark)}
+  .btn-row{display:grid;gap:12px}
+
+  .reward{
+    background:var(--panel);border:2px solid var(--line);border-radius:var(--r-lg);box-shadow:0 6px 0 #ececec;
+  }
+  .reward h4{font-size:1.15rem;margin-bottom:4px}
+  .reward .small{font-weight:700;color:var(--ink-soft);font-size:.85rem;margin-bottom:14px}
+  .nodes{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 4px}
+  .nodes::before{content:"";position:absolute;left:8%;right:8%;top:50%;height:5px;background:var(--line);border-radius:999px;transform:translateY(-50%);z-index:0}
+  .node{
+    position:relative;z-index:1;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+    font-size:1.2rem;border:3px solid #fff;
+  }
+  .node.done{background:var(--green);box-shadow:0 3px 0 var(--green-deep)}
+  .node.now{background:var(--gold);box-shadow:0 3px 0 var(--gold-dark);transform:scale(1.12)}
+  .node.lock{background:#e4e4e4;color:#aaa;box-shadow:0 3px 0 #cfcfcf}
+
+  /* FOOTER */
+  footer{
+    grid-column:1 / -1;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:var(--panel);border:2px solid var(--line);border-radius:var(--r-lg);
+    padding:18px 24px;box-shadow:0 6px 0 #ececec;margin-top:0;
+  }
+  .foot-brand{display:flex;align-items:center;gap:12px}
+  .foot-brand .logo{width:40px;height:40px;font-size:1.3rem;border-radius:13px}
+  .foot-brand b{font-family:'Baloo 2';font-weight:800;font-size:1.05rem}
+  .foot-brand small{display:block;color:var(--ink-soft);font-weight:700;font-size:.78rem}
+  footer .fnote{font-weight:700;color:var(--ink-soft);font-size:.85rem}
+
+  /* RESPONSIVE */
+  @media(max-width:980px){
+    .shell{grid-template-columns:1fr}
+    .side{position:static;display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;align-items:start}
+    .brand{grid-column:1 / -1}
+    .section-pill{grid-column:1 / -1}
+    nav{grid-column:1 / -1}
+    nav ul{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    nav li{margin:0}
+    .streak-box{grid-column:1 / -1}
+    .cols{grid-template-columns:1fr}
+  }
+  @media(max-width:760px){
+    .hero h1 br{display:block}
+  }
+  @media(max-width:700px){
+    body{padding:10px}
+    .stats{grid-template-columns:1fr}
+    .hero{padding:24px}
+    .hero-grid{gap:18px}
+    .mascot{width:96px;height:96px;font-size:3.2rem;border-radius:24px}
+    .mascot::after{font-size:.66rem;padding:3px 9px;bottom:-9px;right:-7px}
+    .hero-xp{max-width:100%}
+    nav ul{grid-template-columns:1fr}
+    .side{grid-template-columns:1fr}
+  }
+  @media(max-width:430px){
+    .mascot{display:none}
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="brand">
+        <div class="logo">M</div>
+        <div>
+          <div class="brand-name">Me Studing Stuff</div>
+          <div class="brand-tag">Study smarter · Pass exams</div>
+        </div>
+      </div>
+
+      <span class="section-pill">🎯 FAM-L / FAM-S</span>
+
+      <div class="nav-label">Your Quest Map</div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active"><span class="ic">🪦</span> Survival Models <span class="xp">+50</span></a></li>
+          <li><a href="#"><span class="ic b">📋</span> Life Tables <span class="xp">+50</span></a></li>
+          <li><a href="#"><span class="ic p">🛡️</span> Life Insurance <span class="xp">+60</span></a></li>
+          <li><a href="#"><span class="ic g">💰</span> Life Annuities <span class="xp">+60</span></a></li>
+          <li><a href="#"><span class="ic o">🧾</span> Premiums <span class="xp">+70</span></a></li>
+          <li><a href="#"><span class="ic r">📈</span> Policy Values <span class="xp">+70</span></a></li>
+          <li><a href="#"><span class="ic b">🎲</span> Short-Term Models <span class="xp">+80</span></a></li>
+        </ul>
+      </nav>
+
+      <div class="streak-box">
+        <div class="streak-num">12 <span>🔥</span></div>
+        <div class="streak-lbl">Day Streak</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+      <div class="topbar">
+        <span class="chip heart">❤️ 5</span>
+        <span class="chip gem">💎 480 XP</span>
+        <span class="chip crown">👑 Gold League</span>
+        <span class="spacer"></span>
+        <div class="avatar">🦉</div>
+      </div>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-grid">
+          <div class="hero-text">
+            <span class="greet">🌙 Good evening · Level 7 Actuary</span>
+            <h1>Level up. <br>Pass Exam FAM.</h1>
+            <p>Turn the SOA syllabus into bite-size quests — notes, formulas and worked problems that hand you XP for every concept you crush.</p>
+            <div class="hero-xp">
+              <span class="hero-xp-fill" style="width:72%"></span>
+              <span class="hero-xp-label">720 / 1000 XP to Level 8</span>
+            </div>
+          </div>
+          <div class="mascot">🦉</div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats">
+        <div class="stat">
+          <div class="top">
+            <span class="emoji e-green">📊</span>
+            <span class="lbl">Overall progress</span>
+          </div>
+          <div class="big c-green">72%</div>
+          <div class="sub">12 of 17 topics</div>
+          <div class="bar"><i style="width:72%"></i></div>
+        </div>
+        <div class="stat">
+          <div class="top">
+            <span class="emoji e-red">⏳</span>
+            <span class="lbl">Exam countdown</span>
+          </div>
+          <div class="big c-red">86</div>
+          <div class="sub">days to go — keep the streak!</div>
+        </div>
+        <div class="stat">
+          <div class="top">
+            <span class="emoji e-gold">⭐</span>
+            <span class="lbl">Topics solid</span>
+          </div>
+          <div class="big c-gold">8</div>
+          <div class="sub">mastered & locked in</div>
+        </div>
+      </section>
+
+      <!-- CONTENT COLUMNS -->
+      <div class="cols">
+
+        <!-- LEFT: lesson content -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+
+          <div class="card card-pad">
+            <div class="lesson-head">
+              <span class="num">3</span>
+              <h3>Life Insurance Present Values</h3>
+            </div>
+            <p class="lede">The expected present value of a benefit paid on death — the backbone of every premium you'll ever set.</p>
+
+            <div class="formula">
+              <div class="frow">
+                <span class="tag t-green">EPV</span>
+                <span class="eq">A<sub>x</sub> = 1 − d·ä<sub>x</sub></span>
+              </div>
+              <div class="frow">
+                <span class="tag t-blue">VARIANCE</span>
+                <span class="eq">Var(Z) = <sup>2</sup>A<sub>x</sub> − (A<sub>x</sub>)<sup>2</sup></span>
+              </div>
+              <div class="frow">
+                <span class="tag t-purple">ANNUITY</span>
+                <span class="eq">ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</span>
+              </div>
+            </div>
+
+            <div class="trap">
+              <span class="icon">⚠️</span>
+              <div>
+                <div class="ttl">Common trap</div>
+                <p>Under UDD, multiply ONLY the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- EXAM CARD -->
+          <div class="card exam-card card-pad">
+            <span class="badge">🎓 Exam FAM</span>
+            <h3>Exam FAM</h3>
+            <div class="meta">Fundamentals of Actuarial Mathematics · SOA</div>
+            <div class="exam-meta-row">
+              <div class="mini"><b>34</b> questions</div>
+              <div class="mini"><b>6/10</b> to pass</div>
+              <div class="mini"><b>FAM-L</b> + <b>FAM-S</b></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: quest / actions -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+
+          <div class="card quest card-pad">
+            <div class="qtop">
+              <span class="qbadge">⚔️ Quest</span>
+            </div>
+            <h3>Example 1 — Whole life EPV &amp; variance</h3>
+            <p class="qsub">Compute A<sub>x</sub>, then nail Var(Z) using the ²A<sub>x</sub> shortcut. Worth +60 XP.</p>
+            <div class="btn-row">
+              <a href="#" class="btn btn-green">▶ Start studying</a>
+              <a href="#" class="btn btn-blue">↻ Resume</a>
+            </div>
+          </div>
+
+          <div class="card reward card-pad">
+            <h4>This week's path</h4>
+            <div class="small">3 of 5 nodes cleared — you're so close!</div>
+            <div class="nodes">
+              <span class="node done">✓</span>
+              <span class="node done">✓</span>
+              <span class="node done">✓</span>
+              <span class="node now">⭐</span>
+              <span class="node lock">🔒</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="foot-brand">
+          <div class="logo">M</div>
+          <div>
+            <b>Me Studing Stuff</b>
+            <small>Study smarter. Pass exams.</small>
+          </div>
+        </div>
+        <div class="fnote">© 2026 Me Studing Stuff · Keep that streak alive 🔥</div>
+      </footer>
+
+    </main>
+  </div>
+</body>
+</html>

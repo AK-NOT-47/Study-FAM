@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0f13;
+    --ink:#14151b;
+    --panel:#1a1c24;
+    --panel-2:#21232d;
+    --line:rgba(255,255,255,.07);
+    --line-2:rgba(255,255,255,.12);
+    --txt:#eef0f6;
+    --muted:#9aa0b4;
+    --faint:#6c7186;
+    --lime:#c8f750;
+    --lime-deep:#a7e02b;
+    --grape:#9d7bff;
+    --coral:#ff7a6b;
+    --sky:#5fd0ff;
+    --amber:#ffc24d;
+    --radius:22px;
+    --gap:14px;
+    --shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    background:
+      radial-gradient(1100px 700px at 88% -8%, rgba(157,123,255,.16), transparent 60%),
+      radial-gradient(900px 600px at -6% 4%, rgba(200,247,80,.10), transparent 55%),
+      var(--bg);
+    color:var(--txt);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+    padding:clamp(14px,2.4vw,30px);
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .display{font-family:'Sora',sans-serif}
+
+  /* ===== shell ===== */
+  .shell{max-width:1320px;margin:0 auto}
+
+  /* ===== top bar ===== */
+  .topbar{
+    display:flex;align-items:center;gap:18px;
+    padding:14px 18px;margin-bottom:var(--gap);
+    background:linear-gradient(180deg,var(--panel),var(--ink));
+    border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .mmark{
+    width:42px;height:42px;border-radius:13px;flex-shrink:0;
+    background:linear-gradient(150deg,var(--lime),var(--lime-deep));
+    display:grid;place-items:center;color:#10210a;font-weight:800;
+    font-family:'Sora';font-size:24px;line-height:1;
+    box-shadow:0 8px 22px -8px rgba(200,247,80,.6), inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .brand .bn{font-family:'Sora';font-weight:700;font-size:15px;letter-spacing:-.2px}
+  .brand .bt{font-size:11px;color:var(--faint);letter-spacing:.3px}
+
+  nav.topnav{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:6px}
+  nav.topnav a{
+    font-size:13px;color:var(--muted);padding:8px 13px;border-radius:11px;
+    font-weight:500;transition:.18s;white-space:nowrap;
+  }
+  nav.topnav a:hover{color:var(--txt);background:var(--panel-2)}
+  nav.topnav a.active{color:#10210a;background:var(--lime);font-weight:600}
+  .seg{
+    margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;
+  }
+  .pill{
+    font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+    color:var(--lime);border:1px solid rgba(200,247,80,.3);
+    background:rgba(200,247,80,.07);padding:6px 11px;border-radius:999px;
+  }
+  .avatar{
+    width:38px;height:38px;border-radius:12px;flex-shrink:0;
+    background:linear-gradient(150deg,var(--grape),#6b4bd6);
+    display:grid;place-items:center;font-weight:700;font-family:'Sora';font-size:14px;
+    border:1px solid var(--line-2);
+  }
+
+  /* ===== bento grid ===== */
+  .bento{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    grid-auto-rows:minmax(78px,auto);
+    gap:var(--gap);
+  }
+  .box{
+    background:linear-gradient(180deg,var(--panel),var(--ink));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .box .tag{
+    font-size:10.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--faint);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(200,247,80,.13)}
+
+  /* spans */
+  .c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}
+  .c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}
+  .c9{grid-column:span 9}.c12{grid-column:span 12}
+  .r2{grid-row:span 2}.r3{grid-row:span 3}
+
+  /* ===== hero ===== */
+  .hero{
+    background:
+      radial-gradient(600px 320px at 100% 0%, rgba(157,123,255,.22), transparent 60%),
+      linear-gradient(180deg,#1c1e28,#15161d);
+    justify-content:space-between;
+  }
+  .greet{font-size:13px;color:var(--lime);font-weight:600;letter-spacing:.4px;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .greet::before{content:"🌙";font-size:14px}
+  .hero h1{
+    font-family:'Sora';font-weight:800;letter-spacing:-1.5px;
+    font-size:clamp(34px,5.2vw,62px);line-height:.98;margin-bottom:16px;
+  }
+  .hero h1 .hl{
+    background:linear-gradient(100deg,var(--lime),var(--sky));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p{color:var(--muted);font-size:15.5px;max-width:50ch;line-height:1.55}
+  .hero .cta{display:flex;gap:11px;margin-top:22px;flex-wrap:wrap}
+  .btn{
+    font-family:'Space Grotesk';font-weight:600;font-size:14px;
+    padding:13px 22px;border-radius:14px;border:1px solid var(--line-2);
+    cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:9px;
+    background:var(--panel-2);color:var(--txt);
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn.primary{
+    background:linear-gradient(150deg,var(--lime),var(--lime-deep));
+    color:#10210a;border-color:transparent;
+    box-shadow:0 12px 26px -12px rgba(200,247,80,.7);
+  }
+  .btn .k{font-size:11px;opacity:.6;font-family:'JetBrains Mono'}
+
+  /* ===== stat boxes ===== */
+  .stat{justify-content:space-between}
+  .stat .big{font-family:'Sora';font-weight:800;letter-spacing:-1px;line-height:1}
+  .stat .big{font-size:clamp(30px,3.6vw,44px)}
+  .stat .lbl{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .stat .sub{font-size:11px;color:var(--faint);margin-top:2px}
+  .ring{
+    --p:72;
+    width:64px;height:64px;border-radius:50%;flex-shrink:0;
+    background:
+      conic-gradient(var(--lime) calc(var(--p)*1%), rgba(255,255,255,.08) 0);
+    display:grid;place-items:center;position:absolute;top:20px;right:20px;
+  }
+  .ring::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--ink)}
+  .ring span{position:relative;z-index:1;font-size:13px;font-weight:700;font-family:'Sora'}
+  .bar{height:7px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px}
+  .bar i{display:block;height:100%;width:72%;border-radius:999px;background:linear-gradient(90deg,var(--lime),var(--sky))}
+  .cd .big{color:var(--coral)}
+  .solid .big{color:var(--sky)}
+
+  /* ===== exam card ===== */
+  .exam{
+    background:
+      radial-gradient(420px 280px at 0% 100%, rgba(95,208,255,.16), transparent 60%),
+      linear-gradient(180deg,#1b1d27,#15161d);
+    justify-content:space-between;
+  }
+  .exam .code{
+    font-family:'Sora';font-weight:800;font-size:clamp(28px,3.6vw,42px);letter-spacing:-1px;
+    background:linear-gradient(120deg,var(--sky),var(--grape));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .exam .full{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .chip{
+    font-size:12px;font-weight:500;color:var(--txt);background:var(--panel-2);
+    border:1px solid var(--line);padding:7px 12px;border-radius:10px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .chip b{color:var(--lime);font-family:'JetBrains Mono'}
+
+  /* ===== formula box ===== */
+  .topic h3{font-family:'Sora';font-weight:700;font-size:21px;letter-spacing:-.4px;margin-bottom:6px}
+  .topic .lede{font-size:13.5px;color:var(--muted);margin-bottom:18px;max-width:62ch}
+  .formulas{display:flex;flex-direction:column;gap:10px}
+  .fml{
+    font-family:'JetBrains Mono';font-size:15px;
+    background:#0c0d11;border:1px solid var(--line);border-left:3px solid var(--grape);
+    border-radius:12px;padding:14px 16px;color:#e7e9f2;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .fml .num{color:var(--faint);font-size:11px;font-weight:600}
+  .fml .sky{color:var(--sky)}.fml .lim{color:var(--lime)}.fml .gr{color:var(--grape)}.fml .co{color:var(--coral)}
+  sub,sup{font-size:.72em}
+
+  /* ===== trap callout ===== */
+  .trap{
+    background:
+      radial-gradient(360px 240px at 100% 0%, rgba(255,122,107,.2), transparent 60%),
+      linear-gradient(180deg,#231820,#1a1419);
+    border-color:rgba(255,122,107,.25);
+    justify-content:center;
+  }
+  .trap .th{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .trap .th .ic{
+    width:32px;height:32px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;
+    background:rgba(255,122,107,.18);font-size:16px;
+  }
+  .trap .th b{font-family:'Sora';font-weight:700;font-size:14px;color:var(--coral);letter-spacing:.2px}
+  .trap p{font-size:14.5px;line-height:1.55;color:#f2dcd8}
+  .trap p em{color:var(--coral);font-style:normal;font-weight:600;
+    background:rgba(255,122,107,.13);padding:1px 5px;border-radius:5px}
+
+  /* ===== worked example ===== */
+  .work{
+    background:
+      radial-gradient(360px 240px at 0% 0%, rgba(200,247,80,.13), transparent 60%),
+      linear-gradient(180deg,#1b1d27,#15161d);
+    justify-content:space-between;
+  }
+  .work .ex{font-size:11px;font-weight:600;letter-spacing:.6px;color:var(--lime);text-transform:uppercase;margin-bottom:8px}
+  .work h4{font-family:'Sora';font-weight:700;font-size:18px;letter-spacing:-.3px;line-height:1.2}
+  .work .meta{font-size:12.5px;color:var(--faint);margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+  .work .meta span{display:flex;align-items:center;gap:6px}
+  .work .cta{display:flex;gap:10px;margin-top:18px}
+
+  /* ===== topic list (FAM-L/S) ===== */
+  .topics .secl{
+    font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--grape);margin-bottom:14px;display:flex;align-items:center;gap:9px;
+  }
+  .topics .secl::after{content:"";flex:1;height:1px;background:var(--line)}
+  .tlist{display:flex;flex-direction:column;gap:3px}
+  .titem{
+    display:flex;align-items:center;gap:12px;padding:10px 11px;border-radius:12px;
+    transition:.16s;cursor:pointer;
+  }
+  .titem:hover{background:var(--panel-2)}
+  .titem .ti{
+    width:30px;height:30px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;
+    font-size:14px;background:var(--panel-2);border:1px solid var(--line);
+  }
+  .titem .tn{font-size:14px;font-weight:500;flex:1}
+  .titem .ts{font-size:11px;font-family:'JetBrains Mono';color:var(--faint)}
+  .titem .check{color:var(--lime);font-size:13px}
+  .titem.done .ti{background:rgba(200,247,80,.12);border-color:rgba(200,247,80,.3)}
+
+  /* ===== footer ===== */
+  .foot{
+    margin-top:var(--gap);display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 22px;background:linear-gradient(180deg,var(--panel),var(--ink));
+    border:1px solid var(--line);border-radius:var(--radius);
+    font-size:12.5px;color:var(--faint);
+  }
+  .foot .mmark{width:30px;height:30px;border-radius:9px;font-size:17px}
+  .foot .fb{font-family:'Sora';font-weight:700;color:var(--txt);font-size:13px}
+  .foot .ft{color:var(--faint)}
+  .foot .fr{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap}
+  .foot .fr a:hover{color:var(--lime)}
+
+  /* ===== responsive ===== */
+  @media(max-width:1080px){
+    .c3{grid-column:span 6}.c4{grid-column:span 6}.c5{grid-column:span 6}
+    .c7{grid-column:span 12}.c8{grid-column:span 12}.c9{grid-column:span 12}
+    .hero{grid-column:span 12}
+    .topics{grid-column:span 6}
+  }
+  @media(max-width:760px){
+    .c3,.c4,.c5,.c6,.c7,.c8,.c9,.topics{grid-column:span 12}
+    .r2,.r3{grid-row:auto}
+    nav.topnav{display:none}
+    .seg{margin-left:auto}
+    .ring{position:static;margin-top:14px}
+    .stat{flex-direction:row;align-items:flex-end;justify-content:space-between}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="mmark">M</div>
+      <div>
+        <div class="bn">Me Studing Stuff</div>
+        <div class="bt">Study smarter. Pass exams.</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#" class="active">Survival Models</a>
+      <a href="#">Life Tables</a>
+      <a href="#">Life Insurance</a>
+      <a href="#">Life Annuities</a>
+      <a href="#">Premiums</a>
+      <a href="#">Policy Values</a>
+    </nav>
+    <div class="seg">
+      <span class="pill">FAM-L / FAM-S</span>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <!-- BENTO -->
+  <main class="bento">
+
+    <!-- HERO -->
+    <section class="box hero c8 r3">
+      <div>
+        <div class="greet">Good evening</div>
+        <h1>Let's get you <span class="hl">that pass.</span></h1>
+        <p>Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+      </div>
+      <div class="cta">
+        <button class="btn primary">Start studying <span class="k">↵</span></button>
+        <button class="btn">Resume <span class="k">⌘R</span></button>
+      </div>
+    </section>
+
+    <!-- STAT: progress -->
+    <section class="box stat c4">
+      <div class="tag"><span class="dot"></span>Overall progress</div>
+      <div class="ring"><span>72%</span></div>
+      <div>
+        <div class="big">72<span style="font-size:.5em;color:var(--muted)">%</span></div>
+        <div class="lbl">12 of 17 topics</div>
+        <div class="bar"><i></i></div>
+      </div>
+    </section>
+
+    <!-- STAT: countdown -->
+    <section class="box stat cd c4">
+      <div class="tag"><span class="dot" style="background:var(--coral);box-shadow:0 0 0 4px rgba(255,122,107,.13)"></span>Exam countdown</div>
+      <div>
+        <div class="big">86<span style="font-size:.42em;color:var(--muted);font-weight:600"> days</span></div>
+        <div class="sub">until your scheduled sitting</div>
+      </div>
+    </section>
+
+    <!-- EXAM CARD -->
+    <section class="box exam c4 r2">
+      <div>
+        <div class="tag"><span class="dot" style="background:var(--sky);box-shadow:0 0 0 4px rgba(95,208,255,.13)"></span>Your exam</div>
+        <div class="code">Exam FAM</div>
+        <div class="full">Fundamentals of Actuarial Mathematics</div>
+      </div>
+      <div class="chips">
+        <span class="chip">Provider <b>SOA</b></span>
+        <span class="chip">Questions <b>34</b></span>
+        <span class="chip">Pass <b>6/10</b></span>
+      </div>
+    </section>
+
+    <!-- STAT: topics solid -->
+    <section class="box stat solid c4">
+      <div class="tag"><span class="dot" style="background:var(--sky);box-shadow:0 0 0 4px rgba(95,208,255,.13)"></span>Topics solid</div>
+      <div class="big">8</div>
+      <div class="lbl">mastered &amp; review-ready</div>
+    </section>
+
+    <!-- TOPIC PREVIEW + FORMULAS -->
+    <section class="box topic c8 r2">
+      <div class="tag"><span class="dot"></span>Topic preview · Life Insurance</div>
+      <h3>Life Insurance Present Values</h3>
+      <p class="lede">The expected present value of a benefit, its variance, and the annuity link that ties them together.</p>
+      <div class="formulas">
+        <div class="fml"><span class="num">01</span><span><span class="sky">A</span><sub>x</sub> = 1 − <span class="lim">d</span>·<span class="gr">ä</span><sub>x</sub></span></div>
+        <div class="fml"><span class="num">02</span><span>Var(<span class="co">Z</span>) = <sup>2</sup><span class="sky">A</span><sub>x</sub> − (<span class="sky">A</span><sub>x</sub>)<sup>2</sup></span></div>
+        <div class="fml"><span class="num">03</span><span><span class="gr">ä</span><sub>x</sub> = (1 − <span class="sky">A</span><sub>x</sub>) / <span class="lim">d</span></span></div>
+      </div>
+    </section>
+
+    <!-- TOPIC LIST FAM-L/S -->
+    <section class="box topics c4 r2">
+      <div class="secl">FAM-L / FAM-S</div>
+      <div class="tlist">
+        <div class="titem done"><div class="ti">📉</div><div class="tn">Survival Models</div><span class="check">✓</span></div>
+        <div class="titem done"><div class="ti">📋</div><div class="tn">Life Tables</div><span class="check">✓</span></div>
+        <div class="titem"><div class="ti">🛡️</div><div class="tn">Life Insurance</div><span class="ts">68%</span></div>
+        <div class="titem"><div class="ti">💸</div><div class="tn">Life Annuities</div><span class="ts">41%</span></div>
+        <div class="titem"><div class="ti">🧾</div><div class="tn">Premiums</div><span class="ts">12%</span></div>
+        <div class="titem"><div class="ti">📊</div><div class="tn">Policy Values</div><span class="ts">0%</span></div>
+      </div>
+    </section>
+
+    <!-- TRAP -->
+    <section class="box trap c5">
+      <div class="th"><div class="ic">⚠️</div><b>Common trap</b></div>
+      <p>Under UDD, multiply <em>ONLY</em> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+    </section>
+
+    <!-- WORKED EXAMPLE -->
+    <section class="box work c7">
+      <div>
+        <div class="ex">Worked example</div>
+        <h4>Example 1 — Whole life EPV &amp; variance</h4>
+        <div class="meta">
+          <span>📐 Step-by-step</span>
+          <span>🕐 ~8 min</span>
+          <span>⭐ Core skill</span>
+        </div>
+      </div>
+      <div class="cta">
+        <button class="btn primary">Start studying <span class="k">↵</span></button>
+        <button class="btn">Resume <span class="k">⌘R</span></button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="mmark">M</div>
+    <div>
+      <span class="fb">Me Studing Stuff</span> &nbsp;·&nbsp; <span class="ft">Study smarter. Pass exams.</span>
+    </div>
+    <div class="fr">
+      <a href="#">Notes</a>
+      <a href="#">Formulas</a>
+      <a href="#">Worked problems</a>
+      <a href="#">Study plan</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

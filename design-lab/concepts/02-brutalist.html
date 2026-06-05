@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Me Studing Stuff — SOA Exam FAM</title>
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --paper:#f4f1e9;
+    --paper2:#eae6da;
+    --line:#0a0a0a;
+    --accent:#ff3b00;
+    --accent2:#1900ff;
+    --ok:#0a7d2c;
+    --mut:#5a554a;
+    --mono:ui-monospace,"Cascadia Mono","Consolas","SFMono-Regular","DejaVu Sans Mono",monospace;
+    --grot:"Arial Black","Helvetica Neue Condensed Bold","Impact",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{font-size:16px}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--mono);
+    line-height:1.45;
+    -webkit-font-smoothing:none;
+    background-image:
+      linear-gradient(transparent 0,transparent calc(100% - 1px),rgba(10,10,10,.04) 100%),
+      linear-gradient(90deg,transparent 0,transparent calc(100% - 1px),rgba(10,10,10,.04) 100%);
+    background-size:28px 28px;
+  }
+  a{color:inherit}
+  ::selection{background:var(--accent);color:var(--paper)}
+
+  .mono{font-family:var(--mono)}
+  .disp{font-family:var(--grot)}
+
+  /* ===== TOP MARQUEE BAR ===== */
+  .ticker{
+    border-bottom:2px solid var(--line);
+    background:var(--ink);
+    color:var(--paper);
+    font-size:.72rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .ticker span{display:inline-block;padding:.5rem 0;animation:scroll 22s linear infinite}
+  .ticker span b{color:var(--accent);font-weight:700}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ===== MASTHEAD ===== */
+  header.mast{
+    border-bottom:3px solid var(--line);
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:stretch;
+  }
+  .brand{
+    display:flex;align-items:center;gap:.85rem;
+    padding:1.1rem 1.4rem;
+    border-right:2px solid var(--line);
+  }
+  .mmark{
+    width:46px;height:46px;flex:none;
+    border:2px solid var(--line);
+    background:var(--accent);
+    display:grid;place-items:center;
+    font-family:var(--grot);font-weight:900;font-size:1.7rem;
+    color:var(--ink);
+    box-shadow:5px 5px 0 var(--line);
+  }
+  .brand-txt b{font-family:var(--grot);font-weight:900;font-size:1.15rem;letter-spacing:-.02em;display:block;line-height:1}
+  .brand-txt small{font-size:.66rem;text-transform:uppercase;letter-spacing:.14em;color:var(--mut)}
+  .mast-meta{
+    display:flex;align-items:center;justify-content:flex-end;
+    gap:0;font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;
+  }
+  .mast-meta .cell{
+    padding:0 1.2rem;align-self:stretch;display:flex;align-items:center;
+    border-left:2px solid var(--line);
+  }
+  .mast-meta .cell.exam{background:var(--ink);color:var(--paper)}
+  .mast-meta .cell.exam b{color:var(--accent)}
+
+  /* ===== SHELL LAYOUT ===== */
+  .shell{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    min-height:calc(100vh - 92px);
+  }
+  /* SIDEBAR NAV */
+  nav.side{
+    border-right:2px solid var(--line);
+    background:var(--paper2);
+    display:flex;flex-direction:column;
+  }
+  .nav-head{
+    font-size:.66rem;text-transform:uppercase;letter-spacing:.2em;
+    padding:.9rem 1.1rem;border-bottom:2px solid var(--line);
+    color:var(--mut);
+  }
+  .nav-list{list-style:none}
+  .nav-list li a{
+    display:flex;align-items:baseline;gap:.6rem;
+    padding:.85rem 1.1rem;
+    border-bottom:1px solid var(--line);
+    text-decoration:none;
+    font-size:.92rem;
+    position:relative;
+    transition:background .08s,padding .08s;
+  }
+  .nav-list li a .ix{font-size:.66rem;color:var(--mut);width:1.4em;flex:none}
+  .nav-list li a u{text-decoration-thickness:2px;text-underline-offset:3px}
+  .nav-list li a:hover{background:var(--accent);color:var(--paper);padding-left:1.5rem}
+  .nav-list li a:hover .ix{color:var(--paper)}
+  .nav-list li.active a{background:var(--ink);color:var(--paper)}
+  .nav-list li.active a .ix{color:var(--accent)}
+  .nav-foot{
+    margin-top:auto;border-top:2px solid var(--line);
+    padding:1rem 1.1rem;font-size:.66rem;line-height:1.7;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--mut);
+  }
+  .seg{
+    display:inline-block;border:2px solid var(--line);
+    padding:.35rem .55rem;margin:.4rem .35rem .2rem 0;
+    font-size:.7rem;font-weight:700;letter-spacing:.1em;
+    background:var(--paper);color:var(--ink);
+  }
+  .seg.l{background:var(--accent2);color:var(--paper);border-color:var(--accent2)}
+  .seg.s{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+
+  /* MAIN */
+  main{display:flex;flex-direction:column}
+
+  /* HERO */
+  .hero{
+    padding:2.4rem 2rem 1.8rem;border-bottom:2px solid var(--line);
+    position:relative;overflow:hidden;
+    background-image:repeating-linear-gradient(45deg,transparent 0 14px,rgba(10,10,10,.035) 14px 15px);
+  }
+  .hero::after{
+    content:"FAM";position:absolute;right:-.4rem;bottom:-1.4rem;
+    font-family:var(--grot);font-weight:900;font-size:clamp(6rem,18vw,13rem);
+    line-height:.7;letter-spacing:-.06em;color:transparent;
+    -webkit-text-stroke:2px rgba(10,10,10,.12);pointer-events:none;z-index:0;
+  }
+  .hero>*{position:relative;z-index:1}
+  .greet{
+    font-size:.74rem;text-transform:uppercase;letter-spacing:.26em;
+    color:var(--ink);display:inline-flex;align-items:center;gap:.6rem;margin-bottom:1rem;
+    border:2px solid var(--line);background:var(--paper);padding:.3rem .6rem;font-weight:700;
+  }
+  .greet::before{content:"●";color:var(--accent);font-size:.8em;line-height:1}
+  .hero h1{
+    font-family:var(--grot);font-weight:900;
+    font-size:clamp(2.6rem,7vw,5.4rem);
+    line-height:.9;letter-spacing:-.04em;
+    text-transform:uppercase;
+    max-width:18ch;
+  }
+  .hero h1 em{font-style:normal;color:var(--accent);
+    -webkit-text-stroke:2px var(--ink);
+    background:var(--ink);padding:0 .12em;
+    box-shadow:6px 6px 0 var(--accent2);}
+  .hero p.lede{
+    margin-top:1.4rem;max-width:62ch;font-size:.98rem;line-height:1.6;
+    border:2px solid var(--line);border-left-width:8px;padding:.85rem 1rem;
+    background:var(--paper2);box-shadow:5px 5px 0 var(--line);
+  }
+
+  /* STATS ROW */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-bottom:2px solid var(--line);
+  }
+  .stat{
+    padding:1.5rem 1.6rem;border-right:2px solid var(--line);position:relative;
+  }
+  .stat:last-child{border-right:none}
+  .stat .k{font-size:.66rem;text-transform:uppercase;letter-spacing:.18em;color:var(--mut)}
+  .stat .v{
+    font-family:var(--grot);font-weight:900;font-size:3.1rem;line-height:.95;
+    margin:.4rem 0 .1rem;letter-spacing:-.04em;
+  }
+  .stat .sub{font-size:.74rem;color:var(--mut)}
+  .stat.hl{background:var(--ink);color:var(--paper)}
+  .stat.hl .k,.stat.hl .sub{color:#bdb9ad}
+  .stat.hl .v{color:var(--accent)}
+  .bar{height:12px;border:2px solid var(--line);margin-top:.9rem;background:repeating-linear-gradient(90deg,var(--line) 0 2px,transparent 2px 8px)}
+  .bar i{display:block;height:100%;background:var(--accent);border-right:2px solid var(--line)}
+
+  /* CONTENT GRID */
+  .grid{
+    display:grid;grid-template-columns:1.55fr 1fr;
+    flex:1;
+  }
+  .col-l{border-right:2px solid var(--line)}
+  .panel{padding:1.6rem 1.8rem;border-bottom:2px solid var(--line)}
+  .panel:last-child{border-bottom:none}
+  .label{
+    font-size:.66rem;text-transform:uppercase;letter-spacing:.2em;color:var(--mut);
+    display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem;
+  }
+  .label .tag{border:2px solid var(--line);padding:.12rem .45rem;background:var(--paper2)}
+
+  .panel h2{font-family:var(--grot);font-weight:900;font-size:1.9rem;letter-spacing:-.02em;line-height:1;text-transform:uppercase}
+  .panel .one-line{color:var(--mut);margin-top:.5rem;font-size:.9rem}
+
+  /* FORMULA BLOCK */
+  .formula{
+    margin-top:1.3rem;border:2px solid var(--line);
+    box-shadow:6px 6px 0 var(--line);
+    background:var(--paper2);
+  }
+  .formula .fh{
+    background:var(--ink);color:var(--paper);
+    padding:.5rem .9rem;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;
+    display:flex;justify-content:space-between;
+  }
+  .formula .fh span:last-child{color:var(--accent)}
+  .formula .frow{
+    padding:1rem 1.1rem;border-bottom:1px dashed var(--line);
+    font-size:1.15rem;display:flex;align-items:center;gap:.8rem;
+  }
+  .formula .frow:last-child{border-bottom:none}
+  .formula .frow .n{
+    font-size:.68rem;color:var(--paper);background:var(--accent2);
+    width:1.7em;height:1.7em;flex:none;display:grid;place-items:center;
+    border:2px solid var(--line);font-weight:700;
+  }
+  .formula .frow code{font-family:var(--mono);font-weight:700}
+  .formula .frow sup{font-size:.62em}
+
+  /* TRAP CALLOUT */
+  .trap{
+    border:2px solid var(--line);background:var(--accent);color:var(--paper);
+    box-shadow:6px 6px 0 var(--line);margin-top:1.5rem;
+  }
+  .trap .th{
+    border-bottom:2px solid var(--line);padding:.55rem .9rem;
+    font-family:var(--grot);font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+    display:flex;align-items:center;gap:.6rem;font-size:1rem;
+  }
+  .trap .th .bang{
+    background:var(--paper);color:var(--accent);border:2px solid var(--line);
+    width:1.7em;height:1.7em;display:grid;place-items:center;font-size:1rem;flex:none;
+  }
+  .trap p{padding:.9rem;font-size:.92rem;line-height:1.55;font-weight:700}
+  .trap p u{text-underline-offset:3px;text-decoration-thickness:2px}
+
+  /* RIGHT COL — EXAM CARD */
+  .examcard{border:2px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+  .examcard .ec-top{
+    background:var(--ink);color:var(--paper);padding:1.1rem 1.1rem 1rem;
+    border-bottom:2px solid var(--line);
+  }
+  .examcard .ec-top .mini{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:#bdb9ad}
+  .examcard .ec-top h3{
+    font-family:var(--grot);font-weight:900;font-size:2.6rem;line-height:.9;
+    letter-spacing:-.03em;margin:.3rem 0;
+  }
+  .examcard .ec-top h3 b{color:var(--accent)}
+  .examcard .ec-top .full{font-size:.78rem;color:#d7d3c8}
+  .examcard .ec-rows{display:grid;grid-template-columns:1fr 1fr}
+  .examcard .ec-rows .r{
+    padding:.85rem 1rem;border-bottom:2px solid var(--line);border-right:2px solid var(--line);
+  }
+  .examcard .ec-rows .r:nth-child(2n){border-right:none}
+  .examcard .ec-rows .r .rk{font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:var(--mut)}
+  .examcard .ec-rows .r .rv{font-family:var(--grot);font-weight:900;font-size:1.5rem;line-height:1.1;margin-top:.15rem}
+  .examcard .ec-rows .r.pass{background:var(--ok);color:var(--paper);border-right:none}
+  .examcard .ec-rows .r.pass .rk{color:#cfeccf}
+
+  /* WORKED EXAMPLE */
+  .work{padding:1.6rem 1.8rem}
+  .ex-teaser{
+    border:2px solid var(--line);background:var(--paper2);
+    box-shadow:5px 5px 0 var(--line);padding:1rem 1.1rem;margin-bottom:1.3rem;
+    display:flex;gap:.9rem;align-items:flex-start;
+  }
+  .ex-teaser .num{
+    font-family:var(--grot);font-weight:900;font-size:1.6rem;
+    border:2px solid var(--line);background:var(--accent);color:var(--ink);
+    padding:.15rem .5rem;line-height:1;flex:none;
+  }
+  .ex-teaser .et b{font-family:var(--grot);font-weight:900;font-size:1.1rem;text-transform:uppercase;letter-spacing:-.01em;display:block}
+  .ex-teaser .et small{font-size:.78rem;color:var(--mut)}
+
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--line)}
+  .btn{
+    padding:1rem;text-align:center;text-decoration:none;
+    font-family:var(--grot);font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+    font-size:1rem;border-right:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;gap:.5rem;
+    transition:transform .06s;
+  }
+  .btn:last-child{border-right:none}
+  .btn.primary{background:var(--accent);color:var(--paper)}
+  .btn.ghost{background:var(--paper);color:var(--ink)}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn:active{transform:translate(1px,1px)}
+
+  /* FOOTER */
+  footer{
+    border-top:3px solid var(--line);background:var(--ink);color:var(--paper);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+    padding:1.2rem 1.6rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  }
+  footer .fmark{display:flex;align-items:center;gap:.6rem}
+  footer .fmark .mmark{width:30px;height:30px;font-size:1.1rem;box-shadow:3px 3px 0 var(--accent)}
+  footer a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+  /* RESPONSIVE */
+  @media(max-width:920px){
+    .shell{grid-template-columns:1fr}
+    nav.side{flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:2px solid var(--line)}
+    .nav-head{width:100%}
+    .nav-list{display:flex;flex-wrap:wrap;flex:1}
+    .nav-list li{flex:1 1 150px}
+    .nav-list li a{border-right:1px solid var(--line)}
+    .nav-foot{width:100%;margin-top:0}
+    .grid{grid-template-columns:1fr}
+    .col-l{border-right:none;border-bottom:2px solid var(--line)}
+  }
+  @media(max-width:700px){
+    header.mast{grid-template-columns:1fr}
+    .brand{border-right:none;border-bottom:2px solid var(--line)}
+    .mast-meta{flex-wrap:wrap;justify-content:flex-start}
+    .mast-meta .cell{border-left:none;border-right:2px solid var(--line);padding:.7rem 1rem}
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:2px solid var(--line)}
+    .stat:last-child{border-bottom:none}
+    .examcard .ec-rows,.btns{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <span>SOA EXAM FAM &nbsp;//&nbsp; FUNDAMENTALS OF ACTUARIAL MATHEMATICS &nbsp;//&nbsp; <b>86 DAYS TO EXAM</b> &nbsp;//&nbsp; 34 QUESTIONS &nbsp;//&nbsp; PASS = 6/10 &nbsp;//&nbsp; OVERALL 72% &nbsp;//&nbsp; STUDY SMARTER. PASS EXAMS. &nbsp;//&nbsp; SOA EXAM FAM &nbsp;//&nbsp; FUNDAMENTALS OF ACTUARIAL MATHEMATICS &nbsp;//&nbsp; <b>86 DAYS TO EXAM</b> &nbsp;//&nbsp; 34 QUESTIONS &nbsp;//&nbsp; PASS = 6/10 &nbsp;//&nbsp; OVERALL 72% &nbsp;//&nbsp; STUDY SMARTER. PASS EXAMS. &nbsp;//&nbsp;</span>
+</div>
+
+<!-- MASTHEAD -->
+<header class="mast">
+  <div class="brand">
+    <div class="mmark">M</div>
+    <div class="brand-txt">
+      <b>Me Studing Stuff</b>
+      <small>Study smarter. Pass exams.</small>
+    </div>
+  </div>
+  <div></div>
+  <div class="mast-meta">
+    <div class="cell">v.FAM&nbsp;2026</div>
+    <div class="cell exam">EXAM&nbsp;<b>FAM-L&nbsp;/&nbsp;FAM-S</b></div>
+  </div>
+</header>
+
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav class="side" aria-label="Topics">
+    <div class="nav-head">// Topics — 08 indexed</div>
+    <ul class="nav-list">
+      <li><a href="#"><span class="ix">01</span>Survival Models</a></li>
+      <li><a href="#"><span class="ix">02</span>Life Tables</a></li>
+      <li class="active"><a href="#"><span class="ix">03</span><u>Life Insurance</u></a></li>
+      <li><a href="#"><span class="ix">04</span>Life Annuities</a></li>
+      <li><a href="#"><span class="ix">05</span>Premiums</a></li>
+      <li><a href="#"><span class="ix">06</span>Policy Values</a></li>
+      <li><a href="#"><span class="ix">07</span>Multiple Decrements</a></li>
+      <li><a href="#"><span class="ix">08</span>Short-Term Insurance</a></li>
+    </ul>
+    <div class="nav-foot">
+      Exam section
+      <div>
+        <span class="seg l">FAM-L</span>
+        <span class="seg s">FAM-S</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="greet">Good evening</div>
+      <h1>Let's get you<br>that <em>pass.</em></h1>
+      <p class="lede">Your focused hub for SOA Exam FAM — notes, formulas, worked problems and a plan, all in one calm place.</p>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat hl">
+        <div class="k">Overall progress</div>
+        <div class="v">72%</div>
+        <div class="sub">12 of 17 topics</div>
+        <div class="bar"><i style="width:72%"></i></div>
+      </div>
+      <div class="stat">
+        <div class="k">Exam countdown</div>
+        <div class="v">86</div>
+        <div class="sub">days remaining</div>
+      </div>
+      <div class="stat">
+        <div class="k">Topics solid</div>
+        <div class="v">8</div>
+        <div class="sub">marked confident</div>
+      </div>
+    </section>
+
+    <!-- CONTENT GRID -->
+    <div class="grid">
+
+      <!-- LEFT -->
+      <div class="col-l">
+        <section class="panel">
+          <div class="label"><span class="tag">Topic 03</span> Now reading</div>
+          <h2>Life Insurance Present Values</h2>
+          <p class="one-line">The expected present value of a benefit paid on death — the backbone of every premium and reserve you'll build.</p>
+
+          <div class="formula">
+            <div class="fh"><span>// Core relations</span><span>EPV · VARIANCE</span></div>
+            <div class="frow"><span class="n">1</span><code>A<sub>x</sub> = 1 − d·ä<sub>x</sub></code></div>
+            <div class="frow"><span class="n">2</span><code>Var(Z) = ²A<sub>x</sub> − (A<sub>x</sub>)²</code></div>
+            <div class="frow"><span class="n">3</span><code>ä<sub>x</sub> = (1 − A<sub>x</sub>) / d</code></div>
+          </div>
+
+          <div class="trap">
+            <div class="th"><span class="bang">!</span> Common trap</div>
+            <p>Under UDD, multiply <u>ONLY</u> the term/death piece by i/δ — the pure endowment is never rescaled.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="col-r">
+        <section class="panel">
+          <div class="label"><span class="tag">The exam</span> At a glance</div>
+          <div class="examcard">
+            <div class="ec-top">
+              <div class="mini">SOA · Actuarial</div>
+              <h3>Exam <b>FAM</b></h3>
+              <div class="full">Fundamentals of Actuarial Mathematics</div>
+            </div>
+            <div class="ec-rows">
+              <div class="r"><div class="rk">Body</div><div class="rv">SOA</div></div>
+              <div class="r"><div class="rk">Questions</div><div class="rv">34</div></div>
+              <div class="r"><div class="rk">Sections</div><div class="rv">L · S</div></div>
+              <div class="r pass"><div class="rk">Pass mark</div><div class="rv">6 / 10</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="work">
+          <div class="label"><span class="tag">Worked</span> Try it now</div>
+          <div class="ex-teaser">
+            <div class="num">1</div>
+            <div class="et">
+              <b>Example 1 — Whole life EPV &amp; variance</b>
+              <small>Compute A_x and Var(Z) from a given life table, then sanity-check via ä_x.</small>
+            </div>
+          </div>
+          <div class="btns">
+            <a href="#" class="btn primary">▸ Start studying</a>
+            <a href="#" class="btn ghost">↻ Resume</a>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fmark">
+    <div class="mmark">M</div>
+    <div>Me Studing Stuff — Study smarter. Pass exams.</div>
+  </div>
+  <div>© 2026 · SOA Exam FAM hub · <a href="#">FAM-L / FAM-S</a></div>
+</footer>
+
+</body>
+</html>
