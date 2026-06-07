@@ -486,6 +486,26 @@
   }
 
   /* ====================================================================
+     PWA — make the site installable as a phone/desktop app + offline.
+     Injected here so every page gets it without editing each file.
+     ==================================================================== */
+  function registerPWA() {
+    if (!document.querySelector('link[rel="manifest"]')) {
+      var head = document.head;
+      var man = el("link"); man.rel = "manifest"; man.href = href("site.webmanifest"); head.appendChild(man);
+      var tc = el("meta"); tc.name = "theme-color"; tc.content = "#e02516"; head.appendChild(tc);
+      var ati = el("link"); ati.rel = "apple-touch-icon"; ati.href = href("assets/icons/apple-touch-icon.png"); head.appendChild(ati);
+      var cap = el("meta"); cap.name = "apple-mobile-web-app-capable"; cap.content = "yes"; head.appendChild(cap);
+      var title = el("meta"); title.name = "apple-mobile-web-app-title"; title.content = "Study FAM"; head.appendChild(title);
+    }
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(href("service-worker.js")).catch(function () {});
+      });
+    }
+  }
+
+  /* ====================================================================
      BOOT
      ==================================================================== */
   function injectField() {
@@ -502,6 +522,7 @@
     assemble();
     keybinds();
     loadMath();
+    registerPWA();
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     // close mobile nav when a link is tapped
