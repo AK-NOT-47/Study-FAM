@@ -53,8 +53,16 @@
   }
   function initTheme() {
     var saved; try { saved = localStorage.getItem("mss:theme"); } catch (e) {}
-    if (!saved) saved = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    setTheme(saved);
+    setTheme(saved || "light");   // always default to light, regardless of system
+  }
+
+  /* ---------- viewport + focus (distraction-free reading) mode ---------- */
+  function isMobile() { return window.matchMedia("(max-width: 880px)").matches; }
+  function toggleFocus(on) {
+    var active = (typeof on === "boolean") ? on : !body.classList.contains("focus-mode");
+    body.classList.toggle("focus-mode", active);
+    if (active) body.classList.remove("nav-open");
+    try { localStorage.setItem("mss:focus", active ? "1" : "0"); } catch (e) {}
   }
 
   /* ====================================================================
@@ -126,8 +134,15 @@
   function buildTopbar() {
     var bar = el("header", "topbar");
     var menu = el("button", "icon-btn menu-btn", "☰");
-    menu.id = "menuBtn"; menu.setAttribute("aria-label", "Menu");
-    menu.addEventListener("click", function () { body.classList.toggle("nav-open"); });
+    menu.id = "menuBtn"; menu.setAttribute("aria-label", "Toggle sidebar"); menu.title = "Show / hide sidebar";
+    menu.addEventListener("click", function () {
+      if (isMobile()) {
+        body.classList.toggle("nav-open");
+      } else {
+        var collapsed = body.classList.toggle("nav-collapsed");   // hide the pages panel on desktop
+        try { localStorage.setItem("mss:nav-collapsed", collapsed ? "1" : "0"); } catch (e) {}
+      }
+    });
     bar.appendChild(menu);
 
     // breadcrumbs
@@ -153,6 +168,14 @@
     st.innerHTML = '<span class="ico">🔍</span><span class="stxt">Search everything…</span><span class="kbd">Ctrl K</span>';
     st.addEventListener("click", openSearch);
     bar.appendChild(st);
+
+    // focus mode (only on reading pages) — strips all chrome for distraction-free reading
+    if (document.querySelector("[data-mss-article]")) {
+      var fc = el("button", "icon-btn", "⤢");
+      fc.id = "focusBtn"; fc.setAttribute("aria-label", "Focus mode"); fc.title = "Focus mode (F)";
+      fc.addEventListener("click", function () { toggleFocus(); });
+      bar.appendChild(fc);
+    }
 
     // theme toggle
     var th = el("button", "icon-btn", "🌙");
@@ -207,6 +230,11 @@
     var stp = el("button", "icon-btn scroll-top", "↑"); stp.id = "scrollTop"; stp.setAttribute("aria-label", "Scroll to top");
     stp.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
     document.body.appendChild(stp);
+
+    // floating exit button — only affordance shown while in focus mode
+    var fx = el("button", "focus-exit", "✕ Exit focus"); fx.id = "focusExit";
+    fx.addEventListener("click", function () { toggleFocus(false); });
+    document.body.appendChild(fx);
 
     if (article) { buildTOC(article); buildPageNav(article); buildPageControls(article); }
   }
@@ -462,8 +490,11 @@
   function keybinds() {
     document.addEventListener("keydown", function (e) {
       var open = document.getElementById("searchOverlay").classList.contains("open");
+      var typing = /INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ""));
       if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) { e.preventDefault(); open ? closeSearch() : openSearch(); return; }
-      if (e.key === "/" && !open && !/INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ""))) { e.preventDefault(); openSearch(); return; }
+      if (e.key === "/" && !open && !typing) { e.preventDefault(); openSearch(); return; }
+      if ((e.key === "f" || e.key === "F") && !open && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && document.querySelector("[data-mss-article]")) { e.preventDefault(); toggleFocus(); return; }
+      if (e.key === "Escape" && !open && body.classList.contains("focus-mode")) { toggleFocus(false); return; }
       if (!open) return;
       if (e.key === "Escape") { closeSearch(); }
       else if (e.key === "ArrowDown") { e.preventDefault(); searchSel = Math.min(searchSel + 1, document.querySelectorAll("#searchResults .sr-item").length - 1); markSel(); }
@@ -522,6 +553,9 @@
 
   function boot() {
     initTheme();
+    // restore persisted chrome state before building, so there's no flash
+    try { if (localStorage.getItem("mss:nav-collapsed") === "1" && !isMobile()) body.classList.add("nav-collapsed"); } catch (e) {}
+    try { if (localStorage.getItem("mss:focus") === "1" && document.querySelector("[data-mss-article]")) body.classList.add("focus-mode"); } catch (e) {}
     injectField();
     assemble();
     keybinds();
