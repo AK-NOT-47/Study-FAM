@@ -1,7 +1,7 @@
 /* Me Studing Stuff — service worker.
    Makes the site installable and readable offline. No build step, no deps.
    Bump CACHE when you ship content changes so clients refresh the shell. */
-const CACHE = "mss-cache-v2";
+const CACHE = "mss-cache-v3";
 
 /* App shell — relative to this file's location (the site root), so it works
    whether served at a domain root or under a GitHub Pages /repo/ subpath. */

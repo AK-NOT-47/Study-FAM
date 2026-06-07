@@ -170,7 +170,7 @@ body.nav-collapsed .main-col { margin-left: 0; }
 .search-trigger .kbd { margin-left: auto; }
 .kbd { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 7px; color: #fff; background: var(--black); }
 [data-theme="dark"] .kbd { background: var(--blue); }
-.menu-btn { display: none; }
+.menu-btn { display: inline-grid; }   /* visible on desktop too, to hide/show the sidebar */
 
 /* ----------------------------------------------------------------------------
    4. SIDEBAR
@@ -547,6 +547,28 @@ mjx-container[display="true"] { margin: 1.2em 0 !important; padding: 14px 18px; 
 .text-mute { color: var(--text-mute); }
 .scroll-top { position: fixed; bottom: 26px; right: 26px; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; transform: translateY(10px); }
 .scroll-top.show { opacity: 1; pointer-events: auto; transform: none; }
+
+/* ----------------------------------------------------------------------------
+   FOCUS / READING MODE — strip all chrome for distraction-free reading.
+   Works on desktop and mobile; the only affordance left is the exit button.
+   ---------------------------------------------------------------------------- */
+.focus-exit {
+  display: none; position: fixed; top: 14px; right: 14px; z-index: 70;
+  align-items: center; gap: 8px; padding: 9px 15px; font: inherit; font-weight: 700; font-size: 12.5px;
+  text-transform: uppercase; letter-spacing: .04em; cursor: pointer;
+  border: 3px solid var(--line); background: var(--surface); color: var(--text);
+  box-shadow: 3px 3px 0 var(--shadow-col); transition: all .12s var(--ease);
+}
+.focus-exit:hover { background: var(--red); color: #fff; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--shadow-col); }
+body.focus-mode .focus-exit { display: inline-flex; }
+body.focus-mode .sidebar,
+body.focus-mode .topbar,
+body.focus-mode .toc,
+body.focus-mode .mss-field,
+body.focus-mode .scroll-top { display: none !important; }
+body.focus-mode .main-col { margin-left: 0 !important; }
+body.focus-mode .page-wrap { grid-template-columns: minmax(0,1fr) !important; max-width: var(--content-max); padding-top: 60px; }
+body.focus-mode .article { max-width: 760px; margin: 0 auto; }
 
 /* ----------------------------------------------------------------------------
    RESPONSIVE
