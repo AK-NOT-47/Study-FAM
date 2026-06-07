@@ -195,6 +195,10 @@
 
     app.appendChild(sidebar);
     app.appendChild(mainCol);
+    // mobile nav backdrop — inside .app so the sidebar layers above it; tap to close
+    var scrim = el("div", "nav-scrim"); scrim.id = "navScrim";
+    scrim.addEventListener("click", function () { body.classList.remove("nav-open"); });
+    app.appendChild(scrim);
     document.body.appendChild(app);
 
     // overlays
