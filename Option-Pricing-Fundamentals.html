@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option Pricing Fundamentals · FAM-S · Me Studing Stuff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+/* ============================================================================
+   Me Studing Stuff — Design System  ·  "SUPREMATISM"
+   Malevich-inspired: floating geometric shapes, red/blue/yellow on paper,
+   Archivo Black headlines, thick black borders, hard offset shadows.
+   Token-driven so the whole site (25+ pages) shares one look.
+   ============================================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+/* ----------------------------------------------------------------------------
+   1. TOKENS + THEMES
+   ---------------------------------------------------------------------------- */
+:root {
+  /* Suprematist palette */
+  --red:    #e02516;
+  --blue:   #1f3bb3;
+  --yellow: #f2c200;
+  --black:  #0a0a0a;
+  --white:  #ffffff;
+  --paper:  #f4f1ea;
+
+  /* Semantic accents (status) */
+  --green:  #1f3bb3;   /* no green in the palette → "solid" reads blue */
+  --info:   #1f3bb3;
+
+  /* Legacy aliases so any stray references still resolve */
+  --brand-1: #e02516; --brand-2: #e02516; --brand-3: #e02516;
+  --accent: #f2c200; --accent-soft: #f2c200;
+  --grad-brand: var(--red);
+  --grad-warm: var(--yellow);
+
+  /* Typography */
+  --font-sans:  "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-display: "Archivo Black", "Space Grotesk", sans-serif;
+  --font-serif: var(--font-display);  /* alias */
+  --font-mono:  "JetBrains Mono", ui-monospace, monospace;
+
+  /* Sharp corners everywhere */
+  --r-sm: 0; --r-md: 0; --r-lg: 0; --r-xl: 0;
+
+  /* Hard offset shadows */
+  --shadow-sm: 3px 3px 0 var(--shadow-col);
+  --shadow-md: 6px 6px 0 var(--shadow-col);
+  --shadow-lg: 10px 10px 0 var(--shadow-col);
+  --shadow-glow: 6px 6px 0 var(--shadow-col);
+
+  --sidebar-w: 300px;
+  --topbar-h: 66px;
+  --content-max: 880px;
+  --ease: cubic-bezier(.2,.7,.3,1);
+}
+
+/* LIGHT */
+:root, [data-theme="light"] {
+  --bg:        #f4f1ea;
+  --bg-2:      #ece8dd;
+  --surface:   #ffffff;
+  --surface-2: #f4f1ea;
+  --surface-glass: #ffffff;
+  --border:    #0a0a0a;
+  --line:      #0a0a0a;
+  --border-strong: #0a0a0a;
+  --text:      #111111;
+  --text-soft: #444444;
+  --text-mute: #6a6a6a;
+  --code-bg:   #f4f1ea;
+  --shadow-col:#0a0a0a;
+  --shape-ink: #0a0a0a;
+}
+
+/* DARK — "Midnight Suprematism": ink ground, paper borders */
+[data-theme="dark"] {
+  --bg:        #0d0d0f;
+  --bg-2:      #121214;
+  --surface:   #18181c;
+  --surface-2: #202024;
+  --surface-glass: #18181c;
+  --border:    #f4f1ea;
+  --line:      #f4f1ea;
+  --border-strong: #f4f1ea;
+  --text:      #f4f1ea;
+  --text-soft: #c9c5bb;
+  --text-mute: #8d8a82;
+  --code-bg:   #202024;
+  --shadow-col:#000000;
+  --shape-ink: #f4f1ea;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--topbar-h) + 20px); }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--yellow); color: var(--black); }
+
+/* ---- Floating Suprematist shapes (injected by site.js) ---- */
+.mss-field { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.mss-field .ms { position: absolute; }
+.ms.blk-bar   { width: 120px; height: 46vh; background: var(--shape-ink); top: -40px; left: 5%; transform: rotate(18deg); opacity: .9; }
+.ms.red-sq    { width: 170px; height: 170px; background: var(--red); bottom: 11%; right: 6%; transform: rotate(-12deg); animation: ms-drift 18s ease-in-out infinite alternate; }
+.ms.blk-circ  { width: 110px; height: 110px; border-radius: 50%; background: var(--shape-ink); top: 19%; right: 19%; opacity: .85; animation: ms-bob 11s ease-in-out infinite alternate; }
+.ms.blue-line { width: 380px; height: 22px; background: var(--blue); bottom: 25%; left: -60px; transform: rotate(-28deg); }
+.ms.yel-tri   { width: 0; height: 0; border-left: 58px solid transparent; border-right: 58px solid transparent; border-bottom: 126px solid var(--yellow); top: 53%; left: 28%; opacity: .85; animation: ms-spin 36s linear infinite; }
+.ms.thin-diag { width: 6px; height: 34vh; background: var(--shape-ink); top: 6%; right: 4%; transform: rotate(38deg); opacity: .8; }
+.ms.sm-red    { width: 46px; height: 46px; background: var(--red); top: 73%; left: 4%; transform: rotate(20deg); }
+@keyframes ms-drift { from { transform: rotate(-12deg) translateY(0); } to { transform: rotate(-12deg) translateY(-40px); } }
+@keyframes ms-bob   { from { transform: translateY(0); } to { transform: translateY(44px); } }
+@keyframes ms-spin  { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* Scrollbar */
+*::-webkit-scrollbar { width: 12px; height: 12px; }
+*::-webkit-scrollbar-track { background: var(--bg-2); }
+*::-webkit-scrollbar-thumb { background: var(--red); border: 2px solid var(--bg-2); }
+*::-webkit-scrollbar-thumb:hover { background: var(--black); }
+[data-theme="dark"] *::-webkit-scrollbar-thumb:hover { background: var(--paper); }
+
+a { color: var(--blue); text-decoration: none; }
+[data-theme="dark"] a { color: #8fa6ff; }
+a:hover { text-decoration: underline; }
+
+/* ----------------------------------------------------------------------------
+   2. LAYOUT
+   ---------------------------------------------------------------------------- */
+.app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+.main-col { flex: 1; min-width: 0; margin-left: var(--sidebar-w); display: flex; flex-direction: column; transition: margin-left .3s var(--ease); }
+body.nav-collapsed .main-col { margin-left: 0; }
+
+.page-wrap {
+  width: 100%; max-width: calc(var(--content-max) + 280px); margin: 0 auto;
+  padding: 34px 40px 120px; display: grid; grid-template-columns: minmax(0,1fr) 210px; gap: 44px;
+}
+.page-wrap.no-toc { grid-template-columns: minmax(0,1fr); max-width: var(--content-max); }
+
+.read-progress { position: fixed; top: 0; left: 0; height: 5px; width: 0; background: var(--red); z-index: 60; transition: width .1s linear; }
+
+/* ----------------------------------------------------------------------------
+   3. TOP BAR
+   ---------------------------------------------------------------------------- */
+.topbar {
+  position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+  display: flex; align-items: center; gap: 14px; padding: 0 26px;
+  background: var(--surface); border-bottom: 3px solid var(--line);
+}
+.topbar .crumbs { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-mute); min-width: 0; text-transform: uppercase; letter-spacing: .04em; }
+.topbar .crumbs a { color: var(--text-soft); white-space: nowrap; font-weight: 600; }
+.topbar .crumbs .sep { opacity: .5; }
+.topbar .crumbs .cur { color: var(--text); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar .spacer { flex: 1; }
+
+.icon-btn {
+  display: inline-grid; place-items: center; width: 42px; height: 42px;
+  border: 3px solid var(--line); background: var(--surface); color: var(--text);
+  cursor: pointer; font-size: 17px; transition: all .12s var(--ease);
+}
+.icon-btn:hover { background: var(--red); color: #fff; border-color: var(--line); transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--shadow-col); }
+
+.search-trigger {
+  display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 14px; min-width: 230px;
+  border: 3px solid var(--line); background: var(--surface); color: var(--text-mute);
+  cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; transition: all .12s var(--ease);
+}
+.search-trigger:hover { color: var(--text); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--shadow-col); }
+.search-trigger .stxt { text-transform: uppercase; letter-spacing: .03em; }
+.search-trigger .kbd { margin-left: auto; }
+.kbd { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 7px; color: #fff; background: var(--black); }
+[data-theme="dark"] .kbd { background: var(--blue); }
+.menu-btn { display: none; }
+
+/* ----------------------------------------------------------------------------
+   4. SIDEBAR
+   ---------------------------------------------------------------------------- */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 55;
+  display: flex; flex-direction: column; background: var(--surface);
+  border-right: 3px solid var(--line); transition: transform .3s var(--ease);
+}
+body.nav-collapsed .sidebar { transform: translateX(-100%); }
+
+.brand { display: flex; align-items: center; gap: 14px; height: var(--topbar-h); padding: 0 18px; flex-shrink: 0; border-bottom: 3px solid var(--line); }
+.brand .logo {
+  width: 40px; height: 40px; flex-shrink: 0; background: var(--red); color: #fff;
+  display: grid; place-items: center; font-family: var(--font-display); font-size: 20px;
+  transform: rotate(-6deg); box-shadow: 4px 4px 0 var(--shadow-col);
+}
+.brand .name { font-family: var(--font-display); font-size: 15px; letter-spacing: -.02em; line-height: .95; text-transform: uppercase; }
+.brand .name small { display: block; font-family: var(--font-mono); font-weight: 400; font-size: 9.5px; color: var(--text-mute); letter-spacing: .12em; text-transform: uppercase; margin-top: 4px; }
+
+.exam-switch { padding: 16px 16px 6px; }
+.exam-pill {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 13px;
+  background: var(--surface); border: 3px solid var(--line); color: var(--text);
+  font: inherit; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .02em;
+  cursor: pointer; transition: all .12s var(--ease);
+}
+.exam-pill:hover { background: var(--blue); color: #fff; transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--shadow-col); }
+.exam-pill .dot { width: 11px; height: 11px; background: var(--red); }
+.exam-pill:hover .dot { background: var(--yellow); }
+.exam-pill .meta { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); }
+.exam-pill:hover .meta { color: rgba(255,255,255,.8); }
+
+.nav-scroll { flex: 1; overflow-y: auto; padding: 10px 14px 24px; }
+.nav-section { margin-top: 10px; }
+.nav-section > .sec-head {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 10px;
+  border: none; background: var(--black); color: var(--yellow); cursor: pointer;
+  font-family: var(--font-mono); font-weight: 700; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+[data-theme="dark"] .nav-section > .sec-head { background: var(--surface-2); color: var(--yellow); border: 2px solid var(--line); }
+.sec-head .ico { font-size: 13px; }
+.sec-head .chev { margin-left: auto; transition: transform .2s var(--ease); font-size: 10px; }
+.nav-section.collapsed .chev { transform: rotate(-90deg); }
+.nav-section.collapsed .sec-items { display: none; }
+
+.sec-items { padding: 4px 0 8px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px; padding: 9px 11px; margin: 2px 0;
+  color: var(--text-soft); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .01em;
+  position: relative; transition: all .12s var(--ease); border-left: 4px solid transparent;
+}
+.nav-link:hover { background: var(--red); color: #fff; text-decoration: none; }
+.nav-link.active { background: var(--surface-2); color: var(--text); border-left-color: var(--red); }
+.nav-link .nl-status { margin-left: auto; width: 9px; height: 9px; background: var(--border-strong); flex-shrink: 0; }
+.nav-link:hover .nl-status { outline: 1px solid #fff; }
+.nav-link .nl-status[data-s="learning"] { background: var(--yellow); }
+.nav-link .nl-status[data-s="solid"] { background: var(--blue); }
+.nav-link .nl-num { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); min-width: 20px; font-weight: 700; }
+.nav-link:hover .nl-num { color: rgba(255,255,255,.85); }
+.nav-link .nl-off { margin-left: 6px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-mute); border: 1.5px solid var(--border-strong); padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+.nav-link:hover .nl-off { color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.4); }
+
+.sidebar-foot { padding: 16px; border-top: 3px solid var(--line); flex-shrink: 0; }
+.mini-progress { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); margin-bottom: 8px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .08em; }
+.bar { height: 12px; background: var(--surface-2); border: 2px solid var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--red); transition: width .6s var(--ease); }
+
+/* ----------------------------------------------------------------------------
+   5. ARTICLE + TYPOGRAPHY  (each page sits on a Suprematist panel)
+   ---------------------------------------------------------------------------- */
+.article {
+  min-width: 0; background: var(--surface); border: 3px solid var(--line);
+  box-shadow: 10px 10px 0 var(--shadow-col); padding: clamp(24px,3.5vw,44px);
+  animation: rise .35s var(--ease) both;
+}
+.article-head { margin-bottom: 30px; border-bottom: 3px solid var(--line); padding-bottom: 22px; position: relative; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 9px; margin-bottom: 16px; padding: 6px 12px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; background: var(--black);
+}
+[data-theme="dark"] .eyebrow { background: var(--blue); }
+.article h1, .page-title {
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: .96; letter-spacing: -.02em; margin: 0 0 14px; text-transform: uppercase;
+}
+.article .lede { font-size: 1.1rem; color: var(--text-soft); margin: 0; max-width: 60ch; line-height: 1.55; font-weight: 500; }
+
+.meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 22px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+  background: var(--surface); border: 2px solid var(--line); color: var(--text-soft);
+}
+
+.article-body { font-size: 1.02rem; }
+.article-body > * { scroll-margin-top: calc(var(--topbar-h) + 24px); }
+.article-body h2 {
+  font-family: var(--font-display); font-weight: 400; font-size: 1.7rem; letter-spacing: -.02em;
+  margin: 2.2em 0 .7em; line-height: 1.05; text-transform: uppercase; display: flex; align-items: center; gap: 14px;
+}
+.article-body h2::before { content: ""; width: 22px; height: 22px; background: var(--red); flex-shrink: 0; }
+.article-body h2:nth-of-type(3n)::before { background: var(--blue); }
+.article-body h2:nth-of-type(3n+1)::before { background: var(--red); transform: rotate(0); }
+.article-body h2:nth-of-type(3n+2)::before { background: var(--yellow); }
+.article-body h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.22rem; margin: 1.7em 0 .5em; letter-spacing: -.01em; text-transform: uppercase; }
+.article-body h4 { font-size: 1.04rem; font-weight: 700; margin: 1.4em 0 .4em; color: var(--text-soft); }
+.article-body p { margin: 0 0 1.1em; }
+.article-body ul, .article-body ol { margin: 0 0 1.1em; padding-left: 1.4em; }
+.article-body li { margin: .4em 0; }
+.article-body li::marker { color: var(--red); font-weight: 700; }
+.article-body strong { color: var(--text); font-weight: 700; }
+.article-body hr { border: none; border-top: 3px solid var(--line); margin: 2.2em 0; }
+.article-body a { font-weight: 700; color: var(--blue); border-bottom: 2px solid var(--blue); }
+[data-theme="dark"] .article-body a { color: #8fa6ff; border-bottom-color: #8fa6ff; }
+.article-body a:hover { background: var(--yellow); color: var(--black); text-decoration: none; border-bottom-color: var(--black); }
+
+.article-body code:not(pre code) { font-family: var(--font-mono); font-size: .88em; background: var(--code-bg); padding: .12em .45em; border: 1px solid var(--line); }
+.article-body pre { background: var(--code-bg); border: 3px solid var(--line); padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: .85rem; line-height: 1.6; margin: 0 0 1.4em; }
+
+/* Tables */
+.article-body table, table.data { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0 0 1.6em; font-size: .92rem; border: 3px solid var(--line); }
+.article-body thead th, table.data thead th {
+  background: var(--black); color: #fff; text-align: left; font-family: var(--font-mono); font-weight: 700;
+  font-size: .76rem; letter-spacing: .04em; text-transform: uppercase; padding: 12px 16px;
+}
+[data-theme="dark"] .article-body thead th { background: var(--blue); }
+.article-body td, .article-body th, table.data td, table.data th { padding: 11px 16px; }
+.article-body tbody td { border-bottom: 2px solid var(--line); }
+.article-body tbody tr:last-child td { border-bottom: none; }
+.article-body tbody tr:hover td { background: var(--surface-2); }
+.table-scroll { overflow-x: auto; margin: 0 0 1.6em; border: 3px solid var(--line); }
+.table-scroll table { margin: 0; border: none; }
+
+/* MathJax */
+mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding: 2px 0; }
+mjx-container[display="true"] { margin: 1.2em 0 !important; padding: 14px 18px; background: var(--surface-2); border: 3px solid var(--line); border-left: 12px solid var(--red); }
+
+/* ----------------------------------------------------------------------------
+   6. COMPONENTS
+   ---------------------------------------------------------------------------- */
+.card { background: var(--surface); border: 3px solid var(--line); box-shadow: var(--shadow-md); }
+
+/* Callouts */
+.callout { position: relative; margin: 1.6em 0; padding: 20px 22px 20px 62px; border: 3px solid var(--line); background: var(--surface); box-shadow: 6px 6px 0 var(--shadow-col); }
+.callout::before { content: attr(data-icon); position: absolute; left: -3px; top: -3px; bottom: -3px; width: 46px; display: grid; place-items: start center; padding-top: 20px; font-size: 18px; color: #fff; background: var(--text-mute); }
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }
+.callout .callout-title { font-family: var(--font-display); font-weight: 400; font-size: .95rem; margin-bottom: 5px; letter-spacing: .01em; text-transform: uppercase; }
+.callout.trap      { background: var(--yellow); color: var(--black); }
+.callout.tip::before       { background: var(--blue); }
+.callout.trap::before      { background: var(--black); }
+.callout.note::before      { background: var(--text-mute); }
+.callout.key::before       { background: var(--red); }
+.callout.objective::before { background: var(--red); }
+.callout.tip .callout-title       { color: var(--blue); }
+.callout.trap .callout-title      { color: var(--black); }
+.callout.note .callout-title      { color: var(--text-soft); }
+.callout.key .callout-title       { color: var(--red); }
+.callout.objective .callout-title { color: var(--red); }
+.callout.trap a { color: var(--black); border-bottom-color: var(--black); }
+.callout.trap strong { color: var(--black); }
+.callout.trap b { background: var(--black); color: var(--yellow); padding: 1px 5px; }
+
+/* Formula blocks */
+.formula { margin: 1.5em 0; padding: 0; background: var(--surface-2); border: 3px solid var(--line); box-shadow: 6px 6px 0 var(--shadow-col); overflow: hidden; }
+.formula > * { padding-left: 22px; padding-right: 22px; }
+.formula .formula-label {
+  display: block; margin: 0; padding: 9px 22px; font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--yellow); background: var(--black); border-top: 3px solid var(--line);
+}
+.formula .formula-label:first-child { border-top: none; }
+[data-theme="dark"] .formula .formula-label { background: var(--surface); color: var(--yellow); }
+.formula mjx-container[display="true"] { border: none; border-left: 10px solid var(--red); background: transparent; box-shadow: none; margin: .6em 0 !important; }
+
+/* Worked example accordion */
+.example { margin: 1.6em 0; border: 3px solid var(--line); background: var(--surface); box-shadow: 6px 6px 0 var(--shadow-col); }
+.example > summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: .95rem; background: var(--surface-2); }
+.example > summary::-webkit-details-marker { display: none; }
+.example > summary:hover { background: var(--yellow); color: var(--black); }
+.example > summary .tag { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--red); padding: 5px 11px; }
+.example > summary .ex-chev { margin-left: auto; transition: transform .2s var(--ease); }
+.example[open] > summary .ex-chev { transform: rotate(180deg); }
+.example[open] > summary { border-bottom: 3px solid var(--line); }
+.example .ex-body { padding: 14px 22px 20px; }
+
+/* Self-check Q/A */
+.qa { margin: 1.1em 0; border: 3px solid var(--line); background: var(--surface); }
+.qa > summary { list-style: none; cursor: pointer; padding: 16px 18px 16px 56px; position: relative; font-weight: 700; }
+.qa > summary::-webkit-details-marker { display: none; }
+.qa > summary::before { content: "Q"; position: absolute; left: 14px; top: 13px; width: 28px; height: 28px; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: #fff; background: var(--red); }
+.qa > summary:hover { background: var(--surface-2); }
+.qa .qa-answer { padding: 6px 18px 18px 56px; border-top: 3px solid var(--line); color: var(--text-soft); position: relative; }
+.qa .qa-answer::before { content: "A"; position: absolute; left: 14px; top: 16px; width: 28px; height: 28px; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--black); background: var(--yellow); }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border: 2px solid var(--line); }
+.badge.s-fam-s { background: var(--blue); color: #fff; border-color: var(--blue); }
+.badge.s-fam-l { background: var(--red); color: #fff; border-color: var(--red); }
+
+/* Prev / Next */
+.page-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 52px; }
+.page-nav a { display: flex; flex-direction: column; gap: 5px; padding: 18px 20px; border: 3px solid var(--line); background: var(--surface); transition: all .12s var(--ease); text-decoration: none; }
+.page-nav a:hover { background: var(--red); color: #fff; transform: translate(-3px,-3px); box-shadow: 5px 5px 0 var(--shadow-col); }
+.page-nav a.next { text-align: right; }
+.page-nav .dir { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; letter-spacing: .08em; }
+.page-nav a:hover .dir { color: rgba(255,255,255,.85); }
+.page-nav .ttl { font-family: var(--font-display); font-weight: 400; font-size: 1rem; color: var(--text); text-transform: uppercase; }
+.page-nav a:hover .ttl { color: #fff; }
+.page-nav a.disabled { opacity: .35; pointer-events: none; }
+
+/* Mark-complete */
+.complete-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 16px; font-family: var(--font-display); font-weight: 400; font-size: 12.5px; text-transform: uppercase; border: 3px solid var(--line); background: var(--surface); color: var(--text); transition: all .12s var(--ease); }
+.complete-toggle:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--shadow-col); }
+.complete-toggle .box { width: 22px; height: 22px; border: 3px solid var(--line); display: grid; place-items: center; color: #fff; font-size: 13px; }
+.complete-toggle.done { background: var(--blue); color: #fff; border-color: var(--blue); }
+.complete-toggle.done .box { background: #fff; border-color: #fff; color: var(--blue); }
+
+/* Confidence selector */
+.confidence { display: inline-flex; gap: 0; border: 3px solid var(--line); }
+.confidence button { border: none; background: var(--surface); cursor: pointer; width: 34px; height: 30px; font-size: 14px; opacity: .45; transition: all .12s var(--ease); border-left: 2px solid var(--line); }
+.confidence button:first-child { border-left: none; }
+.confidence button:hover { opacity: .85; }
+.confidence button.sel { opacity: 1; }
+.confidence button.sel[data-v="red"]      { background: var(--red); }
+.confidence button.sel[data-v="learning"] { background: var(--yellow); }
+.confidence button.sel[data-v="solid"]    { background: var(--blue); }
+
+/* "On this page" TOC */
+.toc { position: sticky; top: calc(var(--topbar-h) + 24px); align-self: start; font-family: var(--font-mono); font-size: 12px;
+  background: var(--surface); border: 3px solid var(--line); box-shadow: var(--shadow-md); padding: 14px 14px 16px;
+  max-height: calc(100vh - var(--topbar-h) - 48px); overflow-y: auto; }
+.toc .toc-title { font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #fff; background: var(--black); padding: 6px 12px; margin-bottom: 12px; }
+[data-theme="dark"] .toc .toc-title { background: var(--blue); }
+.toc a { display: block; padding: 6px 12px; color: var(--text-mute); border-left: 3px solid var(--line); transition: all .12s var(--ease); line-height: 1.35; text-transform: uppercase; letter-spacing: .02em; }
+.toc a:hover { color: var(--text); text-decoration: none; background: var(--surface-2); }
+.toc a.active { color: var(--red); border-left-color: var(--red); font-weight: 700; }
+.toc a.lvl-3 { padding-left: 24px; font-size: 11px; }
+
+/* ----------------------------------------------------------------------------
+   7. SEARCH PALETTE
+   ---------------------------------------------------------------------------- */
+.search-overlay { position: fixed; inset: 0; z-index: 100; display: none; background: rgba(10,10,10,.45); padding-top: 12vh; }
+[data-theme="dark"] .search-overlay { background: rgba(0,0,0,.6); }
+.search-overlay.open { display: block; animation: fade .15s var(--ease); }
+.search-box { width: min(640px, 92vw); margin: 0 auto; background: var(--surface); border: 4px solid var(--line); box-shadow: 14px 14px 0 var(--shadow-col); overflow: hidden; animation: pop .2s var(--ease); }
+.search-input-row { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 3px solid var(--line); }
+.search-input-row .ico { font-size: 20px; }
+.search-input-row input { flex: 1; border: none; background: none; outline: none; color: var(--text); font: inherit; font-size: 17px; font-weight: 600; }
+.search-input-row input::placeholder { color: var(--text-mute); }
+.search-results { max-height: 56vh; overflow-y: auto; padding: 8px; }
+.search-empty { padding: 40px 20px; text-align: center; color: var(--text-mute); }
+.sr-group-label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--black); padding: 6px 12px; margin: 10px 6px 6px; }
+[data-theme="dark"] .sr-group-label { background: var(--blue); }
+.sr-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; cursor: pointer; text-decoration: none; color: var(--text); border: 2px solid transparent; }
+.sr-item.sel, .sr-item:hover { background: var(--red); color: #fff; text-decoration: none; }
+.sr-item .sr-ico { width: 36px; height: 36px; display: grid; place-items: center; background: var(--surface-2); border: 2px solid var(--line); font-size: 16px; flex-shrink: 0; }
+.sr-item.sel .sr-ico { background: var(--yellow); }
+.sr-item .sr-main { min-width: 0; flex: 1; }
+.sr-item .sr-title { font-weight: 700; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sr-item .sr-title mark { background: var(--yellow); color: var(--black); padding: 0 2px; }
+.sr-item.sel .sr-title mark { background: #fff; }
+.sr-item .sr-sub { font-size: 12.5px; color: var(--text-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sr-item.sel .sr-sub { color: rgba(255,255,255,.85); }
+.sr-item .sr-enter { opacity: 0; font-size: 12px; }
+.sr-item.sel .sr-enter { opacity: 1; }
+.search-foot { display: flex; gap: 16px; padding: 11px 18px; border-top: 3px solid var(--line); font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: .04em; }
+.search-foot span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ----------------------------------------------------------------------------
+   8. DASHBOARD
+   ---------------------------------------------------------------------------- */
+.dash { padding: 36px 40px 100px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; animation: rise .35s var(--ease) both; }
+.exam-nudge { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-bottom: 22px; background: var(--surface-2); border: 3px solid var(--line); }
+.exam-nudge .en-ico { font-size: 22px; flex-shrink: 0; }
+.exam-nudge .en-text { font-size: .95rem; color: var(--text-soft); font-weight: 500; line-height: 1.4; }
+.exam-nudge .en-text strong { color: var(--text); }
+.exam-nudge .en-set { flex-shrink: 0; margin-left: auto; }
+.exam-nudge .en-dismiss { flex-shrink: 0; background: none; border: none; color: var(--text-mute); font-size: 16px; cursor: pointer; padding: 4px 8px; line-height: 1; }
+.exam-nudge .en-dismiss:hover { color: var(--text); }
+.hero {
+  position: relative; overflow: hidden; padding: clamp(30px,4vw,48px);
+  background: var(--surface); border: 3px solid var(--line); color: var(--text);
+  box-shadow: 14px 14px 0 var(--shadow-col); margin-bottom: 30px;
+}
+.hero::after { content: ""; position: absolute; top: 0; right: 0; width: 96px; height: 96px; background: var(--red); transform: translate(38%,-38%) rotate(15deg); }
+.hero .greet { display: inline-block; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #fff; background: var(--black); padding: 6px 13px; margin-bottom: 18px; }
+[data-theme="dark"] .hero .greet { background: var(--blue); }
+.hero h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.2rem,5vw,3.6rem); margin: 0 0 16px; line-height: .9; text-transform: uppercase; letter-spacing: -.02em; }
+.hero .sub { font-size: 1.08rem; color: var(--text-soft); max-width: 52ch; margin: 0 0 28px; font-weight: 500; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; font-family: var(--font-display); font-weight: 400; font-size: 13.5px; text-transform: uppercase; letter-spacing: .02em; cursor: pointer; border: 3px solid var(--line); transition: all .12s var(--ease); text-decoration: none; }
+.btn-light, .btn-primary { background: var(--red); color: #fff; box-shadow: 6px 6px 0 var(--shadow-col); }
+.btn-light:hover, .btn-primary:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--shadow-col); text-decoration: none; color: #fff; }
+.btn-ghost { background: var(--surface); color: var(--text); }
+.btn-ghost:hover { background: var(--black); color: #fff; text-decoration: none; }
+[data-theme="dark"] .btn-ghost:hover { background: var(--blue); }
+
+.dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 22px; margin-bottom: 30px; }
+.section-title { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 400; font-size: 1.4rem; margin: 10px 0 18px; text-transform: uppercase; letter-spacing: -.01em; }
+.section-title .count { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #fff; background: var(--black); padding: 4px 10px; text-transform: uppercase; letter-spacing: .04em; }
+[data-theme="dark"] .section-title .count { background: var(--blue); }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 18px; margin-bottom: 8px; }
+.stat { background: var(--surface); border: 3px solid var(--line); padding: 22px; box-shadow: 6px 6px 0 var(--shadow-col); transition: transform .12s var(--ease); position: relative; overflow: hidden; }
+.stat:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--shadow-col); }
+.stat .k { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; letter-spacing: .1em; }
+.stat .v { font-family: var(--font-display); font-size: 2.4rem; font-weight: 400; line-height: 1; margin: 8px 0 2px; }
+.stat .v small { font-size: 1rem; color: var(--text-mute); }
+
+/* progress ring card */
+.ring-card { display: flex; align-items: center; gap: 22px; padding: 24px; }
+.ring { width: 116px; height: 116px; flex-shrink: 0; position: relative; }
+.ring svg { transform: rotate(-90deg); }
+.ring .ring-bg { stroke: var(--surface-2); }
+.ring .ring-fg { stroke: var(--red); stroke-linecap: butt; transition: stroke-dashoffset 1s var(--ease); }
+.ring .ring-num { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-display); font-size: 1.7rem; font-weight: 400; }
+
+.countdown .cd-num { font-family: var(--font-display); font-size: 2.8rem; font-weight: 400; line-height: 1; color: var(--red); }
+.countdown .cd-label { color: var(--text-mute); font-size: 13px; font-weight: 600; }
+.date-input { margin-top: 12px; padding: 9px 12px; border: 3px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-size: 13px; }
+
+.exam-card { display: block; padding: 26px; background: var(--surface); border: 3px solid var(--line); box-shadow: 8px 8px 0 var(--shadow-col); transition: all .12s var(--ease); text-decoration: none; color: inherit; }
+.exam-card:hover { transform: translate(-3px,-3px); box-shadow: 12px 12px 0 var(--red); text-decoration: none; }
+.exam-card.soon { border-style: dashed; box-shadow: none; opacity: .85; }
+.exam-card.soon:hover { transform: none; box-shadow: none; }
+.exam-card .ec-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.exam-card .ec-badge { width: 54px; height: 54px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 400; font-size: 18px; color: #fff; background: var(--red); transform: rotate(-6deg); box-shadow: 4px 4px 0 var(--shadow-col); }
+.exam-card h3 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; text-transform: uppercase; }
+.exam-card .ec-sub { color: var(--text-mute); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.exam-card .ec-desc { color: var(--text-soft); font-size: .95rem; margin: 0 0 16px; }
+
+.topic-card { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: var(--surface); border: 3px solid var(--line); transition: all .12s var(--ease); text-decoration: none; color: inherit; }
+.topic-card:hover { background: var(--red); color: #fff; transform: translate(-3px,0); text-decoration: none; }
+.topic-card .tc-num { font-family: var(--font-mono); font-weight: 700; color: var(--text-mute); }
+.topic-card:hover .tc-num { color: rgba(255,255,255,.85); }
+.topic-card .tc-title { font-weight: 700; flex: 1; text-transform: uppercase; font-size: .92rem; }
+
+.quote-card { background: var(--black); color: #fff; padding: 28px; border: 3px solid var(--line); box-shadow: 8px 8px 0 var(--red); position: relative; overflow: hidden; }
+[data-theme="dark"] .quote-card { background: var(--blue); }
+.quote-card .q-mark { font-family: var(--font-display); font-size: 4rem; line-height: .6; color: var(--yellow); }
+.quote-card .q-text { font-size: 1.12rem; font-weight: 600; margin: 6px 0 12px; }
+.quote-card .q-by { font-family: var(--font-mono); font-size: 12px; color: var(--yellow); text-transform: uppercase; letter-spacing: .06em; }
+
+/* ----------------------------------------------------------------------------
+   9. TRACKER
+   ---------------------------------------------------------------------------- */
+.tracker-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.tracker-table th { text-align: left; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mute); padding: 11px 14px; border-bottom: 3px solid var(--line); }
+.tracker-table td { padding: 12px 14px; border-bottom: 2px solid var(--line); }
+.tracker-table tr:last-child td { border-bottom: none; }
+.tracker-table tr:hover td { background: var(--surface-2); }
+
+/* ----------------------------------------------------------------------------
+   10. MOTION + UTIL + TOASTS
+   ---------------------------------------------------------------------------- */
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop  { from { opacity: 0; transform: translate(-6px,-6px); } to { opacity: 1; transform: none; } }
+@keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+.toast-wrap { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 120; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.toast { background: var(--surface); border: 3px solid var(--line); box-shadow: 6px 6px 0 var(--shadow-col); padding: 13px 22px; font-family: var(--font-display); font-weight: 400; font-size: 13px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; animation: pop .2s var(--ease); }
+.toast .ti { font-size: 18px; }
+
+.fade-in { animation: rise .35s var(--ease) both; }
+.hidden { display: none !important; }
+.text-mute { color: var(--text-mute); }
+.scroll-top { position: fixed; bottom: 26px; right: 26px; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; transform: translateY(10px); }
+.scroll-top.show { opacity: 1; pointer-events: auto; transform: none; }
+
+/* ----------------------------------------------------------------------------
+   RESPONSIVE
+   ---------------------------------------------------------------------------- */
+@media (max-width: 1100px) { .page-wrap { grid-template-columns: minmax(0,1fr); max-width: var(--content-max); } .toc { display: none; } .dash-grid { grid-template-columns: 1fr; } }
+@media (max-width: 880px) {
+  :root { --sidebar-w: 286px; }
+  .main-col { margin-left: 0; }
+  .menu-btn { display: inline-grid; }
+  .sidebar { transform: translateX(-100%); box-shadow: 10px 0 0 var(--shadow-col); }
+  body.nav-open .sidebar { transform: none; }
+  body.nav-open::after { content: ""; position: fixed; inset: 0; background: rgba(10,10,10,.5); z-index: 54; }
+  .page-wrap { padding: 22px 16px 100px; }
+  .article { padding: 22px 18px; }
+  .dash { padding: 22px 16px 80px; }
+  .search-trigger { min-width: 0; width: 42px; padding: 0; justify-content: center; }
+  .search-trigger .stxt, .search-trigger .kbd { display: none; }
+  .page-nav { grid-template-columns: 1fr; }
+  .mss-field .ms { opacity: .5; }
+}
+
+@media print {
+  .sidebar, .topbar, .toc, .page-nav, .scroll-top, .read-progress, .complete-toggle, .confidence, .mss-field { display: none !important; }
+  .main-col { margin: 0; }
+  .page-wrap { display: block; max-width: 100%; padding: 0; }
+  .article { box-shadow: none; border-width: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .ms { animation: none !important; }
+}
+
+</style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='0' fill='%23e02516'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='white' font-family='Georgia' font-weight='700'>M</text></svg>">
+  <script>(function(){try{var t=localStorage.getItem('mss:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+
+  <style>
+    /* standalone mobile reader layout (site chrome not present) */
+    body { margin: 0; }
+    .article { max-width: 760px; margin: 0 auto; padding: 22px 18px 80px; }
+    img, table { max-width: 100%; }
+    .table-scroll { overflow-x: auto; }
+  </style>
+</head>
+<body data-page="st-10" data-exam="fam">
+  <article class="article" data-mss-article>
+    <header class="article-head">
+      <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 10</div>
+      <h1>Option Pricing Fundamentals</h1>
+      <p class="lede">Derivatives, calls &amp; puts, moneyness, options as insurance, put–call parity, the binomial model, and Black–Scholes — the same risk-transfer logic insurers use to price embedded guarantees.</p>
+      <div class="meta-row">
+        <span class="chip">📖 Financial Economics · Options</span>
+        <span class="chip">⏱️ ~4–5 hrs</span>
+        <span class="chip">🔑 payoffs · moneyness · put–call parity</span>
+        <span class="chip">🌳 binomial · risk-neutral · lognormal</span>
+        <span class="chip">🧮 Black–Scholes · delta-hedge</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout note" data-icon="📌">
+        <div class="callout-title">Exam FAM — Study Note</div>
+        <p>This is Section S6 of the financial-economics material: derivatives (S6.1), put–call parity (S6.2), the binomial model (S6.3), and the lognormal/Black–Scholes model (S6.4). FAM treats <strong>European</strong> options for the pricing formulas; American options appear only in the binomial early-exercise discussion. Where the math overlaps with <em>Loss Models</em> and <em>Actuarial Mathematics for Life Contingent Risks (AMLCR)</em>, the insurance connection is flagged in the final section.</p>
+      </div>
+
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Learning Objectives</div>
+        <p>After mastering this topic you should be able to:</p>
+        <ol>
+          <li><strong>Define a derivative and its underlying asset</strong>, describe long vs. short positions, and explain the three-step mechanics of <em>short-selling</em>.</li>
+          <li><strong>Identify and describe</strong> the four basic option positions — long call, short call, long put, short put — and state who has the right and who has the obligation.</li>
+          <li><strong>Decide whether an option will be exercised</strong>, write its <strong>payoff</strong>, and classify its <strong>moneyness</strong> (in-, at-, out-of-the-money).</li>
+          <li><strong>Draw and interpret payoff and profit diagrams</strong> for calls, puts, and simple combinations, including the breakeven point and the role of accumulated premium.</li>
+          <li><strong>Explain how a call is insurance against a price increase and a put insurance against a price decrease</strong>, and recognize an <em>embedded option</em> inside an insurer's guarantee.</li>
+          <li><strong>Apply put–call parity</strong> (via the law of one price) to price one option given the other, to back out $S_0,K,r$, and to detect arbitrage.</li>
+          <li><strong>Price a European option with the one-period binomial model</strong> using both the <em>replicating portfolio</em> method and the <em>risk-neutral</em> method, and show the two give the same price.</li>
+          <li><strong>Extend the binomial model to multiple periods</strong> on a recombining tree — both node-by-node and the binomial-probability shortcut — and handle American early exercise.</li>
+          <li><strong>Compute the replicating portfolio</strong> $(\Delta, B)$, interpret the signs, and explain self-financing / dynamic hedging.</li>
+          <li><strong>State the lognormal stock model</strong> and compute real-world probabilities such as $\Pr[S_T\lt K]$.</li>
+          <li><strong>Use the Black–Scholes formula</strong> to price European calls and puts on a non-dividend and dividend-paying stock, compute $d_1,d_2,N(\cdot)$, and build a <strong>delta-hedge</strong> for a written option.</li>
+          <li><strong>Connect</strong> option pricing to embedded options in insurance products (e.g., guarantees on variable annuities / equity-indexed annuities).</li>
+        </ol>
+      </div>
+
+      <h2>Key Concepts</h2>
+
+      <h3>1. Derivatives, underlying assets, and short-selling</h3>
+      <p>A <strong>derivative</strong> is a financial instrument whose value is <em>derived from</em> the price of something else — its <strong>underlying asset</strong>. On FAM the underlying is a tradable security: a <strong>stock</strong> (common stock — ownership, dividends, voting), an <strong>index</strong> (e.g., Dow Jones, S&amp;P 500), or a <strong>mutual fund</strong>. Mathematically these behave identically; we write the price as $S_t$ ($t$ in years).</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Known vs. random prices (notation that matters)</div>
+        <ul>
+          <li>$S_0$ (or $S_t$, "now") — the <strong>current</strong> price, which we can look up, so it is treated as a <strong>known constant</strong>.</li>
+          <li>$S_T$ — a <strong>future</strong> price of a risky asset, which is a <strong>random variable</strong> (nobody knows tomorrow's price).</li>
+          <li>Underlying assets are assumed to <strong>pay no dividends</strong> (or to reinvest them) — mathematically the same.</li>
+        </ul>
+      </div>
+      <p><strong>Long vs. short.</strong> A <em>long</em> position is a positive holding — you <strong>own</strong> the asset; the payoff of a long stock is $+S_T$. A <em>short</em> position is a negative holding — you <strong>owe</strong> the asset; the payoff of a short stock is $-S_T$ (the opposite of long).</p>
+      <p><strong>Short-selling</strong> lets you profit from a price <em>decline</em> on a stock you do not own, in three steps:</p>
+      <ol>
+        <li><strong>Borrow</strong> shares now from a lender (promise to return them later).</li>
+        <li><strong>Sell</strong> the borrowed shares immediately and invest the proceeds at the risk-free rate.</li>
+        <li><strong>Buy back</strong> the shares later and return them to the lender.</li>
+      </ol>
+      <p>A <strong>payoff</strong> is the amount you would have if you completely cashed out at a given time, ignoring cash flows on other dates. A risk-free zero-coupon bond has payoff equal to its maturity value $B$ regardless of anything else. We combine long/short positions in stocks and bonds into a <strong>portfolio</strong>; in particular, <em>long stock + short bond</em> reappears in put–call parity below.</p>
+
+      <h3>2. What is an option?</h3>
+      <p>Motivating scenario: an insurer will receive $\$1{,}000$ of premium in one year and wants to buy a stock index then for today's price of $\$1{,}000$ — but the index might rise. It buys, for an upfront fee, the <em>right</em> (not the obligation) to pay $\$1{,}000$ for the index in one year. This caps its purchase price at $\$1{,}000$: it exercises only if the index rises above $\$1{,}000$. That contract is a <strong>call option</strong>.</p>
+      <p>An <strong>option</strong> gives its <em>owner the right, but not the obligation,</em> to buy or sell an underlying asset at an agreed price.</p>
+      <ul>
+        <li><strong>Call option</strong> — the right to <strong>buy</strong> the asset for the <strong>strike price</strong> $K$. <em>Mnemonic: COB — Call is Option to Buy.</em></li>
+        <li><strong>Put option</strong> — the right to <strong>sell</strong> the asset for $K$. <em>Mnemonic: POS — Put is Option to Sell.</em></li>
+        <li><strong>Expiration</strong> (expiry / maturity date) — when the contract ends; <strong>strike price</strong> $K$ — the exchange price; <strong>exercising</strong> — invoking your right.</li>
+        <li><strong>European</strong> — exercisable only at expiry $T$. <strong>American</strong> — exercisable any time up to $T$. FAM's pricing formulas are European; American options appear in the binomial early-exercise context.</li>
+      </ul>
+      <p>The buyer (<strong>holder</strong>) pays a <strong>premium</strong> up front and is <strong>long</strong>; the seller (<strong>writer</strong>) receives the premium, is <strong>short</strong>, and takes on the obligation. We write the time-$t$ premiums as $c(t)$ and $p(t)$, with $T-t$ years to expiry — e.g. $c(0)$ is today's call price.</p>
+      <p><strong>Intuition:</strong> an option is asymmetric. The long side caps its loss at the premium but keeps unlimited (call) or large (put) upside; the short side keeps a fixed premium but bears open-ended risk — exactly insurance's risk-transfer logic, which is why this lives on FAM.</p>
+
+      <h3>3. To exercise or not? — and Payoff vs. Profit</h3>
+      <p><strong>A rational holder exercises only when it pays.</strong> A call is exercised iff $S_T>K$ (buy cheap at $K$, worth more); a put iff $S_T\lt K$ (sell dear at $K$, cheaper in market). Otherwise the holder walks away and the payoff is floored at $0$.</p>
+      <ul>
+        <li><strong>Payoff</strong> = value of the option <em>at expiry</em>, ignoring what you paid for it. Always $\ge 0$ for the long holder.</li>
+        <li><strong>Profit</strong> = payoff minus the <strong>accumulated cost</strong> of the position (premium grown at the risk-free rate to time $T$).</li>
+      </ul>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Position</th><th>Payoff at $T$</th><th>Profit at $T$</th></tr></thead>
+        <tbody>
+          <tr><td>Long stock</td><td>$S_T$</td><td>—</td></tr>
+          <tr><td>Short stock</td><td>$-S_T$</td><td>—</td></tr>
+          <tr><td>Long call</td><td>$(S_T-K)_+=\max(S_T-K,\,0)$</td><td>$\max(S_T-K,0) - C e^{rT}$</td></tr>
+          <tr><td>Short call</td><td>$-\max(S_T-K,\,0)$</td><td>$C e^{rT} - \max(S_T-K,0)$</td></tr>
+          <tr><td>Long put</td><td>$(K-S_T)_+=\max(K-S_T,\,0)$</td><td>$\max(K-S_T,0) - P e^{rT}$</td></tr>
+          <tr><td>Short put</td><td>$-\max(K-S_T,\,0)$</td><td>$P e^{rT} - \max(K-S_T,0)$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Here $C, P$ are the time-0 premiums and $S_T$ is the asset price at expiry. A short position's payoff is always the <strong>opposite</strong> of the matching long position — its diagram is the reflection of the long diagram about the horizontal axis.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Diagram shapes (commit these to memory)</div>
+        <ul>
+          <li><em>Long call:</em> flat at the loss line for $S_T\lt K$, then rises at 45° (slope $+1$) past $K$. Breakeven at $S_T = K + Ce^{rT}$.</li>
+          <li><em>Long put:</em> falls at 45° (slope $-1$) up to $K$, then flat. Breakeven at $S_T = K - Pe^{rT}$.</li>
+          <li><em>Short positions</em> are the <strong>mirror image across the horizontal axis</strong> of the corresponding long position.</li>
+        </ul>
+      </div>
+
+      <h3>4. Option moneyness</h3>
+      <p><strong>Moneyness</strong> describes what the option's payoff <em>would be if exercised right now</em> — ignoring its exercise style entirely (we pretend it could be exercised immediately, even if the payoff is negative).</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Moneyness</th><th>If exercised now, payoff is…</th><th>Call</th><th>Put</th></tr></thead>
+        <tbody>
+          <tr><td><strong>In-the-money</strong> (ITM)</td><td>positive</td><td>$S>K$</td><td>$S\lt K$</td></tr>
+          <tr><td><strong>At-the-money</strong> (ATM)</td><td>exactly $0$</td><td>$S=K$</td><td>$S=K$</td></tr>
+          <tr><td><strong>Out-of-the-money</strong> (OTM)</td><td>negative</td><td>$S\lt K$</td><td>$S>K$</td></tr>
+        </tbody>
+      </table></div>
+      <p>Moneyness is a snapshot for classification only; the <em>actual</em> payoff is still floored at $0$ because no rational holder exercises into a loss.</p>
+
+      <h3>5. Options as insurance &amp; embedded options</h3>
+      <p>A <strong>call is insurance against a price increase</strong> (it caps what you'll pay for the asset at $K$); a <strong>put is insurance against a price decrease</strong> (it guarantees you can sell at $K$). Insurers package such protection into <strong>guarantees</strong>, and many guarantees can be rewritten as options — these are <strong>embedded options</strong>.</p>
+      <p>The classic decomposition uses $\max(S_0,S_T)=\max(S_0-S_T,0)+S_T$: a "get at least your money back" guarantee equals <strong>a share of the asset plus a long put</strong> struck at the guaranteed floor. A variable-annuity guaranteed minimum maturity benefit (GMMB) is a put on the policyholder's fund; an equity-indexed annuity's participation feature is effectively a call. Once the insurer recognizes the embedded option, it can <em>hedge</em> the guarantee by buying that option — exactly the machinery in the rest of this topic.</p>
+
+      <h3>6. Put–Call Parity and the law of one price (the single most testable formula)</h3>
+      <p>A portfolio of <em>long $K$-call + short $K$-put</em> has payoff $\max(S_T-K,0)-\max(K-S_T,0)=S_T-K$ — identical to <em>long stock + short bond maturing for $K$</em> (a <strong>forward</strong> to buy the stock at $K$). The <strong>law of one price</strong> (the no-arbitrage assumption) says two positions with identical payoffs must cost the same, else an <strong>arbitrage</strong> ("free money": buy low, sell high, no risk, no net investment) exists. Equating costs gives, for <strong>European</strong> options on the same underlying, strike $K$, and expiry $T$:</p>
+      <div class="formula">$$ C - P = S_0 - K e^{-rT} \quad(\text{non-dividend stock}) $$</div>
+      <p>Parity holds <strong>only for European options</strong> and only when call and put share the same underlying, strike, and time to expiry. The dividend versions below adjust $S_0$ downward; you are not separately tested on the dividend forms, but they are good to know.</p>
+
+      <h3>7. The Binomial Model — two equivalent pricers</h3>
+      <p>Assumptions: a risky stock and a risk-free bond, discrete trading times, no transaction costs, short-selling allowed, and <strong>no arbitrage</strong>. Over one period the stock either goes <strong>up</strong> to $S_0 u$ or <strong>down</strong> to $S_0 d$ (with $u>d$; note $d$ need not be below $1$).</p>
+      <p><strong>(a) Replicating portfolio.</strong> Buy $\Delta$ shares and lend (or borrow) $B$ in cash so the portfolio exactly reproduces the option's two possible payoffs. By the law of one price the option must cost the same: price $= \Delta S_0 + B$. Sign reading is crucial — see the table below.</p>
+      <p><strong>(b) Risk-neutral valuation.</strong> Invent a probability under which the stock earns the risk-free rate <em>on average</em>; price the option as its <strong>expected payoff discounted at the risk-free rate</strong>. Same answer, faster.</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Replicating-portfolio sign table</div>
+        <div class="table-scroll"><table>
+          <thead><tr><th></th><th>Call</th><th>Put</th></tr></thead>
+          <tbody>
+            <tr><td>$\Delta$ (shares)</td><td>$+$ → <strong>buy</strong> stock</td><td>$-$ → <strong>short-sell</strong> stock</td></tr>
+            <tr><td>$B$ (cash)</td><td>$-$ → <strong>borrow</strong></td><td>$+$ → <strong>lend</strong></td></tr>
+          </tbody>
+        </table></div>
+        <p>So: replicate a <strong>call</strong> by buying stock and borrowing; replicate a <strong>put</strong> by short-selling stock and lending.</p>
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">The risk-neutral measure ($Q$) vs. the real world ($P$)</div>
+        <p>The risk-neutral probability is a <em>pricing tool</em>, not the true probability. The <strong>$Q$-measure</strong> (risk-neutral measure) is what we price with; the <strong>$P$-measure</strong> is the physical / real-world distribution. Risk-neutral pricing says we may discount <em>every</em> asset at the risk-free rate as if investors demanded no risk premium. As a sanity check, discounting the stock's own risk-neutral expected price returns $S_0$ exactly. The real-world up-probability <strong>never enters</strong> the option price (a result that surprises everyone the first time).</p>
+      </div>
+      <p><strong>Delta</strong> $\Delta$ — the number of shares in the replicating portfolio — is the option's price sensitivity to the stock and the foundation of <strong>delta-hedging</strong>: a writer who holds $\Delta$ shares per option written is (instantaneously) immune to small stock moves.</p>
+
+      <h3>8. Multi-period binomial: backward induction, the binomial shortcut, and self-financing</h3>
+      <p>Keeping $u,d$ constant makes the tree <strong>recombine</strong> ($S_0ud=S_0du$). Two ways to price:</p>
+      <ul>
+        <li><strong>Node-by-node (backward).</strong> Apply the one-period formula at every node from expiry back to time 0. <em>Required</em> when a question asks for a replicating-portfolio component ($\Delta$ or $B$) at an interior node, or for an American option.</li>
+        <li><strong>Binomial-probability shortcut (European only).</strong> Compute each terminal payoff, weight by the binomial probability of reaching it, and discount once back to time 0.</li>
+      </ul>
+      <p>The hedge is <strong>self-financing</strong>: the value of the portfolio held into a node exactly equals the cost of the portfolio you need <em>at</em> that node, so you only invest cash at time 0 and merely rebalance thereafter — this continual rebalancing is <strong>dynamic hedging</strong>.</p>
+      <p>For an <strong>American</strong> option, at each node take the larger of the continuation value and the <strong>immediate-exercise value</strong>.</p>
+
+      <h3>9. The lognormal stock model</h3>
+      <p>Let the binomial period length shrink to zero: the tree becomes a continuous-time <strong>lognormal stochastic process</strong> (geometric Brownian motion), $\{S_t\}_{t\ge0}$. Define the <strong>accumulation factor</strong> $S_{t+\tau}/S_t$; these factors are <strong>independent over non-overlapping intervals</strong> and lognormally distributed. The <strong>log-return</strong> $\ln(S_{t+\tau}/S_t)$ is normal with mean $\mu\tau$ and variance $\sigma^2\tau$, where (with $\tau$ in years) $\mu$ is the annual expected return and $\sigma$ the annual volatility. This lets us compute <strong>real-world</strong> probabilities of future prices — see the Formulas section. (Watch the Greek $\tau$ "tau" — easy to misread as $r$ or $t$.)</p>
+
+      <h3>10. Black–Scholes</h3>
+      <p>As the number of binomial periods $\to\infty$ with appropriately chosen $u,d$, the binomial price converges to the <strong>Black–Scholes–Merton (BSM)</strong> price. BSM assumes a constant, flat risk-free rate, frictionless continuous trading, no dividends, and a stock that is lognormal with drift $\mu$ (real world) but drift $r-\tfrac12\sigma^2$ under the risk-neutral measure. The price of any payoff is its risk-neutral expectation discounted at $r$: $v(t)=e^{-r(T-t)}E^Q_t[h(S_T)]$. For calls/puts this yields the closed form below; $N(d_1)$ and $N(d_2)$ are the risk-neutral deltas/probabilities, and $N(d_2)$ is (under $Q$) the probability the call finishes in the money. The BSM call/put are themselves <strong>delta-hedge portfolios</strong>: $\Delta_{\text{call}}=N(d_1)$, $\Delta_{\text{put}}=-N(-d_1)$.</p>
+
+      <h3>11. Why insurers care</h3>
+      <p>Insurance products often contain <strong>embedded options</strong>: a variable-annuity guaranteed minimum maturity benefit (GMMB) is a <strong>put</strong> on the policyholder's fund (the insurer guarantees a floor); an equity-indexed annuity's participation feature is effectively a <strong>call</strong>. Pricing and reserving for these guarantees uses exactly the option-pricing machinery above.</p>
+
+      <h2>Formulas</h2>
+
+      <h3>Payoffs and profit</h3>
+      <div class="formula">
+        $$ \text{Long stock} = S_T, \qquad \text{Short stock} = -S_T, \qquad \text{Bond} = B $$
+        $$ \text{Call payoff} = (S_T-K)_+ = \max(S_T - K,\,0), \qquad \text{Put payoff} = (K-S_T)_+ = \max(K - S_T,\,0) $$
+        $$ \text{Short call} = -\max(S_T-K,0), \qquad \text{Short put} = -\max(K-S_T,0) $$
+        $$ \text{Long-option profit} = \text{payoff} - (\text{premium})\,e^{rT} $$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Symbols</div>
+        <p>$S_T$ — underlying price at expiry; $K$ — strike; $r$ — continuously-compounded risk-free rate; $T$ — time to expiry (years); $c(t),p(t)$ — time-$t$ call/put premiums.</p>
+      </div>
+
+      <h3>Put–call parity</h3>
+      <div class="formula">
+        <span class="formula-label">Non-dividend stock</span>
+        $$ C(K,T) - P(K,T) = S_0 - K e^{-rT} $$
+        <span class="formula-label">Continuous dividend yield $\delta$</span>
+        $$ C - P = S_0 e^{-\delta T} - K e^{-rT} $$
+        <span class="formula-label">Discrete dividends with present value $\mathrm{PV}_{0,T}(\text{Div})$</span>
+        $$ C - P = \big(S_0 - \mathrm{PV}_{0,T}(\text{Div})\big) - K e^{-rT} $$
+      </div>
+      <p>$C, P$ — current call/put premiums; $\delta$ — continuous dividend yield; $S_0$ — current stock price. Same underlying, same strike, same expiry; <strong>European only</strong>.</p>
+
+      <h3>One-period binomial — replicating portfolio</h3>
+      <div class="formula">
+        $$ \Delta = e^{-\delta h}\,\frac{V_u - V_d}{S_0(u - d)}, \qquad B = e^{-rh}\,\frac{u\,V_d - d\,V_u}{u - d} $$
+        $$ \boxed{\;\text{Option price} = V_0 = \Delta S_0 + B\;}$$
+      </div>
+      <p>$h$ — length of the period (years); $u, d$ — up/down <strong>multiplicative factors</strong> ($S_u=S_0u,\ S_d=S_0d$); $V_u, V_d$ — option payoffs in the up/down state; $\delta$ — dividend yield ($\delta = 0$ if none, the case the exam emphasizes).</p>
+
+      <h3>One-period binomial — risk-neutral probability</h3>
+      <p>Writing $p^{*}$ for the risk-neutral probability of an <strong>up</strong>-move (equivalently $1-q$ in the down-move convention some texts use):</p>
+      <div class="formula">
+        $$ p^{*} = \frac{e^{(r-\delta)h} - d}{u - d}, \qquad q = 1-p^{*} = \frac{u - e^{(r-\delta)h}}{u - d} $$
+        $$ \boxed{\;\text{Option price} = e^{-rh}\,E^Q[V_h] = e^{-rh}\big[\,p^{*} V_u + (1-p^{*}) V_d\,\big]\;}$$
+      </div>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Two conventions — same price</div>
+        <p>Coaching-Actuaries writes $q=\dfrac{u-e^{(r-\delta)h}}{u-d}$ for the <em>down</em>-move probability, so its formula reads $V_0=e^{-rh}[(1-q)V_u+qV_d]$. That is identical to the up-probability $p^{*}=1-q$ above. Whichever you use, weight $V_u$ by the up-probability and $V_d$ by the down-probability and discount at $r$.</p>
+      </div>
+      <p>For arbitrage-free pricing we need $d < e^{(r-\delta)h} < u$, which guarantees $0 < p^* < 1$.</p>
+
+      <h3>Multi-period binomial</h3>
+      <p>Build a <strong>recombining tree</strong>: after $n$ periods the stock can be $S_0 u^{j} d^{\,n-j}$ for $j = 0,\dots,n$. Work <strong>backwards</strong> from expiry, applying the one-period risk-neutral formula at each node:</p>
+      <div class="formula">$$ V_{\text{node}} = e^{-rh}\big[\,p^{*}V_{\text{up}} + (1-p^{*})V_{\text{down}}\,\big] $$</div>
+      <p><strong>European shortcut</strong> — let $k$ be the number of down-jumps to an ending node; the probability of reaching it is binomial in the down-move probability $q=1-p^{*}$:</p>
+      <div class="formula">
+        $$ \Pr(k\text{ down jumps}) = \binom{n}{k} q^{k}(1-q)^{\,n-k}, \quad k = 0,1,\dots,n $$
+        $$ V_0 = e^{-rnh}\sum_{k=0}^{n} \binom{n}{k} q^{k}(1-q)^{\,n-k}\, V_{(n-k\ \text{up moves})} $$
+      </div>
+      <p>For an <strong>American</strong> option, at each node take the larger of the continuation value and the <strong>immediate-exercise value</strong>:</p>
+      <div class="formula">$$ V_{\text{node}} = \max\big(\text{exercise value},\; e^{-rh}[p^{*}V_{\text{up}} + (1-p^{*})V_{\text{down}}]\big) $$</div>
+      <p><strong>Forward (Cox-Ross-Rubinstein style) tree factors</strong> often given on the exam:</p>
+      <div class="formula">
+        $$ u = e^{(r-\delta)h + \sigma\sqrt{h}}, \qquad d = e^{(r-\delta)h - \sigma\sqrt{h}} $$
+      </div>
+      <p>with this choice, $p^{*} = \dfrac{1}{1+e^{\sigma\sqrt{h}}}$.</p>
+
+      <h3>Lognormal model — real-world probabilities</h3>
+      <div class="formula">
+        <span class="formula-label">Accumulation factor &amp; log-return ($P$-measure)</span>
+        $$ \frac{S_{t+\tau}}{S_t}\sim \mathrm{LogN}(\mu\tau,\ \sigma^2\tau), \qquad \ln\!\frac{S_{t+\tau}}{S_t}\sim N(\mu\tau,\ \sigma^2\tau) $$
+        <span class="formula-label">Probability the future price is below $K$</span>
+        $$ \Pr[S_{t+\tau}\lt K] = \Pr\!\left[Z < \frac{\ln(K/S_t) - \mu\tau}{\sigma\sqrt{\tau}}\right] = N\!\left(\frac{\ln(K/S_t)-\mu\tau}{\sigma\sqrt{\tau}}\right) $$
+      </div>
+      <p>$\mu$ — annual expected (continuously-compounded) return; $\sigma$ — annual volatility; $Z\sim N(0,1)$. Use $1-N(\cdot)$ for $\Pr[S_{t+\tau}>K]$. <strong>This is a real-world ($P$) calculation — it uses $\mu$, not $r$.</strong></p>
+
+      <h3>Black–Scholes (European options)</h3>
+      <p>Stock with continuous dividend yield $\delta$ ($N=$ standard normal CDF):</p>
+      <div class="formula">
+        $$ C = S_0 e^{-\delta T} N(d_1) - K e^{-rT} N(d_2) $$
+        $$ P = K e^{-rT} N(-d_2) - S_0 e^{-\delta T} N(-d_1) $$
+        $$ d_1 = \frac{\ln(S_0/K) + \big(r - \delta + \tfrac{1}{2}\sigma^{2}\big)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T} $$
+      </div>
+      <ul>
+        <li>$\sigma$ — annual volatility of the stock's continuously-compounded return; all other symbols as above. Set $\delta = 0$ for a non-dividend stock.</li>
+        <li><strong>Call delta</strong> $= e^{-\delta T} N(d_1)$; <strong>put delta</strong> $= -e^{-\delta T} N(-d_1)$.</li>
+        <li>BS satisfies put–call parity automatically, so you can always get the put from the call.</li>
+      </ul>
+      <div class="formula">
+        <span class="formula-label">Delta-hedge / replicating portfolio (non-dividend)</span>
+        $$ \text{Call: } \Delta = N(d_1),\ B = -Ke^{-rT}N(d_2) \;\Rightarrow\; \text{buy } N(d_1)\text{ shares, borrow } Ke^{-rT}N(d_2) $$
+        $$ \text{Put: } \Delta = -N(-d_1),\ B = Ke^{-rT}N(-d_2) \;\Rightarrow\; \text{short } N(-d_1)\text{ shares, lend } Ke^{-rT}N(-d_2) $$
+      </div>
+      <p>Both BSM portfolios are <strong>self-financing</strong>, mirroring the multi-period binomial hedge.</p>
+
+      <h2>Worked Examples</h2>
+
+      <details class="example" open>
+        <summary><span class="tag">Example 1</span> Short-sale payoff <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A non-dividend stock trades at $\$100$; the continuously-compounded risk-free rate is $8\%$. An insurer short-sells one share and invests all proceeds in a 6-month risk-free bond. Find the payoff if the stock is $\$110$ in six months.</p>
+          <p><strong>Solution.</strong> Bond proceeds: $100e^{0.08(0.5)} = 104.08$. Buying back the share to close the short: $-110$.</p>
+          $$ \text{Total payoff} = 104.08 - 110 = -5.92 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>A loss of $\boxed{\$5.92}$. (The short bet lost because the stock <em>rose</em>.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 2</span> Moneyness of a call <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>For a long call with strike $K=100$, classify the moneyness when the underlying is $80$, $100$, and $120$.</p>
+          <ul>
+            <li>$S=80$: $80-100=-20<0$ → <strong>out-of-the-money</strong>.</li>
+            <li>$S=100$: $100-100=0$ → <strong>at-the-money</strong>.</li>
+            <li>$S=120$: $120-100=+20>0$ → <strong>in-the-money</strong>.</li>
+          </ul>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>OTM, ATM, ITM respectively. (Classify by the <em>would-be</em> payoff, ignoring exercise style.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 3</span> Embedded option in a guarantee <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>The PB&amp;J 300 Index ($S_0=2500$, no dividends) has historically returned $10\%$/yr. An insurer guarantees a customer she will earn <strong>at least</strong> $10\%$/yr over two years on the index, and plans to offset the risk with one share plus a put. Available 2-year European puts:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Strike</th><th>Put price</th></tr></thead>
+            <tbody><tr><td>$2500$</td><td>$130.77$</td></tr><tr><td>$2750$</td><td>$223.78$</td></tr><tr><td>$3025$</td><td>$357.94$</td></tr></tbody>
+          </table></div>
+          <p><strong>Step 1 — Identify the guarantee.</strong> Guaranteed payoff $=\max\!\big(S_2,\ 2500\times1.10^2\big)=\max(S_2,3025)$.</p>
+          <p><strong>Step 2 — Decompose.</strong> $\max(S_2,3025)=\max(3025-S_2,0)+S_2$ = a 2-year put struck at $K=3025$ plus one share.</p>
+          <p><strong>Step 3 — Cost.</strong> Buy the $3025$-strike put ($357.94$) and one share of the index ($2500$):</p>
+          $$ \text{Cost} = S_0 + p(0) = 2500 + 357.94 = 2{,}857.94 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Time-0 cost of the hedge $=\boxed{\$2{,}857.94}$. The embedded put is what makes the guarantee hedgeable.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 4</span> Put–call parity to back out $r$ <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>Non-dividend stock at $\$105$. A 6-month $\$100$-strike European call costs $\$9.88$; the matching put costs $\$2.90$. Find the continuously-compounded risk-free rate.</p>
+          <p><strong>Solution.</strong> Parity $C-P=S_0-Ke^{-rT}$:</p>
+          $$ 9.88-2.90 = 105 - 100e^{-r(0.5)} \;\Rightarrow\; 98.02 = 100e^{-0.5r} \;\Rightarrow\; r = -2\ln(0.9802) = 0.04 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{r = 4\%}$. (A call &amp; put on the same underlying/strike/expiry is your cue to reach for parity.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 5</span> Put–call parity to price the put <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A non-dividend-paying stock trades at $S_0 = 50$. A 1-year European call with strike $K=52$ costs $C = 4.50$. The continuously-compounded risk-free rate is $r = 6\%$. Find the price of the 1-year European put with the same strike.</p>
+          <p>Compute $Ke^{-rT} = 52\,e^{-0.06(1)} = 52(0.941765) = 48.9718$.</p>
+          $$ P = C - S_0 + Ke^{-rT} = 4.50 - 50 + 48.9718 = 3.4718 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P \approx 3.47}$</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 6</span> One-period binomial: replicating portfolio for a put <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$S_0=100$ (no dividends), in 6 months the stock is $110$ or $90$, $r=6\%$. Price an at-the-money put ($K=100$) by replication.</p>
+          <p><strong>Factors:</strong> $u=110/100=1.1$, $d=90/100=0.9$, $h=0.5$. <strong>Payoffs:</strong> $V_u=\max(100-110,0)=0$, $V_d=\max(100-90,0)=10$.</p>
+          $$ \Delta = \frac{V_u-V_d}{S_0(u-d)} = \frac{0-10}{100(0.2)} = -0.50 \quad(\text{negative}\Rightarrow\text{short-sell }0.5\text{ shares}) $$
+          $$ B = e^{-rh}\frac{uV_d - dV_u}{u-d} = e^{-0.06(0.5)}\frac{1.1(10)-0.9(0)}{0.2} = e^{-0.03}(55) = 53.3745 \quad(\text{positive}\Rightarrow\text{lend}) $$
+          $$ V_0 = \Delta S_0 + B = -0.5(100) + 53.3745 = 3.37 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P \approx 3.37}$. Sign check matches the table: put → short stock, lend cash.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 7</span> One-period binomial (both methods agree) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A stock with $S_0 = 100$ pays no dividends. Over the next $h = 1$ year it moves to either $S_u = 120$ ($u=1.2$) or $S_d = 90$ ($d=0.9$). The risk-free rate is $r = 5\%$ (continuous). Price a 1-year European <strong>call</strong> with strike $K = 105$.</p>
+          <p><strong>Step 1 — Payoffs.</strong> $V_u = \max(120-105,0) = 15$, $\quad V_d = \max(90-105,0) = 0$.</p>
+          <p><strong>Step 2 — Risk-neutral (up) probability.</strong></p>
+          $$ p^{*} = \frac{e^{(0.05)(1)} - 0.9}{1.2 - 0.9} = \frac{1.051271 - 0.9}{0.3} = \frac{0.151271}{0.3} = 0.504237 $$
+          <p><strong>Step 3 — Price (risk-neutral).</strong></p>
+          $$ C = e^{-0.05}\big[0.504237(15) + 0.495763(0)\big] = 0.951229 \times 7.56356 = 7.1949 $$
+          <p><strong>Check via replicating portfolio.</strong></p>
+          $$ \Delta = \frac{V_u - V_d}{S_0(u-d)} = \frac{15-0}{100(0.3)} = 0.5 $$
+          $$ B = e^{-rh}\frac{uV_d - dV_u}{u-d} = e^{-0.05}\frac{(1.2)(0)-(0.9)(15)}{0.3} = 0.951229\times(-45) = -42.8053 $$
+          $$ \Delta S_0 + B = 0.5(100) - 42.8053 = 7.1947 $$
+          <p>The two methods agree (rounding). The replicating portfolio is "buy 0.5 shares, borrow 42.81."</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{C \approx 7.19}$, with $\Delta = 0.5$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 8</span> Two-period binomial via the binomial shortcut (European call) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$S_0=100$ (no dividends), each year $u=1.05$ or $d=0.90$, $r=3\%$, $h=1$. Price a 2-year $K=100$ European call.</p>
+          <p><strong>Down-move probability:</strong> $q=\dfrac{u-e^{rh}}{u-d}=\dfrac{1.05-e^{0.03}}{0.15}=0.13030$, so $1-q=0.86970$.</p>
+          <p><strong>Terminal prices &amp; payoffs:</strong> $S_{uu}=110.25\to10.25$; $S_{ud}=94.50\to0$; $S_{dd}=81\to0$.</p>
+          <p><strong>Node probabilities</strong> ($n=2$): $\Pr(0\text{ down})=(1-q)^2=0.75637$, $\Pr(1)=2q(1-q)=0.22665$, $\Pr(2)=q^2=0.01698$.</p>
+          $$ V_0 = e^{-0.03(2)}\big[0.75637(10.25) + 0.22665(0) + 0.01698(0)\big] = 7.30133 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{C \approx 7.30}$ — identical to working node-by-node, but faster for European options.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 9</span> Two-period binomial (American put, early exercise matters) <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>$S_0 = 100$, $u = 1.10$, $d = 0.90$, $r = 4\%$ continuous, each period $h = 1$ year, no dividends. Price a <strong>2-year American put</strong> with strike $K = 105$.</p>
+          <p><strong>Step 1 — Risk-neutral probability.</strong></p>
+          $$ p^{*} = \frac{e^{0.04} - 0.9}{1.10 - 0.90} = \frac{1.040811 - 0.9}{0.2} = \frac{0.140811}{0.2} = 0.704054 $$
+          <p>So $1-p^{*} = 0.295946$ and discount factor $e^{-0.04} = 0.960789$.</p>
+          <p><strong>Step 2 — Stock tree.</strong></p>
+          <ul>
+            <li>$S_{uu} = 100(1.1)^2 = 121$</li>
+            <li>$S_{ud} = 100(1.1)(0.9) = 99$</li>
+            <li>$S_{dd} = 100(0.9)^2 = 81$</li>
+            <li>Period-1: $S_u = 110$, $S_d = 90$.</li>
+          </ul>
+          <p><strong>Step 3 — Terminal payoffs</strong> $\max(105 - S,0)$:</p>
+          <ul>
+            <li>$P_{uu} = \max(105-121,0) = 0$</li>
+            <li>$P_{ud} = \max(105-99,0) = 6$</li>
+            <li>$P_{dd} = \max(105-81,0) = 24$</li>
+          </ul>
+          <p><strong>Step 4 — Node $S_u = 110$.</strong> Continuation $= e^{-0.04}[0.704054(0) + 0.295946(6)] = 0.960789(1.775676) = 1.7061$. Exercise $= \max(105-110,0) = 0$. Take max $\Rightarrow P_u = 1.7061$.</p>
+          <p><strong>Step 5 — Node $S_d = 90$.</strong> Continuation $= e^{-0.04}[0.704054(6) + 0.295946(24)] = 0.960789[4.224324 + 7.102704] = 0.960789(11.327028) = 10.8829$. Exercise $= \max(105-90,0) = 15$. Since $15 > 10.8829$, <strong>exercise early</strong> $\Rightarrow P_d = 15$.</p>
+          <p><strong>Step 6 — Root node.</strong> Continuation $= e^{-0.04}[0.704054(1.7061) + 0.295946(15)] = 0.960789[1.201288 + 4.439190] = 0.960789(5.640478) = 5.4194$. Exercise $= \max(105-100,0) = 5$. Since $5.4194 > 5$, hold $\Rightarrow$ price $= 5.4194$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P_{\text{American}} \approx 5.42}$. (Early exercise at the down node adds value; the European version would be worth less.)</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Lognormal: real-world exercise probability <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An at-the-money 2-year European put, $S_0=100$, no dividends; the stock is lognormal with $\mu=0.10$, $\sigma^2=0.09$. Find the real-world probability the put is exercised.</p>
+          <p>The put is exercised iff $S_2\lt K=100$. Use $\mu\tau=0.10(2)=0.20$, $\sigma\sqrt{\tau}=0.30\sqrt{2}=0.424264$.</p>
+          $$ \Pr[S_2<100] = N\!\left(\frac{\ln(100/100)-0.20}{0.424264}\right) = N(-0.47140) = 0.31868 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\approx 0.3187}$. Note this uses $\mu$ (real world), <em>not</em> $r$ — it is not a pricing calculation.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 11</span> Black–Scholes call &amp; put <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>6-month $K=120$ European options on a non-dividend stock: $S_0=100$, $r=5\%$, $\sigma=30\%$, $\delta=0$, $T=0.5$.</p>
+          $$ d_1=\frac{\ln(100/120)+(0.05+\tfrac12(0.3)^2)(0.5)}{0.3\sqrt{0.5}}=-0.63555, \qquad d_2=d_1-0.3\sqrt{0.5}=-0.84769 $$
+          <p>$N(-0.63555)=0.26253$, $N(-0.84769)=0.19831$.</p>
+          $$ C = 100(0.26253) - 120e^{-0.05(0.5)}(0.19831) = 3.04 $$
+          <p><strong>Put</strong> via parity (fastest): $P = C - S_0 + Ke^{-rT} = 3.04 - 100 + 120e^{-0.025} = 20.08$ (or directly with $N(0.63555),N(0.84769)$).</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{C \approx 3.04,\ P \approx 20.08}$.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 12</span> Black–Scholes delta-hedge for a written call <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An insurer <strong>shorts 1,000</strong> one-year $K=200$ European calls on a non-dividend stock: $S_0=200$, $r=3\%$, $\sigma=50\%$. Build the delta-hedge.</p>
+          $$ d_1=\frac{\ln(200/200)+(0.03+\tfrac12(0.5)^2)(1)}{0.5\sqrt1}=0.31, \qquad d_2=0.31-0.5=-0.19 $$
+          <p>$N(0.31)=0.62172$, $N(-0.19)=0.42465$. Per call: buy $\Delta=0.62172$ shares and borrow $B=200e^{-0.03}(0.42465)=82.41994$.</p>
+          <p>Scale to 1,000 written calls (the insurer buys the replicating portfolio to offset the short):</p>
+          $$ \text{Shares} = 1000(0.62172) = 621.72, \qquad \text{Borrow} = 1000(82.41994) = \$82{,}419.94 $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Buy $\boxed{621.72}$ shares and borrow $\boxed{\$82{,}419.94}$ at the risk-free rate.</div>
+        </div>
+      </details>
+
+      <h2>Common Exam Traps</h2>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The traps that cost real points</div>
+        <ol>
+          <li><strong>Confusing payoff with profit.</strong> Payoff ignores the premium; profit subtracts the <em>accumulated</em> premium $e^{rT}\times$ premium. Read the question's word carefully.</li>
+          <li><strong>Confusing moneyness with whether you'd exercise.</strong> Moneyness pretends the option is exercised <em>regardless</em> of sign (so an OTM call has a "negative" would-be payoff); the <em>actual</em> payoff is still floored at $0$.</li>
+          <li><strong>Mixing up real-world and risk-neutral.</strong> Pricing uses the risk-neutral $p^{*}$ and discounts at $r$. Real-world probabilities $\Pr[S_T\lt K]$ use the drift $\mu$ — never put $r$ into a lognormal probability question, and never put $\mu$ into a pricing question.</li>
+          <li><strong>Up vs. down convention for the risk-neutral probability.</strong> Coaching-Actuaries' $q=\frac{u-e^{rh}}{u-d}$ is the <em>down</em>-move probability; the up-probability is $p^{*}=\frac{e^{rh}-d}{u-d}$. Make sure $V_u$ is weighted by the up-probability.</li>
+          <li><strong>Forgetting dividends in $p^{*}$ and in $\Delta$.</strong> With a dividend yield $\delta$, the risk-neutral probability uses $e^{(r-\delta)h}$ and delta carries a factor $e^{-\delta h}$. Dropping these is the most common binomial error.</li>
+          <li><strong>$u$ and $d$ as factors vs. returns.</strong> $u = 1.2$ means multiply by 1.2; "$\sigma\sqrt h$ style" means $u=e^{(r-\delta)h+\sigma\sqrt h}$. Confirm the convention. Also: $d$ need not be below $1$ (a stock can have two "up-ish" states and still satisfy no-arbitrage).</li>
+          <li><strong>Misreading replicating-portfolio signs.</strong> $\Delta>0$ buy / $\Delta<0$ short; $B>0$ lend / $B<0$ borrow. Call → $(+\Delta,-B)$; put → $(-\Delta,+B)$.</li>
+          <li><strong>Sign / direction in put–call parity.</strong> It is $C - P = S_0 - Ke^{-rT}$ (call <em>minus</em> put). Memorize the LHS order. For dividends, <strong>subtract</strong> their PV from $S_0$ (or use $S_0e^{-\delta T}$), never add. Parity is <strong>European only</strong>.</li>
+          <li><strong>Skipping the early-exercise check on American options.</strong> At <em>every</em> node take $\max(\text{exercise}, \text{continuation})$. American <strong>calls on non-dividend stocks</strong> are never exercised early (so they equal European), but American <strong>puts</strong> frequently are — and FAM loves to test exactly this.</li>
+          <li><strong>Using the European shortcut on American options.</strong> The binomial-probability formula assumes no early exercise — for American options you <em>must</em> go node-by-node.</li>
+          <li><strong>$d_2$ sign and the put formula.</strong> $d_2 = d_1 - \sigma\sqrt T$ (subtract). For the put, use $N(-d_1)$ and $N(-d_2)$, or just compute the call and apply put–call parity.</li>
+          <li><strong>Discounting at the wrong rate.</strong> Binomial and BS both discount at the <strong>risk-free</strong> rate $r$, never at an expected stock return.</li>
+          <li><strong>Rounding $N(\cdot)$ too early.</strong> Carry $d_1, d_2$ to 4+ decimals before looking up the normal CDF; small errors blow up in the final price.</li>
+        </ol>
+      </div>
+
+      <h2>Self-Check Questions</h2>
+      <p class="text-mute">Try each before revealing the answer.</p>
+
+      <details class="qa"><summary>State the three steps of short-selling and the payoff of a short stock.</summary>
+        <div class="qa-answer">(1) Borrow shares from a lender; (2) sell them now and invest the proceeds at $r$; (3) buy the shares back later and return them. The short-stock payoff is $-S_T$ — the opposite of a long stock's $+S_T$.</div>
+      </details>
+      <details class="qa"><summary>An option is in-the-money. What does that tell you about its would-be payoff, and is "in-the-money" the same as "will be exercised"?</summary>
+        <div class="qa-answer">ITM means the immediate (would-be) payoff is <strong>positive</strong> — for a call $S>K$, for a put $S\lt K$. It is a classification snapshot ignoring exercise style; the <em>actual</em> payoff is floored at $0$, so an OTM option simply isn't exercised.</div>
+      </details>
+      <details class="qa"><summary>How is a call "insurance," and how do you rewrite a "get at least your money back" guarantee as an option plus a share?</summary>
+        <div class="qa-answer">A call caps the price you pay for the asset at $K$ — insurance against a price increase (a put insures a decrease). Using $\max(S_0,S_T)=\max(S_0-S_T,0)+S_T$, the guarantee = one share of the asset plus a long put struck at the floor $K=S_0$ (an embedded option the insurer can buy to hedge).</div>
+      </details>
+      <details class="qa"><summary>A long call and a short put on the same stock, strike, and expiry together replicate what simple position, and what principle turns that into put–call parity?</summary>
+        <div class="qa-answer">A <strong>long forward</strong> to buy the stock at strike $K$ (payoff $S_T - K$), which also equals long stock + short bond. The <strong>law of one price</strong> (no arbitrage) equates their costs, giving $C - P = S_0 - Ke^{-rT}$.</div>
+      </details>
+      <details class="qa"><summary>Write the one-period binomial $\Delta$ and $B$ for a call, then state whether you buy/short stock and lend/borrow cash for a call vs. a put.</summary>
+        <div class="qa-answer">$\Delta=\dfrac{V_u-V_d}{S_0(u-d)}$, $\;B=e^{-rh}\dfrac{uV_d-dV_u}{u-d}$. Call: $\Delta>0$ (buy stock), $B<0$ (borrow). Put: $\Delta<0$ (short stock), $B>0$ (lend).</div>
+      </details>
+      <details class="qa"><summary>Write the risk-neutral probability $p^{*}$ on a stock paying continuous dividend yield $\delta$, the no-arbitrage condition, and say what happens to a stock priced under the risk-neutral measure.</summary>
+        <div class="qa-answer">$p^{*} = \dfrac{e^{(r-\delta)h} - d}{u - d}$, valid when $d\lt e^{(r-\delta)h}\lt u$ (so $0\lt p^{*}<1$). Discounting the stock's risk-neutral expected price at $r$ returns $S_0$ exactly — every asset earns $r$ on average under $Q$.</div>
+      </details>
+      <details class="qa"><summary>True or false: a higher real-world probability of an up-move raises the price of a European call in the binomial model.</summary>
+        <div class="qa-answer"><strong>False.</strong> Real-world probabilities never enter the option price; only the risk-neutral $p^{*}$ (a function of $u, d, r, \delta, h$) does.</div>
+      </details>
+      <details class="qa"><summary>For a recombining $n$-period tree, what is the probability of reaching the node with $k$ down-jumps, and when can you NOT use this shortcut?</summary>
+        <div class="qa-answer">$\binom{n}{k}q^k(1-q)^{n-k}$ where $q=1-p^{*}$ is the down-move probability. It works for <strong>European</strong> options only; American options require node-by-node backward induction so you can test early exercise at each node.</div>
+      </details>
+      <details class="qa"><summary>For a non-dividend stock, why is an American call worth the same as the otherwise-identical European call?</summary>
+        <div class="qa-answer">Early exercise of a call forfeits the time value and the interest you could earn on the strike; with no dividends there is never a benefit to exercising early, so the early-exercise feature is worthless and the two prices coincide. (American puts often <em>do</em> benefit.)</div>
+      </details>
+      <details class="qa"><summary>State the distribution of the log-return and the formula for $\Pr[S_{t+\tau}\lt K]$. Which rate goes in it?</summary>
+        <div class="qa-answer">$\ln(S_{t+\tau}/S_t)\sim N(\mu\tau,\sigma^2\tau)$, so $\Pr[S_{t+\tau}\lt K]=N\!\big(\frac{\ln(K/S_t)-\mu\tau}{\sigma\sqrt{\tau}}\big)$. It uses the <strong>real-world drift $\mu$</strong>, not $r$.</div>
+      </details>
+      <details class="qa"><summary>In Black–Scholes, what does $N(d_2)$ represent, and which input shifts the call price the most for an at-the-money option?</summary>
+        <div class="qa-answer">$N(d_2)$ is the <strong>risk-neutral probability the call finishes in the money</strong> ($S_T > K$). Near at-the-money, the call value is most sensitive to <strong>volatility $\sigma$</strong> (and to time $T$), since both increase the chance and magnitude of finishing in the money.</div>
+      </details>
+      <details class="qa"><summary>An insurer writes calls and wants to be hedged. Under BS, what does it buy and borrow per written call?</summary>
+        <div class="qa-answer">It replicates a long call: <strong>buy $N(d_1)$ shares</strong> and <strong>borrow $Ke^{-rT}N(d_2)$</strong> per call. This self-financing delta-hedge offsets the short-call risk; multiply by the number of calls written.</div>
+      </details>
+
+    </div>
+  </article>
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["$","$"],["\\(","\\)"]], displayMath: [["$$","$$"],["\\[","\\]"]], processEscapes: true, tags: "none" },
+      options: { skipHtmlTags: ["script","noscript","style","textarea","pre","code"] },
+      startup: { typeset: true }
+    };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
