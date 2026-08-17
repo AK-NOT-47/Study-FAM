@@ -45,7 +45,9 @@
 
   --sidebar-w: 300px;
   --topbar-h: 66px;
-  --content-max: 880px;
+  --content-max: 1120px;
+  --page-max: 1540px;
+  --toc-w: 250px;
   --ease: cubic-bezier(.2,.7,.3,1);
 }
 
@@ -128,12 +130,13 @@ a:hover { text-decoration: underline; }
    2. LAYOUT
    ---------------------------------------------------------------------------- */
 .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
-.main-col { flex: 1; min-width: 0; margin-left: var(--sidebar-w); display: flex; flex-direction: column; transition: margin-left .3s var(--ease); }
+.main-col { flex: 1; min-width: 0; margin-left: var(--sidebar-w); display: flex; flex-direction: column; transition: margin-left .3s var(--ease); container-type: inline-size; container-name: main; }
 body.nav-collapsed .main-col { margin-left: 0; }
 
 .page-wrap {
-  width: 100%; max-width: calc(var(--content-max) + 280px); margin: 0 auto;
-  padding: 34px 40px 120px; display: grid; grid-template-columns: minmax(0,1fr) 210px; gap: 44px;
+  width: 100%; max-width: var(--page-max); margin: 0 auto;
+  padding: clamp(28px, 3vw, 48px) clamp(24px, 4vw, 64px) 120px;
+  display: grid; grid-template-columns: minmax(0,1fr) var(--toc-w); gap: clamp(28px, 3vw, 52px);
 }
 .page-wrap.no-toc { grid-template-columns: minmax(0,1fr); max-width: var(--content-max); }
 
@@ -248,7 +251,7 @@ body.nav-collapsed .sidebar { transform: translateX(-100%); }
    ---------------------------------------------------------------------------- */
 .article {
   min-width: 0; background: var(--surface); border: 3px solid var(--line);
-  box-shadow: 10px 10px 0 var(--shadow-col); padding: clamp(24px,3.5vw,44px);
+  box-shadow: 10px 10px 0 var(--shadow-col); padding: clamp(28px, 3.5vw, 56px);
   animation: rise .35s var(--ease) both;
 }
 .article-head { margin-bottom: 30px; border-bottom: 3px solid var(--line); padding-bottom: 22px; position: relative; }
@@ -262,7 +265,7 @@ body.nav-collapsed .sidebar { transform: translateX(-100%); }
   font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 4.2vw, 3.1rem);
   line-height: .96; letter-spacing: -.02em; margin: 0 0 14px; text-transform: uppercase;
 }
-.article .lede { font-size: 1.1rem; color: var(--text-soft); margin: 0; max-width: 60ch; line-height: 1.55; font-weight: 500; }
+.article .lede { font-size: 1.1rem; color: var(--text-soft); margin: 0; max-width: 70ch; line-height: 1.55; font-weight: 500; }
 
 .meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 22px; }
 .chip {
@@ -272,6 +275,11 @@ body.nav-collapsed .sidebar { transform: translateX(-100%); }
 }
 
 .article-body { font-size: 1.02rem; }
+.article-body > p,
+.article-body > ul,
+.article-body > ol,
+.article-body > h3,
+.article-body > h4 { max-width: 78ch; }
 .article-body > * { scroll-margin-top: calc(var(--topbar-h) + 24px); }
 .article-body h2 {
   font-family: var(--font-display); font-weight: 400; font-size: 1.7rem; letter-spacing: -.02em;
@@ -448,7 +456,7 @@ mjx-container[display="true"] { margin: 1.2em 0 !important; padding: 14px 18px; 
 /* ----------------------------------------------------------------------------
    8. DASHBOARD
    ---------------------------------------------------------------------------- */
-.dash { padding: 36px 40px 100px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; animation: rise .35s var(--ease) both; }
+.dash { padding: 40px clamp(24px, 4vw, 64px) 100px; max-width: 1380px; margin: 0 auto; position: relative; z-index: 1; animation: rise .35s var(--ease) both; }
 .exam-nudge { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-bottom: 22px; background: var(--surface-2); border: 3px solid var(--line); }
 .exam-nudge .en-ico { font-size: 22px; flex-shrink: 0; }
 .exam-nudge .en-text { font-size: .95rem; color: var(--text-soft); font-weight: 500; line-height: 1.4; }
@@ -573,7 +581,13 @@ body.focus-mode .article { max-width: 760px; margin: 0 auto; }
 /* ----------------------------------------------------------------------------
    RESPONSIVE
    ---------------------------------------------------------------------------- */
-@media (max-width: 1100px) { .page-wrap { grid-template-columns: minmax(0,1fr); max-width: var(--content-max); } .toc { display: none; } .dash-grid { grid-template-columns: 1fr; } }
+@container main (max-width: 1180px) {
+  .page-wrap { grid-template-columns: minmax(0,1fr); max-width: var(--content-max); }
+  .toc { display: none; }
+  .dash-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 1180px) { .page-wrap { grid-template-columns: minmax(0,1fr); max-width: var(--content-max); } .toc { display: none; } .dash-grid { grid-template-columns: 1fr; } }
 @media (max-width: 880px) {
   :root { --sidebar-w: 286px; }
   .main-col { margin-left: 0; }
@@ -588,6 +602,16 @@ body.focus-mode .article { max-width: 760px; margin: 0 auto; }
   .search-trigger .stxt, .search-trigger .kbd { display: none; }
   .page-nav { grid-template-columns: 1fr; }
   .mss-field .ms { opacity: .5; }
+}
+
+@media (max-width: 560px) {
+  .topbar { gap: 8px; padding: 0 12px; }
+  .topbar .crumbs { font-size: 10px; gap: 5px; }
+  .article h1, .page-title { font-size: clamp(1.8rem, 9vw, 2.5rem); }
+  .article-body { font-size: 1rem; }
+  .article-body h2 { font-size: 1.42rem; gap: 10px; }
+  .article-body h2::before { width: 18px; height: 18px; }
+  .dash { padding-inline: 16px; }
 }
 
 @media print {
