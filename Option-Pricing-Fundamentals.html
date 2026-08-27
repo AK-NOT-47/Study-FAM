@@ -813,7 +813,7 @@ mjx-container[display="true"] { margin: 1.2em 0 !important; padding: 14px 18px; 
       </div>
       <p>For an <strong>American</strong> option, at each node take the larger of the continuation value and the <strong>immediate-exercise value</strong>:</p>
       <div class="formula">$$ V_{\text{node}} = \max\big(\text{exercise value},\; e^{-rh}[p^{*}V_{\text{up}} + (1-p^{*})V_{\text{down}}]\big) $$</div>
-      <p><strong>Forward (Cox-Ross-Rubinstein style) tree factors</strong> often given on the exam:</p>
+      <p><strong>Forward-tree factors</strong> (the "forward tree" — not the Cox–Ross–Rubinstein tree, which uses $u=e^{\sigma\sqrt{h}},\ d=e^{-\sigma\sqrt{h}}$) sometimes given on the exam:</p>
       <div class="formula">
         $$ u = e^{(r-\delta)h + \sigma\sqrt{h}}, \qquad d = e^{(r-\delta)h - \sigma\sqrt{h}} $$
       </div>
@@ -928,7 +928,7 @@ mjx-container[display="true"] { margin: 1.2em 0 !important; padding: 14px 18px; 
           <p><strong>Step 2 — Risk-neutral (up) probability.</strong></p>
           $$ p^{*} = \frac{e^{(0.05)(1)} - 0.9}{1.2 - 0.9} = \frac{1.051271 - 0.9}{0.3} = \frac{0.151271}{0.3} = 0.504237 $$
           <p><strong>Step 3 — Price (risk-neutral).</strong></p>
-          $$ C = e^{-0.05}\big[0.504237(15) + 0.495763(0)\big] = 0.951229 \times 7.56356 = 7.1949 $$
+          $$ C = e^{-0.05}\big[0.504237(15) + 0.495763(0)\big] = 0.951229 \times 7.56356 = 7.1947 $$
           <p><strong>Check via replicating portfolio.</strong></p>
           $$ \Delta = \frac{V_u - V_d}{S_0(u-d)} = \frac{15-0}{100(0.3)} = 0.5 $$
           $$ B = e^{-rh}\frac{uV_d - dV_u}{u-d} = e^{-0.05}\frac{(1.2)(0)-(0.9)(15)}{0.3} = 0.951229\times(-45) = -42.8053 $$
@@ -972,7 +972,7 @@ mjx-container[display="true"] { margin: 1.2em 0 !important; padding: 14px 18px; 
           </ul>
           <p><strong>Step 4 — Node $S_u = 110$.</strong> Continuation $= e^{-0.04}[0.704054(0) + 0.295946(6)] = 0.960789(1.775676) = 1.7061$. Exercise $= \max(105-110,0) = 0$. Take max $\Rightarrow P_u = 1.7061$.</p>
           <p><strong>Step 5 — Node $S_d = 90$.</strong> Continuation $= e^{-0.04}[0.704054(6) + 0.295946(24)] = 0.960789[4.224324 + 7.102704] = 0.960789(11.327028) = 10.8829$. Exercise $= \max(105-90,0) = 15$. Since $15 > 10.8829$, <strong>exercise early</strong> $\Rightarrow P_d = 15$.</p>
-          <p><strong>Step 6 — Root node.</strong> Continuation $= e^{-0.04}[0.704054(1.7061) + 0.295946(15)] = 0.960789[1.201288 + 4.439190] = 0.960789(5.640478) = 5.4194$. Exercise $= \max(105-100,0) = 5$. Since $5.4194 > 5$, hold $\Rightarrow$ price $= 5.4194$.</p>
+          <p><strong>Step 6 — Root node.</strong> Continuation $= e^{-0.04}[0.704054(1.7061) + 0.295946(15)] = 0.960789[1.201186 + 4.439190] = 0.960789(5.640376) = 5.4192$. Exercise $= \max(105-100,0) = 5$. Since $5.4192 > 5$, hold $\Rightarrow$ price $= 5.4192$.</p>
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{P_{\text{American}} \approx 5.42}$. (Early exercise at the down node adds value; the European version would be worth less.)</div>
         </div>
       </details>

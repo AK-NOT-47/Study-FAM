@@ -16,11 +16,12 @@
     <header class="article-head">
       <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Formula Sheet · FAM-S</div>
       <h1>FAM-S One-Stop Formula Sheet</h1>
-      <p class="lede">Every short-term formula you need — severity, frequency, aggregate models, credibility, ratemaking, reserving, and option pricing — condensed onto one page.</p>
+      <p class="lede">Every short-term formula you need — severity, frequency, aggregate models, reinsurance, <em>classical</em> credibility, ratemaking, reserving, and option pricing — condensed onto one page. Blocks marked <span class="text-mute">ASTAM background, not FAM</span> are kept for context only: <strong>do not memorize them for FAM.</strong></p>
       <div class="meta-row">
         <span class="chip">📖 Loss Models · ASM/Coaching Actuaries</span>
         <span class="chip">⏱️ ~2 hrs to review</span>
-        <span class="chip">🔑 severity · frequency · aggregate · credibility · ratemaking</span>
+        <span class="chip">🔑 severity · frequency · aggregate · reinsurance · ratemaking</span>
+        <span class="chip">🎯 credibility = limited-fluctuation only</span>
       </div>
     </header>
 
@@ -81,7 +82,8 @@
       </table></div>
       <p>Variance test: Poisson $\sigma^2=\mu$; Binomial $\sigma^2<\mu$; Neg.Bin/Geom $\sigma^2>\mu$.</p>
 
-      <h3>$(a,b,1)$ — zero-truncated / zero-modified</h3>
+      <h3>$(a,b,1)$ — zero-truncated / zero-modified <span class="text-mute">— ASTAM background, not FAM</span></h3>
+      <p class="text-mute"><strong>Not a FAM outcome.</strong> FAM's frequency topic works with the $(a,b,0)$ class; $(a,b,1)$ is not named in the current outcomes and is generally ASTAM material. Skim, don't drill.</p>
       <p>Same recursion for $k\ge2$; start from $p_1$.</p>
       <div class="formula">
         $$p_k^M=\frac{1-p_0^M}{1-p_0}\,p_k\;(k\ge1),\qquad p_k^T=\frac{p_k}{1-p_0}\;(k\ge1)$$
@@ -112,10 +114,45 @@
         <p>(Total variance / "law of total variance" — also basis for Bühlmann.)</p>
       </div>
 
-      <h3>Panjer recursion (discrete $X$ on $0,1,2,\dots$; $N$ is $(a,b,0/1)$)</h3>
+      <h3>Convolution — the official FAM route to $\Pr(S=s)$</h3>
+      <p>Discrete severity on $0,1,2,\dots$ with pmf $f_X$. The $n$-fold convolution $f_X^{*n}$ is the pmf of $X_1+\cdots+X_n$:</p>
+      <div class="formula">
+        $$f_X^{*n}(x)=\sum_{y}f_X^{*(n-1)}(x-y)\,f_X(y),\qquad f_X^{*0}(0)=1,\quad f_X^{*1}=f_X$$
+        $$f_S(s)=\Pr(S=s)=\sum_{n=0}^{\infty}\Pr(N=n)\,f_X^{*n}(s)$$
+        <span class="formula-label">Two-variable form (the one you actually compute by hand)</span>
+        $$\Pr(X_1+X_2=s)=\sum_{y=0}^{s}f_X(y)\,f_X(s-y)$$
+        <p>If $f_X(0)=0$ then $f_X^{*n}(s)=0$ for $n>s$, so the outer sum is finite — usually just $n=0,1,2,3$.</p>
+      </div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Count the orderings</div>
+        <p>Convolution sums over <em>ordered</em> pairs: claims of sizes $1$ and $2$ contribute $2f_X(1)f_X(2)$, not $f_X(1)f_X(2)$.</p>
+      </div>
+
+      <h3>Normal &amp; lognormal approximation to $S$</h3>
+      <div class="formula">
+        <span class="formula-label">Normal — match $E[S]$ and $\mathrm{Var}(S)$; $\mu=E[S],\ \sigma=\mathrm{SD}(S)$</span>
+        $$\Pr(S\le s)\approx\Phi\!\Big(\frac{s-\mu}{\sigma}\Big)$$
+        <span class="formula-label">Continuity correction — only when $S$ is discrete (frequency <em>and</em> severity discrete)</span>
+        $$\Pr(S\le s)\approx\Phi\!\Big(\frac{s+0.5-\mu}{\sigma}\Big),\qquad \Pr(S\ge s)\approx1-\Phi\!\Big(\frac{s-0.5-\mu}{\sigma}\Big)$$
+        <p>Direction rule: shift so the point $s$ lands <em>inside</em> the event. $\Pr(S\le s)$ and $\Pr(S>s)$ both use $s+0.5$; $\Pr(S\ge s)$ and $\Pr(S\lt s)$ both use $s-0.5$. With spread-out support (e.g. $200,400,1000$) use the <strong>midpoints</strong> between adjacent possible values, not $\pm0.5$.</p>
+      </div>
+      <div class="formula">
+        <span class="formula-label">Lognormal — moment-match to $m_1=E[S]$, $m_2=E[S^2]$</span>
+        $$\sigma_L^2=\ln\!\Big(\frac{m_2}{m_1^2}\Big),\qquad \mu_L=\ln m_1-\tfrac12\sigma_L^2$$
+        $$\Pr(S\le s)\approx\Phi\!\Big(\frac{\ln s-\mu_L}{\sigma_L}\Big)$$
+        <p>Captures right skew, so it beats the normal in the tail. No continuity correction (it is used for continuous-ish aggregates).</p>
+      </div>
+      <div class="formula">
+        <span class="formula-label">Stop-loss premium under the approximations</span>
+        $$\textbf{Normal:}\quad E[(S-d)_+]\approx\sigma\,\phi\!\Big(\frac{d-\mu}{\sigma}\Big)-(d-\mu)\Big[1-\Phi\!\Big(\frac{d-\mu}{\sigma}\Big)\Big]$$
+        $$\textbf{Lognormal:}\quad E[(S-d)_+]\approx e^{\mu_L+\sigma_L^2/2}\,\Phi\!\Big(\frac{\mu_L+\sigma_L^2-\ln d}{\sigma_L}\Big)-d\Big[1-\Phi\!\Big(\frac{\ln d-\mu_L}{\sigma_L}\Big)\Big]$$
+      </div>
+
+      <h3>Panjer recursion (discrete $X$ on $0,1,2,\dots$; $N$ is $(a,b,0/1)$) <span class="text-mute">— ASTAM background, not FAM</span></h3>
+      <p class="text-mute"><strong>Not a FAM outcome.</strong> The syllabus names the <em>convolution method</em> and the <em>normal/lognormal approximation</em> (both above) as the ways to get aggregate probabilities. Panjer is efficient and worth recognizing, but spend your memorization budget on the two blocks above.</p>
       <div class="formula">
         $$f_S(s)=\frac{[p_1-(a+b)p_0]f_X(s)+\sum_{j=1}^{s}\big(a+\tfrac{bj}{s}\big)f_X(j)f_S(s-j)}{1-a f_X(0)}$$
-        <p>$(a,b,0)$ start: $f_S(0)=P_N(f_X(0))$.</p>
+        <p>$(a,b,0)$ start: $f_S(0)=P_N(f_X(0))$; $(a,b,0)$ recursion simplifies to $f_S(s)=\dfrac{1}{1-af_X(0)}\sum_{j=1}^{s}\big(a+\tfrac{bj}{s}\big)f_X(j)f_S(s-j)$.</p>
       </div>
 
       <h3>Individual risk model</h3>
@@ -150,7 +187,7 @@
         </tbody>
       </table></div>
 
-      <h2>Risk Measures (VaR &amp; TVaR)</h2>
+      <h2>5. Risk Measures (VaR &amp; TVaR)</h2>
       <div class="callout objective" data-icon="🎯">
         <div class="callout-title">What a risk measure does</div>
         <p>A risk measure $\rho(X)$ maps a loss $X$ to a single number that quantifies its risk — used for solvency/capital. The two on the exam are <strong>Value-at-Risk</strong> (a quantile) and <strong>Tail-Value-at-Risk</strong> (the average loss beyond that quantile).</p>
@@ -214,10 +251,10 @@
         </div>
       </details>
 
-      <h2>5. Coverage Modifications</h2>
+      <h2>6. Coverage Modifications</h2>
       <div class="callout note" data-icon="🧾">
         <div class="callout-title">Notation</div>
-        <p>Ordinary deductible $d$, policy limit (max payment) $u$, max covered loss $u^{*}=d+u$, coinsurance $\alpha$, inflation factor $1+r$.</p>
+        <p>Ordinary deductible $d$, policy limit (max payment) $u$, max covered loss $m=\dfrac{u}{\alpha}+d$ (so $m=d+u$ when $\alpha=1$), coinsurance $\alpha$, inflation factor $1+r$.</p>
       </div>
 
       <h3>Per-loss payment (cost per loss), ground-up loss $X$</h3>
@@ -227,10 +264,14 @@
         $$\mathrm{ILF}(u)=\frac{E[X\wedge u]}{E[X\wedge b]}\qquad(b=\text{original limit},\;u=\text{increased limit}).$$
       </div>
       <div class="formula">
-        <span class="formula-label">Full structure (coinsurance, deductible, max covered loss $u$)</span>
-        $$Y^L=\alpha\big[(X\wedge u)-(X\wedge d)\big],\qquad E[Y^L]=\alpha\big(E[X\wedge u]-E[X\wedge d]\big)$$
+        <span class="formula-label">Full structure (coinsurance, deductible, max covered loss $m$)</span>
+        $$Y^L=\alpha\big[(X\wedge m)-(X\wedge d)\big],\qquad E[Y^L]=\alpha\big(E[X\wedge m]-E[X\wedge d]\big)$$
         <span class="formula-label">With inflation $1+r$ applied to $X$</span>
-        $$E[Y^L]=\alpha(1+r)\Big(E\big[X\wedge \tfrac{u}{1+r}\big]-E\big[X\wedge \tfrac{d}{1+r}\big]\Big)$$
+        $$E[Y^L]=\alpha(1+r)\Big(E\big[X\wedge \tfrac{m}{1+r}\big]-E\big[X\wedge \tfrac{d}{1+r}\big]\Big)$$
+      </div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The upper LEV is taken at $m$, never at the policy limit $u$</div>
+        <p>The maximum payment $u$ and the maximum covered loss $m$ coincide only when $\alpha=1$. With coinsurance, first solve $u=\alpha(m-d)$ for $m=\tfrac{u}{\alpha}+d$, <em>then</em> plug $m$ into the LEV. Plugging $u$ instead is the single most common coverage-modification error.</p>
       </div>
 
       <h3>Per-payment (cost per payment) — condition on a payment ($X>d$)</h3>
@@ -258,7 +299,32 @@
         <li>Binomial($m,q$): payments $\sim$ Binomial($m,qv$).</li>
       </ul>
 
-      <h2>6. Estimation — Empirical, MLE, K-M, Nelson-Aalen</h2>
+      <h3>Reinsurance splits — cedant $Z_I$ vs reinsurer $Z_R$ (Topic 1)</h3>
+      <p>$Y$ = the insurer's gross payment on a loss, $S$ = the aggregate over the period. Every treaty is the same two-layer split applied to a different quantity, and always $Z_I+Z_R=Y$.</p>
+      <div class="formula">
+        <span class="formula-label">Quota share — proportional; cedant keeps fraction $a$, reinsurer takes $1-a$</span>
+        $$Z_I=aY,\qquad Z_R=(1-a)Y,\qquad \mathrm{Var}(Z_R)=(1-a)^2\mathrm{Var}(Y)$$
+        <span class="formula-label">Surplus share — retained line $r$, insured value $V$, $k$-line treaty (fraction fixed <em>per policy</em>)</span>
+        $$\rho=\begin{cases}0,& V\le r\\[2pt]\min\!\Big(\dfrac{V-r}{V},\ \dfrac{kr}{V}\Big),& V>r\end{cases}
+          \qquad Z_R=\rho\,Y,\quad Z_I=(1-\rho)Y,\quad \mathrm{Var}(Z_R)=\rho^2\mathrm{Var}(Y)$$
+        <span class="formula-label">Excess of loss (per-risk / per-occurrence) — retention (attachment) $\delta$</span>
+        $$Z_I=\min(Y,\delta)=Y\wedge\delta,\qquad Z_R=(Y-\delta)_+,\qquad E[Z_R]=E[Y]-E[Y\wedge\delta]$$
+        <span class="formula-label">Aggregate XL = stop-loss on $S$, retention $\delta$ (see §4)</span>
+        $$Z_R=(S-\delta)_+,\qquad E[(S-\delta)_+]=E[S]-E[S\wedge\delta]$$
+        <span class="formula-label">Layered XL — layer $k$ spans $(t_{k-1},t_k]$ and the reinsurer takes share $p_k$ of it</span>
+        $$Z_R=\sum_k p_k\big[(Y\wedge t_k)-(Y\wedge t_{k-1})\big]$$
+      </div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Three reinsurance traps</div>
+        <ul>
+          <li><strong>Surplus share attaches to the insured value $V$, not to the loss.</strong> Fix $\rho$ from the policy first, then apply it to <em>every</em> claim on that policy whatever its size. Treating $r$ like an XL retention on the claim is the classic wrong answer.</li>
+          <li><strong>Layered XL:</strong> apply each $p_k$ only to the loss <em>inside that layer's band</em>, then add. One percentage on the whole excess is wrong.</li>
+          <li><strong>Unattributed percentage:</strong> "a 70% quota share" with no owner named means the <em>reinsurer's</em> share is 70%.</li>
+        </ul>
+      </div>
+      <p><strong>Impact on the cedant's numbers (the second half of the syllabus outcome):</strong> quota share scales premium <em>and</em> losses by the same factor $a$, so the net loss ratio is unchanged (before any ceding commission) while the variance falls by $a^2$; excess of loss <em>censors</em> the cedant's severity at $\delta$ — it strips the large-loss tail, so it cuts variance sharply but moves the mean only a little, and it costs correspondingly little premium. Keep ratemaking and reserving data consistently <strong>gross or net</strong> — never mix a gross triangle with net premium.</p>
+
+      <h2>7. Estimation — Empirical, MLE, Moments &amp; Percentiles</h2>
 
       <h3>Empirical (complete, individual data, $n$ obs)</h3>
       <div class="formula">
@@ -274,7 +340,7 @@
       <p>Key closed-form MLEs:</p>
       <ul>
         <li>Exponential, complete: $\hat\theta=\bar x$.</li>
-        <li>Exponential w/ censoring/truncation: $\hat\theta=\dfrac{\sum(\text{observed losses, shifted by trunc})}{\#\text{uncensored}}=\dfrac{\sum(x_i-d_i)}{\text{# deaths}}$.</li>
+        <li>Exponential w/ censoring/truncation: $\hat\theta=\dfrac{\text{total observed exposure}}{\#\text{uncensored}}=\dfrac{\sum_i\big(\min(x_i,u_i)-d_i\big)}{\#\text{uncensored}}$ — sum over <em>all</em> observations, censored ones included at their censoring point $u_i$.</li>
         <li>Poisson: $\hat\lambda=\bar x$. Binomial (known $m$): $\hat q=\bar x/m$. Neg.Bin: $\hat\beta=\bar x/r$ (or method of moments for $r,\beta$).</li>
         <li>Lognormal: $\hat\mu=\frac1n\sum\ln x_i$, $\hat\sigma^2=\frac1n\sum(\ln x_i-\hat\mu)^2$.</li>
       </ul>
@@ -283,39 +349,54 @@
         <p>$\mathrm{Var}(\hat\theta)\approx \dfrac{1}{I(\theta)}$, where Fisher info $I(\theta)=-E\!\big[\tfrac{\partial^2\ell}{\partial\theta^2}\big]$ (or observed info $-\tfrac{\partial^2\ell}{\partial\theta^2}$). Delta method: $\mathrm{Var}(g(\hat\theta))\approx[g'(\theta)]^2\mathrm{Var}(\hat\theta)$.</p>
       </div>
 
-      <h3>Kaplan-Meier (product-limit) — survival w/ censoring</h3>
+      <h3>Method of moments &amp; percentile matching</h3>
+      <div class="formula">
+        <span class="formula-label">Method of moments — one equation per unknown parameter</span>
+        $$E[X^k]\;\text{(as a function of the parameters)}\;=\;\frac1n\sum_i x_i^k,\qquad k=1,2,\dots$$
+        <p>Use $k=1$ for one unknown, $k=1,2$ for two. Complete data only; simple but inefficient relative to MLE.</p>
+        <span class="formula-label">Percentile matching — fitted percentile $=$ <em>smoothed</em> empirical percentile</span>
+        $$\pi_p(\hat\theta)=\hat\pi_p,\qquad (n+1)p=j+h\;\;(j\in\mathbb{Z},\,0\le h<1),\qquad \hat\pi_p=(1-h)x_{(j)}+h\,x_{(j+1)}$$
+        <p>Order the data $x_{(1)}\le\cdots\le x_{(n)}$ first. Use $(n+1)p$, <strong>not</strong> $np$, then interpolate between the two neighbouring order statistics.</p>
+      </div>
+
+      <h3>Kaplan-Meier (product-limit) — survival w/ censoring <span class="text-mute">— ASTAM background, not FAM</span></h3>
+      <p class="text-mute"><strong>Removed from FAM effective November 2024</strong> (the old mortality-estimation topic went when the exam dropped to 34 questions). Kaplan–Meier, Nelson–Aalen, Greenwood and the associated confidence intervals are now ASTAM. Read for intuition; don't drill.</p>
       <p>At distinct death times $y_1\lt y_2<\cdots$, with $r_j$ at risk and $s_j$ deaths:</p>
       <div class="formula">
         $$\hat S(t)=\prod_{j:\,y_j\le t}\Big(1-\frac{s_j}{r_j}\Big)$$
         <p>Risk set: $r_j = (\text{# with } d_i\lt y_j \le x_i)$ accounting for left-truncation $d_i$ and right-censor/death $x_i$.</p>
       </div>
 
-      <h3>Nelson-Aalen — cumulative hazard</h3>
+      <h3>Nelson-Aalen — cumulative hazard <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <div class="formula">
         $$\hat H(t)=\sum_{j:\,y_j\le t}\frac{s_j}{r_j},\qquad \hat S(t)=e^{-\hat H(t)}$$
       </div>
       <div class="formula">
-        <span class="formula-label">Greenwood's formula (var of K-M)</span>
+        <span class="formula-label">Greenwood's formula (var of K-M) — ASTAM background, not FAM</span>
         $$\widehat{\mathrm{Var}}[\hat S(t)]=\hat S(t)^2\sum_{j:\,y_j\le t}\frac{s_j}{r_j(r_j-s_j)}$$
         <p>N-A variance: $\;\widehat{\mathrm{Var}}[\hat H(t)]=\sum_{y_j\le t}\dfrac{s_j}{r_j^2}$ (or $\sum\frac{s_j(r_j-s_j)}{r_j^3}$).</p>
         <p>Linear (log-transformed) CIs use these variances.</p>
       </div>
 
-      <h2>7. Credibility</h2>
+      <h2>8. Credibility</h2>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Scope: FAM tests limited-fluctuation credibility only</div>
+        <p>Topic 4 (2.5–5%) is <strong>classical / limited-fluctuation credibility</strong> — full and partial credibility standards. Everything below headed Bühlmann, Bühlmann–Straub, Bayesian or empirical Bayes is <strong>greatest-accuracy credibility, which sits on ASTAM</strong>. It's kept here because it makes the classical case click, but memorize only the first block.</p>
+      </div>
 
-      <h3>Limited-fluctuation (classical)</h3>
+      <h3>Limited-fluctuation (classical) <span class="text-mute">— the FAM block</span></h3>
       <p>Full credibility standard for number of claims (for the mean within $\pm k$ with prob $p$):</p>
       <div class="formula">
         $$\lambda_0=\Big(\frac{z_{(1+p)/2}}{k}\Big)^2$$
       </div>
       <ul>
         <li>Claim count full-cred: $n_F=\lambda_0$ (Poisson) or $\lambda_0\cdot\dfrac{\sigma_N^2}{\mu_N}$ in general.</li>
-        <li>Aggregate/pure-premium exposures (Poisson freq): $n_F=\lambda_0\Big(1+\dfrac{\sigma_X^2}{\mu_X^2}\Big)=\lambda_0\big(1+\mathrm{CV}_X^2\big)$.</li>
+        <li>Aggregate/pure-premium, in <strong>expected claims</strong> (Poisson freq): $n_F=\lambda_0\Big(1+\dfrac{\sigma_X^2}{\mu_X^2}\Big)=\lambda_0\big(1+\mathrm{CV}_X^2\big)$; in exposures divide by mean frequency: $n_e=n_F/\mu_N$.</li>
         <li>Partial credibility: $Z=\sqrt{n/n_F}\le1$.</li>
         <li>Credibility premium: $P_c=Z\bar X+(1-Z)M$ ($M$ = manual/prior).</li>
       </ul>
 
-      <h3>Bühlmann</h3>
+      <h3>Bühlmann <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <p>For risk parameter $\Theta$:</p>
       <ul>
         <li>Hypothetical mean $\mu(\theta)=E[X\mid\Theta=\theta]$; process variance $v(\theta)=\mathrm{Var}(X\mid\Theta=\theta)$.</li>
@@ -327,12 +408,12 @@
         $$k=\frac{v}{a},\qquad Z=\frac{n}{n+k},\qquad P_c=Z\bar X+(1-Z)\mu$$
       </div>
 
-      <h3>Bühlmann-Straub (varying exposures $m_i$, total $m=\sum m_i$)</h3>
+      <h3>Bühlmann-Straub (varying exposures $m_i$, total $m=\sum m_i$) <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <div class="formula">
         $$Z=\frac{m}{m+k},\qquad k=\frac{v}{a},\qquad \bar X=\frac{\sum m_i \bar X_i}{m}$$
       </div>
 
-      <h3>Bayesian / structural</h3>
+      <h3>Bayesian / structural <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <p>Unbiasedness: $E[P_c]=\mu$. Bühlmann is the best <strong>linear</strong> approximation to the Bayesian premium; for conjugate pairs (Poisson-Gamma, Binomial-Beta, Normal-Normal, Exp-Inv.Gamma) Bühlmann = Bayes exactly.</p>
       <div class="formula">
         <span class="formula-label">Empirical Bayes (nonparametric), $r$ groups, $n$ each</span>
@@ -340,7 +421,7 @@
         $$\hat a=\frac{1}{r-1}\sum_i(\bar X_i-\bar X)^2-\frac{\hat v}{n}$$
       </div>
 
-      <h2>8. Ratemaking</h2>
+      <h2>9. Ratemaking</h2>
 
       <h3>Loss ratio (experience) method</h3>
       <div class="formula">
@@ -370,7 +451,7 @@
         $$\text{Rate}=Z(\text{indicated})+(1-Z)(\text{current/complement})$$
       </div>
 
-      <h2>9. Reserving (Loss Development)</h2>
+      <h2>10. Reserving (Loss Development)</h2>
       <p>Setup: cumulative claims triangle, accident years (AY) $i$, development lags $j$.</p>
 
       <h3>Age-to-age (link) factors — Chain Ladder</h3>
@@ -390,47 +471,63 @@
         $$\hat C_i^{BF}=p_i\,\hat C_i^{CL}+(1-p_i)\,\hat C_i^{(0)}.$$
       </div>
 
-      <h3>Expected loss ratio (Cape Cod relatives) method</h3>
-      <p>Pure expected: $\hat C_i^{(0)}=\text{Premium}_i\times \text{ELR}$; reserve $=\hat C_i^{(0)}(1-p_i)$.</p>
-
-      <h2>10. Option Pricing</h2>
-      <div class="callout note" data-icon="🧾">
-        <div class="callout-title">Notation</div>
-        <p>$S_0$ spot, $K$ strike, $r$ cont. risk-free, $\delta$ cont. dividend yield, $T$ maturity, $\sigma$ volatility, $C/P$ call/put prices.</p>
+      <h3>Expected loss ratio (expected claims) method</h3>
+      <p>Pure expected: $\hat C_i^{(0)}=\text{Premium}_i\times \text{ELR}$; reserve $=\hat C_i^{(0)}-C_{i,\text{latest}}$ (ultimate ignores actual development to date — do <em>not</em> multiply by $(1-p_i)$; that is the BF reserve).</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The three methods, side by side</div>
+        <p>All three set $\text{Reserve}_i=\hat C_{i,\text{ult}}-C_{i,\text{latest}}$; they differ only in how the ultimate is built.</p>
+        <ul>
+          <li><strong>Chain ladder</strong> — ultimate $=C_{i,\text{latest}}\times\text{CDF}_i$. Trusts the data completely; volatile for green years where $p_i$ is small.</li>
+          <li><strong>Expected loss ratio</strong> — ultimate $=\text{Premium}_i\times\text{ELR}$. Ignores the data completely; stable but blind to actual experience.</li>
+          <li><strong>Bornhuetter-Ferguson</strong> — the credibility blend of the two, with weight $p_i=1/\text{CDF}_i$ on chain ladder.</li>
+        </ul>
+        <p>Check: $\;p_i R_i^{CL}+(1-p_i)R_i^{ELR}=R_i^{BF}$, which only balances when $R_i^{ELR}$ is ultimate minus paid.</p>
       </div>
 
-      <h3>Put-Call Parity (European, continuous dividends)</h3>
+      <h2>11. Option Pricing</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Notation</div>
+        <p>$S_0$ spot, $K$ strike, $r$ cont. risk-free, $T$ maturity, $h$ period length, $\sigma$ volatility, $C/P$ call/put prices, $\delta$ cont. dividend yield.</p>
+      </div>
+      <div class="callout objective" data-icon="🎯">
+        <div class="callout-title">Exam scope: European options on a non-dividend-paying asset</div>
+        <p>Topic 6 asks for the binomial model and Black-Scholes on a <strong>European-style</strong> derivative on a <strong>single non-dividend-paying asset</strong>, put-call parity, and the <strong>delta hedge</strong>. That means <strong>$\delta=0$ everywhere</strong> — memorize the boxed $\delta=0$ forms. The general $\delta$ versions are shown beneath each one as background: no dividends, no American early exercise, and no Greeks beyond $\Delta$ appear in the FAM outcomes.</p>
+      </div>
+
+      <h3>Put-Call Parity (European)</h3>
       <div class="formula">
-        $$C - P = S_0 e^{-\delta T} - K e^{-rT}$$
-        <p>With discrete dividends (PV $D$): $\;C-P=S_0-D-Ke^{-rT}.$</p>
-        <p>Currency option ($r_f$ = foreign rate, $x_0$ = exchange rate): replace $\delta\to r_f$, $S_0\to x_0$.</p>
-        <p>Bounds: $\;\max(0,\,S_0e^{-\delta T}-Ke^{-rT})\le C\le S_0e^{-\delta T}.$</p>
+        <span class="formula-label">Memorize this — non-dividend stock</span>
+        $$C - P = S_0 - K e^{-rT}$$
+        <p>Bounds: $\;\max(0,\,S_0-Ke^{-rT})\le C\le S_0$. Parity needs the <em>same</em> underlying, strike and expiry, and holds for European options only.</p>
+        <p class="text-mute"><strong>Background (beyond FAM scope):</strong> with a continuous dividend yield $\delta$, $\;C-P=S_0e^{-\delta T}-Ke^{-rT}$; with discrete dividends of present value $D$, $\;C-P=S_0-D-Ke^{-rT}$; for a currency option replace $\delta\to r_f$ and $S_0\to x_0$.</p>
       </div>
 
       <h3>One-period Binomial</h3>
-      <p>Up/down factors with volatility (forward-tree): $u=e^{(r-\delta)h+\sigma\sqrt h}$, $d=e^{(r-\delta)h-\sigma\sqrt h}$.</p>
+      <p>Up/down factors with volatility (forward tree, $\delta=0$): $u=e^{rh+\sigma\sqrt h}$, $d=e^{rh-\sigma\sqrt h}$. Many problems simply give you $u$ and $d$ (or $S_u,S_d$) instead.</p>
       <div class="formula">
-        <span class="formula-label">Risk-neutral probability</span>
-        $$p^\*=\frac{e^{(r-\delta)h}-d}{u-d}$$
-        <span class="formula-label">Replicating portfolio ($\Delta$ shares + $B$ bonds)</span>
-        $$\Delta=e^{-\delta h}\frac{C_u-C_d}{S_0(u-d)},\qquad B=e^{-rh}\frac{uC_d-dC_u}{u-d}$$
+        <span class="formula-label">Risk-neutral probability — memorize this</span>
+        $$p^\*=\frac{e^{rh}-d}{u-d}$$
+        <span class="formula-label">Replicating portfolio ($\Delta$ shares $+$ $B$ in bonds) — this <em>is</em> the delta hedge</span>
+        $$\Delta=\frac{C_u-C_d}{S_0(u-d)},\qquad B=e^{-rh}\frac{uC_d-dC_u}{u-d}$$
         $$C=\Delta S_0+B=e^{-rh}\big[p^\* C_u+(1-p^\*)C_d\big]$$
-        <p>Multi-period: work backward node by node; American = $\max(\text{exercise},\text{hold})$ at each node.</p>
+        <p>Multi-period: work backward node by node, discounting one period at a time. No-arbitrage requires $d\lt e^{rh}\lt u$.</p>
+        <p class="text-mute"><strong>Background (beyond FAM scope):</strong> with dividend yield $\delta$, $\;u=e^{(r-\delta)h+\sigma\sqrt h}$, $d=e^{(r-\delta)h-\sigma\sqrt h}$, $\;p^\*=\dfrac{e^{(r-\delta)h}-d}{u-d}$, $\;\Delta=e^{-\delta h}\dfrac{C_u-C_d}{S_0(u-d)}$. American options take $\max(\text{exercise},\text{hold})$ at each node — not tested on FAM.</p>
       </div>
 
       <h3>Black-Scholes (European)</h3>
       <div class="formula">
-        $$C=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2)$$
-        $$P=Ke^{-rT}\Phi(-d_2)-S_0e^{-\delta T}\Phi(-d_1)$$
-        $$d_1=\frac{\ln(S_0/K)+(r-\delta+\tfrac12\sigma^2)T}{\sigma\sqrt T},\qquad d_2=d_1-\sigma\sqrt T$$
-        <span class="formula-label">Greeks</span>
-        <p>Greeks (call): $\Delta=e^{-\delta T}\Phi(d_1)$; put $\Delta=-e^{-\delta T}\Phi(-d_1)$. $\Gamma=\dfrac{e^{-\delta T}\phi(d_1)}{S_0\sigma\sqrt T}$ (same call &amp; put); Vega $=S_0 e^{-\delta T}\phi(d_1)\sqrt T$.</p>
+        <span class="formula-label">Memorize this — non-dividend stock</span>
+        $$C=S_0\Phi(d_1)-Ke^{-rT}\Phi(d_2),\qquad P=Ke^{-rT}\Phi(-d_2)-S_0\Phi(-d_1)$$
+        $$d_1=\frac{\ln(S_0/K)+\big(r+\tfrac12\sigma^2\big)T}{\sigma\sqrt T},\qquad d_2=d_1-\sigma\sqrt T$$
+        <span class="formula-label">Delta hedge — the only Greek in the FAM outcomes</span>
+        $$\Delta_{\text{call}}=\Phi(d_1),\qquad \Delta_{\text{put}}=-\Phi(-d_1)=\Phi(d_1)-1$$
+        <p>To hedge a <em>written</em> call on one share, hold $\Delta_{\text{call}}$ shares; the position costs $\Delta S_0$ and is financed by borrowing $\Delta S_0-C$.</p>
+        <p class="text-mute"><strong>Background (beyond FAM scope):</strong> with dividend yield $\delta$, replace $S_0\to S_0e^{-\delta T}$ in $C,P$ and $\Delta$, and use $d_1=\dfrac{\ln(S_0/K)+(r-\delta+\frac12\sigma^2)T}{\sigma\sqrt T}$. Other Greeks: $\Gamma=\dfrac{\phi(d_1)}{S_0\sigma\sqrt T}$ (same for call and put), Vega $=S_0\phi(d_1)\sqrt T$.</p>
       </div>
 
-      <h3>Forwards / prepaid forwards</h3>
+      <h3>Forwards / prepaid forwards <span class="text-mute">— background, not a FAM outcome</span></h3>
       <div class="formula">
-        $$F^P_{0,T}(S)=S_0 e^{-\delta T},\qquad F_{0,T}=S_0 e^{(r-\delta)T}$$
-        <p>Prepaid forward w/ discrete divs: $F^P=S_0-\text{PV(divs)}$.</p>
+        <p class="text-mute">Not named in the Topic 6 outcomes; useful only for reading parity as "buy the forward". Non-dividend asset: $\;F^P_{0,T}=S_0$ and $\;F_{0,T}=S_0e^{rT}$. With dividend yield $\delta$: $\;F^P_{0,T}=S_0e^{-\delta T}$, $\;F_{0,T}=S_0e^{(r-\delta)T}$; with discrete dividends $\;F^P_{0,T}=S_0-\mathrm{PV}(\text{divs})$.</p>
       </div>
 
       <h2>Quick reference — key identities</h2>
@@ -440,11 +537,14 @@
           <li>$E[X]=E[X\wedge d]+E[(X-d)_+]$</li>
           <li>$\mathrm{Var}(S)=E[N]\mathrm{Var}(X)+\mathrm{Var}(N)E[X]^2$ (compound)</li>
           <li>Compound Poisson: $\mathrm{Var}(S)=\lambda E[X^2]$</li>
-          <li>$Z_{B\ddot uhlmann}=\frac{n}{n+k},\;k=v/a=\mathrm{EPV}/\mathrm{VHM}$</li>
-          <li>$Z_{classical}=\sqrt{n/n_F}$</li>
-          <li>BF reserve $=$ a-priori$\times(1-1/\text{CDF})$</li>
-          <li>$C-P=S_0e^{-\delta T}-Ke^{-rT}$</li>
-          <li>$p^\*=\dfrac{e^{(r-\delta)h}-d}{u-d}$</li>
+          <li>Normal approx: $\Pr(S\le s)\approx\Phi\!\big(\tfrac{s+0.5-E[S]}{\mathrm{SD}(S)}\big)$ (the $+0.5$ only if $S$ is discrete)</li>
+          <li>Coverage mods: max covered loss $m=\tfrac{u}{\alpha}+d$; $E[Y^L]=\alpha\big(E[X\wedge m]-E[X\wedge d]\big)$</li>
+          <li>XL reinsurance: $Z_R=(Y-\delta)_+$, $\;E[Z_R]=E[Y]-E[Y\wedge\delta]$; quota share $Z_R=(1-a)Y$</li>
+          <li>$Z_{classical}=\sqrt{n/n_F}$ (and $n_F=\lambda_0(1+\mathrm{CV}_X^2)$ is in <em>claims</em>, not exposures)</li>
+          <li>ELR reserve $=$ a-priori $-$ paid; BF reserve $=$ a-priori$\times(1-1/\text{CDF})$; CL reserve $=$ paid$\times(\text{CDF}-1)$</li>
+          <li>$C-P=S_0-Ke^{-rT}$ (non-dividend)</li>
+          <li>$p^\*=\dfrac{e^{rh}-d}{u-d}$ (non-dividend)</li>
+          <li>$Z_{B\ddot uhlmann}=\frac{n}{n+k},\;k=v/a=\mathrm{EPV}/\mathrm{VHM}$ <span class="text-mute">(ASTAM background, not FAM)</span></li>
           <li>$\mathrm{TVaR}_p=\mathrm{VaR}_p+\dfrac{E[X]-E[X\wedge \mathrm{VaR}_p]}{1-p}$ (VaR not coherent; TVaR coherent)</li>
         </ul>
       </div>

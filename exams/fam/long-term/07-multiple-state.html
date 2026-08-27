@@ -34,7 +34,7 @@
 
       <div class="callout objective" data-icon="🎯">
         <div class="callout-title">Learning Objectives</div>
-        <p>By the end of this topic, the SOA expects you to be able to:</p>
+        <p>This is not tested on FAM. If you study it as ALTAM preparation, aim to be able to:</p>
         <ul>
           <li>Describe a <strong>multiple state model</strong> in terms of its <strong>states</strong> and <strong>transition intensities</strong> (forces of transition), and draw/interpret the standard state diagrams (alive–dead, permanent disability, disability with recovery, joint life).</li>
           <li>Define and compute <strong>transition probabilities</strong> ${}_{t}p_x^{ij}$ and <strong>occupancy probabilities</strong> ${}_{t}p_x^{\overline{ii}}$.</li>
@@ -58,7 +58,7 @@
         <li><strong>Joint life model</strong> (4 states): 0 = both alive, 1 = only (x) alive, 2 = only (y) alive, 3 = both dead.</li>
       </ul>
       <div class="callout note" data-icon="📌">
-        <p><strong>Markov property:</strong> the probability of moving to a new state depends only on the <em>current</em> state (and current age), not on how you got there. This is the key simplifying assumption at FAM level.</p>
+        <p><strong>Markov property:</strong> the probability of moving to a new state depends only on the <em>current</em> state (and current age), not on how you got there. This is the key simplifying assumption at this introductory level.</p>
       </div>
 
       <h3>2. Transition intensities (forces of transition)</h3>
@@ -91,7 +91,7 @@
         \frac{\partial}{\partial t}\,{}_{t}p_x^{ij} = \sum_{k\ne j}\Big({}_{t}p_x^{ik}\,\mu_{x+t}^{kj} - {}_{t}p_x^{ij}\,\mu_{x+t}^{jk}\Big).
         $$
       </div>
-      <p><strong>Read it in plain English:</strong> the rate of change of the probability of being in state $j$ = (flow <em>into</em> $j$ from every other state $k$) − (flow <em>out of</em> $j$ to every other state $k$). The "in" term is "probability of being in $k$ now" × "intensity from $k$ to $j$"; the "out" term is "probability of being in $j$ now" × "intensity from $j$ to $k$." At FAM you are rarely asked to solve these analytically — you must <strong>recognize them, interpret them, and apply Euler's method</strong> numerically.</p>
+      <p><strong>Read it in plain English:</strong> the rate of change of the probability of being in state $j$ = (flow <em>into</em> $j$ from every other state $k$) − (flow <em>out of</em> $j$ to every other state $k$). The "in" term is "probability of being in $k$ now" × "intensity from $k$ to $j$"; the "out" term is "probability of being in $j$ now" × "intensity from $j$ to $k$." On the exam that tests this material (ALTAM), you are rarely asked to solve these analytically — you must <strong>recognize them, interpret them, and apply Euler's method</strong> numerically.</p>
       <p><strong>Euler's method</strong> (step $h$): treat the derivative as a difference quotient:</p>
       <div class="formula">
         $$
@@ -108,7 +108,7 @@
         $$
         <span class="formula-label">Lump sum paid on transition $k\to j$ (benefit of 1, starting in state $i$)</span>
         $$
-        \bar A_x^{ij\text{-transition}} = \int_0^\infty e^{-\delta t}\,{}_{t}p_x^{ik}\,\mu_{x+t}^{kj}\,dt.
+        \bar A_x^{(kj)} = \int_0^\infty e^{-\delta t}\,{}_{t}p_x^{ik}\,\mu_{x+t}^{kj}\,dt.
         $$
       </div>
       <p>The term ${}_{t}p_x^{ik}\,\mu_{x+t}^{kj}\,dt$ is the probability of being in $k$ at $t$ and jumping to $j$ in the next instant — the "death-benefit" pattern generalized.</p>
@@ -144,7 +144,7 @@
       </div>
 
       <h3>8. Converting between dependent and independent — the two standard assumptions</h3>
-      <p>You need a fractional-age assumption to convert. The two FAM-examinable ones:</p>
+      <p>You need a fractional-age assumption to convert. The two standard ones:</p>
       <p><strong>(a) Constant forces over each year of age.</strong> If forces are constant over $(x, x+1)$, then over the year</p>
       <div class="formula">
         $$
@@ -377,7 +377,7 @@
         <div class="qa-answer">$\displaystyle \overline A^{(01)} = \int_0^\infty e^{-\delta t}\,{}_{t}p_x^{\overline{00}}\,\mu_{x+t}^{01}\,dt$ (here ${}_{t}p_x^{00} = {}_{t}p_x^{\overline{00}}$ since you must still be healthy at the instant of disablement).</div>
       </details>
       <details class="qa"><summary>Given independent rates $q^{\prime(1)} = 0.05$, $q^{\prime(2)} = 0.10$, compute $p_x^{(\tau)}$.</summary>
-        <div class="qa-answer">${}_{t}p_x^{(\tau)} = p^{\prime(1)} p^{\prime(2)} = (0.95)(0.90) = 0.855$.</div>
+        <div class="qa-answer">$p_x^{(\tau)} = p^{\prime(1)} p^{\prime(2)} = (0.95)(0.90) = 0.855$.</div>
       </details>
       <details class="qa"><summary>State the Kolmogorov forward equation for ${}_{t}p_x^{02}$ (death) in the permanent disability model with intensities $\mu^{02}, \mu^{12}$.</summary>
         <div class="qa-answer">$\displaystyle \frac{d}{dt}\,{}_{t}p_x^{02} = {}_{t}p_x^{00}\,\mu_{x+t}^{02} + {}_{t}p_x^{01}\,\mu_{x+t}^{12}$ — inflow to Dead from Healthy and from Disabled; no outflow since state 2 is absorbing.</div>

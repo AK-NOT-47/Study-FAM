@@ -24,6 +24,7 @@
         <span class="chip">📈 varying benefits (IA · DA)</span>
         <span class="chip">🔢 1/m-thly · UDD · claims acceleration</span>
         <span class="chip">📊 percentiles &amp; probabilities</span>
+        <span class="chip">🎚️ sensitivity · select &amp; ultimate</span>
       </div>
     </header>
 
@@ -41,6 +42,8 @@
           <li>Handle <strong>varying benefits</strong>: continuously / annually increasing $(\bar I\bar A,\,IA)$ and decreasing $(\bar D\bar A,\,DA)$ insurance, and non-level benefits where no $A$-notation exists.</li>
           <li>Apply the <strong>special-case shortcuts</strong> under constant force of mortality and under a uniform (de Moivre) distribution.</li>
           <li>Compute <strong>percentiles</strong> $z_p$ and <strong>probabilities</strong> $\Pr[Z\le z]$ using the $Z$-vs-$T_x$ graph method.</li>
+          <li>Determine the <strong>effect of a change in the assumptions</strong> — interest or mortality — on each EPV, including the cases where the two pieces of a contract pull in opposite directions.</li>
+          <li>Compute EPVs on a <strong>select and ultimate</strong> basis ($A_{[x]}$, $A^1_{[x]:\overline{n}|}$, $\,_nE_{[x]}$) and use the bracketed notation correctly.</li>
         </ul>
       </div>
 
@@ -103,8 +106,46 @@
       </div>
       <p>Then $\text{Var}(Z) = {}^{2}A_x - (A_x)^2$. The pre-superscript "2" <strong>always</strong> means "recompute at double force" — the workhorse of the whole chapter.</p>
 
-      <h3>6. Effect of interest</h3>
-      <p>Higher $i$ ⇒ stronger discounting ⇒ <strong>lower EPV</strong> for death benefits. As $i \to 0$, $v \to 1$ and $A_x \to 1$. As $i \to \infty$, $A_x \to 0$. The EPV is a <strong>decreasing function of $i$</strong>.</p>
+      <h3>6. Effect of changes in the assumptions (interest and mortality)</h3>
+      <p><strong>Interest.</strong> Higher $i$ ⇒ stronger discounting ⇒ <strong>lower EPV</strong> for every benefit, death or survival. As $i \to 0$, $v \to 1$ and $A_x \to 1$. As $i \to \infty$, $A_x \to 0$. Every EPV on this page is a <strong>decreasing function of $i$</strong>.</p>
+      <p><strong>Mortality.</strong> This one has two directions, and the exam loves it. Suppose mortality gets <em>uniformly heavier</em> (every ${}_tp_x$ falls — e.g. a substandard life, or a switch to an older basis). Death benefits become more likely and arrive sooner, so <strong>insurance EPVs rise</strong>; survival benefits become less likely, so <strong>pure endowments and annuities fall</strong>.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>EPV</th><th>Paid on…</th><th>Interest $i\uparrow$</th><th>Mortality $\uparrow$ (heavier)</th></tr></thead>
+        <tbody>
+          <tr><td>$A_x$, $\bar A_x$, $A_x^{(m)}$</td><td>death</td><td>↓</td><td>↑</td></tr>
+          <tr><td>$A^{1}_{x:\overline{n}|}$</td><td>death (within $n$)</td><td>↓</td><td>↑</td></tr>
+          <tr><td>$\,_{n|}A_x$ (deferred)</td><td>death (after $n$)</td><td>↓</td><td><strong>ambiguous</strong></td></tr>
+          <tr><td>$\,_nE_x$</td><td>survival to $n$</td><td>↓</td><td>↓</td></tr>
+          <tr><td>$\ddot a_x$, $\ddot a_{x:\overline{n}|}$</td><td>survival (each year)</td><td>↓</td><td>↓</td></tr>
+          <tr><td>$A_{x:\overline{n}|}$ (endowment)</td><td>either</td><td>↓</td><td>↑ (see below)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">The endowment looks ambiguous — the annuity identity settles it</div>
+        <p>Heavier mortality pushes the two pieces of $A_{x:\overline{n}|}=A^1_{x:\overline{n}|}+{}_nE_x$ in <em>opposite</em> directions, so adding them up proves nothing. Use the identity instead:</p>
+        $$A_{x:\overline{n}|} = 1 - d\,\ddot a_{x:\overline{n}|}.$$
+        <p>Heavier mortality always shrinks $\ddot a_{x:\overline{n}|}=\sum_{k=0}^{n-1}v^k\,{}_kp_x$, so at a <em>fixed</em> $i$ the endowment EPV must <strong>rise</strong>. Intuition: mortality only moves probability mass from "pay 1 at time $n$" to "pay 1 at some $k+1&lt;n$" — earlier, hence worth more. The rise can be tiny for short $n$ (see the numbers below).</p>
+        <p><strong>Free consistency check:</strong> at fixed $i$, $A$ and $\ddot a$ always move in <em>opposite</em> directions ($A=1-d\ddot a$). This does <strong>not</strong> hold for an interest change, because $d$ moves too — there both $A$ and $\ddot a$ fall. The deferred insurance $\,_{n|}A_x={}_nE_x A_{x+n}$ is genuinely ambiguous: heavier mortality raises $A_{x+n}$ but lowers ${}_nE_x$.</p>
+      </div>
+      <p><strong>Numbers (SULT, $x=50$).</strong> Interest change, mortality held fixed — everything falls:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th></th><th>$A_{50}$</th><th>$\ddot a_{50}$</th><th>$\,_{20}E_{50}$</th><th>$A_{50:\overline{20}|}$</th></tr></thead>
+        <tbody>
+          <tr><td>$i=0.05$</td><td>0.18931</td><td>17.0245</td><td>0.34824</td><td>0.38844</td></tr>
+          <tr><td>$i=0.06$</td><td>0.14239</td><td>15.1511</td><td>0.28810</td><td>0.32392</td></tr>
+          <tr><td></td><td>↓</td><td>↓</td><td>↓</td><td>↓</td></tr>
+        </tbody>
+      </table></div>
+      <p>Mortality change, interest held fixed at $i=0.05$ — moving to age 60 on the same table is exactly "heavier mortality," and the signs now split:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th></th><th>$A_x$</th><th>$\ddot a_x$</th><th>$A^{1}_{x:\overline{20}|}$</th><th>$\,_{20}E_x$</th><th>$A_{x:\overline{20}|}$</th></tr></thead>
+        <tbody>
+          <tr><td>$x=50$</td><td>0.18931</td><td>17.0245</td><td>0.04020</td><td>0.34824</td><td>0.38844</td></tr>
+          <tr><td>$x=60$</td><td>0.29028</td><td>14.9041</td><td>0.11532</td><td>0.29508</td><td>0.41040</td></tr>
+          <tr><td></td><td>↑</td><td>↓</td><td>↑</td><td>↓</td><td>↑</td></tr>
+        </tbody>
+      </table></div>
+      <p class="text-mute">Same lesson with a 2-year endowment: $A_{50:\overline{2}|}=0.90708$ vs $A_{60:\overline{2}|}=0.90718$ — up, but only in the fifth decimal, because over 2 years almost all of the value is the pure endowment.</p>
 
       <h3>7. Pure endowment is the "life-contingent discount factor"</h3>
       <p>On Exam FM you discounted certain cash flows by $v^n$. Here cash flows are contingent on survival, so the discount factor also carries survivorship:</p>
@@ -185,7 +226,7 @@
         $$\text{Var}\!\left(Z_{x:\overline{n}|}\right) = {}^{2}A_{x:\overline{n}|} - \left(A_{x:\overline{n}|}\right)^2,$$
         where ${}^{2}A_{x:\overline{n}|} = {}^{2}A^{1}_{x:\overline{n}|} + {}^{2}\!\left({}_nE_x\right)$ and ${}^{2}\!\left({}_nE_x\right) = v^{2n}\,{}_np_x$.
         <span class="formula-label">Pure endowment — Bernoulli shortcut (Z takes only 2 values)</span>
-        $$\text{Var}\!\left({}_nE_x\right) = v^{2n}\,{}_np_x\,{}_nq_x = (v^n)^2\,{}_np_x\,(1-{}_np_x).$$
+        $$\text{Var}\!\left(Z\right) = v^{2n}\,{}_np_x\,{}_nq_x = (v^n)^2\,{}_np_x\,(1-{}_np_x), \qquad Z=\begin{cases}v^n,& T_x\ge n\\ 0,& T_x&lt;n.\end{cases}$$
       </div>
       <div class="callout note" data-icon="🧾">
         <div class="callout-title">Combining insurances: watch the covariance</div>
@@ -350,7 +391,7 @@
         <div class="ex-body">
           <p><em>[150-F96]</em> Given $A_{35:\overline{1}|}=0.9434$, $A_{35}=0.1300$, $p_{35}=0.9964$, $(IA)_{35}=3.7100$. Find $(IA)_{36}$.</p>
           <p><strong>Solution.</strong> A 1-year endowment is $v$, so $v=A_{35:\overline{1}|}=0.9434$. Use $(IA)_x = A_x + v\,p_x\,(IA)_{x+1}$:</p>
-          $$3.7100 = 0.1300 + (0.9434)(0.9964)\,(IA)_{36} \;\Rightarrow\; (IA)_{36}=\frac{3.5800}{0.939989}=3.8085.$$
+          $$3.7100 = 0.1300 + (0.9434)(0.9964)\,(IA)_{36} \;\Rightarrow\; (IA)_{36}=\frac{3.5800}{0.940004}=3.8085.$$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$(IA)_{36}=3.8085$. The trick: read $v$ straight off $A_{x:\overline 1|}$.</div>
         </div>
       </details>
@@ -393,12 +434,12 @@
         <summary><span class="tag">Example 10</span> $1/m$-thly endowment variance under UDD <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
           <p><em>[adapted]</em> 2-year endowment of 1, benefit at end of <strong>quarter</strong> of death, $q_x=0.050$, $q_{x+1}=0.055$, $i=0.05$, UDD. Find $10{,}000\,\text{Var}[Z]$.</p>
-          <p><strong>Single rate.</strong> $A^1_{x:\overline 2|}=v(0.05)+v^2(0.95)(0.055)=0.095011$; $\,_2E_x=v^2(0.95)(0.945)=0.814286$. With $i/i^{(4)}=1.01856$ (FAM-L table):</p>
-          $$A^{(4)}_{x:\overline 2|}=1.01856(0.095011)+0.814286 = 0.9111.$$
-          <p><strong>Double force.</strong> $1+j=(1.05)^2\Rightarrow j=0.1025$, $j^{(4)}=0.098780$, $j/j^{(4)}=1.037656$. With $\,^2A^1_{x:\overline 2|}=0.088338$ and $\,^2_2E_x=0.738581$:</p>
-          $$^2A^{(4)}_{x:\overline 2|}=1.037656(0.088338)+0.738581 = 0.830245.$$
-          $$\text{Var}[Z]=0.830245-0.9111^2 \;\Rightarrow\; 10{,}000\,\text{Var}[Z]\approx 2.$$
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$10{,}000\,\text{Var}[Z]\approx 2$. Convert the term part with $j/j^{(4)}$ at double force; the pure endowment uses $v^2$ at the doubled rate.</div>
+          <p><strong>Single rate.</strong> $A^1_{x:\overline 2|}=v(0.05)+v^2(0.95)(0.055)=0.0950113$; $\,_2E_x=v^2(0.95)(0.945)=0.8142857$. With $i/i^{(4)}=1.0185594$ (FAM-L table):</p>
+          $$A^{(4)}_{x:\overline 2|}=1.0185594(0.0950113)+0.8142857 = 0.9110604.$$
+          <p><strong>Double force.</strong> $1+j=(1.05)^2\Rightarrow j=0.1025$, $j^{(4)}=0.0987803$, $j/j^{(4)}=1.0376562$. With $\,^2A^1_{x:\overline 2|}=0.0883377$ and $\,^2_2E_x=0.7385811$:</p>
+          $$^2A^{(4)}_{x:\overline 2|}=1.0376562(0.0883377)+0.7385811 = 0.8302453.$$
+          $$\text{Var}[Z]=0.8302453-0.9110604^2 = 0.0002142 \;\Rightarrow\; 10{,}000\,\text{Var}[Z]\approx 2.14.$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$10{,}000\,\text{Var}[Z]\approx 2.14$. Convert the term part with $j/j^{(4)}$ at double force; the pure endowment uses $v^2$ at the doubled rate. <strong>Keep at least 7 decimals in $A^{(4)}$ and $^2A^{(4)}$ here</strong> — the variance is a difference of two nearly equal numbers ($0.83$ cancelling down to $0.0002$), so rounding $A^{(4)}$ to $0.9111$ gives $10{,}000\,\text{Var}[Z]\approx1.4$, a 33% error that would pick the wrong MCQ answer.</div>
         </div>
       </details>
 
@@ -475,6 +516,37 @@
         </div>
       </details>
 
+      <details class="example">
+        <summary><span class="tag">Example 15</span> EPVs on a <strong>select and ultimate</strong> basis <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A life table has a <strong>2-year select period</strong>. $i=0.06$, so $v=0.943396$. Find $A^{1}_{[60]:\overline{3}|}$, $\,_3E_{[60]}$ and $A_{[60]:\overline{3}|}$ for a life <strong>selected at age 60</strong>.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>$x$</th><th>$\ell_{[x]}$</th><th>$\ell_{[x]+1}$</th><th>$\ell_{x+2}$</th><th>$x+2$</th></tr></thead>
+            <tbody>
+              <tr><td>60</td><td>10,000</td><td>9,900</td><td>9,700</td><td>62</td></tr>
+              <tr><td>61</td><td>9,800</td><td>9,690</td><td>9,480</td><td>63</td></tr>
+              <tr><td>62</td><td>9,560</td><td>9,440</td><td>9,200</td><td>64</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Step 1 — walk the row, then step down into the ultimate column.</strong> Our life starts at $\ell_{[60]}=10{,}000$ and moves <em>along row 60</em> for the 2-year select period, after which it is an ordinary ultimate life. The three $\ell$-values it passes through are $\ell_{[60]}=10{,}000 \to \ell_{[60]+1}=9{,}900 \to \ell_{62}=9{,}700 \to \ell_{63}=9{,}480$. That last one is read from the <strong>ultimate column of row 61</strong> — once you are ultimate, rows no longer matter.</p>
+          $$q_{[60]}=\tfrac{100}{10{,}000}=0.010,\quad {}_{1|}q_{[60]}=\tfrac{9{,}900-9{,}700}{10{,}000}=0.020,\quad {}_{2|}q_{[60]}=\tfrac{9{,}700-9{,}480}{10{,}000}=0.022.$$
+          <p><strong>Step 2 — first principles, exactly as on an ultimate table.</strong> Nothing about the formula changes; only the probabilities came from a different place:</p>
+          $$A^{1}_{[60]:\overline{3}|} = v(0.010)+v^2(0.020)+v^3(0.022) = 0.009434+0.017800+0.018472 = 0.045706.$$
+          $$_3E_{[60]} = v^3\,{}_3p_{[60]} = 0.839619\times\tfrac{9{,}480}{10{,}000} = 0.839619(0.9480)=0.795959.$$
+          $$A_{[60]:\overline{3}|} = 0.045706 + 0.795959 = 0.841665.$$
+          <p><strong>Step 3 — recursion check (and the bracket trap).</strong> The recursion $A^{1}_{[60]:\overline{3}|} = v\,q_{[60]} + v\,p_{[60]}\,A^{1}_{[60]+1:\overline{2}|}$ steps to age 61 — but that life is $[60]+1$ (<em>selected at 60, now one year in</em>), <strong>not</strong> $[61]$ (freshly selected at 61, a healthier life on row 61). Using $\ell_{[60]+1}=9{,}900$:</p>
+          $$A^{1}_{[60]+1:\overline{2}|} = v\big(\tfrac{200}{9{,}900}\big)+v^2\big(\tfrac{220}{9{,}900}\big) = 0.019059+0.019778 = 0.038836,$$
+          $$v(0.010)+v(0.990)(0.038836) = 0.009434+0.036272 = 0.045706.\;\checkmark$$
+          <div class="callout key" data-icon="🔑">
+            <div class="callout-title">The notation rule: every symbol takes the bracket, and the bracket never moves</div>
+            <p>On a select basis <strong>every</strong> actuarial symbol carries $[x]$ in place of $x$ — $A_{[x]}$, $A^{1}_{[x]:\overline{n}|}$, $\,_nE_{[x]}$, $\ddot a_{[x]:\overline{n}|}$, and later the premium $P_{[x]}$ and policy value $\,_tV_{[x]}$ — and the definitions are <em>identical</em>, e.g. $A_{[x]}=\sum_{k\ge0}v^{k+1}\,{}_{k|}q_{[x]}$. Only the $\ell$'s you look up change.</p>
+            <p>The bracketed age is <strong>fixed at the age of selection</strong> and the duration since selection is what advances: $[60]\to[60]+1\to[60]+2=62$ (ultimate). Writing $[61]$ for the survivor of $[60]$ is the single most common select-table error — it silently swaps in a different, more recently underwritten life. Once duration reaches the select period, drop the bracket entirely.</p>
+            <p><strong>Sanity check:</strong> selection means <em>lighter</em> mortality, so $A_{[x]} &lt; A_x$ and $\ddot a_{[x]} &gt; \ddot a_x$ — exactly the mortality-sensitivity signs from §6.</p>
+          </div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$A^{1}_{[60]:\overline{3}|}=0.045706$, $\,_3E_{[60]}=0.795959$, $A_{[60]:\overline{3}|}=0.841665$.</div>
+        </div>
+      </details>
+
       <h2>Common Exam Traps</h2>
       <div class="callout trap" data-icon="⚠️">
         <div class="callout-title">The traps that cost real points</div>
@@ -490,6 +562,9 @@
           <li><strong>Increasing+decreasing sum.</strong> Continuous gives $n\,\bar A^1$; <strong>annual gives $(n+1)A^1$.</strong> The off-by-one is deliberate exam bait.</li>
           <li><strong>SULT at the wrong $i$.</strong> SULT $A$-columns assume $i=0.05$. If $i\ne0.05$, only $\ell_x$ and $q_x$ are usable — recompute everything else.</li>
           <li><strong>Percentile direction.</strong> For a death benefit $Z$ decreases in $T_x$, so $\Pr[Z\le z_p]=\Pr[T_x>h]=\,_hp_x$ — flip survival vs. death carefully, and watch for benefit jumps that make $Z$ non-monotone.</li>
+          <li><strong>Advancing the bracket on a select table.</strong> The survivor of $[x]$ after one year is $[x]+1$, <strong>not</strong> $[x+1]$ — the bracketed age is frozen at selection, only the duration moves. Drop the bracket only after the select period ends.</li>
+          <li><strong>Guessing the sign of a mortality change.</strong> Heavier mortality raises $A_x$ and $A^1_{x:\overline n|}$ but lowers ${}_nE_x$ and $\ddot a_x$. For the endowment, don't add the two conflicting pieces — use $A_{x:\overline n|}=1-d\,\ddot a_{x:\overline n|}$ at fixed $i$ to see it must rise. And ${}_{n|}A_x$ really is ambiguous.</li>
+          <li><strong>Rounding inside a variance.</strong> $\,^2A-A^2$ subtracts two nearly equal numbers, so 4-decimal intermediates can wreck the answer (Example 10: 1.4 instead of 2.14). Carry full calculator precision until the last line.</li>
           <li><strong>Treating $A_x$ as a probability.</strong> It is an EPV. As $i\to0$, $A_x\to1$ regardless of mortality.</li>
         </ul>
       </div>
@@ -506,8 +581,8 @@
       <details class="qa"><summary>Given $^2A_{40}=0.085$ and $A_{40}=0.20$, find $\text{Var}(v^{K_{40}+1})$.</summary>
         <div class="qa-answer">$\text{Var} = {}^2A_{40} - (A_{40})^2 = 0.085 - 0.040 = 0.045.$</div>
       </details>
-      <details class="qa"><summary>For a 5-year pure endowment with $\,_5p_{60}=0.95$ and $i=0.04$, compute $\,_5E_{60}$ and $\text{Var}({}_5E_{60})$.</summary>
-        <div class="qa-answer">$_5E_{60} = v^5\,{}_5p_{60} = 1.04^{-5}\times0.95 = 0.821927\times0.95 = 0.78083.$ Bernoulli variance: $v^{10}\,{}_5p_{60}\,{}_5q_{60}=0.821927^2(0.95)(0.05)=0.03209.$</div>
+      <details class="qa"><summary>For a 5-year pure endowment with $\,_5p_{60}=0.95$ and $i=0.04$, compute $\,_5E_{60}$ and the variance of the pure-endowment PV random variable $Z$.</summary>
+        <div class="qa-answer">$_5E_{60} = v^5\,{}_5p_{60} = 1.04^{-5}\times0.95 = 0.821927\times0.95 = 0.78083.$ Bernoulli variance: $\text{Var}(Z)=v^{10}\,{}_5p_{60}\,{}_5q_{60}=0.821927^2(0.95)(0.05)=0.03209.$ (Note $\text{Var}({}_5E_{60})=0$ — the EPV is a constant; it is $Z$ that is random.)</div>
       </details>
       <details class="qa"><summary>True/False: to convert a discrete endowment to continuous under UDD, multiply the entire $A_{x:\overline{n}|}$ by $i/\delta$.</summary>
         <div class="qa-answer"><strong>False.</strong> Only the term component gets $i/\delta$. The pure endowment is unchanged: $\bar{A}_{x:\overline{n}|} = \frac{i}{\delta}A^1_{x:\overline{n}|} + {}_nE_x.$</div>
@@ -529,6 +604,15 @@
       </details>
       <details class="qa"><summary>$Z=1000v^{T_x}$ whole life under $\mu=0.04$, $\delta=0.07$. Find the 70th percentile of $Z$.</summary>
         <div class="qa-answer">$Z$ decreases in $T_x$, so $\Pr[Z\le z_{0.70}]=\Pr[T_x>h]={}_hp_x=e^{-0.04h}=0.70\Rightarrow h=8.917$. Then $z_{0.70}=1000e^{-0.07(8.917)}=535.70.$</div>
+      </details>
+      <details class="qa"><summary>Mortality is revised to a uniformly <strong>heavier</strong> basis, $i$ unchanged. State the direction of change for $A_x$, $A^1_{x:\overline n|}$, $\,_nE_x$, $\ddot a_{x:\overline n|}$, $A_{x:\overline n|}$ and $\,_{n|}A_x$.</summary>
+        <div class="qa-answer">$A_x\uparrow$, $A^1_{x:\overline n|}\uparrow$ (death benefits are likelier and sooner); $\,_nE_x\downarrow$, $\ddot a_{x:\overline n|}\downarrow$ (survival benefits are less likely). $A_{x:\overline n|}\uparrow$: its two pieces conflict, but $A_{x:\overline n|}=1-d\,\ddot a_{x:\overline n|}$ with $d$ fixed settles it. $\,_{n|}A_x={}_nE_x A_{x+n}$ is <strong>ambiguous</strong> — the discount falls while the insurance rises.</div>
+      </details>
+      <details class="qa"><summary>A life table has a 2-year select period. A life selected at 60 survives one year. Which row/column do you read next, and what symbol describes the insurance on that survivor?</summary>
+        <div class="qa-answer">Read $\ell_{[60]+1}$ — still <strong>row 60</strong>, second column. The survivor is $[60]+1$, not $[61]$; $[61]$ is a different (freshly underwritten, healthier) life. The insurance is $A_{[60]+1}$, or $A^1_{[60]+1:\overline{n}|}$ for a term. After one more year the life is ultimate age 62 and the bracket is dropped: $A_{62}$.</div>
+      </details>
+      <details class="qa"><summary>Why is $A_{[x]} &lt; A_x$ on a select-and-ultimate table?</summary>
+        <div class="qa-answer">Selection (underwriting) means a recently selected life has <strong>lighter</strong> mortality than an ultimate life of the same attained age, so ${}_tp_{[x]} &gt; {}_tp_x$. Lighter mortality lowers death-benefit EPVs and raises survival-benefit EPVs: $A_{[x]} &lt; A_x$ while $\ddot a_{[x]} &gt; \ddot a_x$ and $\,_nE_{[x]} &gt; \,_nE_x$.</div>
       </details>
       <details class="qa"><summary>Under the claims-acceleration approach, how do you get $\bar A_x$ from $A_x$? Compare to UDD.</summary>
         <div class="qa-answer">Accumulate half a year: $\bar A_x\approx(1+i)^{1/2}A_x$ (the $m\to\infty$ limit of $(1+i)^{(m-1)/2m}$). UDD instead uses the exact-under-UDD factor $\bar A_x=\frac{i}{\delta}A_x$. Both apply only to the death part of an endowment.</div>

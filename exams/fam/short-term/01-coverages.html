@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insurance and Reinsurance Coverages · FAM-S · Me Studing Stuff</title>
+  <title>Short-Term Insurance and Reinsurance Coverages · FAM-S · Me Studing Stuff</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
   <article class="article" data-mss-article>
     <header class="article-head">
       <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 1</div>
-      <h1>Insurance and Reinsurance Coverages</h1>
+      <h1>Short-Term Insurance and Reinsurance Coverages</h1>
       <p class="lede">Every coverage modification — deductible, limit, coinsurance, reinsurance — is just algebra on the same two layers: <em>what stays below a retention</em> and <em>what spills above it</em>. This page maps the <strong>contract structures</strong> (especially <strong>reinsurance</strong>) and the high-level risk framing; the heavy per-loss / per-payment severity math lives on the <em>Coverage Modifications</em> page.</p>
       <div class="meta-row">
         <span class="chip">📖 Loss Models · KPW 5th ed.</span>
@@ -38,7 +38,8 @@
           <li>Distinguish the <strong>per-loss</strong> random variable $Y^L$ from the <strong>per-payment</strong> random variable $Y^P$, and link them via $\Pr(X>d)$.</li>
           <li>Explain why insurers buy <strong>reinsurance</strong> (capital relief, underwriting capacity, catastrophe protection, stabilizing experience, diversification, expertise, withdrawal) and define <strong>cedant</strong>, <strong>reinsurer</strong>, <strong>retrocession</strong>, and <strong>ceding commission</strong>.</li>
           <li>Classify reinsurance two ways: <strong>treaty vs facultative</strong>, and <strong>pro rata (proportional) vs excess of loss (non-proportional)</strong>.</li>
-          <li>Split a loss between cedant and reinsurer under <strong>quota share</strong>, <strong>surplus share</strong>, <strong>excess of loss (per-risk, per-occurrence, aggregate/stop-loss)</strong>, and <strong>layered XL</strong> treaties.</li>
+          <li>Split a loss between cedant and reinsurer under <strong>quota share</strong>, <strong>surplus share</strong> (retained line $r$, insured value $V$, $k$-line capacity), <strong>excess of loss (per-risk, per-occurrence, aggregate/stop-loss)</strong>, and <strong>layered XL</strong> treaties.</li>
+          <li>Explain how proportional vs excess-of-loss reinsurance changes the cedant's <strong>net</strong> premium, severity distribution, loss ratio and reserves — and why ratemaking and reserving data must be consistently <strong>gross or net</strong>.</li>
           <li>Define the <strong>individual risk model</strong> and the <strong>collective risk model</strong> and compute the mean and variance of aggregate losses under each.</li>
           <li>Explain the key ways <strong>short-term</strong> insurance differs from <strong>long-term</strong> (life-contingent) insurance.</li>
         </ul>
@@ -140,12 +141,17 @@
         <li><strong>Quota share</strong> — both parties share a fixed <em>percentage of every risk</em>. A "70%/30%" treaty means the cedant pays 70% and the reinsurer 30% of all covered claims. Mathematically identical to coinsurance: if $Y$ is the insurer's gross payment and the cedant keeps fraction $a$,
           $$Z_I=aY,\qquad Z_R=(1-a)Y,\qquad Z_I+Z_R=Y.$$
         </li>
-        <li><strong>Surplus share</strong> — proportional sharing, but <em>only for policies whose coverage exceeds</em> a stated amount called the cedant's <strong>net retention</strong> (retention limit), a.k.a. the reinsurer's <strong>attachment point</strong>. Policies below the retention are kept 100% by the cedant; above it, the cedant and reinsurer split per agreed percentages (which in practice vary by each policy's retention and limit).</li>
+        <li><strong>Surplus share</strong> — proportional sharing, but <em>only for policies whose insured value exceeds</em> the cedant's <strong>retained line</strong> (retention) $r$. Policies at or below $r$ are kept 100% by the cedant; for a policy with insured value $V\gt r$, the reinsurer takes the fixed fraction $\tfrac{V-r}{V}$ of every loss, up to the treaty's capacity (a $k$-line treaty cedes at most $k\,r$, so the ceded fraction is at most $\tfrac{kr}{V}$). The percentage therefore varies policy-by-policy but is fixed per policy — and fully computable.</li>
       </ul>
+      <div class="formula"><span class="formula-label">Surplus share — retained line $r$, insured value $V$, $k$-line treaty</span>
+        $$\text{reinsurer's fraction }\;\rho=\min\!\left(\frac{V-r}{V},\ \frac{kr}{V}\right),\qquad
+          Z_R=\rho\,Y,\qquad Z_I=(1-\rho)\,Y,$$
+        $$\rho=0 \text{ when } V\le r,\qquad\text{maximum insurable value}=(k+1)r.$$
+      </div>
       <div class="callout key" data-icon="🔑">
-        <div class="callout-title">Two exam conventions to lock in</div>
+        <div class="callout-title">Two things to lock in</div>
         <ul>
-          <li><strong>Surplus share is qualitative on FAM.</strong> Because the ceded percentage varies policy-by-policy, expect only <em>conceptual</em> questions — don't expect to compute a surplus-share split numerically.</li>
+          <li><strong>Surplus share is computable — learn the split.</strong> The ceded fraction is fixed per policy at issue: with retained line $r$ and insured value $V\gt r$, the reinsurer pays the fraction $\tfrac{V-r}{V}$ of <em>every</em> loss on that policy, capped by the treaty capacity (a $k$-line treaty cedes at most $k\,r$ of insured value, so the ceded fraction is at most $\tfrac{kr}{V}$). E.g. retained line $150{,}000$, insured value $750{,}000$: reinsurer pays $\tfrac{600{,}000}{750{,}000}=80\%$ of any loss.</li>
           <li><strong>Quota-share ambiguity.</strong> If a question says "70% quota share" without saying whose share it is, <em>assume the percentage is the reinsurer's share</em> (so the reinsurer covers 70%).</li>
         </ul>
       </div>
@@ -163,6 +169,22 @@
       <div class="callout key" data-icon="🔁">
         <div class="callout-title">The recurring algebra</div>
         <p>Every retention/deductible/attachment splits a quantity into an upper layer $(\cdot-\delta)_+$ and a lower layer $\min(\cdot,\delta)$, and the two always sum to the whole. Deductibles, policy limits, XL, and stop-loss are all the <em>same</em> two-layer split applied to different quantities ($X$ vs $S$ vs a per-policy or per-event sum).</p>
+      </div>
+
+      <h4>How reinsurance moves the cedant's numbers</h4>
+      <p>The syllabus outcome is <em>"identify the operation of basic forms of proportional and excess of loss reinsurance <strong>and understand their impact on reserving and pricing</strong>."</em> Splitting a claim is only half of it — you also need to know what each form does to the cedant's <strong>net</strong> figures. Write $a$ for the fraction of every loss a quota share leaves with the cedant (so the reinsurer takes $1-a$), and $\delta$ for an XL retention.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>What moves</th><th>Quota share (proportional)</th><th>Excess of loss (non-proportional)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Premium</strong></td><td>Ceded premium is the same fraction $1-a$ of gross premium (less a ceding commission). Net earned premium in the ratemaking equation falls to $a\times$ gross.</td><td>Premium falls only by the XL cost, which is small relative to the exposure removed — the reinsurer is buying a thin, remote layer.</td></tr>
+          <tr><td><strong>Losses / severity</strong></td><td>Every loss scales by $a$: the <em>shape</em> of the net severity distribution is unchanged, only its scale. $E[aX]=aE[X]$.</td><td>The tail is truncated: net severity becomes $X\wedge\delta$. The distribution's shape genuinely changes — the large-loss tail is gone.</td></tr>
+          <tr><td><strong>Loss ratio</strong></td><td>Unchanged (ignoring commission): premium and losses scale by the same factor, so $\tfrac{a\,L}{a\,P}=\tfrac{L}{P}$. Volatility of the loss ratio falls by the factor $a$.</td><td>Volatility falls sharply (the big claims are capped), but the <em>mean</em> net loss ratio can <strong>rise</strong>: XL cover carries a large risk margin, so the ceded premium exceeds the ceded expected losses and the net ratio $\tfrac{L-L_{\text{ced}}}{P-P_{\text{ced}}}$ climbs above the gross ratio. (Gross $65/100=65.0\%$; cede $6$ of expected loss for a premium of $10$ and the net ratio is $59/90=65.6\%$.)</td></tr>
+          <tr><td><strong>Reserves &amp; development</strong></td><td>Net reserves and every cell of the triangle scale by $a$; the development pattern (link ratios) is unchanged.</td><td>Net reserves are <em>not</em> a fixed multiple of gross. Large claims develop slowest, so removing them makes the net triangle develop <strong>faster</strong> than gross — net link ratios differ from gross link ratios.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Gross or net — pick one and stay there</div>
+        <p>Ratemaking and reserving data are quoted either <strong>gross</strong> (before reinsurance) or <strong>net</strong> (after), and the two are <em>not</em> interchangeable: if the losses are net, the premium must be net of ceded premium too, and the development factors must have been selected on net data. Mixing a gross triangle with net premium is a silent, guaranteed-wrong answer. See <a href="08-ratemaking.html">S8 Ratemaking</a> for the premium side and <a href="09-reserving.html">S9 Loss Reserving</a> for the triangles.</p>
       </div>
 
       <h3>8. Two aggregate-loss models</h3>
@@ -219,6 +241,9 @@
       <div class="formula">
         <span class="formula-label">Quota share — reinsurer share $1-a$ (cedant keeps fraction $a$ of every loss $Y$)</span>
         $$Z_I=aY,\quad Z_R=(1-a)Y,\quad \operatorname{Var}(Z_R)=(1-a)^2\operatorname{Var}(Y).$$
+        <span class="formula-label">Surplus share — retained line $r$, insured value $V$, $k$-line treaty (fraction fixed per policy)</span>
+        $$\rho=\begin{cases}0,& V\le r\\[2pt] \min\!\left(\dfrac{V-r}{V},\ \dfrac{kr}{V}\right),& V>r\end{cases}
+          \qquad Z_R=\rho\,Y,\quad Z_I=(1-\rho)Y,\quad \operatorname{Var}(Z_R)=\rho^2\operatorname{Var}(Y).$$
         <span class="formula-label">Excess of loss — retention (attachment) $\delta$</span>
         $$Z_I=\min(Y,\delta),\quad Z_R=(Y-\delta)_+,\quad E[Z_R]=E[Y]-E[Y\wedge\delta].$$
         <span class="formula-label">Stop-loss (aggregate XL) on $S$, retention $d$</span>
@@ -376,7 +401,7 @@
             </tbody>
           </table></div>
           <p>Find the payment for a claim of $X=1{,}000$.</p>
-          <p><strong>Step 1 — recover the upper bound $b$ by linear interpolation.</strong> Use the two interior points that sit inside the band, $(750,150)$ and $(900,100)$. The deductible line has slope</p>
+          <p><strong>Step 1 — recover the upper bound $b$ by linear interpolation.</strong> Use the two interior points that sit inside the band, $(750,150)$ and $(900,100)$. The claim amount changes by $-3$ per unit of effective deductible (the deductible line $D(X)$ itself has slope $\tfrac{100-150}{900-750}=-\tfrac13$):</p>
           $$\frac{900-750}{100-150}=\frac{150}{-50}=-3,$$
           <p>and the deductible hits $0$ at $X=b$, so extend the same line from $(900,100)$ down to $D=0$:</p>
           $$-3=\frac{b-900}{0-100}\;\Longrightarrow\;b-900=300\;\Longrightarrow\;b=1{,}200.$$
@@ -408,6 +433,21 @@
         </div>
       </details>
 
+      <details class="example">
+        <summary><span class="tag">Example 10</span> Surplus share: fix the percentage from the policy, then split every claim <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An insurer buys a <strong>3-line surplus-share treaty</strong> with a <strong>retained line of $r=100{,}000$</strong>. Work out the cedant/reinsurer split on three of its policies — a $200{,}000$ claim in (a) and (b), a smaller one in (c).</p>
+          <p><strong>(a) Policy with insured value $V=400{,}000$.</strong> The base fraction is $\tfrac{V-r}{V}=\tfrac{300{,}000}{400{,}000}=0.75$, and the capacity cap is $\tfrac{kr}{V}=\tfrac{3(100{,}000)}{400{,}000}=0.75$ — the policy exactly fills the treaty, since the maximum insurable value is $(k+1)r=400{,}000$. So $\rho=75\%$:</p>
+          $$Z_R=0.75(200{,}000)=\boxed{150{,}000},\qquad Z_I=0.25(200{,}000)=\boxed{50{,}000}.$$
+          <p><strong>(b) Policy with insured value $V=600{,}000$ — the cap bites.</strong> The base fraction would be $\tfrac{500{,}000}{600{,}000}=83.33\%$, but the treaty can place only $3$ lines $=300{,}000$ of value, so</p>
+          $$\rho=\min\!\left(0.8333,\ \frac{300{,}000}{600{,}000}\right)=0.50\;\Longrightarrow\;Z_R=\boxed{100{,}000},\quad Z_I=\boxed{100{,}000}.$$
+          <p>The cedant is back on risk for the $200{,}000$ of value the treaty could not absorb — which is why its share <em>rose</em> from 25% to 50% even though the policy got bigger.</p>
+          <p><strong>(c) Policy with insured value $V=80{,}000$.</strong> Here $V\le r$, so this policy never touches the treaty at all: $\rho=0$ and the cedant retains <em>100%</em> of any claim on it — a $60{,}000$ loss is retained in full, $Z_R=\boxed{0}$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">The one idea to carry out of this</div>
+          <p>$\rho$ came from $r$, $V$ and $k$ <em>only</em>. The same 75% in part (a) applies to a $1{,}000$ claim ($750$ ceded) and to a $400{,}000$ total loss ($300{,}000$ ceded). The claim size never touches the percentage.</p></div>
+        </div>
+      </details>
+
       <h2>Common Exam Traps</h2>
       <div class="callout trap" data-icon="⚠️">
         <div class="callout-title">The traps that cost real points</div>
@@ -420,7 +460,8 @@
           <li><strong>XL basis: per-risk vs per-occurrence vs aggregate.</strong> The retention attaches to a single policy's total (per-risk), one event's total across policies (per-occurrence), or the whole period's total $S$ (aggregate/stop-loss). Applying it to the wrong quantity is a guaranteed wrong answer (see Example 3).</li>
           <li><strong>Layered XL.</strong> Apply each layer's percentage only to the loss <em>inside that layer's band</em>, and remember the reinsurer pays $0$ below the retention. Don't apply one percentage to the whole excess.</li>
           <li><strong>Quota-share ambiguity.</strong> If the question doesn't say whose share a quoted percentage is, assume it's the <em>reinsurer's</em> share.</li>
-          <li><strong>Surplus share is qualitative.</strong> Don't waste time hunting for a numeric surplus-share split — FAM tests it conceptually (retention line / attachment point), not computationally.</li>
+          <li><strong>Surplus share: fix the percentage first.</strong> The retained line $r$ attaches to the policy's <em>insured value</em> $V$, not to the claim. Compute the reinsurer's fixed share $\tfrac{V-r}{V}$ (capped at $\tfrac{kr}{V}$ for a $k$-line treaty), then apply it to <em>every</em> loss on the policy regardless of the loss's size. Treating the retained line like an XL retention on the loss is the classic wrong answer.</li>
+          <li><strong>Surplus-share capacity.</strong> A $k$-line treaty places at most $k\,r$ of insured <em>value</em>, so once $V\gt(k+1)r$ the ceded fraction stops at $\tfrac{kr}{V}$ and then <em>falls</em> as $V$ grows — the cedant is back on risk for the unplaced excess. Check the cap before reaching for $\tfrac{V-r}{V}$ (see Example 10(b)).</li>
           <li><strong>Quota-share variance.</strong> The reinsurer's variance is $(1-a)^2\operatorname{Var}(Y)$ — the proportion is <strong>squared</strong>.</li>
           <li><strong>Compound variance formula.</strong> $\operatorname{Var}(S)=E[N]\operatorname{Var}(X)+\operatorname{Var}(N)(E[X])^2$ — never $\operatorname{Var}(N)\operatorname{Var}(X)$. Compound Poisson shortcut: $\lambda E[X^2]$ (second <em>moment</em> of severity, not variance).</li>
           <li><strong>Individual vs collective model.</strong> Individual = fixed $n$, possibly non-identical $X_i$, sum variances directly. Collective = random $N$, i.i.d. severities, use the compound formula.</li>
@@ -444,7 +485,7 @@
         <div class="qa-answer">Insurer pays $0+10+90+100=\mathbf{200}$ (family pays $70+100+0+80=250$, exactly the family cap). Key moves: Chloe's first claim meets her individual $100$ (insurer pays the $10$ excess); her second is then paid in full ($90$); Anne's claim only needs $80$ more to reach the $250$ family cap, so the insurer covers the remaining $100$.</div>
       </details>
       <details class="qa"><summary>You are given (claim, payment) pairs $(750,600)$ and $(900,800)$ for a linearly disappearing deductible. Find the upper bound $b$ at which the deductible disappears.</summary>
-        <div class="qa-answer">Effective deductibles are $D=X-Y$: $150$ and $100$. The line has slope $\frac{900-750}{100-150}=-3$; extending to $D=0$ gives $-3=\frac{b-900}{0-100}$, so $b-900=300$ and $b=\mathbf{1{,}200}$. (Then check any new claim is below $b$ before interpolating its deductible.)</div>
+        <div class="qa-answer">Effective deductibles are $D=X-Y$: $150$ and $100$. The claim amount changes by $\frac{900-750}{100-150}=-3$ per unit of deductible (i.e. the deductible line's slope is $-\tfrac13$); extending to $D=0$ gives $-3=\frac{b-900}{0-100}$, so $b-900=300$ and $b=\mathbf{1{,}200}$. (Then check any new claim is below $b$ before interpolating its deductible.)</div>
       </details>
       <details class="qa"><summary>Name four functions (benefits) of reinsurance for a primary insurer.</summary>
         <div class="qa-answer">Any four of: capital relief, increased underwriting capacity, catastrophe protection, stabilizing loss experience, risk diversification, access to technical expertise, and orderly withdrawal from a market.</div>
@@ -453,7 +494,10 @@
         <div class="qa-answer">Treaty cedes <em>all</em> risks in a specified line/class automatically (the reinsurer can't underwrite each one); facultative cedes <em>individual</em> risks, each underwritten and accepted/rejected by the reinsurer.</div>
       </details>
       <details class="qa"><summary>Name the two types of <strong>pro rata</strong> reinsurance and the key difference between them.</summary>
-        <div class="qa-answer"><strong>Quota share</strong> (both parties share a fixed % of <em>every</em> risk) and <strong>surplus share</strong> (proportional sharing applies only to policies whose coverage exceeds the cedant's net retention / the reinsurer's attachment point).</div>
+        <div class="qa-answer"><strong>Quota share</strong> (both parties share a fixed % of <em>every</em> risk) and <strong>surplus share</strong> (proportional sharing applies only to policies whose <em>insured value</em> exceeds the cedant's <strong>retained line</strong> (retention) $r$; the reinsurer's fraction is then $\tfrac{V-r}{V}$, capped at $\tfrac{kr}{V}$ on a $k$-line treaty).</div>
+      </details>
+      <details class="qa"><summary>A 4-line surplus treaty has a retained line of $50{,}000$. A policy is written for an insured value of $200{,}000$ and suffers a $30{,}000$ loss. How much does the reinsurer pay — and what would it pay on a $150{,}000$ loss on the same policy?</summary>
+        <div class="qa-answer">Base fraction $\tfrac{V-r}{V}=\tfrac{150{,}000}{200{,}000}=75\%$; capacity cap $\tfrac{kr}{V}=\tfrac{4(50{,}000)}{200{,}000}=100\%$, which does not bind (the maximum insurable value is $(k+1)r=250{,}000$, and $200{,}000\lt250{,}000$). So $\rho=\mathbf{75\%}$ for <em>every</em> loss on this policy: the reinsurer pays $0.75(30{,}000)=\mathbf{22{,}500}$, and on the $150{,}000$ loss it pays $0.75(150{,}000)=\mathbf{112{,}500}$. The percentage comes from the policy, never from the claim.</div>
       </details>
       <details class="qa"><summary>For excess-of-loss reinsurance, how do <strong>per-risk</strong>, <strong>per-occurrence</strong>, and <strong>aggregate (stop-loss)</strong> differ?</summary>
         <div class="qa-answer">The retention attaches to: a single policy's total loss (per-risk); the combined loss of one event across multiple policies (per-occurrence); or the total of all losses over the policy period $S$ (aggregate/stop-loss, reinsurer pays $(S-d)_+$).</div>

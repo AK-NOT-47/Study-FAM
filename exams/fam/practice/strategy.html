@@ -54,14 +54,24 @@
       <h3>B. Legacy SOA exams that overlap (free, high-value supplement)</h3>
       <p>FAM was assembled from the old <strong>STAM</strong> (short-term) and <strong>MLC/LTAM</strong> (long-term) exams. Their released problems are an enormous free question bank — but you must filter to in-scope topics.</p>
       <ul>
-        <li><strong>STAM released exams / sample questions</strong> → overlaps the <strong>FAM-S</strong> half: frequency/severity models, coverage modifications (deductibles, limits, coinsurance), aggregate loss models, empirical estimation, credibility, basic pricing/reserving for short-term insurance.
-          <ul><li><em>Skip:</em> STAM material dropped from FAM (e.g., the deeper severity/parametric-estimation and advanced credibility content beyond the FAM objectives).</li></ul>
+        <li><strong>STAM released exams / sample questions</strong> → overlaps the <strong>FAM-S</strong> half: frequency/severity models, coverage modifications (deductibles, limits, coinsurance), aggregate loss models, parametric estimation (MLE, method of moments), limited-fluctuation (classical) credibility, basic pricing/reserving for short-term insurance.
+          <ul><li><em>Skip:</em> greatest-accuracy credibility (Bühlmann, Bühlmann-Straub, Bayesian, empirical Bayes — all ASTAM, none on FAM), and every non-parametric / mortality estimation question (Kaplan–Meier, Nelson–Aalen, Greenwood), which was removed from FAM effective the November 2024 sitting.</li></ul>
         </li>
-        <li><strong>MLC / LTAM released exams and sample questions</strong> → overlaps the <strong>FAM-L</strong> half: survival models and life tables, life insurance and annuity present values, premiums (net and gross), policy values/reserves, basic multi-state/Markov models, and Poisson processes.
-          <ul><li><em>Skip:</em> the LTAM written-answer questions and topics beyond FAM-L scope (advanced multiple-decrement, profit testing depth, etc.).</li></ul>
+        <li><strong>MLC / LTAM released exams and sample questions</strong> → overlaps the <strong>FAM-L</strong> half: survival models and life tables (including select &amp; ultimate), life insurance and annuity present values, premiums (net and gross), and policy values/reserves.
+          <ul><li><em>Skip:</em> the LTAM written-answer questions and all topics beyond FAM-L scope (multi-state/Markov models, multiple decrements, joint life, universal life, profit testing, pensions — these are ALTAM, not FAM).</li></ul>
         </li>
         <li>Use the FAM syllabus objectives as your filter: if a legacy problem tests something not on the FAM learning objectives, drop it.</li>
       </ul>
+
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Skip on sight — legacy topics that cannot appear on FAM</div>
+        <p>Read each legacy problem's topic <em>before</em> you start solving. If it is on this list, close it and move on: it is not on the FAM learning objectives, so every minute spent on it is a minute stolen from an examinable topic.</p>
+        <ul>
+          <li><strong>MLC / LTAM (long-term):</strong> multiple-state / Markov models · multiple decrements · joint-life and contingent functions · universal life · profit testing and profit signatures · pension and retirement-benefit calculations · Poisson processes · population mortality curves · <em>all</em> written-answer questions. (The first six are ALTAM material; the rest were removed or never carried over.)</li>
+          <li><strong>STAM (short-term):</strong> Bühlmann · Bühlmann-Straub · Bayesian and empirical Bayes credibility — FAM tests <strong>limited-fluctuation (classical) credibility only</strong>, the rest is ASTAM · Kaplan–Meier · Nelson–Aalen · Greenwood's formula and every other non-parametric / mortality estimation question, removed effective the <strong>November 2024</strong> sitting · the old descriptive "types of coverage" questions · Tweedie.</li>
+          <li><strong>Deprioritize rather than skip:</strong> Panjer recursion and the $(a,b,1)$ zero-truncated / zero-modified class. Neither is named in a FAM outcome — Topic 2 names the <strong>convolution</strong> method — so treat them as background and work them only once everything examinable is solid.</li>
+        </ul>
+      </div>
 
       <h3>C. Commercial question banks (paid, for volume + analytics)</h3>
       <p>Worth it for the sheer number of fresh problems and the tracking tools.</p>
@@ -119,7 +129,7 @@
 
       <h3>The provided FAM tables</h3>
       <ul>
-        <li><strong>Print and study them during prep</strong> — the <em>exact same</em> tables are provided in the exam. Knowing their layout cold saves real minutes.</li>
+        <li><strong>Print and study them during prep</strong> — the <em>exact same</em> tables are provided in the exam. Knowing their layout cold saves real minutes. Download: <a href="https://www.soa.org/globalassets/assets/files/edu/2024/fall/2024-10-exam-fam-tables.pdf" target="_blank" rel="noopener">Tables for Exam FAM (PDF)</a> (if the link moves, find &ldquo;Tables for Exam FAM&rdquo; on the <a href="https://www.soa.org/education/exam-req/edu-exam-fam/study/" target="_blank" rel="noopener">SOA FAM study page</a>).</li>
         <li>Know <strong>where each thing lives</strong>: the <strong>Standard Ultimate Life Table</strong> (and any select tables) for $l_x$, $A_x$, $\ddot{a}_x$, $^2A_x$, etc.; distribution tables (means, variances, key formulas) for the FAM-S severity/frequency models; and any aggregate/credibility reference formulas.</li>
         <li><strong>Read directly from the table whenever possible</strong> instead of re-deriving. For example, pull $A_x$ and $\ddot{a}_x$ straight from the life table rather than summing — and remember the bridge identities (e.g., $A_x = 1 - d\,\ddot{a}_x$) to cross-check or get one value from another.</li>
         <li>Practice <strong>only</strong> with the official tables so you build muscle memory for their notation and rounding conventions.</li>
@@ -147,7 +157,7 @@
         <li><strong>ADAPT Earned Level.</strong> A widely used rule of thumb is an <strong>EL of about 6-7+ (sustained, not a one-off spike)</strong> as a strong indicator of readiness; many students target <strong>7</strong> for comfortable margin. Treat EL as the headline metric if you have it.</li>
         <li><strong>Mock exam scores.</strong> Score <strong>consistently at or above the passing threshold on full, timed mock exams you haven't seen before</strong> — ideally with <strong>margin</strong> (the real exam has nerves, fatigue, and harder-than-average draws). One pass isn't enough; you want a <em>repeatable</em> pass across multiple fresh mocks.</li>
         <li><strong>Pacing.</strong> You finish full mocks <strong>with time to spare for a review pass</strong>, not scraping the buzzer.</li>
-        <li><strong>Coverage / no soft spots.</strong> No topic is a reliable miss. Check your topic-level analytics — a single weak area (say, multi-state models or credibility) can quietly cost you the exam.</li>
+        <li><strong>Coverage / no soft spots.</strong> No topic is a reliable miss. Check your topic-level analytics — a single weak area (say, option pricing or credibility) can quietly cost you the exam.</li>
         <li><strong>Mistake log is shrinking.</strong> Your repeat-error rate is trending toward zero; new misses are genuinely new, not the same old traps.</li>
       </ul>
       <div class="callout tip" data-icon="✅">

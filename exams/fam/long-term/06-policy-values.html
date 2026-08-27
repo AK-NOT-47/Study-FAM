@@ -176,6 +176,35 @@
       </div>
       <p>For <strong>fully continuous</strong> versions, replace $A\!\to\!\bar A$, $\ddot a\!\to\!\bar a$, $d\!\to\!\delta$ throughout. These shortcuts only work for ordinary level whole life and endowment plans — for special (non-level) plans, revert to basic principles.</p>
 
+      <h3>Effect of a change in the assumptions (interest &amp; mortality)</h3>
+      <p>Syllabus outcome 10(d) asks you to <em>describe and calculate</em> the effect of changing the basis. Every sign follows from two primitives — what the change does to $\text{EPV}_t(\text{benefits})$ and to $\ddot a_{x+t}$ — plus one question you must answer before touching a number:</p>
+      <div class="callout key" data-icon="🔑">
+        <div class="callout-title">Ask first: does the <em>premium</em> change too?</div>
+        <ul>
+          <li><strong>Only the reserve (valuation) basis changes.</strong> The premium is already sold and stays fixed at its old value. Then ${}_tV = \text{EPV}_t(\text{ben}) - P^{\text{old}}\ddot a_{x+t}$ and the signs below are unambiguous. <em>This is the usual exam setup</em> — and note ${}_0V$ is no longer $0$, because the equivalence principle no longer holds on the valuation basis.</li>
+          <li><strong>The whole basis changes.</strong> Recompute $P$ first, then ${}_tV$. The reserve still moves the same direction, but by <em>less</em> — the new premium partly offsets the new benefit cost.</li>
+        </ul>
+      </div>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Change</th><th>Plan</th><th>$\text{EPV}_t(\text{ben})$</th><th>$\ddot a_{x+t}$</th><th>$P$</th><th>${}_tV$</th><th>Why (one line)</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="4"><strong>Interest $i\uparrow$</strong><br><span class="text-mute">(lower $i$ = mirror image)</span></td><td>Term</td><td>↓</td><td>↓</td><td>↓</td><td>↓</td><td>Every future cash flow is discounted harder; benefits fall faster than the premium leg.</td></tr>
+          <tr><td>Whole life</td><td>↓</td><td>↓</td><td>↓</td><td>↓</td><td>$A_{x+t}=1-d\,\ddot a_{x+t}$ falls; $P_x=\tfrac1{\ddot a_x}-d$ falls because $d$ rises faster than $1/\ddot a_x$.</td></tr>
+          <tr><td>Endowment</td><td>↓</td><td>↓</td><td>↓</td><td>↓</td><td>Largest move per unit of face — the maturity payment is a long, certain cash flow, so discounting bites hardest.</td></tr>
+          <tr><td>Annuity</td><td>↓</td><td>↓</td><td>↓</td><td>↓</td><td>The benefit <em>is</em> an annuity, so it shrinks with $i$ exactly like $\ddot a$ does.</td></tr>
+          <tr><td rowspan="4"><strong>Mortality $q\uparrow$</strong><br><span class="text-mute">(strengthened / substandard)</span></td><td>Term</td><td>↑</td><td>↓</td><td>↑</td><td>↑</td><td>More deaths = more claims <em>and</em> fewer premiums: both legs push the same way. Biggest <em>proportional</em> mortality effect.</td></tr>
+          <tr><td>Whole life</td><td>↑</td><td>↓</td><td>↑</td><td>↑</td><td>Death is certain, so $q\uparrow$ only makes it <em>sooner</em>: $A_{x+t}$ up, $\ddot a_{x+t}$ down.</td></tr>
+          <tr><td>Endowment</td><td>↑ (slightly)</td><td>↓</td><td>↑</td><td>↑</td><td>Death and maturity benefits nearly offset ($A_{x:\overline{n|}}=1-d\,\ddot a_{x:\overline{n|}}$, so it still rises) — the <strong>smallest</strong> mortality sensitivity.</td></tr>
+          <tr><td>Annuity</td><td>↓</td><td>↓</td><td>↓</td><td><strong>↓</strong></td><td><strong>Sign flips:</strong> annuitants dying sooner is <em>good</em> for the insurer — fewer payments, so a smaller reserve.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">The two things that get marked wrong</div>
+        <p><strong>(1) The annuity sign flip.</strong> Heavier mortality <em>raises</em> every insurance reserve but <em>lowers</em> every annuity reserve. Ask "does dying early cost the insurer money or save it?" before writing a sign.<br>
+        <strong>(2) Interest and mortality can fight.</strong> A basis with <em>lower</em> $i$ <em>and</em> <em>lighter</em> mortality moves an insurance reserve up and down at once — you must actually compute, not sign-reason. Only same-direction changes can be answered by inspection.</p>
+      </div>
+      <p>Magnitudes are worth a glance too: measured on the SULT at $(50)$, valued at $t=10$, a <strong>1% cut in $i$</strong> (5%→4%) moves a whole life reserve roughly <strong>four times</strong> further than a <strong>10% mortality loading</strong> does. Interest is nearly always the dominant assumption — which is why regulators prescribe a conservative (low) valuation rate.</p>
+
       <h3>Retrospective net premium policy value</h3>
       <div class="formula">$$ {}_tV_x = \frac{P_x\,\ddot a_{x:\overline{t|}} - A^{1}_{x:\overline{t|}}}{{}_tE_x} = P_x\,\ddot s_{x:\overline{t|}} - {}_tk_x, $$</div>
       <p>where dividing by ${}_tE_x=v^t\,{}_tp_x$ converts a time-0 EPV into an actuarial accumulated value at time $t$:</p>
@@ -214,14 +243,14 @@
         $$ ({}_tV^{e} + P^e - e)(1+i) = q_{x+t}\,E + p_{x+t}\,{}_{t+1}V^{e}. $$
       </div>
       <p>Decomposition and a useful special case:</p>
-      <div class="formula">$$ {}_tV^{e} = {}_tV^{g} - {}_tV^{n}; \qquad \text{if expenses are a level }100e\%\text{ of premium, } {}_tV^{e}=0 \text{ and } {}_tV^{g}={}_tV^{n}. $$</div>
+      <div class="formula">$$ {}_tV^{e} = {}_tV^{g} - {}_tV^{n}; \qquad \text{if expenses are a level }100e\%\text{ of premium and }G\text{ is the equivalence-principle premium (same basis), } {}_tV^{e}=0 \text{ and } {}_tV^{g}={}_tV^{n}. $$</div>
 
       <h3>Variance of the future loss ${}_tL$</h3>
       <p>Just shift the at-issue variance formula's age from $x$ to $x+t$. Fully continuous whole life / endowment with premium $P$:</p>
       <div class="formula">$$ \mathrm{Var}[{}_tL] = \left(b + \frac{P}{\delta}\right)^{2}\mathrm{Var}[Z], \quad \mathrm{Var}[Z]= {}^2\bar A_{x+t} - (\bar A_{x+t})^2 \;\;(\text{WL}),\;\; {}^2\bar A_{x+t:\overline{n-t|}} - (\bar A_{x+t:\overline{n-t|}})^2\;(\text{end.}). $$</div>
       <p>If the <strong>equivalence principle</strong> holds, the premium term collapses (denominator uses age $x$):</p>
       <div class="formula">$$ \mathrm{Var}[{}_tL] = b^2\,\frac{{}^2\bar A_{x+t} - (\bar A_{x+t})^2}{(1-\bar A_x)^2}\;(\text{WL}), \qquad \mathrm{Var}[{}_tL] = b^2\,\frac{{}^2\bar A_{x+t:\overline{n-t|}} - (\bar A_{x+t:\overline{n-t|}})^2}{(1-\bar A_{x:\overline{n|}})^2}\;(\text{end.}). $$</div>
-      <p>For fully discrete insurance, drop the bars and use $d$ in place of $\delta$. For a <strong>gross</strong> loss, replace $b$ with $\big(b+E+\tfrac{G-e_r}{d}\big)$ (renewal expense $e_r$; the initial expense, being a known constant, does not enter the variance).</p>
+      <p>For fully discrete insurance, drop the bars and use $d$ in place of $\delta$. For a <strong>gross</strong> loss, replace the whole factor $\big(b+\tfrac{P}{d}\big)$ with $\big(b+E+\tfrac{G-e_r}{d}\big)$, so $\mathrm{Var}[{}_tL^g]=\big(b+E+\tfrac{G-e_r}{d}\big)^2\mathrm{Var}[Z]$ (renewal expense $e_r$; the initial expense, being a known constant, does not enter the variance).</p>
 
       <h3>Interim (mid-year) reserves — exact &amp; interpolation</h3>
       <p>For $t$ integer, $0\lt s<1$, death benefit $b$ at year-end. Step <strong>forward</strong> from ${}_tV$ (premium $P$ included at time $t$):</p>
@@ -233,7 +262,7 @@
 
       <h3>Fackler / actuarial accumulated value form</h3>
       <p>Rearranged using $p_{x+t}=1-q_{x+t}$ (end-of-year benefit):</p>
-      <div class="formula">$$ {}_{t+1}V = ({}_tV + P)\,u_{x+t} - b\,k_{x+t}, \qquad u_{x+t} = \frac{1+i}{p_{x+t}}, \quad k_{x+t} = \frac{(1+i)\,q_{x+t}}{p_{x+t}}. $$</div>
+      <div class="formula">$$ {}_{t+1}V = ({}_tV + P)\,u_{x+t} - b\,k_{x+t}, \qquad u_{x+t} = \frac{1+i}{p_{x+t}}, \quad k_{x+t} = \frac{q_{x+t}}{p_{x+t}}. $$</div>
 
       <h3>Thiele's differential equation (continuous)</h3>
       <div class="callout key" data-icon="🔑">
@@ -291,8 +320,8 @@
           <p><strong>Step 1 — connect ${}_{10}V$ and ${}_{11}V$</strong> (payment at 10, no premium):</p>
           $$ ({}_{10}V + 0 - 1000)(1.06) = (1-0.014)(9{,}675.46) \;\Rightarrow\; {}_{10}V = 10{,}000. $$
           <p><strong>Step 2 — connect ${}_9V$ and ${}_{10}V$</strong> (premium $X$, no payment at 9):</p>
-          $$ (8{,}683.07 + X)(1.06) = (1-0.012)(10{,}000) \;\Rightarrow\; X = 637.70. $$
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$X = \$637.70$. Treat each \$1{,}000 annuity payout as a negative premium and the standard recursion still works.</div>
+          $$ (8{,}683.07 + X)(1.06) = (1-0.012)(10{,}000) \;\Rightarrow\; X = 637.68. $$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$X = \$637.68$. Treat each \$1{,}000 annuity payout as a negative premium and the standard recursion still works.</div>
         </div>
       </details>
 
@@ -317,7 +346,7 @@
           <p>Fully discrete whole life of \$100{,}000 on $(45)$. ${}_5V^g=5{,}500$, ${}_6V^g=7{,}100$, $q_{50}=0.009$, $i=0.05$, renewal expense $50 + 4\%$ of $G$, claim expense $E=200$. Find $G$.</p>
           <p>Gross recursion linking years 5 and 6:</p>
           $$ [5500 + G - (50 + 0.04G)](1.05) = 0.009(100{,}000 + 200) + (1-0.009)(7100). $$
-          $$ (5450 + 0.96G)(1.05) = 901.8 + 7035.9 \;\Rightarrow\; 5722.5 + 1.008G = 7937.7 \;\Rightarrow\; G = 2{,}197.82. $$
+          $$ (5450 + 0.96G)(1.05) = 901.8 + 7036.1 \;\Rightarrow\; 5722.5 + 1.008G = 7937.9 \;\Rightarrow\; G = 2{,}197.82. $$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G = \$2{,}197.82$. Settlement expense rides on the death-benefit term $(b+E)$; premium-date expense $e$ rides with $G$ on the left.</div>
         </div>
       </details>
@@ -367,7 +396,7 @@
           <p>Fully discrete whole life of \$1 on $(x)$, equivalence-principle premium. Given $v^2=0.75$, $q_{x+t}=0.2$, $A_{x+t+1}=0.5$, ${}^2A_{x+t+1}=0.3$. Find $\dfrac{\mathrm{Var}[{}_tL]}{\mathrm{Var}[{}_{t+1}L]}$.</p>
           <p>With the equivalence principle, the constant $(1+P/d)^2$ cancels in the ratio, leaving the $\mathrm{Var}[Z]$ pieces:</p>
           $$ \frac{\mathrm{Var}[{}_tL]}{\mathrm{Var}[{}_{t+1}L]} = \frac{{}^2A_{x+t}-(A_{x+t})^2}{{}^2A_{x+t+1}-(A_{x+t+1})^2}. $$
-          <p>Recurse the moments down one age ($v=\sqrt{0.75}$): $A_{x+t}=v\,q_{x+t}+v\,p_{x+t}A_{x+t+1}=0.75(0.2)+0.75(0.8)(0.5)=0.51962$; and ${}^2A_{x+t}=v^2 q_{x+t}+v^2 p_{x+t}\,{}^2A_{x+t+1}=0.75(0.2)+0.75(0.8)(0.3)=0.33.$</p>
+          <p>Recurse the moments down one age ($v=\sqrt{0.75}=0.86603$): $A_{x+t}=v\,q_{x+t}+v\,p_{x+t}A_{x+t+1}=0.86603(0.2)+0.86603(0.8)(0.5)=0.51962$; and ${}^2A_{x+t}=v^2 q_{x+t}+v^2 p_{x+t}\,{}^2A_{x+t+1}=0.75(0.2)+0.75(0.8)(0.3)=0.33.$</p>
           $$ \frac{\mathrm{Var}[{}_tL]}{\mathrm{Var}[{}_{t+1}L]} = \frac{0.33 - 0.51962^2}{0.30 - 0.5^2} = \frac{0.06}{0.05} = 1.2. $$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Ratio $=1.2$. For special (non-level) plans the variance formula fails — compute $\mathrm{E}[{}_tL]$ and $\mathrm{E}[{}_tL^2]$ from a probability table of outcomes instead.</div>
         </div>
@@ -472,6 +501,34 @@
         </div>
       </details>
 
+      <details class="example">
+        <summary><span class="tag">Example 16</span> Changing the basis — premium and ${}_{10}V$ on a second set of assumptions <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A fully discrete whole life of \$100{,}000 is issued to $(50)$. Expenses are ignored throughout (net premium only). The <strong>premium basis</strong> is the SULT at $i=0.05$; the <strong>reserve basis</strong> prescribed by the regulator is $i=0.04$ with mortality at <strong>110% of SULT $q_x$</strong>. You are given:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Basis</th><th>$A_{50}$</th><th>$\ddot a_{50}$</th><th>$A_{60}$</th><th>$\ddot a_{60}$</th></tr></thead>
+            <tbody>
+              <tr><td>Premium: SULT, $i=0.05$</td><td>0.18931</td><td>17.0245</td><td>0.29028</td><td>14.9041</td></tr>
+              <tr><td>Reserve: 110% $q$, $i=0.04$</td><td>0.26386</td><td>19.1397</td><td>0.37349</td><td>16.2892</td></tr>
+            </tbody>
+          </table></div>
+          <p>Calculate (a) ${}_{10}V$ on the premium basis, (b) ${}_{10}V$ on the reserve basis, and (c) the extra reserve the regulator's basis forces the insurer to hold.</p>
+          <p><strong>Step 1 — the premium is set once, on the premium basis, and never changes.</strong> This is the move candidates miss: the policy was <em>sold</em> at this price, so the same $P$ appears in both valuations.</p>
+          $$ P = \frac{100{,}000\,A_{50}}{\ddot a_{50}} = \frac{100{,}000(0.18931)}{17.0245} = 1{,}111.99. $$
+          <p><strong>Step 2 — (a) prospective reserve on the premium basis</strong> (age 60 values at $i=0.05$):</p>
+          $$ {}_{10}V^{(\text{prem})} = 100{,}000(0.29028) - 1{,}111.99(14.9041) = 29{,}028 - 16{,}573.21 = 12{,}454.79. $$
+          <p><strong>Step 3 — (b) same prospective formula, valuation-basis symbols</strong> (age 60 at $i=0.04$, 110% $q$) — but <em>still</em> the premium from Step 1:</p>
+          $$ {}_{10}V^{(\text{res})} = 100{,}000(0.37349) - 1{,}111.99(16.2892) = 37{,}349 - 18{,}113.43 = 19{,}235.57. $$
+          <p><strong>Step 4 — (c) the difference.</strong> $19{,}235.57 - 12{,}454.79 = 6{,}780.78$, i.e. the conservative basis demands <strong>54% more</strong> reserve.</p>
+          <p><strong>Sanity check against the sign table.</strong> Lower $i$ ⇒ reserve ↑; heavier $q$ on a whole life ⇒ reserve ↑. Both changes point the same way, so the increase was predictable by inspection — only its size needed arithmetic.</p>
+          <div class="callout note" data-icon="🧾">
+            <div class="callout-title">If the <em>premium</em> basis had changed too</div>
+            <p>Had the policy been priced on the conservative basis, $P' = 100{,}000(0.26386)/19.1397 = 1{,}378.60$ — a 24% higher price. Valuing with $P'$ gives ${}_{10}V = 37{,}349 - 1{,}378.60(16.2892) = 14{,}892.71$, still above 12,454.79 but far below 19,235.57. <strong>Recomputing the premium absorbs most of the basis change</strong>; holding it fixed is what makes the reserve jump. Note too that on the reserve basis ${}_0V = 100{,}000(0.26386) - 1{,}111.99(19.1397) = 5{,}102.84 \ne 0$ — the equivalence principle only holds on the basis that set the premium.</p>
+          </div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) \$12{,}454.79 · (b) \$19{,}235.57 · (c) \$6{,}780.78 extra. <strong>One prospective formula, two sets of symbols, one premium.</strong> Whenever an exam question hands you two bases, the premium comes from the <em>premium</em> basis and everything else from the <em>valuation</em> basis.</div>
+        </div>
+      </details>
+
       <h2>Common Exam Traps</h2>
       <div class="callout trap" data-icon="⚠️">
         <div class="callout-title">The traps that cost real points</div>
@@ -482,7 +539,7 @@
           <li><strong>Dividing by $p_{x+t}$ vs. $q_{x+t}$ in the recursion.</strong> The survivor term is $p_{x+t}\,{}_{t+1}V$; to solve forward you divide by $p_{x+t}$.</li>
           <li><strong>Forgetting boundary conditions.</strong> ${}_0V=0$; for $n$-year term ${}_nV=0$; for $n$-year endowment ${}_nV=$ maturity benefit. Anchoring the recursion at the right end is half the battle.</li>
           <li><strong>Annuity sign error.</strong> An annuity payment is a <em>negative</em> premium in the recursion: $({}_tV + P_t - B_t)(1+i)=\dots$. Set $b=0$ if there is no death benefit.</li>
-          <li><strong>Sign of the expense reserve.</strong> Early on it is <strong>negative</strong> (acquisition cost not yet recovered) — don't "fix" a negative answer. Hence ${}_tV^n \ge {}_tV^g$. (Exception: level-percent-of-premium expenses give ${}_tV^e=0$.)</li>
+          <li><strong>Sign of the expense reserve.</strong> Early on it is <strong>negative</strong> (acquisition cost not yet recovered) — don't "fix" a negative answer. Hence ${}_tV^n \ge {}_tV^g$. (Exception: level-percent-of-premium expenses with an equivalence-principle gross premium on the same basis give ${}_tV^e=0$; a profit-loaded $G$ makes it strictly negative.)</li>
           <li><strong>Initial expense in the variance.</strong> The initial expense is a known constant and <strong>does not</strong> appear in $\mathrm{Var}[{}_tL^g]$ — only the renewal expense $e_r$ does.</li>
           <li><strong>Closed-form $\mathrm{Var}[{}_tL]$ fails for non-level plans — build a probability table.</strong> The $\big(b+\tfrac{P}{d}\big)^2\mathrm{Var}[Z]$ (and its equivalence-principle) shortcut applies <em>only</em> to ordinary level whole life and endowment. For a special non-level benefit (e.g. a 3-year endowment with changing death benefit), enumerate every in-force outcome's ${}_tL$ with its conditional probability, then compute $\mathrm{E}[{}_tL]$ and $\mathrm{E}[{}_tL^2]$ from the table — don't force the formula.</li>
           <li><strong>Interim reserve — UDD direction.</strong> Stepping forward uses ${}_s q_{x+t}=s\,q$; stepping backward uses ${}_{1-s}q_{x+t+s}=\dfrac{(1-s)q}{1-s\,q}$. Don't reuse $s\,q$ for the backward step.</li>
@@ -490,6 +547,8 @@
           <li><strong>FPT off-by-one.</strong> ${}_tV^{FPT}_x = {}_{t-1}V_{x+1}$, not ${}_tV_{x+1}$; and ${}_1V^{FPT}=0$, not ${}_0V$. For an $n$-year endowment, the shifted plan on $(x+1)$ is the $(n{-}1)$-year endowment.</li>
           <li><strong>Net amount at risk uses ${}_{t+1}V$.</strong> $\text{NAR}=b-{}_{t+1}V$ (the <em>end-of-year</em> reserve), since the death benefit and the surviving reserve both occur at year-end.</li>
           <li><strong>Direction of the interest assumption.</strong> <em>Lowering</em> the valuation interest rate <em>raises</em> the reserve (benefits discounted less, premiums accumulate less). Several candidates get this backwards.</li>
+          <li><strong>Mortality direction — annuities flip the sign.</strong> Strengthening mortality <em>raises</em> every insurance reserve but <em>lowers</em> every annuity reserve (fewer payments to make). Ask "does an early death cost or save the insurer?" before you write a sign.</li>
+          <li><strong>Changing only the reserve basis does not change the premium.</strong> The policy is already sold: keep $P$ from the premium basis and re-value only the $A$'s and $\ddot a$'s. A consequence worth remembering — on a different valuation basis ${}_0V \ne 0$.</li>
           <li><strong>Thiele's sign.</strong> It is $-\mu_{x+t}(S_t - {}_tV)$, <em>minus</em>: the reserve is reduced by paying the net amount at risk.</li>
         </ul>
       </div>
@@ -522,7 +581,7 @@
         <div class="qa-answer">Net (benefits only): $({}_tV+P)(1+i)=q\,b+p\,{}_{t+1}V$. Gross (benefits + expenses): $({}_tV^g+G-e)(1+i)=q(b+E)+p\,{}_{t+1}V^g$. Expense (expenses only): $({}_tV^e+P^e-e)(1+i)=q\,E+p\,{}_{t+1}V^e$, where $P^e=G-P$.</div>
       </details>
       <details class="qa"><summary>Is the early-duration expense reserve positive or negative, and why? When is it identically zero?</summary>
-        <div class="qa-answer"><strong>Negative.</strong> The level expense loading is less than the front-loaded acquisition expenses early on; the deficit is recovered by later loadings, so ${}_tV^e$ rises from negative toward 0. It is identically 0 (so ${}_tV^g={}_tV^n$) when expenses are a level percentage of premium.</div>
+        <div class="qa-answer"><strong>Negative.</strong> The level expense loading is less than the front-loaded acquisition expenses early on; the deficit is recovered by later loadings, so ${}_tV^e$ rises from negative toward 0. It is identically 0 (so ${}_tV^g={}_tV^n$) when expenses are a level percentage of premium <em>and</em> $G$ is the equivalence-principle gross premium on the same basis — since then $P^n=(1-c)G$, so ${}_tV^e=\big(P^n-(1-c)G\big)\ddot a_{x+t}=0$. With a profit loading in $G$ it stays strictly negative.</div>
       </details>
       <details class="qa"><summary>Give the formula for $\mathrm{Var}[{}_tL]$ for fully discrete whole life under the equivalence principle. Why does the initial expense not appear in the gross-loss variance?</summary>
         <div class="qa-answer">$\mathrm{Var}[{}_tL]=b^2\,\dfrac{{}^2A_{x+t}-(A_{x+t})^2}{(1-A_x)^2}$ (numerator at age $x+t$, denominator at $x$). The initial expense is a known constant incurred at issue; a constant has zero variance, so only the future (renewal) expense enters $\mathrm{Var}[{}_tL^g]$.</div>
@@ -550,6 +609,12 @@
       </details>
       <details class="qa"><summary>Why can't you use the $\big(b+\tfrac{P}{d}\big)^2\mathrm{Var}[Z]$ formula for a special endowment with non-level death benefits? What do you do instead?</summary>
         <div class="qa-answer">That closed form assumes a level benefit (and level premium); with changing benefits the future loss is not an affine function of a single $Z$, so it fails. Instead enumerate every in-force outcome — each death year and survival — with its ${}_tL$ and conditional probability, then compute $\mathrm{E}[{}_tL]$ and $\mathrm{E}[{}_tL^2]$ from the table and take $\mathrm{Var}=\mathrm{E}[{}_tL^2]-\mathrm{E}[{}_tL]^2$.</div>
+      </details>
+      <details class="qa"><summary>The valuation basis is changed to a lower $i$ and 110% of tabular $q$. What happens to ${}_tV$ for a whole life? For a life annuity? Does $P$ change?</summary>
+        <div class="qa-answer">$P$ does <strong>not</strong> change — the policy is already sold, so the premium stays on the premium basis and only the $A$'s and $\ddot a$'s are re-valued. <strong>Whole life:</strong> lower $i$ raises $\text{EPV}_t(\text{ben})$ and heavier $q$ raises it too while cutting $\ddot a_{x+t}$ — both push ${}_tV$ <strong>up</strong>. <strong>Annuity:</strong> lower $i$ still pushes the reserve <strong>up</strong>, but heavier mortality pushes it <strong>down</strong> (fewer payments) — the two fight, so you must compute rather than sign-reason. Also note ${}_0V\ne0$ on the new basis, since the equivalence principle only held on the old one.</div>
+      </details>
+      <details class="qa"><summary>Rank term, whole life, endowment and annuity by how sensitive they are to a mortality change, and say why.</summary>
+        <div class="qa-answer">Measured as a <em>percentage of the reserve</em> under a 10% mortality loading (premium fixed): <strong>term</strong> is by far the most sensitive (extra deaths add claims <em>and</em> remove premiums, with no offsetting survival benefit), then <strong>whole life</strong> (death is certain anyway — heavier $q$ only makes it sooner), then the <strong>annuity</strong> (moderate, and the only one that moves <em>down</em>), and least of all the <strong>endowment</strong>, whose death and maturity benefits nearly offset — a death simply pays the same sum earlier. Interest is the other story: <em>per unit of face amount</em> the endowment moves most, because its maturity payment is a long, certain cash flow — and on a whole life a 1% interest change typically outweighs a 10% mortality loading by about four to one.</div>
       </details>
       <details class="qa"><summary>State the FPT renewal equation for an $n$-year endowment, and rearrange the gross recursion into net-amount-at-risk form.</summary>
         <div class="qa-answer">FPT-endowment renewal premium: $\beta\,\ddot a_{x+1:\overline{n-1|}}=A_{x+1:\overline{n-1|}}$ (the shifted plan is the $(n{-}1)$-year endowment on $(x+1)$, since the first year is 1-year term). Gross recursion NAR form: substituting $p=1-q$ into $({}_tV^g+G-e)(1+i)=q(b+E)+p\,{}_{t+1}V^g$ gives $({}_tV^g+G-e)(1+i)=q\big(b+E-{}_{t+1}V^g\big)+{}_{t+1}V^g$, so the gross net amount at risk is $b+E-{}_{t+1}V^g$ — the settlement expense $E$ rides with the death benefit.</div>

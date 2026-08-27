@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parametric &amp; Non-Parametric Estimation · FAM-S · Me Studing Stuff</title>
+  <title>Parametric Estimation · FAM-S · Me Studing Stuff</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
   <article class="article" data-mss-article>
     <header class="article-head">
       <div class="eyebrow"><span class="badge s-fam-s">FAM-S</span> Short-Term · Topic 6</div>
-      <h1>Parametric and Non-Parametric Estimation</h1>
+      <h1>Parametric Estimation</h1>
       <p class="lede">Two words decide every estimation problem on this exam — <em>truncation</em> conditions the density and drops data; <em>censoring</em> keeps the point but swaps $f(x)$ for $S(u)$. Master the four-step likelihood recipe, then learn the shortcuts that turn a page of algebra into one line.</p>
       <div class="meta-row">
         <span class="chip">📖 Loss Models · KPW</span>
@@ -23,7 +23,6 @@
         <span class="chip">🔑 MLE recipe</span>
         <span class="chip">✂️ Truncation · Censoring · Grouping</span>
         <span class="chip">⚡ Closed-form shortcuts</span>
-        <span class="chip">🔑 Kaplan–Meier · Greenwood</span>
       </div>
     </header>
 
@@ -40,9 +39,8 @@
           <li>Derive MLEs for common parametric distributions (exponential, gamma scale, Pareto, single-parameter Pareto, Weibull, lognormal, inverse exponential, beta, Poisson, binomial, negative binomial, uniform).</li>
           <li>Apply the <strong>matching-moments shortcuts</strong> for severity and $(a,b,0)$ distributions, plus the <strong>$(a,b,1)$</strong> zero-truncated / zero-modified shortcuts.</li>
           <li>Use the <strong>invariance property</strong> $\hat{g}(\theta)=g(\hat\theta)$ to estimate any function of a parameter (e.g. a VaR).</li>
-          <li>Construct the <strong>Kaplan–Meier</strong> product-limit estimator and the <strong>Nelson–Aalen</strong> estimator of the cumulative hazard from left-truncated, right-censored data.</li>
-          <li>Estimate the <strong>variance</strong> of estimators: empirical, Greenwood's formula, Aalen's variance, and the asymptotic variance of MLEs via the information matrix; build <strong>confidence intervals</strong> (linear and log-transformed).</li>
         </ul>
+        <p class="text-mute"><strong>Not a FAM objective (kept as ASTAM background only):</strong> Kaplan–Meier, Nelson–Aalen, Greenwood's formula, Aalen's variance, and linear / log-transformed confidence intervals. Those sections are labelled where they appear — read them for intuition, don't drill them.</p>
       </div>
 
       <h2>Key Concepts</h2>
@@ -90,8 +88,9 @@
       <div class="formula">$$F_n(x) = \frac{\#\{x_i \le x\}}{n}, \qquad S_n(x) = 1 - F_n(x).$$</div>
       <p>When data are left-truncated and/or right-censored, the empirical cdf is generalized to the <strong>Kaplan–Meier</strong> estimator (for $S(x)$) and the cumulative hazard to the <strong>Nelson–Aalen</strong> estimator.</p>
       <div class="callout trap" data-icon="⚠️">
-        <div class="callout-title">Borderline FAM scope — prioritise MLE</div>
-        <p>The <strong>Kaplan–Meier</strong>, <strong>Nelson–Aalen</strong>, <strong>Greenwood</strong>, and <strong>Aalen-variance</strong> material (here, plus the matching Formulas and Worked Examples 10 &amp; 12) is <strong>non-parametric estimation</strong>. FAM's Topic 3 learning outcome names <strong>Maximum Likelihood Estimation only</strong> — there is no non-parametric outcome — so this is at most light/background for FAM. (It's left in because the <em>Loss Models</em> Ch. 11 reading borders on it and it reinforces censoring/truncation intuition.) <strong>Spend your time on the MLE recipe</strong>; treat K–M / N–A as understanding-only unless your prep source says otherwise.</p>
+        <div class="callout-title">Removed from FAM — ASTAM background only</div>
+        <p>Non-parametric estimation of survival — <strong>Kaplan–Meier</strong>, <strong>Nelson–Aalen</strong>, <strong>Greenwood's formula</strong>, <strong>Aalen's variance</strong>, and the linear / log-transformed confidence intervals — was <strong>removed from FAM effective the November 2024 sitting</strong> (the old mortality-estimation topic was dropped when the exam went to 34 questions). The surviving Topic 3, <em>Parametric Estimation</em> (2.5–7.5%), is <strong>loss-model estimation by maximum likelihood</strong>. This material now sits on <strong>ASTAM</strong>.</p>
+        <p>It stays on this page — here, in the matching <em>Formulas</em> subsections, and in <strong>Worked Examples 10 &amp; 12</strong> — because it makes risk sets, censoring and truncation click. <strong>Read it for intuition; do not spend exam-prep hours on it.</strong> Your time on this topic belongs to the four-step MLE recipe and the likelihood building blocks.</p>
       </div>
 
       <h3>Parametric estimation methods (in order of exam importance)</h3>
@@ -107,10 +106,10 @@
         <thead><tr><th>Situation</th><th>Likelihood factor</th></tr></thead>
         <tbody>
           <tr><td>Exact observation at $x$ (complete)</td><td>$f(x)$ &nbsp;(or $p(x)$ if discrete)</td></tr>
-          <tr><td>Right-censored at $u$ (e.g. policy limit)</td><td>$S(u)=\Pr(X\ge u)$</td></tr>
+          <tr><td>Right-censored at $u$ (e.g. policy limit)</td><td>$S(u)=\Pr(X\gt u)$</td></tr>
           <tr><td>Left-censored at $d$</td><td>$F(d)=\Pr(X\le d)$</td></tr>
           <tr><td>Left-truncated at $d$ (e.g. deductible), exact loss $x$</td><td>$\dfrac{f(x)}{S(d)}=\dfrac{f(x)}{\Pr(X>d)}$</td></tr>
-          <tr><td>Right-truncated at $u$, exact value $x$</td><td>$\dfrac{f(x)}{F(u)}=\dfrac{f(x)}{\Pr(X\lt u)}$</td></tr>
+          <tr><td>Right-truncated at $u$, exact value $x$</td><td>$\dfrac{f(x)}{F(u)}=\dfrac{f(x)}{\Pr(X\le u)}$</td></tr>
           <tr><td>Left-truncated at $d$, right-censored at $u$</td><td>$\dfrac{S(u)}{S(d)}$</td></tr>
           <tr><td>Interval / grouped $(a,\,b]$</td><td>$F(b) - F(a)=S(a)-S(b)$</td></tr>
         </tbody>
@@ -125,7 +124,7 @@
       <h3>Special cases &amp; shortcuts</h3>
       <p>For <strong>complete</strong> data, many MLEs reduce to <strong>matching raw moments</strong> — set the fitted $k$-th raw moment equal to the empirical one, $\mathrm E[X^k]=\frac1n\sum x_i^k$, and solve. These shortcuts are the fastest route through severity and $(a,b,0)$/$(a,b,1)$ frequency problems (see the Formulas section). Some closed forms (exponential, Pareto, Weibull) extend to truncated/censored data; others (uniform, inverse exponential, beta) are <strong>complete-data only</strong>.</p>
 
-      <h3>Kaplan–Meier and Nelson–Aalen</h3>
+      <h3>Kaplan–Meier and Nelson–Aalen <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <p>These estimate the survival function $S(t)$ when each subject can enter late (left truncation) and leave early (right censoring). Define at each observed <strong>death/loss time</strong> $y_j$:</p>
       <ul>
         <li>$s_j$ = number of observed events (deaths) <strong>at</strong> $y_j$,</li>
@@ -189,6 +188,10 @@
       </div>
 
       <h3>$(a,b,1)$ class shortcuts — zero-truncated &amp; zero-modified</h3>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Low priority — likely ASTAM, not FAM</div>
+        <p>The $(a,b,1)$ zero-truncated / zero-modified class is <strong>not named in the current FAM outcomes</strong> and is generally treated as <strong>ASTAM</strong> material; FAM's frequency topic works with the $(a,b,0)$ class. It is short, mechanical, and reuses the matching-moments idea you already need, so it is kept here (with <strong>Worked Example 8</strong>) — but fit it in <em>after</em> the MLE recipe is solid, not before.</p>
+      </div>
       <p>The matching-moments idea extends to the $(a,b,1)$ family; just match the <em>appropriate</em> mean. Let $X$ be the parent $(a,b,0)$ variable.</p>
       <div class="formula">
         <span class="formula-label">Zero-truncated: match $\mathrm E[X^T]=\dfrac{1}{1-p_0}\,\mathrm E[X]=\bar x$</span>
@@ -225,21 +228,25 @@
         <p>Don't memorize the whole table. The <strong>exponential</strong> shortcut <code>θ̂ = total payment ÷ number of uncensored observations</code> is the one worth knowing cold. The rest exist for completeness — you're expected to be able to do any of them from first principles (build $L$, log, differentiate, solve). The uniform grouped shortcut and the inverse-exponential/beta forms are <strong>complete-data only</strong> (uniform also can't handle truncation). In the grouped-uniform formula, $n$ = total observations and $n_j$ = number in the last interval $[c_j,\infty)$.</p>
       </div>
 
-      <h3>Kaplan–Meier (product-limit) estimator of $S(t)$</h3>
+      <h3>Kaplan–Meier (product-limit) estimator of $S(t)$ <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <p>For observed event times $y_1 < y_2 < \dots < y_k$, with $s_j$ events and risk set $r_j$ at $y_j$:</p>
       <div class="formula">$$\hat S(t) = \prod_{j:\,y_j \le t}\left(1 - \frac{s_j}{r_j}\right), \qquad \hat S(t) = 1 \text{ for } t < y_1.$$</div>
 
-      <h3>Nelson–Aalen estimator of cumulative hazard $H(t)$</h3>
+      <h3>Nelson–Aalen estimator of cumulative hazard $H(t)$ <span class="text-mute">— ASTAM background, not FAM</span></h3>
       <div class="formula">$$\hat H(t) = \sum_{j:\,y_j \le t} \frac{s_j}{r_j}, \qquad \hat S(t) = e^{-\hat H(t)}.$$</div>
 
-      <h3>Variance estimates and confidence intervals</h3>
+      <h3>Variance estimates and confidence intervals <span class="text-mute">— background</span></h3>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Estimator variance is not a FAM outcome</div>
+        <p><strong>Greenwood's formula</strong>, <strong>Aalen's variance</strong>, and the <strong>linear / log-transformed confidence intervals</strong> below belong to the non-parametric mortality-estimation material <strong>removed from FAM in November 2024</strong> — they are ASTAM. The <strong>Fisher-information / delta-method</strong> block at the end is also not named in the FAM Topic 3 outcome (which asks you to <em>estimate parameters</em>, chiefly by MLE), so treat it as light background too. Nothing here should displace practice on building and maximising likelihoods.</p>
+      </div>
       <div class="formula">
         <span class="formula-label">Greenwood's formula (variance of the Kaplan–Meier $\hat S(t)$)</span>
         $$\widehat{\mathrm{Var}}\big[\hat S(t)\big] = \big[\hat S(t)\big]^2 \sum_{j:\,y_j \le t} \frac{s_j}{r_j\,(r_j - s_j)}.$$
         <span class="formula-label">Aalen's variance (variance of the Nelson–Aalen $\hat H(t)$)</span>
         $$\widehat{\mathrm{Var}}\big[\hat H(t)\big] = \sum_{j:\,y_j \le t} \frac{s_j}{r_j^{2}} \quad\text{(textbook form)} \;\;\Big(\text{some texts: } \sum \tfrac{s_j (r_j - s_j)}{r_j^3}\Big).$$
       </div>
-      <p>On FAM use $\sum_{j} s_j / r_j^2$ unless told otherwise.</p>
+      <p>Where this is tested, use $\sum_{j} s_j / r_j^2$ unless told otherwise.</p>
       <div class="formula">
         <span class="formula-label">Linear (normal) CI for $S(t)$</span>
         $$\hat S(t) \pm z_{1-\alpha/2}\,\sqrt{\widehat{\mathrm{Var}}[\hat S(t)]}.$$
@@ -381,7 +388,7 @@
       </details>
 
       <details class="example">
-        <summary><span class="tag">Example 10</span> Kaplan–Meier and Greenwood confidence interval <span class="ex-chev">▾</span></summary>
+        <summary><span class="tag">Example 10</span> Kaplan–Meier and Greenwood confidence interval <span class="text-mute">(ASTAM background)</span> <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
           <p>Ten policies are observed for time to first claim. Exact claim times (in months): 2, 3, 3, 5, 8. The remaining 5 policies were censored (no claim) at times 4, 6, 6, 9, 10. No left truncation. Estimate $S(5)$ by Kaplan–Meier and give a 95% linear confidence interval.</p>
           <p><strong>Solution.</strong> Order the event times and build the risk sets. Total $n = 10$.</p>
@@ -424,15 +431,15 @@
       </details>
 
       <details class="example">
-        <summary><span class="tag">Example 12</span> Nelson–Aalen with Aalen variance <span class="ex-chev">▾</span></summary>
+        <summary><span class="tag">Example 12</span> Nelson–Aalen with Aalen variance <span class="text-mute">(ASTAM background)</span> <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
           <p>Using the same data as Example 10 (events at 2, 3, 3, 5; risk sets 10, 9, 6), estimate $H(5)$ and $S(5)$ by Nelson–Aalen, and give the variance of $\hat H(5)$.</p>
           <p><strong>Solution.</strong></p>
           $$\hat H(5) = \frac{1}{10} + \frac{2}{9} + \frac{1}{6} = 0.10000 + 0.22222 + 0.16667 = 0.48889.$$
-          $$\hat S(5) = e^{-0.48889} = 0.6134.$$
+          $$\hat S(5) = e^{-0.48889} = 0.6133.$$
           <p>Aalen variance ($\sum s_j/r_j^2$):</p>
           $$\frac{1}{10^2} + \frac{2}{9^2} + \frac{1}{6^2} = 0.01000 + 0.024691 + 0.027778 = 0.062469.$$
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat H(5) = 0.4889,\;\; \hat S(5) = 0.6134,\;\; \widehat{\mathrm{Var}}[\hat H(5)] = 0.06247}$</div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{\hat H(5) = 0.4889,\;\; \hat S(5) = 0.6133,\;\; \widehat{\mathrm{Var}}[\hat H(5)] = 0.06247}$</div>
         </div>
       </details>
 
@@ -450,8 +457,8 @@
           <li><strong>Forgetting the invariance property.</strong> To estimate a VaR, fitted mean, or any $g(\theta)$, plug in $\hat\theta$: $\widehat{g(\theta)}=g(\hat\theta)$. Don't re-derive a new MLE for the function.</li>
           <li><strong>Grouped discrete data uses a sum of pmf values</strong> over the interval, e.g. $p(1)+p(2)$ — not a single pmf and not a continuous $F(b)-F(a)$.</li>
           <li><strong>$(a,b,1)$ matching.</strong> For zero-truncated, match $\frac{1}{1-p_0}\mathrm E[X]$ to $\bar x$; for zero-modified, first set $\hat p_0^M=n_0/n$, then match the modified mean. Using the plain $(a,b,0)$ mean here is wrong.</li>
-          <li><strong>Risk-set bookkeeping in Kaplan–Meier.</strong> Censored observations leave the risk set but do <strong>not</strong> create a factor. Only event times produce factors $(1 - s_j/r_j)$. With <strong>left truncation</strong>, subjects enter the risk set <em>late</em>; the risk set is not monotonically decreasing.</li>
-          <li><strong>Greenwood vs. Aalen.</strong> Greenwood's denominator is $r_j(r_j - s_j)$ and multiplies by $\hat S(t)^2$; Aalen's is $r_j^2$ with no leading factor. Don't swap them.</li>
+          <li><em>(ASTAM background — not a FAM trap.)</em> <strong>Risk-set bookkeeping in Kaplan–Meier.</strong> Censored observations leave the risk set but do <strong>not</strong> create a factor. Only event times produce factors $(1 - s_j/r_j)$. With <strong>left truncation</strong>, subjects enter the risk set <em>late</em>; the risk set is not monotonically decreasing.</li>
+          <li><em>(ASTAM background — not a FAM trap.)</em> <strong>Greenwood vs. Aalen.</strong> Greenwood's denominator is $r_j(r_j - s_j)$ and multiplies by $\hat S(t)^2$; Aalen's is $r_j^2$ with no leading factor. Don't swap them.</li>
           <li><strong>Percentile matching index.</strong> Use $(n+1)p = j + h$ for the <em>smoothed</em> empirical percentile, not $np$. Interpolate between order statistics.</li>
         </ul>
       </div>
@@ -466,7 +473,7 @@
         <div class="qa-answer">$\ln$ is strictly increasing, so $\ell$ peaks at the same $\hat\theta$ as $L$ — and a sum is far easier to differentiate than a product. Constants that don't depend on $\theta$ are multiplicative in $L$ (additive in $\ell$) and vanish on differentiation, so they don't affect $\hat\theta$. Caveat: keep them if you need the actual value of $\ell$ (e.g. likelihood-ratio test).</div>
       </details>
       <details class="qa"><summary>Write the likelihood factor for each case: left-truncated at $d$; right-truncated at $u$; left-censored at $d$; right-censored at $u$; grouped on $(a,b]$.</summary>
-        <div class="qa-answer">Left-truncated: $f(x)/\Pr(X>d)$. Right-truncated: $f(x)/\Pr(X\lt u)$. Left-censored: $\Pr(X\le d)=F(d)$. Right-censored: $\Pr(X\ge u)=S(u)$. Grouped: $\Pr(a\lt X\le b)=F(b)-F(a)$ (sum of pmf values if discrete).</div>
+        <div class="qa-answer">Left-truncated: $f(x)/\Pr(X>d)$. Right-truncated: $f(x)/\Pr(X\le u)$. Left-censored: $\Pr(X\le d)=F(d)$. Right-censored: $\Pr(X\gt u)=S(u)$. Grouped: $\Pr(a\lt X\le b)=F(b)-F(a)$ (sum of pmf values if discrete).</div>
       </details>
       <details class="qa"><summary>A loss is recorded as exactly 1000 because the policy has a 1000 limit. Is this observation censored or truncated, and what likelihood factor does it contribute?</summary>
         <div class="qa-answer"><strong>Censored</strong> (right-censored at $u=1000$). It contributes the survival factor $S(1000)$ to the likelihood.</div>
@@ -489,10 +496,10 @@
       <details class="qa"><summary>Give the MLE of $\theta$ for a $U(0,\theta)$ sample $\{4, 7, 2, 9, 5\}$, and explain why no derivative is used.</summary>
         <div class="qa-answer">$\hat\theta = \max\{4,7,2,9,5\} = \mathbf{9}$. $L=1/\theta^n$ increases as $\theta$ shrinks, but $\theta$ can't be below the largest observation — so the maximum sits at the boundary $\max x_i$, not at a derivative root.</div>
       </details>
-      <details class="qa"><summary>In Kaplan–Meier, what happens to the survival estimate at a <em>censoring</em> time (no event)?</summary>
+      <details class="qa"><summary>In Kaplan–Meier, what happens to the survival estimate at a <em>censoring</em> time (no event)? <span class="text-mute">(ASTAM background)</span></summary>
         <div class="qa-answer">Nothing — the survival estimate $\hat S$ is unchanged (flat) at a censoring time; only the risk set $r_j$ for <em>later</em> event times is reduced. Factors $(1 - s_j/r_j)$ arise only at event times.</div>
       </details>
-      <details class="qa"><summary>State Greenwood's formula and what it estimates.</summary>
+      <details class="qa"><summary>State Greenwood's formula and what it estimates. <span class="text-mute">(ASTAM background)</span></summary>
         <div class="qa-answer">$\widehat{\mathrm{Var}}[\hat S(t)] = [\hat S(t)]^2 \sum_{y_j \le t} \dfrac{s_j}{r_j(r_j - s_j)}$. It estimates the variance of the Kaplan–Meier survival estimator $\hat S(t)$.</div>
       </details>
 

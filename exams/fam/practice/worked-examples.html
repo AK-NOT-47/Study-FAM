@@ -16,11 +16,11 @@
     <header class="article-head">
       <div class="eyebrow">Practice · Mixed Set</div>
       <h1>FAM Worked Examples — Mixed Set</h1>
-      <p class="lede">Twelve exam-style multiple-choice problems spanning both halves of FAM — work each one cold, then open the full step-by-step solution.</p>
+      <p class="lede">Fourteen exam-style multiple-choice problems spanning both halves of FAM — work each one cold, then open the full step-by-step solution.</p>
       <div class="meta-row">
         <span class="chip">📖 SOA FAM · Short- &amp; Long-Term</span>
-        <span class="chip">⏱️ ~60–75 min</span>
-        <span class="chip">🔑 severity · aggregate · credibility · reserving · APV · premiums · reserves · decrements</span>
+        <span class="chip">⏱️ ~70–85 min</span>
+        <span class="chip">🔑 severity · aggregate · credibility · reserving · APV · premiums · reserves · fractional ages · reinsurance · options</span>
       </div>
     </header>
 
@@ -28,10 +28,11 @@
 
       <div class="callout note" data-icon="📌">
         <div class="callout-title">How to use this set</div>
-        <p>A set of 12 exam-style multiple-choice problems spanning both halves of the SOA <strong>Fundamentals of Actuarial Mathematics (FAM)</strong> exam.</p>
+        <p>A set of 14 exam-style multiple-choice problems spanning both halves of the SOA <strong>Fundamentals of Actuarial Mathematics (FAM)</strong> exam.</p>
         <ul>
           <li><strong>Problems 1–6:</strong> Short-Term Actuarial Mathematics (severity, aggregate, coverage modifications, credibility, ratemaking, reserving).</li>
-          <li><strong>Problems 7–12:</strong> Long-Term Actuarial Mathematics (survival, life insurance, annuities, premiums, reserves, multiple decrements).</li>
+          <li><strong>Problems 7–12:</strong> Long-Term Actuarial Mathematics (survival, life insurance, annuities, premiums, reserves, fractional ages).</li>
+          <li><strong>Problems 13–14:</strong> The two remaining Short-Term topics — reinsurance allocation and option pricing fundamentals.</li>
         </ul>
         <p>Each problem has five answer choices (A–E). Attempt the problem first, then expand the solution — every solution shows the full step-by-step work and the correct letter. Standard actuarial notation is used throughout.</p>
       </div>
@@ -132,7 +133,7 @@
           $$\left(\frac{1.645}{0.05}\right)^2 = 32.9^2 = 1082.41.$$
           <p>Severity adjustment (coefficient of variation squared):</p>
           $$1 + \frac{\sigma_X^2}{\mu_X^2} = 1 + \frac{400^2}{200^2} = 1 + \frac{160{,}000}{40{,}000} = 1 + 4 = 5.$$
-          $$n_0 = 1082.41 \times 5 = 5412.05 \approx 5413.$$
+          $$n_0 = 1082.41 \times 5 = 5412.05 \;\longrightarrow\; 5413 \text{ claims (round up: the standard must be met, so take the next whole claim).}$$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(D) 5413.</div>
         </div>
       </details>
@@ -324,27 +325,86 @@
       </details>
 
       <details class="example">
-        <summary><span class="tag">Example 12</span> Multiple decrements: associated single-decrement probability <span class="ex-chev">▾</span></summary>
+        <summary><span class="tag">Example 12</span> Mortality models: fractional ages under UDD <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
-          <p>In a double-decrement model (decrement 1 = withdrawal, decrement 2 = death), forces of decrement are constant over the year of age $x$:</p>
+          <p>You are given $q_{70} = 0.050$ and that deaths are <strong>uniformly distributed over each year of age (UDD)</strong>.</p>
+          <p>Calculate $\,_{0.5}q_{70.25}$, the probability that a life aged $70.25$ dies within the next half year.</p>
           <ul>
-            <li>$\mu_x^{(1)} = 0.05$</li>
-            <li>$\mu_x^{(2)} = 0.03$</li>
+            <li>(A) 0.0244</li>
+            <li>(B) 0.0250</li>
+            <li>(C) 0.0253</li>
+            <li>(D) 0.0256</li>
+            <li>(E) 0.0263</li>
           </ul>
-          <p>Calculate $q_x^{\prime(2)}$, the independent (associated single-decrement) probability of death over the year.</p>
+          <p><strong>Solution.</strong> Under UDD, $l_{x+t} = l_x\left(1 - t\,q_x\right)$ for $0 \le t \le 1$. Set $l_{70} = 1$:</p>
+          $$l_{70.25} = 1 - 0.25(0.05) = 0.98750, \qquad l_{70.75} = 1 - 0.75(0.05) = 0.96250.$$
+          $$\,_{0.5}q_{70.25} = \frac{l_{70.25} - l_{70.75}}{l_{70.25}} = \frac{0.98750 - 0.96250}{0.98750} = \frac{0.02500}{0.98750} = 0.025316.$$
+          <p>Equivalently $\,_{0.5}q_{70.25} = \dfrac{0.5\,q_{70}}{1 - 0.25\,q_{70}}$. The naive answer $0.5 \times 0.05 = 0.0250$ (option B) is wrong because the life has already survived a quarter of the year, so the denominator is $l_{70.25}$, not $l_{70}$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(C) 0.0253.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 13</span> Reinsurance: per-risk excess of loss allocation <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>An insurer buys <strong>per-risk excess-of-loss reinsurance</strong> covering the layer <strong>1000 excess of 500</strong>: for each individual loss, the reinsurer pays the amount above a retention of $500$, up to a maximum reinsurance payment of $1000$ per loss.</p>
+          <p>Five losses occur during the year:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Loss</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+            <tbody>
+              <tr><td>Amount</td><td>300</td><td>750</td><td>1400</td><td>2000</td><td>3200</td></tr>
+            </tbody>
+          </table></div>
+          <p>Calculate the total amount paid by the <strong>reinsurer</strong>.</p>
           <ul>
-            <li>(A) 0.0273</li>
-            <li>(B) 0.0288</li>
-            <li>(C) 0.0296</li>
-            <li>(D) 0.0305</li>
-            <li>(E) 0.0769</li>
+            <li>(A) 1750</li>
+            <li>(B) 3150</li>
+            <li>(C) 4500</li>
+            <li>(D) 5350</li>
+            <li>(E) 7650</li>
           </ul>
-          <p><strong>Solution.</strong> With constant forces over the year, the independent (associated single-decrement) probability is</p>
-          $$q_x^{\prime(j)} = 1 - e^{-\mu_x^{(j)}}.$$
-          <p>For death:</p>
-          $$q_x^{\prime(2)} = 1 - e^{-0.03} = 1 - 0.970446 = 0.029554 \approx 0.0296.$$
-          <p>Cross-check on the dependent rate: $p_x^{(\tau)} = e^{-0.08} = 0.923116$; $q_x^{(2)} = \dfrac{\mu^{(2)}}{\mu^{(\tau)}}\big(1 - p_x^{(\tau)}\big) = \dfrac{0.03}{0.08}(0.076884) = 0.028832$, slightly below the independent value $0.0296$, as expected (option B is this distractor).</p>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(C) 0.0296.</div>
+          <p><strong>Solution.</strong> Per loss $X$, the reinsurer's payment is</p>
+          $$R(X) = \min\big((X - 500)_+,\; 1000\big),$$
+          <p>i.e. nothing below the retention $500$, then the excess, capped once the loss reaches $500 + 1000 = 1500$.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Loss $X$</th><th>$(X-500)_+$</th><th>Reinsurer $R(X)$</th><th>Insurer $X - R(X)$</th></tr></thead>
+            <tbody>
+              <tr><td>300</td><td>0</td><td>0</td><td>300</td></tr>
+              <tr><td>750</td><td>250</td><td>250</td><td>500</td></tr>
+              <tr><td>1400</td><td>900</td><td>900</td><td>500</td></tr>
+              <tr><td>2000</td><td>1500</td><td>1000 (capped)</td><td>1000</td></tr>
+              <tr><td>3200</td><td>2700</td><td>1000 (capped)</td><td>2200</td></tr>
+              <tr><td><strong>Total 7650</strong></td><td>5350</td><td><strong>3150</strong></td><td><strong>4500</strong></td></tr>
+            </tbody>
+          </table></div>
+          <p>Reinsurer pays $0 + 250 + 900 + 1000 + 1000 = 3150$; the insurer retains $7650 - 3150 = 4500$ (choice C — read the question carefully).</p>
+          <p><strong>Watch the two traps.</strong> Forgetting the cap gives $5350$ (D). Reading "1000" as a <em>maximum covered loss</em> instead of a layer limit gives $\min(X,1000) - \min(X,500)$, i.e. $1750$ (A) — once a loss exceeds $1500$ the insurer, not the reinsurer, is back on the hook for the excess.</p>
+          <p><strong>Contrast — proportional (quota-share).</strong> Under a $25\%$ quota share the split ignores loss size entirely: the reinsurer pays $0.25 \times 7650 = 1912.5$ and the insurer $5737.5$, on <em>every</em> loss including the $300$ one.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(B) 3150.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 14</span> Option pricing: one-period binomial European call <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A non-dividend-paying stock has current price $S_0 = 100$. Over the next year its price moves to either $uS_0$ with $u = 1.25$ or $dS_0$ with $d = 0.80$. The annual effective risk-free rate is $r = 0.05$.</p>
+          <p>Calculate the price of a <strong>1-year European call</strong> with strike $K = 105$.</p>
+          <ul>
+            <li>(A) 9.52</li>
+            <li>(B) 10.58</li>
+            <li>(C) 11.11</li>
+            <li>(D) 12.50</li>
+            <li>(E) 13.23</li>
+          </ul>
+          <p><strong>Solution.</strong> The risk-neutral probability of an up move is</p>
+          $$p^* = \frac{(1+r) - d}{u - d} = \frac{1.05 - 0.80}{1.25 - 0.80} = \frac{0.25}{0.45} = 0.555556.$$
+          <p>Payoffs at time 1:</p>
+          $$C_u = (125 - 105)_+ = 20, \qquad C_d = (80 - 105)_+ = 0.$$
+          <p>Price = risk-neutral expected payoff, discounted at the risk-free rate:</p>
+          $$C_0 = \frac{p^*C_u + (1-p^*)C_d}{1+r} = \frac{0.555556 \times 20}{1.05} = \frac{11.1111}{1.05} = 10.58.$$
+          <p><strong>Put-call parity cross-check.</strong> $C_0 - P_0 = S_0 - K v$ with $Kv = 105/1.05 = 100 = S_0$, so $P_0 = C_0 = 10.58$ here — the call and put are worth the same because the strike's present value equals the stock price.</p>
+          <p><strong>Traps.</strong> Never use the real-world probability: $0.5 \times 20 / 1.05 = 9.52$ (A) is the classic wrong answer. Forgetting to discount gives $11.11$ (C).</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(B) 10.58.</div>
         </div>
       </details>
 
@@ -363,7 +423,9 @@
           <tr><td>9</td><td>Temporary annuity-due</td><td>C</td></tr>
           <tr><td>10</td><td>Net premium</td><td>C</td></tr>
           <tr><td>11</td><td>Net premium reserve</td><td>C</td></tr>
-          <tr><td>12</td><td>Associated single decrement</td><td>C</td></tr>
+          <tr><td>12</td><td>Fractional ages (UDD)</td><td>C</td></tr>
+          <tr><td>13</td><td>Per-risk excess-of-loss reinsurance</td><td>B</td></tr>
+          <tr><td>14</td><td>Binomial option pricing</td><td>B</td></tr>
         </tbody>
       </table></div>
 

@@ -18,7 +18,7 @@
       <h1>Aggregate Loss Models &amp; Risk Measures</h1>
       <p class="lede">A whole portfolio's losses collapse into one random sum $S$ — get its mean, variance, and distribution, and stop-loss premiums, approximations, and risk measures (VaR, TVaR) fall out mechanically.</p>
       <div class="meta-row">
-        <span class="chip">📖 Loss Models · Ch. 9</span>
+        <span class="chip">📖 Loss Models · Ch. 3 &amp; 9</span>
         <span class="chip">⏱️ ~4–5 hrs</span>
         <span class="chip">🔑 compound mean/var · Panjer · stop-loss · approximations</span>
         <span class="chip">🔑 aggregate payments · VaR · TVaR · coherence · tail weight</span>
@@ -96,7 +96,7 @@
         <li><strong>Splitting</strong>: The reverse of additivity. Categorize each claim independently (e.g. "below deductible" vs "above deductible") with probabilities $q_j$; the count in each category is independent Poisson with mean $\lambda q_j$.</li>
       </ol>
       <div class="callout tip" data-icon="✅">
-        <p>Splitting is the engine behind the "number of payments" approach to aggregate payments: scale the Poisson mean by $\Pr(\text{loss exceeds deductible})$. This works <strong>only for Poisson</strong>, not binomial or negative binomial.</p>
+        <p>Splitting powers the "number of payments" approach to aggregate payments: with $v=\Pr(\text{loss exceeds deductible})$, the payment count stays in the <strong>same family</strong> — Poisson$(\lambda)\to$Poisson$(v\lambda)$, Binomial$(m,q)\to$Binomial$(m,vq)$, Negative Binomial$(r,\beta)\to$NB$(r,v\beta)$. Only for Poisson are the split counts also <em>independent</em> of each other — that independence (and compound-Poisson additivity) is the Poisson-only part.</p>
       </div>
 
       <h3>Convolutions</h3>
@@ -540,8 +540,8 @@
           <p>Conditioning a Uniform on exceeding a threshold (then subtracting it) gives another uniform: $Y^P=(X-20\mid X>20)\sim\text{Uniform}(0,35)$, so</p>
           $$E[Y^P]=\tfrac{0+35}{2}=17.5,\qquad \text{Var}(Y^P)=\tfrac{(35-0)^2}{12}=102.0833.$$
           $$E[S]=17.5(17.5)=306.25,\qquad \text{Var}(S)=17.5(102.0833)+17.5(17.5^2)=7{,}145.8333.$$
-          <p>Identical to Approach A — the split is valid because frequency is Poisson.</p>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S]=306.25$, $\text{Var}(S)=7{,}145.83$. Both routes agree. The Poisson-split route is faster but works <strong>only for Poisson</strong> frequency.</div>
+          <p>Identical to Approach A — and because the frequency is Poisson, the thinned count $N'$ is again Poisson.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$E[S]=306.25$, $\text{Var}(S)=7{,}145.83$. Both routes agree. The split route is faster and works for any $(a,b,0)$ frequency — thin the parameter ($\lambda\to v\lambda$, $q\to vq$, $\beta\to v\beta$), never $m$ or $r$.</div>
           <div class="callout note" data-icon="🧾">
             <div class="callout-title">Policy-limit variant — use $E[X\wedge u]$ from the tables (no integration)</div>
             <p>Swap the deductible for a <strong>policy limit</strong> $u=10$ and let $N\sim$ (mean $300$ claims) with severity $X\sim\text{Pareto}(\alpha=3,\theta=20)$. The payment per claim is the <em>limited loss</em> $X\wedge 10$, whose mean comes straight off the exam table, $E[X\wedge u]=\dfrac{\theta}{\alpha-1}\!\left[1-\left(\dfrac{\theta}{u+\theta}\right)^{\alpha-1}\right]$:</p>
@@ -625,7 +625,7 @@
           <li><strong>Stop-loss sign and which tail.</strong> $E[(S-d)_+]=E[S]-E[S\wedge d]$ integrates the <strong>survival</strong> function $1 - F_S$ above $d$. Don't accidentally use $F_S$ or include the mass at/below $d$.</li>
           <li><strong>Continuity correction.</strong> Apply it <strong>only when the aggregate is discrete</strong> (both frequency and severity discrete). Decide the half-step direction by whether the point $s$ should be <em>included</em>: $\Pr(S\le s)\Rightarrow s+0.5$, $\Pr(S>s)\Rightarrow s+0.5$, $\Pr(S\ge s)\Rightarrow s-0.5$. With spread-out support use midpoints between possible values, not $\pm 0.5$.</li>
           <li><strong>Aggregate payments inconsistency.</strong> Don't mix "number of losses" with "payment per payment." Pair $N$ with $Y^L$, or $N'$ with $Y^P$ — never crossed.</li>
-          <li><strong>Splitting only for Poisson.</strong> Scaling the frequency mean by $\Pr(\text{above deductible})$ to get $N'$ works for Poisson only; for binomial/negative binomial use the number-of-losses approach.</li>
+          <li><strong>Thinning the frequency: change the right parameter.</strong> With $v=\Pr(\text{above deductible})$, the payment count $N'$ stays in the same family: Poisson$(\lambda)\to\text{Poisson}(v\lambda)$, Binomial$(m,q)\to\text{Binomial}(m,vq)$ ($m$ unchanged), Negative Binomial$(r,\beta)\to\text{NB}(r,v\beta)$ ($r$ unchanged). Only for Poisson does "scale the mean" describe the whole change; scaling $m$ or $r$ instead is the classic error. (Independence of the split counts, and additivity, remain Poisson-only.)</li>
           <li><strong>Lognormal parameterization.</strong> $\sigma_L^2 = \ln(E[S^2]/E[S]^2)$ and $\mu_L = \ln E[S] - \tfrac12\sigma_L^2$. Mixing up $\mu_L$ vs $\sigma_L$, or using $\text{Var}(S)$ where $E[S^2]$ is needed, is a classic error.</li>
           <li><strong>Additivity only for compound Poisson.</strong> You can merge independent compound Poissons into one compound Poisson. This does <strong>not</strong> hold for compound negative binomial or compound binomial.</li>
           <li><strong>VaR is not variance.</strong> $\text{VaR}_p(X)=F_X^{-1}(p)$ is a percentile; $\text{Var}(X)=E[X^2]-E[X]^2$ is a spread. Different objects entirely.</li>
@@ -654,7 +654,7 @@
         <div class="qa-answer">$\lambda = \lambda_1 + \lambda_2 = 10$. The combined severity is the mixture $F_X(x) = \frac{4}{10}F_1(x) + \frac{6}{10}F_2(x)$ (weights proportional to the $\lambda_j$).</div>
       </details>
       <details class="qa"><summary>Claims $N\sim\text{Poisson}(20)$; each loss exceeds a deductible with probability $0.6$. What is the distribution of the number of payments $N'$?</summary>
-        <div class="qa-answer">By Poisson splitting, $N'\sim\text{Poisson}(20\times 0.6)=\text{Poisson}(12)$. (This shortcut is Poisson-only.)</div>
+        <div class="qa-answer">By Poisson splitting, $N'\sim\text{Poisson}(20\times 0.6)=\text{Poisson}(12)$. (For binomial or negative binomial frequency, thin the parameter instead: $q\to vq$ or $\beta\to v\beta$.)</div>
       </details>
       <details class="qa"><summary>Given an integer-valued $S$ with $E[S] = 5$ and $E[(S-3)_+] = 2.4$, find $E[S \wedge 3]$.</summary>
         <div class="qa-answer">$E[S \wedge 3] = E[S] - E[(S-3)_+] = 5 - 2.4 = 2.6$.</div>

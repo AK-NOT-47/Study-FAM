@@ -52,7 +52,7 @@
 
       <h3>1. What is a frequency model?</h3>
       <p>A <strong>frequency model</strong> describes the <em>number of claims</em> $N$ (a non-negative integer random variable) over a fixed period. It is the "how many" half of the risk; the "how much" half is the <strong>severity</strong> $X$. Together they build the <strong>aggregate loss</strong> $S = X_1 + \dots + X_N$ (a compound distribution). Mastering frequency is the foundation for aggregate-loss modeling.</p>
-      <p>We always denote $p_k = \Pr(N = k)$ for $k = 0, 1, 2, \dots$ (the exam table uses $p_n$).</p>
+      <p>We always denote $p_k = \Pr(N = k)$ for $k = 0, 1, 2, \dots$ — the same $p_k$ notation the exam tables use.</p>
 
       <h3>2. The four core distributions — intuition</h3>
       <ul>
@@ -64,7 +64,7 @@
 
       <div class="callout note" data-icon="🧾">
         <div class="callout-title">Coach's Remark — Poisson process vs. Poisson distribution</div>
-        <p>You may see the term <strong>Poisson process</strong>. For this exam it can be used interchangeably with "Poisson distribution." The process is the broader idea of counting occurrences over time; the distribution is the count itself.</p>
+        <p>You may see the term <strong>Poisson process</strong>. It is the broader idea of occurrences arriving over time: in a Poisson process with rate $\lambda$ per unit time, the number of claims in a period of length $t$ is $\text{Poisson}(\lambda t)$. So a "process" statement converts to a Poisson <em>distribution</em> once you multiply the rate by the length of the observation period — the rate equals the mean only when $t = 1$.</p>
       </div>
 
       <h3>3. Closure (sum) properties</h3>
@@ -109,7 +109,7 @@
           <tr><td>$a &gt; 0,\ b = 0$</td><td>Geometric</td><td>$\dfrac{\beta}{1+\beta}$</td><td>$0$</td></tr>
         </tbody>
       </table></div>
-      <p>(In all four members $b > 0$ except the geometric, where $b = 0$.) This recursion is also the computational engine for compound (aggregate) distributions via the <strong>Panjer recursion</strong>.</p>
+      <p>(Poisson and binomial always have $b &gt; 0$, and the geometric has $b = 0$; but a negative binomial has $b &gt; 0$ only when $r &gt; 1$ — for $0 &lt; r &lt; 1$, $b = (r-1)\frac{\beta}{1+\beta} &lt; 0$. So $a &gt; 0$ with $b &lt; 0$ is still a negative binomial.) This recursion is also the computational engine for compound (aggregate) distributions via the <strong>Panjer recursion</strong>.</p>
 
       <h3>5. The Poisson–Gamma mixture (how a negative binomial is born)</h3>
       <p>A negative binomial arises when each insured is Poisson but the Poisson <em>mean itself varies</em> across the population according to a gamma distribution — the classic model of <strong>heterogeneous risks</strong>:</p>
@@ -146,10 +146,10 @@
       <h3>7. The (a, b, 1) class — truncation and modification</h3>
       <p>Sometimes the probability of zero claims doesn't match an (a,b,0) model (e.g., a "claim/no-claim" gate, or data where zero is over- or under-represented). The <strong>(a, b, 1) class</strong> keeps the <em>same</em> recursion <strong>but only for $k \ge 2$</strong>:</p>
       <div class="formula">$$\frac{p_k}{p_{k-1}} = a + \frac{b}{k}, \qquad k = 2, 3, 4, \dots$$</div>
-      <p>This frees up $p_0$ (and hence $p_1$) to be set arbitrarily. The core difference between (a,b,0) and (a,b,1) is entirely in $p_0$; the parameters $a$, $b$ (and hence the underlying $\lambda$, $q$, or $r,\beta$) are the <strong>same</strong> as the base distribution. Two important special cases:</p>
+      <p>This frees up $p_0$ to be set arbitrarily; $p_1$ then adjusts through the normalization (the rescale factor below) so the probabilities still sum to 1. The core difference between (a,b,0) and (a,b,1) is entirely in $p_0$; the parameters $a$, $b$ (and hence the underlying $\lambda$, $q$, or $r,\beta$) are the <strong>same</strong> as the base distribution. Two important special cases:</p>
       <ul>
         <li><strong>Zero-truncated (ZT):</strong> $p_0^T = 0$. We <em>condition on at least one claim</em>.</li>
-        <li><strong>Zero-modified (ZM):</strong> $p_0^M$ is an arbitrary chosen value in $(0,1)$; the rest is rescaled.</li>
+        <li><strong>Zero-modified (ZM):</strong> $p_0^M$ is an arbitrarily chosen value in $[0,1)$; the rest is rescaled.</li>
       </ul>
       <p>If $p_k$ is the original (a,b,0) probability, the modified probabilities are:</p>
       <div class="formula">$$p_k^M = \frac{1 - p_0^M}{1 - p_0}\, p_k, \qquad k = 1, 2, 3, \dots$$</div>
@@ -362,7 +362,7 @@
           <li><strong>Scaling the wrong parameter.</strong> Exposure scales the "size" parameter ($\lambda$, $r$, or $m$); thinning/coverage scales the "intensity" parameter ($\lambda$, $q$, or $\beta$). For Poisson both are $\lambda$ — don't generalize that shortcut to NB/binomial.</li>
           <li><strong>Compound-variance formula order.</strong> It is $\mathrm{E}[K]\text{Var}(M) + \text{Var}(K)(\mathrm{E}[M])^2$ — the <em>primary</em> variance multiplies the <em>squared secondary mean</em>. Swapping $K$ and $M$ is wrong.</li>
           <li><strong>PGF vs MGF.</strong> $\mathrm{E}[N] = P'(1)$ (not $P'(0)$), and $P''(1) = \mathrm{E}[N(N-1)]$ is a <em>factorial</em> moment — add $P'(1)$ back for the variance.</li>
-          <li><strong>Thinning stays in family only for plain (a,b,0) members.</strong> A zero-modified or compound distribution may not.</li>
+          <li><strong>Thinning a zero-modified distribution changes $p_0^M$ too.</strong> ZM families stay ZM under thinning, but both the base parameter ($\lambda$, $q$, or $\beta$) and $p_0^M$ change — the simple one-parameter scaling rule applies only to plain (a,b,0) members.</li>
         </ul>
       </div>
 
@@ -370,7 +370,7 @@
       <p class="text-mute">Try each before revealing the answer.</p>
 
       <details class="qa"><summary>List the members of the (a, b, 0) class and the signs of $a$ and $b$ for each.</summary>
-        <div class="qa-answer"><strong>Poisson, binomial (incl. Bernoulli, $m{=}1$), negative binomial, geometric ($r{=}1$ NB).</strong> Signs: Poisson $a=0,\,b&gt;0$; binomial $a&lt;0,\,b&gt;0$; negative binomial $a&gt;0,\,b&gt;0$; geometric $a&gt;0,\,b=0$.</div>
+        <div class="qa-answer"><strong>Poisson, binomial (incl. Bernoulli, $m{=}1$), negative binomial, geometric ($r{=}1$ NB).</strong> Signs: Poisson $a=0,\,b&gt;0$; binomial $a&lt;0,\,b&gt;0$; negative binomial $a&gt;0$ with $b&gt;0$ if $r&gt;1$ and $b&lt;0$ if $r&lt;1$ (only $a+b&gt;0$ is required); geometric $a&gt;0,\,b=0$.</div>
       </details>
       <details class="qa"><summary>What is the distribution of a sum of independent negative binomials, and what condition is required?</summary>
         <div class="qa-answer">If $N_i \sim \text{NB}(r_i, \beta)$ are independent and <strong>share the same $\beta$</strong>, then $\sum_i N_i \sim \text{NB}\!\left(\sum_i r_i,\ \beta\right)$. (Likewise a sum of $r$ i.i.d. geometrics is $\text{NB}(r, \beta)$.)</div>

@@ -18,7 +18,7 @@
       <h1>Pricing / Ratemaking for Short-Term Insurance</h1>
       <p class="lede">Ratemaking is prospective: take historical losses and premium, then aggregate, develop, trend, and on-level them forward so today's rate is adequate but not excessive. Master the data-prep pipeline and the two rate-change formulas drop out of one equation.</p>
       <div class="meta-row">
-        <span class="chip">📖 Werner &amp; Modlin · Friedland · Klugman</span>
+        <span class="chip">📖 Brown &amp; Lennox · Klugman</span>
         <span class="chip">⏱️ ~4–5 hrs</span>
         <span class="chip">🔑 CY/AY/PY · develop · trend · on-level · parallelogram · extension of exposures · PLR · pure premium · loss ratio</span>
       </div>
@@ -27,7 +27,7 @@
     <div class="article-body">
 
       <div class="callout note" data-icon="📌">
-        <p><strong>Reference framework:</strong> Werner &amp; Modlin / Friedland, <em>Fundamentals of General Insurance Ratemaking</em> and <em>Estimating Unpaid Claims Using Basic Techniques</em> (the SOA FAM short-term ratemaking syllabus). Severity/frequency notation follows Klugman/Panjer/Willmot, <em>Loss Models: From Data to Decisions</em>. Worked numbers below follow the Coaching-Actuaries-style data-prep and ratemaking sections (S5.2–S5.3).</p>
+        <p><strong>Reference framework:</strong> Brown &amp; Lennox, <em>Introduction to Ratemaking and Loss Reserving for Property and Casualty Insurance</em>, 5th ed. (the SOA FAM short-term ratemaking syllabus reading). Severity/frequency notation follows Klugman/Panjer/Willmot, <em>Loss Models: From Data to Decisions</em>. Worked numbers below follow the Coaching-Actuaries-style data-prep and ratemaking sections (S5.2–S5.3).</p>
       </div>
 
       <div class="callout objective" data-icon="🎯">
@@ -305,7 +305,7 @@
         <div class="ex-body">
           <p>New rates effective <strong>Mar 1, 2018</strong>, annual policies effective one year, written uniformly. AY2014 ultimate losses $=1{,}393$ (thousands); selected annual <strong>effective</strong> trend $5\%$.</p>
           <p>Midpoint AY2014 = Jul 1, 2014. Forecast window = Mar 1, 2018 → Feb 28, 2020, midpoint Mar 1, 2019. Trend period $n=4\tfrac{8}{12}=4.6667$ yrs (Jul 1, 2014 → Mar 1, 2019).</p>
-          $$\widehat L = 1{,}393\times(1.05)^{4.6667}=1{,}393\times1.2581 = 1{,}752.6 \text{ (thousands).}$$
+          $$\widehat L = 1{,}393\times(1.05)^{4.6667}=1{,}393\times1.2557 = 1{,}749.2 \text{ (thousands).}$$
           <p><strong>AY vs PY trend window contrast</strong> (rates effective Oct 1, 2018, annual policies, 1-yr effective, forecast midpoint Oct 1, 2019):</p>
           <div class="table-scroll"><table>
             <thead><tr><th>Data</th><th>Trend from (exp. midpoint)</th><th>Trend to</th><th>Period</th></tr></thead>
@@ -331,7 +331,7 @@
               <tr><td>2017</td><td>50%</td><td>1.9167</td><td>3,844.66</td></tr>
             </tbody>
           </table></div>
-          $$\widehat L = 0.20(4{,}032.53)+0.30(3{,}862.02)+0.50(3{,}844.66)\approx 3{,}886 \text{ (thousands).}$$
+          $$\widehat L = 0.20(4{,}032.53)+0.30(3{,}862.02)+0.50(3{,}844.66)\approx 3{,}887 \text{ (thousands).}$$
           <p><strong>(2) Written only on Jun 1, 2018</strong> → forecast window is just the 1-yr term, midpoint <strong>Dec 1, 2018</strong>, so every trend period shrinks by 6 months (3.4167 / 2.4167 / 1.4167):</p>
           <div class="table-scroll"><table>
             <thead><tr><th>AY</th><th>Weight</th><th>Period</th><th>Trended</th></tr></thead>
@@ -342,7 +342,7 @@
             </tbody>
           </table></div>
           $$\widehat L = 0.20(3{,}913.35)+0.30(3{,}747.88)+0.50(3{,}731.03)= 3{,}773 \text{ (thousands).}$$
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) ≈ 3,886k; (2) 3,773k. The "written-only-on-effective-date" assumption pulls the forecast midpoint earlier and lowers trended losses.</div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(1) ≈ 3,887k; (2) 3,773k. The "written-only-on-effective-date" assumption pulls the forecast midpoint earlier and lowers trended losses.</div>
         </div>
       </details>
 
@@ -497,7 +497,7 @@
         <div class="qa-answer">Forecast midpoint = 10/1/2019. AY2015 midpoint = 7/1/2015 → period 4.25 yrs. PY2015 window = 1/1/2015–12/31/2016, midpoint 1/1/2016 → period 3.75 yrs.</div>
       </details>
       <details class="qa"><summary>AY2014 ultimate losses 1,393 (thousands); annual effective trend 5%; trend period 4.6667 years. Trend the losses.</summary>
-        <div class="qa-answer">$1{,}393\times(1.05)^{4.6667}=1{,}393\times1.2581\approx 1{,}752.6$ (thousands).</div>
+        <div class="qa-answer">$1{,}393\times(1.05)^{4.6667}=1{,}393\times1.2557\approx 1{,}749.2$ (thousands).</div>
       </details>
       <details class="qa"><summary>Define the variable and fixed expense ratios, and state the PLR. Where do fixed expenses go in the rate formula?</summary>
         <div class="qa-answer">$V=E_V/P$, $F=E_F/P$. $\text{PLR}=1-V-Q_T$. Fixed expenses are handled <strong>separately in the numerator</strong> (as $E_F$ or $F$), <em>not</em> inside the PLR denominator.</div>

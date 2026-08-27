@@ -338,7 +338,7 @@
             <li>$\hat L^{ult}_{AY4} = 410(1.670)(1.200)(1.209) = 993$</li>
           </ul>
           <p><strong>Step 3 — Reserves:</strong> $858-710=148$, $899-620=279$, $993-410=583$.</p>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total reserve $= 148+279+583 = $ <strong>1,011</strong>.</div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total reserve $= 148.4+279.5+583.4 = $ <strong>1,011</strong> (the rounded per-year values 148, 279, 583 sum to 1,010).</div>
         </div>
       </details>
 
@@ -369,7 +369,7 @@
       </details>
 
       <details class="example">
-        <summary><span class="tag">Example 4</span> Age-to-ultimate factors given directly <span class="ex-chev">▾</span></summary>
+        <summary><span class="tag">Example 4b</span> Age-to-ultimate factors given directly <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
           <p>For AY4 claims, losses paid-to-date as of 12/31/AY7 is \$100,000. You're given age-to-ultimate factors: age 0 = 2.189, age 1 = 1.600, age 2 = 1.243, <strong>age 3 = 1.108</strong>, age 4 = 1.044, age 5 = 1.016. Find the chain-ladder unpaid-loss estimate for AY4.</p>
           <p>AY4 claims are <strong>age 3</strong> at the end of AY7 (AY7 − AY4 = 3). Apply the age-3 factor:</p>
@@ -396,7 +396,7 @@
           $$f_{6\to12} = \frac{3{,}782+3{,}869+3{,}876}{2{,}893+2{,}937+3{,}068} = \frac{11{,}527}{8{,}898} = 1.295$$
           $$f_{12\to18} = \frac{4{,}144+4{,}255}{3{,}782+3{,}869} = \frac{8{,}399}{7{,}651} = 1.098$$
           $$f_{18\to24} = \frac{4{,}227}{4{,}144} = 1.020$$
-          <p><strong>Step 2 — Develop each half-year's incurred diagonal to ultimate.</strong> The age at 12/31/2015 is the number of months since the midpoint of each accident half-year:</p>
+          <p><strong>Step 2 — Develop each half-year's incurred diagonal to ultimate.</strong> The age at 12/31/2015 is the number of months since the beginning of each accident half-year:</p>
           <ul>
             <li>2014-1 (age 24 mo, fully developed): $U = 4{,}227$</li>
             <li>2014-2 (age 18 mo): $U = 4{,}255(1.020) = 4{,}340$</li>
@@ -444,7 +444,7 @@
             <li>AY6: $4{,}015(1 - 1/1.375) = 1{,}095$</li>
             <li>AY7: $4{,}543(1 - 1/2.451) = 2{,}690$</li>
           </ul>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total BF reserve $= 139 + 1{,}095 + 2{,}690 = $ <strong>3,923</strong>.</div>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Total BF reserve $= 138.6 + 1{,}095.1 + 2{,}689.6 = $ <strong>3,923</strong> (the rounded per-year values 139, 1,095, 2,690 sum to 3,924).</div>
         </div>
       </details>
 
@@ -526,8 +526,8 @@
           <p><strong>Step 2 — Sum of reported losses:</strong> $1{,}800 + 1{,}100 = 2{,}900$.</p>
           <p><strong>Step 3 — Fitted ELR:</strong> $\widehat{\text{ELR}} = 2{,}900 / 3{,}727.2 = 0.7780$.</p>
           <p><strong>Step 4 — Cape Cod ultimate for 2025:</strong></p>
-          $$1{,}100 + 2{,}400(0.7780)(1 - 1/1.650) = 1{,}100 + 735.4 = 1{,}835.4$$
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Cape Cod ELR ≈ <strong>0.778</strong>; 2025 ultimate ≈ <strong>&#36;1,835.4K</strong>, reserve ≈ <strong>&#36;735.4K</strong>.</div>
+          $$1{,}100 + 2{,}400(0.7780)(1 - 1/1.650) = 1{,}100 + 735.6 = 1{,}835.6$$
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Cape Cod ELR ≈ <strong>0.778</strong>; 2025 ultimate ≈ <strong>&#36;1,835.6K</strong>, reserve ≈ <strong>&#36;735.6K</strong>.</div>
         </div>
       </details>
 
@@ -536,7 +536,7 @@
         <div class="callout-title">The traps that cost real points</div>
         <ul>
           <li><strong>Cumulative vs. incremental confusion.</strong> Chain-ladder factors require <strong>cumulative</strong> triangles. If the problem gives incremental payments, accumulate the rows first. This is the #1 error.</li>
-          <li><strong>Match the AY to its age, not its row position.</strong> An accident year's age at valuation is (valuation year − accident year). Apply the age-to-ultimate factor for <em>that</em> age (see Example 4).</li>
+          <li><strong>Match the AY to its age, not its row position.</strong> An accident year's age at valuation is (valuation year − accident year). Apply the age-to-ultimate factor for <em>that</em> age (see Example 4b).</li>
           <li><strong>Wrong entries in the volume-weighted average.</strong> Numerator and denominator must have the <strong>same number of entries</strong> — only include AYs that have both adjacent columns. Including a year missing the next column understates the denominator.</li>
           <li><strong>Forgetting the tail factor.</strong> A given tail factor multiplies into <strong>every</strong> CDF, even the oldest "fully developed" year — so a mature year can still carry a reserve.</li>
           <li><strong>$P^E\times\text{ELR}$ is NOT the BF ultimate.</strong> It's only the <em>expected</em> ultimate used inside the unreported term. The BF ultimate is $\hat L^{ult}_{BF} = L^P + R_{BF}$, and the first piece of any BF figure is <strong>actual reported losses</strong>, not the chain-ladder ultimate.</li>

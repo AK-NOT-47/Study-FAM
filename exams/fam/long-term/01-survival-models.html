@@ -21,7 +21,7 @@
         <span class="chip">📖 AMLCR · Ch. 1–3</span>
         <span class="chip">⏱️ ~3–4 hrs</span>
         <span class="chip">🔑 $S_0$ · $\mu_x$ · $\,_tp_x$ · $K_x$ · $\overset{\circ}{e}_x$</span>
-        <span class="chip">🧮 4 mortality laws</span>
+        <span class="chip">🧮 5 mortality laws</span>
         <span class="chip">⭐ High-frequency</span>
       </div>
     </header>
@@ -322,7 +322,7 @@
         $$
         <span class="formula-label">De Moivre / uniform on $[0,\omega]$</span>
         $$
-        S_0(x) = 1 - \frac{x}{\omega}, \quad \mu_x = \frac{1}{\omega - x}, \quad {}_tp_x = \frac{\omega-x-t}{\omega-x}, \quad {}_tq_x = {}_{u|t}q_x\big|_{\text{any }u}= \frac{t}{\omega - x}
+        S_0(x) = 1 - \frac{x}{\omega}, \quad \mu_x = \frac{1}{\omega - x}, \quad {}_tp_x = \frac{\omega-x-t}{\omega-x}, \quad {}_tq_x = {}_{u|t}q_x\big|_{\text{any }u}= \frac{t}{\omega - x} \ \ (u+t \le \omega-x)
         $$
         $$
         T_x \sim \text{Uniform}(0,\ \omega - x), \quad \overset{\circ}{e}_x = \frac{\omega - x}{2}, \quad \mathrm{Var}(T_x) = \frac{(\omega-x)^2}{12}
@@ -491,14 +491,14 @@
           $$
           <p>Each piece is a constant-force temporary expectation $\frac{1}{\mu}(1-e^{-\mu n})$:</p>
           $$
-          \overset{\circ}{e}_{25:\overline{15}|} = \frac{1}{0.04}\big(1 - e^{-0.04(15)}\big) = 25\big(1 - e^{-0.6}\big) = 11.281,
+          \overset{\circ}{e}_{25:\overline{15}|} = \frac{1}{0.04}\big(1 - e^{-0.04(15)}\big) = 25\big(1 - e^{-0.6}\big) = 11.280,
           $$
           $$
           {}_{15}p_{25} = e^{-0.04(15)} = e^{-0.6} = 0.5488, \qquad
           \overset{\circ}{e}_{40:\overline{10}|} = \frac{1}{0.05}\big(1 - e^{-0.05(10)}\big) = 20\big(1 - e^{-0.5}\big) = 7.869.
           $$
           $$
-          \overset{\circ}{e}_{25:\overline{25}|} = 11.281 + 0.5488\times 7.869 \approx 15.6.
+          \overset{\circ}{e}_{25:\overline{25}|} = 11.280 + 0.5488\times 7.869 \approx 15.6.
           $$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\overset{\circ}{e}_{25:\overline{25}|} \approx 15.6$ years. The recursion is the clean way to handle a force that changes at a known age.</div>
         </div>
@@ -555,11 +555,11 @@
         <summary><span class="tag">Example 11</span> Uniform / De Moivre master problem <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
           <p>Assume future lifetime is <strong>uniform</strong> (De Moivre) with $\omega = 80$. Find the full bundle: ${}_3p_{30}$, ${}_5q_{30}$, ${}_{5|2}q_{30}$, $f_{30}(t)$, $\overset{\circ}{e}_{30}$, $\mathrm{Var}(T_{30})$, $\overset{\circ}{e}_{30:\overline{4}|}$, and $\mu_{30+t}$.</p>
-          <p><strong>Solution.</strong> Here $\omega - x = 80 - 30 = 50$, so $T_{30}\sim\text{Uniform}(0,50)$ — read every quantity off the uniform formulas. (Recall under De Moivre "one person dies per year", so ${}_tq_x = {}_{u|t}q_x = \tfrac{t}{\omega-x}$ for <em>any</em> deferral $u$.)</p>
+          <p><strong>Solution.</strong> Here $\omega - x = 80 - 30 = 50$, so $T_{30}\sim\text{Uniform}(0,50)$ — read every quantity off the uniform formulas. (Recall under De Moivre "one person dies per year", so ${}_tq_x = {}_{u|t}q_x = \tfrac{t}{\omega-x}$ for <em>any</em> deferral $u$ — provided the whole window fits below the limiting age, $u+t \le \omega-x$.)</p>
           <ul>
             <li>${}_3p_{30} = \dfrac{80-30-3}{80-30} = \dfrac{47}{50} = 0.94.$</li>
             <li>${}_5q_{30} = \dfrac{5}{80-30} = \dfrac{5}{50} = 0.10.$</li>
-            <li>${}_{5|2}q_{30} = \dfrac{2}{80-30} = \dfrac{2}{50} = 0.04.$ (The deferral doesn't matter — it is always $\tfrac{t}{\omega-x}$.)</li>
+            <li>${}_{5|2}q_{30} = \dfrac{2}{80-30} = \dfrac{2}{50} = 0.04.$ (The deferral doesn't matter — it is always $\tfrac{t}{\omega-x}$, as long as $u+t \le \omega-x$; here $5+2=7 \le 50$. Past the limiting age the window is truncated: e.g. ${}_{49|2}q_{30} = \tfrac{1}{50} = 0.02$, not $0.04$.)</li>
             <li>$f_{30}(t) = \dfrac{1}{\omega-x} = \dfrac{1}{50} = 0.02$ for $0\lt t\lt 50.$</li>
             <li>$\overset{\circ}{e}_{30} = \dfrac{\omega - x}{2} = \dfrac{50}{2} = 25.$</li>
             <li>$\mathrm{Var}(T_{30}) = \dfrac{(\omega-x)^2}{12} = \dfrac{50^2}{12} = 208.33.$</li>
