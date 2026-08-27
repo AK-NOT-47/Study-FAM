@@ -58,12 +58,12 @@ window.MSS_MANIFEST = {
         {
           id: "short-term", name: "Short-Term · FAM-S", icon: "📊", track: "FAM-S",
           pages: [
-            { id: "st-01", num: "S1",  title: "Insurance & Reinsurance Coverages", file: "exams/fam/short-term/01-coverages.html" },
+            { id: "st-01", num: "S1",  title: "Short-Term Insurance & Reinsurance Coverages", file: "exams/fam/short-term/01-coverages.html" },
             { id: "st-02", num: "S2",  title: "Severity Models",                   file: "exams/fam/short-term/02-severity.html" },
             { id: "st-03", num: "S3",  title: "Frequency Models",                  file: "exams/fam/short-term/03-frequency.html" },
             { id: "st-04", num: "S4",  title: "Aggregate Loss Models & Risk Measures", file: "exams/fam/short-term/04-aggregate.html" },
             { id: "st-05", num: "S5",  title: "Coverage Modifications",            file: "exams/fam/short-term/05-coverage-mods.html" },
-            { id: "st-06", num: "S6",  title: "Parametric & Non-Parametric Estimation", file: "exams/fam/short-term/06-estimation.html" },
+            { id: "st-06", num: "S6",  title: "Parametric Estimation",              file: "exams/fam/short-term/06-estimation.html" },
             { id: "st-07", num: "S7",  title: "Credibility",                       file: "exams/fam/short-term/07-credibility.html" },
             { id: "st-08", num: "S8",  title: "Ratemaking",                        file: "exams/fam/short-term/08-ratemaking.html" },
             { id: "st-09", num: "S9",  title: "Loss Reserving",                    file: "exams/fam/short-term/09-reserving.html" },
@@ -81,7 +81,8 @@ window.MSS_MANIFEST = {
           id: "practice", name: "Practice & Strategy", icon: "🎯",
           pages: [
             { id: "pr-strategy", title: "Practice & Exam-Day Strategy", file: "exams/fam/practice/strategy.html" },
-            { id: "pr-worked",   title: "Worked Examples (Mixed Set)",  file: "exams/fam/practice/worked-examples.html" }
+            { id: "pr-worked",   title: "Worked Examples (Mixed Set)",  file: "exams/fam/practice/worked-examples.html" },
+            { id: "pr-mock1",    title: "Mock Exam 1",                  file: "exams/fam/practice/mock-01.html" }
           ]
         },
         {

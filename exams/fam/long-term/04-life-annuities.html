@@ -202,12 +202,15 @@
         $$\operatorname{Var}(Y)=\frac{{}^{2}\bar A_x-(\bar A_x)^2}{\delta^2}\ \text{(cont.)},\qquad \operatorname{Var}(Y)=\frac{{}^{2}A_x-(A_x)^2}{d^2}\ \text{(due)},$$
         $$\operatorname{Var}(Y)=\frac{{}^{2}A_{x:\overline n|}-(A_{x:\overline n|})^2}{d^2}\ \text{(temporary, endowment ins.)}.$$
         The annuity-<strong>immediate</strong> has the <em>same</em> variance as the due ($Y_a=Y_{\ddot a}-1$ just shifts by a constant).
+        <span class="formula-label">Covariance of the insurance and annuity PVs (same life, same contract)</span>
+        $$\operatorname{Cov}(Z,Y)=\operatorname{Cov}\!\Bigl(Z,\tfrac{1-Z}{d}\Bigr)=-\frac{\operatorname{Var}(Z)}{d}=-\frac{{}^2A_x-(A_x)^2}{d}=-d\,\operatorname{Var}(Y),\qquad\text{continuous: }\operatorname{Cov}(\bar Z,Y)=-\frac{\operatorname{Var}(\bar Z)}{\delta}.$$
+        One line of algebra: $Y$ is a <em>decreasing</em> linear function of $Z$, so the covariance is just $-1/d$ times $\operatorname{Var}(Z)$ — and it is always <strong>negative</strong> (die early ⇒ big insurance PV, small annuity PV).
       </div>
       <div class="callout key" data-icon="🔑">
         <div class="callout-title">How to get ${}^2A$ from a doubled-interest annuity</div>
         <p>If a problem hands you $\,{}^2\bar a_x$ (or $\,{}^2\ddot a_x$), it is meaningless on its own — convert it to the second insurance moment, then use it:</p>
         $$\text{continuous: }{}^2\bar A_x=1-(2\delta)\,{}^2\bar a_x,\qquad\text{discrete: }{}^2A_x=1-(2d-d^2)\,{}^2\ddot a_x.$$
-        <p>Then $\operatorname{Var}(Y)=\dfrac{{}^2A-(A)^2}{(\text{factor})^2}$. <strong>Never</strong> compute $\operatorname{Var}(Y)$ as $\,{}^2\bar a_x-(\bar a_x)^2$ — that is the planted trap, because $E[Y^2]\neq{}^2\bar a_x$ (the density of $Y$ is ${}_tp_x\mu_{x+t}$, not ${}_tp_x$). For a true second moment from first principles use $E[Y^2]=\int_0^\infty(\bar a_{\overline t|})^2\,{}_tp_x\mu_{x+t}\,dt$.</p>
+        <p>Then $\operatorname{Var}(Y)=\dfrac{{}^2A-(A)^2}{(\text{factor})^2}$. <strong>Never</strong> compute $\operatorname{Var}(Y)$ as $\,{}^2\bar a_x-(\bar a_x)^2$ — that is the planted trap, because $E[Y^2]\neq{}^2\bar a_x$ (second moments must be weighted by the density of $T_x$, ${}_tp_x\mu_{x+t}$ — the weight ${}_tp_x$ appearing in ${}^2\bar a_x$ is not a density). For a true second moment from first principles use $E[Y^2]=\int_0^\infty(\bar a_{\overline t|})^2\,{}_tp_x\mu_{x+t}\,dt$.</p>
       </div>
 
       <h3>Varying annuities (use the "amount × discount × survival" recipe)</h3>
@@ -219,7 +222,7 @@
         <span class="formula-label">Increasing-annuity recursions (annual)</span>
         $$(I\ddot a)_x=\ddot a_x+v\,p_x\,(I\ddot a)_{x+1},\qquad (I\ddot a)_{x:\overline n|}=\ddot a_{x:\overline n|}+v\,p_x\,(I\ddot a)_{x+1:\overline{n-1}|}.$$
       </div>
-      <p class="text-mute">For varying annuities the SOA only tests the EPV; higher moments would need first principles and a computer, so don't memorize variance formulas for them.</p>
+      <p class="text-mute">For varying annuities there are no closed-form variance formulas — if a moment beyond the EPV is asked (as in Example 12), enumerate the outcomes of $Y$ and compute $E[Y]$, $E[Y^2]$ by first principles; don't try to memorize variance formulas for them.</p>
 
       <h3>$m$-thly annuities — basics, conversions, recursion</h3>
       <div class="formula">
@@ -287,9 +290,9 @@
         <summary><span class="tag">Example 2</span> Deferred annuity via pure endowment <span class="ex-chev">▾</span></summary>
         <div class="ex-body">
           <p>A life aged 65 will receive \$10,000/year in advance, starting at age 70 (a 5-year deferred whole life annuity-due). Given $i=0.06$, ${}_5p_{65}=0.92$, $\ddot a_{70}=11.20$. Find the EPV.</p>
-          $$ {}_{5|}\ddot{a}_{65} = v^5\,{}_5p_{65}\,\ddot{a}_{70}=0.747258 \times 0.92 \times 11.20 = 7.6990.$$
-          <p>EPV $= 10{,}000 \times 7.6990 = 76{,}990$.</p>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>EPV $\approx \$76{,}990$.</div>
+          $$ {}_{5|}\ddot{a}_{65} = v^5\,{}_5p_{65}\,\ddot{a}_{70}=0.747258 \times 0.92 \times 11.20 = 7.6997.$$
+          <p>EPV $= 10{,}000 \times 7.6997 = 76{,}997$.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>EPV $\approx \$76{,}997$.</div>
         </div>
       </details>
 
@@ -298,7 +301,7 @@
         <div class="ex-body">
           <p>Given $A_x = 0.30$, ${}^{2}A_x = 0.12$, $i = 0.05$. Find $\operatorname{Var}(Y)$ for a \$1/year annuity-due.</p>
           <p><strong>Solution.</strong> $d^2 = 0.047619^2 = 0.00226757$.</p>
-          $$\operatorname{Var}(Y) = \frac{{}^{2}A_x - (A_x)^2}{d^2} = \frac{0.12 - 0.09}{0.00226757} = 13.229.$$
+          $$\operatorname{Var}(Y) = \frac{{}^{2}A_x - (A_x)^2}{d^2} = \frac{0.12 - 0.09}{0.00226757} = 13.230.$$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\operatorname{Var}(Y) \approx 13.23$.</div>
         </div>
       </details>
@@ -388,8 +391,8 @@
         <div class="ex-body">
           <p>250 independent lives aged $x$, each paid 500 at the start of each year if living; $A_x=0.369131$, ${}^2A_x=0.177411$, $i=0.06$. Using the normal approximation, find the fund needed to be 90% certain of meeting the payments.</p>
           <p><strong>Solution.</strong> $d=0.06/1.06$. Per \$1, single life:</p>
-          $$E[Y]=\frac{1-0.369131}{d}=11.1454,\qquad \operatorname{Var}[Y]=\frac{0.177411-0.369131^2}{d^2}=12.8445.$$
-          <p>For $S=500\sum_{j=1}^{250}Y_j$: $E[S]=500(250)(11.1454)=1{,}393{,}169$, $\operatorname{Var}[S]=500^2(250)(12.8445)=802{,}781{,}083.$</p>
+          $$E[Y]=\frac{1-0.369131}{d}=11.1454,\qquad \operatorname{Var}[Y]=\frac{0.177411-0.369131^2}{d^2}=12.8444.$$
+          <p>For $S=500\sum_{j=1}^{250}Y_j$: $E[S]=500(250)(11.1454)=1{,}393{,}169$, $\operatorname{Var}[S]=500^2(250)(12.8444)=802{,}775{,}000.$</p>
           $$F=E[S]+1.28155\sqrt{\operatorname{Var}[S]}=1{,}393{,}169+1.28155(28{,}333)=1{,}429{,}480.$$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$F\approx \$1{,}429{,}480$. Pooling 250 lives makes the per-life buffer tiny — the law of large numbers at work.</div>
         </div>
@@ -487,7 +490,7 @@
       <div class="callout trap" data-icon="⚠️">
         <div class="callout-title">The traps that cost real points</div>
         <ul>
-          <li><strong>$\operatorname{Var}(Y)\neq {}^2\bar a_x-(\bar a_x)^2$.</strong> The single most-planted trap. $E[Y^2]\neq{}^2\bar a_x$ because the density of $Y$ is ${}_tp_x\mu_{x+t}$, not ${}_tp_x$. Convert ${}^2\bar a_x\to{}^2\bar A_x=1-2\delta\,{}^2\bar a_x$ first, then $\operatorname{Var}(Y)=\dfrac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2}$. (If your "variance" comes out negative — as $9-15^2$ would — you fell for it.)</li>
+          <li><strong>$\operatorname{Var}(Y)\neq {}^2\bar a_x-(\bar a_x)^2$.</strong> The single most-planted trap. $E[Y^2]\neq{}^2\bar a_x$ because a second moment must be weighted by the density of $T_x$, ${}_tp_x\mu_{x+t}$, not by ${}_tp_x$. Convert ${}^2\bar a_x\to{}^2\bar A_x=1-2\delta\,{}^2\bar a_x$ first, then $\operatorname{Var}(Y)=\dfrac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2}$. (If your "variance" comes out negative — as $9-15^2$ would — you fell for it.)</li>
           <li><strong>Matching the denominator to the frequency.</strong> Discrete annual uses $d$, continuous uses $\delta$, $m$-thly uses $d^{(m)}$. Mixing them is the classic error.</li>
           <li><strong>Doubling the force of interest is different for discrete vs. continuous.</strong> Continuous: $\delta\to2\delta$. Discrete: $d\to 2d-d^2$ (equivalently $i\to 2i+i^2$, $v\to v^2$). Using $2d$ instead of $2d-d^2$ is wrong.</li>
           <li><strong>${}^{2}A_x\neq (A_x)^2$.</strong> The "2" prefix means evaluate at double the force of interest, not algebraic squaring.</li>
@@ -516,7 +519,7 @@
         <div class="qa-answer">$d = 0.06/1.06 = 0.056604$; $\ddot{a}_x = 0.80/0.056604 = 14.133$.</div>
       </details>
       <details class="qa"><summary>Why can't $\operatorname{Var}(Y)$ for an annuity be computed as ${}^2\bar a_x-(\bar a_x)^2$? What should you do instead?</summary>
-        <div class="qa-answer">Because $E[Y^2]\neq{}^2\bar a_x$ — the integrand ${}_tp_x$ is not the density of $Y$ (the density is ${}_tp_x\mu_{x+t}$). Instead use $\operatorname{Var}(Y)=\dfrac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2}$, getting ${}^2\bar A_x$ from $1-2\delta\,{}^2\bar a_x$.</div>
+        <div class="qa-answer">Because $E[Y^2]\neq{}^2\bar a_x$ — the weight ${}_tp_x$ inside ${}^2\bar a_x$ is not a probability density; a second moment must be weighted by the density of $T_x$, which is ${}_tp_x\mu_{x+t}$. Instead use $\operatorname{Var}(Y)=\dfrac{{}^2\bar A_x-(\bar A_x)^2}{\delta^2}$, getting ${}^2\bar A_x$ from $1-2\delta\,{}^2\bar a_x$.</div>
       </details>
       <details class="qa"><summary>Explain in one sentence why ${}^{2}A_x \neq (A_x)^2$.</summary>
         <div class="qa-answer">${}^{2}A_x$ is the insurance EPV evaluated at <strong>double the force of interest</strong> ($v^2$), a genuinely different value, not the algebraic square of $A_x$.</div>

@@ -104,9 +104,9 @@
         <thead><tr><th>Loss $X$</th><th>Mean $E[X]$</th><th>Excess loss $X-d\mid X>d$</th><th>Mean excess $e(d)$</th></tr></thead>
         <tbody>
           <tr><td>Exponential$(\theta)$</td><td>$\theta$</td><td>Exponential$(\theta)$ (memoryless)</td><td>$\theta$</td></tr>
-          <tr><td>Uniform$(a,b)$</td><td>$\frac{a+b}{2}$</td><td>Uniform$(0,\,b-d)$</td><td>$\frac{b-d}{2}$</td></tr>
+          <tr><td>Uniform$(a,b)$</td><td>$\frac{a+b}{2}$</td><td>Uniform$(0,\,b-d)$ (for $a\le d\lt b$)</td><td>$\frac{b-d}{2}$</td></tr>
           <tr><td>Pareto$(\alpha,\theta)$</td><td>$\frac{\theta}{\alpha-1}$</td><td>Pareto$(\alpha,\,\theta+d)$</td><td>$\frac{\theta+d}{\alpha-1}$</td></tr>
-          <tr><td>S-P Pareto$(\alpha,\theta)$</td><td>$\frac{\alpha\theta}{\alpha-1}$</td><td>Pareto$(\alpha,\,d)$</td><td>$\frac{d}{\alpha-1}$</td></tr>
+          <tr><td>S-P Pareto$(\alpha,\theta)$</td><td>$\frac{\alpha\theta}{\alpha-1}$</td><td>Pareto$(\alpha,\,d)$ (for $d\ge\theta$)</td><td>$\frac{d}{\alpha-1}$</td></tr>
         </tbody>
       </table></div>
 
@@ -367,7 +367,7 @@
           $$ \frac{900-750}{100-150} = -3 = \frac{b-900}{0-100} \;\Rightarrow\; b - 900 = 300 \;\Rightarrow\; b = 1200. $$
           <p>Since $1000 < 1200$, the claim is still in the disappearing range.</p>
           <p><strong>Step 3 — interpolate $D$ at $X=1000$.</strong></p>
-          $$ \frac{D-100}{1000-900} = -3 \;\Rightarrow\; D - 100 = -33.333 \;\Rightarrow\; D = 66.667. $$
+          $$ \frac{D-100}{1000-900} = -\tfrac{1}{3} \;\Rightarrow\; D - 100 = -33.333 \;\Rightarrow\; D = 66.667. $$
           <p><strong>Step 4 — payment.</strong> $Y = 1000 - 66.667 = 933.33$.</p>
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Payment $= \mathbf{933.33}$.</div>
         </div>

@@ -32,7 +32,7 @@
         <div class="callout-title">Learning Objectives</div>
         <p>After mastering this topic, you should be able to:</p>
         <ul>
-          <li>Define the <strong>present value of net future loss at issue</strong> random variable $L_0$ (and the gross version $L_0^g$): write it in terms of present-value random variables, and compute its <strong>expectation</strong> and <strong>variance</strong>.</li>
+          <li>Define the <strong>present value of net future loss at issue</strong> random variable $L_0$ (and the gross version $L_0^g$): write it in terms of present-value random variables, and compute its <strong>expectation</strong> and <strong>variance</strong> — for <strong>whole life, term and endowment insurance</strong> and for <strong>term and whole life annuities</strong>.</li>
           <li>State and apply the <strong>equivalence principle</strong> to compute <strong>net (benefit) premiums</strong> for whole life, term, and endowment insurances — <strong>fully continuous</strong>, <strong>fully discrete</strong>, and <strong>semi-continuous</strong>.</li>
           <li>Express each net premium three equivalent ways: $\dfrac{A}{\ddot a}$ (core), in terms of $A$'s only, and in terms of $\ddot a$'s only.</li>
           <li>Compute net premiums funded by <strong>annual</strong>, <strong>m-thly</strong>, and <strong>continuous</strong> premium streams, and handle <strong>limited-pay</strong>, <strong>term</strong>, and <strong>deferred-annuity</strong> products plus the <strong>return-of-premium</strong> feature.</li>
@@ -153,11 +153,33 @@
         <p>The <strong>general</strong> form $\mathrm{Var}[L_0] = (b+\tfrac{P}{d})^2[{}^2A_x-(A_x)^2]$ works for <em>any</em> premium $P$ — equivalence or not. The <strong>shortcut</strong> $\mathrm{Var}[L_0] = b^2\dfrac{{}^2A_x-(A_x)^2}{(1-A_x)^2}$ is <em>only</em> valid when $P$ is the equivalence-principle premium. On the exam the general form is usually the safer default.</p>
       </div>
 
-      <h3>8. Percentile, portfolio, and profit premium principles</h3>
-      <p>The equivalence principle gives roughly a 50% chance of loss. Three more prudent rules — the last two named explicitly in the FAM outcomes:</p>
+      <h3>8. The loss random variable for annuity contracts</h3>
+      <p>The FAM outcomes name the future loss random variable for <strong>term and whole life annuities</strong> alongside the insurances. It is built the same way — PV(benefits) $-$ PV(premiums) — except the <em>annuity payments are now the benefit</em>. The annuity-trick still applies, because the PV of an annuity-due is itself affine in a single $Z$: $\;\ddot a_{\overline{K_x+1}|} = \dfrac{1 - v^{K_x+1}}{d}$.</p>
+      <p><strong>Single premium.</strong> A single premium $\pi$ at issue buys an annuity-due of $B$ per year. With $Y$ the PV of the annuity payments,</p>
+      <div class="formula">
+        <span class="formula-label">Annuity loss at issue — single premium $\pi$, benefit $B$ per year</span>
+        $$L_0 = B\,Y - \pi = -\frac{B}{d}\,Z + \Big(\frac{B}{d} - \pi\Big), \qquad
+        \begin{cases} \text{whole life: } & Y = \ddot a_{\overline{K_x+1}|},\;\; Z = v^{K_x+1} \\[2pt] n\text{-year temporary: } & Y = \ddot a_{\overline{\min(K_x+1,\,n)}|},\;\; Z = v^{\min(K_x+1,\,n)} \end{cases}$$
+        <span class="formula-label">Mean and variance (whole life; temporary: put the $x:\overline{n}|$ subscript on both $A$'s)</span>
+        $$E[L_0] = B\,\ddot a_x - \pi, \qquad \mathrm{Var}[L_0] = B^2\,\mathrm{Var}[Y] = B^2\,\frac{{}^2A_x - (A_x)^2}{d^2}.$$</div>
+      <p>Note what the single-premium case gives you for free: <strong>$\pi$ is a constant, so it shifts the mean but drops out of the variance entirely</strong> — $\mathrm{Var}[L_0] = \mathrm{Var}(B\,Y)$, whatever premium was charged. Equivalence just sets $\pi = B\,\ddot a_x$ (or $B\,\ddot a_{x:\overline n|}$). Continuous version: $Y = \bar a_{\overline{T_x}|}$, replace $d\to\delta$ and $A\to\bar A$.</p>
+      <p><strong>Premiums payable during a deferral period.</strong> For the $n$-year deferred annuity of §5 (level premium $P$ during the deferral, $B$ per year for life thereafter), write $Z_x = v^{K_x+1}$ and $Z_{x:\overline n|} = v^{\min(K_x+1,\,n)}$:</p>
+      <div class="formula">
+        <span class="formula-label">Deferred annuity funded by premiums — loss at issue</span>
+        $$L_0 = B\big(\ddot a_{\overline{K_x+1}|} - \ddot a_{\overline{\min(K_x+1,n)}|}\big) - P\,\ddot a_{\overline{\min(K_x+1,n)}|}
+        = \frac{1}{d}\Big[(B+P)\,Z_{x:\overline n|} - B\,Z_x - P\Big],$$
+        $$E[L_0] = B\,{}_{n|}\ddot a_x - P\,\ddot a_{x:\overline n|} \;\; (=0 \text{ at the equivalence premium}).$$</div>
+      <p>Here $L_0$ involves <strong>two different</strong> PV random variables, so the single-$Z$ variance shortcut is illegal — exactly as for term insurance. Get $\mathrm{Var}[L_0] = E[L_0^2] - (E[L_0])^2$ outcome by outcome.</p>
+      <div class="callout trap" data-icon="⚠️">
+        <div class="callout-title">Annuity losses run the <em>other</em> way</div>
+        <p>For an <strong>insurance</strong>, $L_0$ <em>decreases</em> in $T_x$ (a long life is good for the insurer). For a <strong>life annuity</strong>, $L_0$ <em>increases</em> in $T_x$ — the longer the annuitant lives, the more payments the insurer makes. So every percentile argument flips direction: a high percentile of an annuity $L_0$ matches a <strong>late</strong> boundary lifetime and the <em>death</em> probability ${}_hq_x$, not ${}_hp_x$.</p>
+      </div>
+
+      <h3>9. Percentile, portfolio, and profit premium principles</h3>
+      <p>For a large portfolio, the equivalence principle gives roughly a 50% chance of an aggregate loss (the expected loss is zero, so by the CLT the total loss is positive about half the time). Three more prudent rules — the last two named explicitly in the FAM outcomes:</p>
       <ul>
         <li><strong>Single-policy percentile premium:</strong> choose $P$ so that $\Pr(L_0 > 0) = \alpha$ for some small $\alpha$. Because $L_0$ is monotonic in $T_x$, find the relevant percentile of $T_x$ and set $L_0 = 0$ at that lifetime.</li>
-        <li><strong>Portfolio percentile premium principle:</strong> for $N$ <strong>independent, identical</strong> policies, choose $P$ so that the <strong>aggregate</strong> loss $S = \sum L_{0,i}$ satisfies $\Pr(S > 0) = \alpha$ (equivalently $\Pr(S<0)=1-\alpha$, the insurer's "probability of profit"). Apply the Central Limit Theorem: $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$, $S \approx \text{Normal}$, and solve $E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0$. As $N \to \infty$ the loading per policy shrinks toward the equivalence premium.</li>
+        <li><strong>Portfolio percentile premium principle:</strong> for $N$ <strong>independent, identical</strong> policies, choose $P$ so that the <strong>aggregate</strong> loss $S = \sum L_{0,i}$ satisfies $\Pr(S > 0) = \alpha$ (equivalently $\Pr(S<0)=1-\alpha$, the insurer's "probability of profit"). Apply the Central Limit Theorem: $E[S]=N\,E[L]$, $\mathrm{Var}[S]=N\,\mathrm{Var}[L]$, $S \approx \text{Normal}$, and solve $E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0$. As $N \to \infty$ the loading per policy shrinks to zero, so the premium tends toward the equivalence premium.</li>
         <li><strong>Given expected present value of profit:</strong> the insurer targets a specific expected profit rather than breakeven. Profit at issue (in PV terms) is just $-L_0$, so its expectation is $\Pi = -E[L_0] = \text{EPV(premiums)} - \text{EPV(benefits + expenses)}$. Pick the premium so $E[L_0]$ equals the negative of the target. The target is usually stated as a <strong>percentage of the EPV of premiums</strong> (a profit margin) or as a flat dollar amount; the equivalence principle is just this rule with target profit $\Pi = 0$.</li>
       </ul>
       <div class="callout key" data-icon="🔑">
@@ -171,7 +193,7 @@
         <p>$S$ is the <strong>loss</strong>. $S<0$ is a <strong>profit</strong> (good), so the insurer wants $\Pr[S<0]$ <em>large</em> — 90%, 95%, 99%. $S>0$ is a real loss (bad), so $\Pr[S>0]$ should be <em>small</em> — 1%, 5%, 10%. They are complements: $\Pr[S<0] = 1 - \Pr[S>0]$.</p>
       </div>
 
-      <h3>9. Modelling substandard (extra-risk) lives</h3>
+      <h3>10. Modelling substandard (extra-risk) lives</h3>
       <p>An applicant whose mortality is heavier than the standard table — a smoker, a hazardous occupation, an existing health condition — is <strong>substandard (rated)</strong>. The insurer charges more by feeding a <strong>worse mortality basis</strong> into the <em>same</em> equivalence-principle machinery: nothing about the premium formula changes, only the $A$'s and $\ddot a$'s (or $\mu$) you plug in. There are <strong>three standard ways</strong> to model the extra risk:</p>
       <div class="callout key" data-icon="🔑">
         <div class="callout-title">Three ways to model extra/substandard mortality</div>
@@ -182,6 +204,7 @@
         </ul>
         <p>Whichever you use, the recipe is unchanged: $\text{premium} = \dfrac{\text{EPV(benefit)}}{\text{EPV(annuity)}}$, with <strong>every</strong> EPV computed on the rated basis. A heavier basis raises $A$ and lowers $\ddot a$, so the rated premium is higher — as it should be.</p>
       </div>
+      <p><strong>Rating is not the same idea as a basis change.</strong> Rating prices a <em>different life</em> on a worse table; syllabus outcome 10(d) instead asks what happens to the premium and the policy value when the <em>assumptions themselves</em> (interest, mortality) are changed for the same policy — including the common case where only the valuation basis moves and the premium, already sold, stays put. The sign rules for all four plan types, and a worked recomputation of a premium and a ${}_{10}V$ on a second basis, are in <a href="06-policy-values.html">Policy Values → "Effect of a change in the assumptions"</a>.</p>
       <div class="callout tip" data-icon="✅">
         <div class="callout-title">Constant-force shortcut for method (b)</div>
         <p>If the <em>standard</em> force is constant at $\mu$, adding $c$ gives a constant rated force $\mu^{\,*}=\mu+c$. Then fully continuous whole life has $\bar A^{\,*}_x = \dfrac{\mu^{\,*}}{\mu^{\,*}+\delta}$ and $\bar a^{\,*}_x = \dfrac{1}{\mu^{\,*}+\delta}$, so the net premium rate is simply $\;P = b\,\dfrac{\bar A^{\,*}_x}{\bar a^{\,*}_x} = b\,\mu^{\,*}.$ Under a constant force the continuous whole-life net premium rate equals the benefit times the force of mortality (see Example 15).</p>
@@ -262,6 +285,11 @@
       <div class="formula">
         <span class="formula-label">Variance of $L_0$ (fully discrete $n$-year endowment)</span>
         $$\mathrm{Var}[L_0] = \Big(b+\frac{P}{d}\Big)^2\Big({}^2A_{x:\overline{n}|} - (A_{x:\overline{n}|})^2\Big).$$</div>
+      <p><strong>Annuity contracts</strong> (benefit $B$ per year, annuity-due). Single premium $\pi$ — whole life, then $n$-year temporary:</p>
+      <div class="formula">
+        <span class="formula-label">$L_0$, mean and variance for a single-premium life annuity</span>
+        $$L_0 = B\,\ddot a_{\overline{K_x+1}|} - \pi, \qquad E[L_0] = B\,\ddot a_x - \pi, \qquad \mathrm{Var}[L_0] = B^2\,\frac{{}^2A_x - (A_x)^2}{d^2};$$
+        $$\text{temporary: } L_0 = B\,\ddot a_{\overline{\min(K_x+1,n)}|} - \pi, \quad E[L_0] = B\,\ddot a_{x:\overline{n}|} - \pi, \quad \mathrm{Var}[L_0] = B^2\,\frac{{}^2A_{x:\overline{n}|} - (A_{x:\overline{n}|})^2}{d^2}.$$</div>
       <p>Under the <strong>equivalence-principle</strong> premium only, the clean shortcut is:</p>
       <div class="callout key" data-icon="🔑">
         <div class="callout-title">Equivalence-principle variance shortcut</div>
@@ -500,9 +528,24 @@
           <p>A fully discrete whole life of \$100,000 on $(45)$. SULT, $i=0.05$, so $A_{45}=0.15161$ and $\ddot a_{45}=17.8162$. Ignore expenses. The insurer wants the gross premium $G$ to produce an expected present value of profit equal to <strong>10% of the EPV of premiums</strong>. Find $G$.</p>
           <p><strong>Solution.</strong> Target $\Pi = 0.10\,G\,\ddot a_{45}$ (a margin $m=0.10$). The profit equation $\text{EPV(premiums)} = \text{EPV(benefits)} + \Pi$ becomes the margin form:</p>
           $$(1-m)\,G\,\ddot a_{45} = 100000\,A_{45} \;\Rightarrow\; 0.90\,G(17.8162) = 100000(0.15161).$$
-          $$G = \frac{15161}{0.90(17.8162)} = \frac{15161}{16.0346} = 945.50.$$
-          <p><strong>Check.</strong> The equivalence premium is $P = 15161/17.8162 = 850.95$; here $G = P/(1-m) = 850.95/0.90 = 945.50$, a 11.1% loading on the breakeven premium that delivers a 10% margin on premium EPV. Setting $m=0$ recovers the equivalence premium.</p>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G \approx \$945.50$. A "given EPV of profit" question is the equivalence equation with the target profit added to the benefit side — read carefully whether the target is a margin on premium, a margin on benefit, or a flat amount.</div>
+          $$G = \frac{15161}{0.90(17.8162)} = \frac{15161}{16.0346} = 945.52.$$
+          <p><strong>Check.</strong> The equivalence premium is $P = 15161/17.8162 = 850.97$; here $G = P/(1-m) = 850.97/0.90 = 945.52$, a 11.1% loading on the breakeven premium that delivers a 10% margin on premium EPV. Setting $m=0$ recovers the equivalence premium.</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$G \approx \$945.52$. A "given EPV of profit" question is the equivalence equation with the target profit added to the benefit side — read carefully whether the target is a margin on premium, a margin on benefit, or a flat amount.</div>
+        </div>
+      </details>
+
+      <details class="example">
+        <summary><span class="tag">Example 17</span> Loss random variable for a single-premium life annuity <span class="ex-chev">▾</span></summary>
+        <div class="ex-body">
+          <p>A single premium of \$150,000 buys a whole life annuity-due of \$10,000 per year on $(x)$. You are given $A_x = 0.30$, ${}^2A_x = 0.12$, $i = 0.05$. Find (a) the single premium the equivalence principle would have charged, (b) $E[L_0]$ at the \$150,000 premium actually charged, and (c) $\mathrm{SD}(L_0)$.</p>
+          <p><strong>Solution.</strong> $d = 0.05/1.05 = 0.047619$ and $\ddot a_x = (1 - A_x)/d = 0.70/0.047619 = 14.70$. The loss at issue is</p>
+          $$L_0 = 10000\,\ddot a_{\overline{K_x+1}|} - \pi = -\frac{10000}{d}\,v^{K_x+1} + \Big(\frac{10000}{d} - \pi\Big).$$
+          <p><strong>(a)</strong> Equivalence sets $E[L_0]=0$: $\;\pi = 10000\,\ddot a_x = 10000(14.70) = 147{,}000$.</p>
+          <p><strong>(b)</strong> At the charged premium $\pi = 150{,}000$: $\;E[L_0] = 10000(14.70) - 150000 = -3{,}000$ — an expected profit of \$3,000, so this premium was <em>not</em> set by the equivalence principle.</p>
+          <p><strong>(c)</strong> $\pi$ is a constant, so it never touches the variance:</p>
+          $$\mathrm{Var}[L_0] = 10000^2\,\frac{{}^2A_x - (A_x)^2}{d^2} = 10^{8}\cdot\frac{0.12 - 0.30^2}{(0.047619)^2} = 10^{8}\cdot\frac{0.03}{0.00226757} = 10^{8}(13.2300) = 1.3230\times 10^{9},$$
+          <p>so $\mathrm{SD}(L_0) = \sqrt{1.3230\times 10^{9}} = 36{,}373.07$. (Equivalently $\mathrm{SD}(Y) = 3.6373$ years of annuity PV, times the \$10,000 benefit.)</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) \$147,000; (b) $E[L_0] = -\$3{,}000$; (c) $\mathrm{SD}(L_0) \approx \$36{,}373$. Charging a different single premium moves the mean dollar-for-dollar and leaves the SD unchanged — the whole risk sits in $Y$.</div>
         </div>
       </details>
 
@@ -513,7 +556,7 @@
           <li><strong>Using an immediate annuity in the denominator.</strong> Discrete premiums are paid in <strong>advance</strong>, so the denominator is an annuity-<strong>due</strong> $\ddot a$, never $a$. For continuous premiums use $\bar a$. (The SULT only tabulates $\ddot a$ — another reason to stay due.)</li>
           <li><strong>Mismatching the premium period and benefit period.</strong> A limited-pay, term-funded, or deferred-annuity policy uses the annuity over the <em>actual</em> premium-paying years ($\ddot a_{x:\overline{h}|}$ or $\ddot a_{x:\overline{n}|}$), not $\ddot a_x$.</li>
           <li><strong>Percent-of-premium expenses must stop when premiums stop.</strong> By SOA default, percent-of-premium expenses (commissions) are payable <em>only while premiums are payable</em>. On an $h$-pay policy their EPV uses the $h$-year annuity $\ddot a_{x:\overline h|}$, never the full $\ddot a_x$ — even though the benefit (and any per-policy/per-1000 expense) may run for life. Forgetting to cut the commissions off at year $h$ overstates expenses and the premium.</li>
-          <li><strong>The variance shortcut requires a single $Z$.</strong> The clean forms ($\mathrm{Var}[L_0] = (b+P/d)^2[{}^2A - A^2]$ and its equivalence version) only hold for <strong>whole life and endowment</strong>, where the benefit PV is one random variable. For <strong>term</strong> (or any "other" product) the survival-to-$n$ outcome pays nothing, so $L_0$ is not affine in one $Z$ — build it outcome-by-outcome and use $\mathrm{Var}=E[L_0^2]-(E[L_0])^2$.</li>
+          <li><strong>The variance shortcut requires a single $Z$.</strong> The clean forms ($\mathrm{Var}[L_0] = (b+P/d)^2[{}^2A - A^2]$ and its equivalence version) only hold for <strong>whole life and endowment</strong>, where the benefit PV is one random variable. For <strong>term</strong> (or any "other" product) the survival-to-$n$ outcome pays nothing, so $L_0$ is not affine in one $Z$ — build it outcome-by-outcome and use $\mathrm{Var}=E[L_0^2]-(E[L_0])^2$. Same story for a <strong>deferred annuity funded by premiums</strong>, whose loss mixes $v^{K_x+1}$ with $v^{\min(K_x+1,n)}$ — but a <strong>single-premium</strong> annuity <em>is</em> affine in one $Z$, so there the shortcut is legal.</li>
           <li><strong>Equivalence-only shortcut used on a non-equivalence premium.</strong> $\mathrm{Var}=b^2\frac{{}^2A-A^2}{(1-A)^2}$ is valid <em>only</em> at the equivalence premium. With any other premium, fall back to the general $(b+P/d)^2[{}^2A-A^2]$.</li>
           <li><strong>Assuming "gross premium" means equivalence.</strong> "Net premium" implies equivalence; "gross premium" does <em>not</em>. Only use the equivalence equation for a gross premium if the question says so. If $E[L_0^g]\neq 0$, the equivalence principle was not used.</li>
           <li><strong>Using $d$ where $\delta$ belongs (or vice versa).</strong> Discrete: factor $1+P/d$. Continuous: $1+P/\delta$. The "double-force" ${}^2A$ uses $i^*=2i+i^2$ (discrete) or $\delta^*=2\delta$ (continuous) — never just double $A$.</li>
@@ -544,6 +587,9 @@
       </details>
       <details class="qa"><summary>For fully discrete whole life with annual net premium $P$, express $L_0$ as a linear function of $Z=v^{K_x+1}$ and state $\mathrm{Var}[L_0]$.</summary>
         <div class="qa-answer">$L_0 = \big(b+\tfrac{P}{d}\big)v^{K_x+1} - \tfrac{P}{d}$, so $\mathrm{Var}[L_0] = \big(b+\tfrac{P}{d}\big)^2\big({}^2A_x - (A_x)^2\big)$. (Continuous: replace $d$ by $\delta$, $A$ by $\bar A$, $K_x+1$ by $T_x$.)</div>
+      </details>
+      <details class="qa"><summary>A single premium $\pi$ buys a whole life annuity-due of $B$ per year on $(x)$. Write $L_0$, $E[L_0]$ and $\mathrm{Var}[L_0]$ — and say why $\pi$ is absent from the variance.</summary>
+        <div class="qa-answer">$L_0 = B\,\ddot a_{\overline{K_x+1}|} - \pi = -\tfrac{B}{d}v^{K_x+1} + \big(\tfrac{B}{d}-\pi\big)$; $E[L_0]=B\,\ddot a_x - \pi$; $\mathrm{Var}[L_0]=B^2\dfrac{{}^2A_x-(A_x)^2}{d^2}$. $\pi$ is a constant known at issue, and a constant has zero variance — it shifts the mean only. ($n$-year temporary: swap in $A_{x:\overline n|}$ and $\ddot a_{x:\overline n|}$. Equivalence sets $\pi = B\,\ddot a_x$.)</div>
       </details>
       <details class="qa"><summary>Which variance formula may you use with <em>any</em> premium, and which only with the equivalence premium?</summary>
         <div class="qa-answer">General — works for any $P$: $\mathrm{Var}[L_0]=(b+\tfrac{P}{d})^2[{}^2A-A^2]$. Equivalence-only: $\mathrm{Var}[L_0]=b^2\dfrac{{}^2A-A^2}{(1-A)^2}$ (it bakes in the equivalence $P$). On the exam the general form is the safer default.</div>

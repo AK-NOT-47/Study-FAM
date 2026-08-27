@@ -28,7 +28,7 @@
 
       <div class="callout objective" data-icon="🎯">
         <div class="callout-title">Learning Objectives</div>
-        <p>By the end of this topic, the SOA expects you to be able to:</p>
+        <p>By the end of this topic, the SOA expects you to be able to do everything in the <strong>first group</strong> below. The second group (Bühlmann / Bayesian) is <strong>not on the FAM syllabus</strong> — it sits on ASTAM and is kept here only as background:</p>
         <ul>
           <li><strong>Limited fluctuation (classical) credibility</strong>
             <ul>
@@ -38,7 +38,7 @@
               <li>Determine the <strong>partial credibility factor</strong> $Z$ using the <strong>square-root rule</strong> (in either exposures or claims) and form the credibility-weighted estimate $P_C = Z\bar{X} + (1-Z)M$.</li>
             </ul>
           </li>
-          <li><strong>Greatest-accuracy (Bühlmann / Bayesian) credibility</strong>
+          <li><strong>Greatest-accuracy (Bühlmann / Bayesian) credibility</strong> <span class="text-mute">— beyond FAM scope, background only</span>
             <ul>
               <li>Define and compute the <strong>hypothetical mean</strong> $\mu(\Theta)$ and <strong>process variance</strong> $v(\Theta)$.</li>
               <li>Compute the <strong>expected hypothetical mean</strong> $\mu = E[\mu(\Theta)]$, the <strong>expected process variance</strong> $v = \text{EPV} = E[v(\Theta)]$, and the <strong>variance of hypothetical means</strong> $a = \text{VHM} = \text{Var}[\mu(\Theta)]$.</li>
@@ -226,7 +226,7 @@
         $$\text{Var}(X) = E[v(\Theta)] + \text{Var}[\mu(\Theta)] = v + a.$$
         <span class="formula-label">Credibility factor and premium</span>
         $$k = \frac{v}{a} = \frac{\text{EPV}}{\text{VHM}}, \qquad Z = \frac{n}{n+k},$$
-        $$P_C = Z\bar{X} + (1-Z)\mu,$$
+        $$P_C = Z\bar{X} + (1-Z)\mu$$
       </div>
       <ul>
         <li>$n$ = number of observations (years/exposures) for the policyholder.</li>
@@ -490,7 +490,7 @@
         <div class="qa-answer">(a) $Z = \sqrt{60{,}000/80{,}000} = \mathbf{0.866}$. (b) $120{,}000 > 80{,}000$, so full credibility: $Z = \mathbf{1}$.</div>
       </details>
       <details class="qa"><summary>Frequency is Poisson; the aggregate standard uses 90% probability and 5% tolerance, with $\mathrm{CV}_X^2 = 1$. Find $n_c$.</summary>
-        <div class="qa-answer">$z_{0.95} = 1.64485$. $n_c = (1.64485/0.05)^2(1 + 1) = 1082.4 \times 2 = \mathbf{2{,}164.8}$ claims.</div>
+        <div class="qa-answer">$z_{0.95} = 1.64485$. $n_c = (1.64485/0.05)^2(1 + 1) = 1082.2 \times 2 = \mathbf{2{,}164.4}$ claims.</div>
       </details>
       <details class="qa"><summary>Given EPV $= 8$, VHM $= 2$, and $n = 5$ observations, find $k$ and the Bühlmann $Z$.</summary>
         <div class="qa-answer">$k = \text{EPV}/\text{VHM} = 8/2 = 4.$ $Z = 5/(5+4) = 5/9 \approx \mathbf{0.556}.$</div>

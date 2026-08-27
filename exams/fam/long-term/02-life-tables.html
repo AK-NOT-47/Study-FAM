@@ -114,7 +114,7 @@
       <p>Many exam problems hand you a few $p_x$ or $q_x$ values and ask for a probability. The clean technique: <strong>pick an arbitrary radix</strong> (say $l_x = 1{,}000$), then fill in survivors with $l_{x+1} = l_x\,p_x$. Once the $l$ column exists, every probability is just a ratio. Where a $q$ is given non-sequentially, back out the missing $l$ from $q_x = 1 - l_{x+1}/l_x$. This turns a tangle of $p$'s and $q$'s into a single tidy table (see Example 2).</p>
 
       <h3>4. Curtate Future Lifetime $K_x$</h3>
-      <p>Alongside the continuous $T_x$ we use the <strong>curtate future lifetime</strong> $K_x$ — the number of <em>complete</em> future years lived: $K_x = \lfloor T_x \rfloor$. If $(x)$ dies at age $21.4$ then $T_x = 1.4$ and $K_x = 1$. Its distribution:</p>
+      <p>Alongside the continuous $T_x$ we use the <strong>curtate future lifetime</strong> $K_x$ — the number of <em>complete</em> future years lived: $K_x = \lfloor T_x \rfloor$. If a life aged 20 dies at age $21.4$ then $T_{20} = 1.4$ and $K_{20} = 1$. Its distribution:</p>
       <div class="formula">
         $$ \Pr[K_x = k] = {}_kp_x\,q_{x+k} = {}_{k|}q_x, \qquad \Pr[K_x > k] = {}_{k+1}p_x, \qquad \Pr[K_x \le k] = {}_{k+1}q_x. $$
       </div>
@@ -125,7 +125,7 @@
       <p>The SULT is a <strong>specific, exam-supplied table</strong> built from Makeham's law with $A = 0.00022$, $B = 2.7\times10^{-6}$, $c = 1.124$, with a radix of $l_{20} = 100{,}000$ and starting age 20. On the exam you are <em>given</em> the SULT; you do not derive it. It tabulates, at integer ages (typically 20–100):</p>
       <ul>
         <li>$l_x$ and $q_x$ (sometimes $1000\,q_x$),</li>
-        <li>the complete and curtate expectations $\overset{\circ}{e}_x$, $e_x$,</li>
+        <li>pure endowment factors ${}_5E_x$, ${}_{10}E_x$, ${}_{20}E_x$ (note: life expectancies $\overset{\circ}{e}_x$, $e_x$ are <em>not</em> tabulated — compute them if needed),</li>
         <li>annuity and insurance EPVs: $A_x$, ${}^2A_x$, $\ddot a_x$, and various term/endowment values at the standard interest rate $i = 0.05$.</li>
       </ul>
       <p><strong>Why it matters:</strong> the SULT lets you answer many problems by <em>table lookup</em> rather than computation. Master reading $l_x$ for ${}_tp_x = l_{x+t}/l_x$, and reading $\ddot a_x$, $A_x$ directly for insurance/annuity problems. Always confirm the interest rate (SULT uses 5%). Only the $l_x$ and $q_x$ columns are <em>interest-free</em> — the financial columns assume $i=0.05$.</p>
@@ -367,10 +367,10 @@
           <p><strong>Solution — Constant Force.</strong> $\mu^* = -\ln(0.96) = 0.040822.$</p>
           <p>(a) ${}_{0.5}q_{70} = 1 - (0.96)^{0.5} = 1 - 0.979796 = 0.020204.$</p>
           <p>(b) $\mu_{70.5} = \mu^* = 0.040822$ (flat).</p>
-          <p>(c) Memoryless in length $u = 0.3$: ${}_{0.3}q_{70.5} = 1 - (0.96)^{0.3} = 1 - 0.987879 = 0.012121.$</p>
+          <p>(c) Memoryless in length $u = 0.3$: ${}_{0.3}q_{70.5} = 1 - (0.96)^{0.3} = 1 - 0.987828 = 0.012172.$</p>
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>
             <p><strong>(UDD):</strong> (a) $\boxed{0.02000}$ &nbsp;·&nbsp; (b) $\boxed{0.040816}$ &nbsp;·&nbsp; (c) $\boxed{0.012245}$.</p>
-            <p><strong>(CFM):</strong> (a) $\boxed{0.020204}$ &nbsp;·&nbsp; (b) $\boxed{0.040822}$ &nbsp;·&nbsp; (c) $\boxed{0.012121}$.</p>
+            <p><strong>(CFM):</strong> (a) $\boxed{0.020204}$ &nbsp;·&nbsp; (b) $\boxed{0.040822}$ &nbsp;·&nbsp; (c) $\boxed{0.012172}$.</p>
           </div>
           <p><em>Note how close the two methods are when $q$ is small — and how the UDD force exceeds $\mu^*$ at mid-year while CFM stays flat.</em></p>
         </div>
@@ -396,7 +396,7 @@
           <p>For a mortality table you are given $\mu_{80.5}=0.0202,\ \mu_{81.5}=0.0408,\ \mu_{82.5}=0.0619$, with deaths uniformly distributed between integral ages. Calculate the probability a person aged $80.5$ dies within two years, ${}_2q_{80.5}$.</p>
           <p><strong>Step 1 — recover $q_x$ from $\mu_{x+0.5} = \dfrac{q_x}{1-0.5q_x}$:</strong></p>
           <p>$q_{80}=0.02$, $q_{81}=0.04$, $q_{82}=0.06$.</p>
-          <p><strong>Step 2 — build $l$'s</strong> from radix $l_{80}=100$: $l_{81}=98$, $l_{82}=98(0.96)=94.0815$, $l_{83}=94.0815(0.94)=88.4327$.</p>
+          <p><strong>Step 2 — build $l$'s</strong> from radix $l_{80}=100$: $l_{81}=98$, $l_{82}=98\,p_{81}=94.0815$, $l_{83}=l_{82}\,p_{82}=88.4327$ (using the unrounded $p_{81}=0.960016$, $p_{82}=0.939958$; the rounded $q$'s $0.04, 0.06$ give the same final answer to 4 decimals).</p>
           <p><strong>Step 3 — interpolate the fractional $l$'s and take the ratio:</strong></p>
           $$ {}_2q_{80.5} = 1 - \frac{l_{82.5}}{l_{80.5}} = 1 - \frac{0.5\,l_{82}+0.5\,l_{83}}{0.5\,l_{80}+0.5\,l_{81}} = 1 - \frac{0.5(94.0815)+0.5(88.4327)}{0.5(100)+0.5(98)} = 0.0782. $$
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>$\boxed{{}_2q_{80.5} = 0.0782}$.</div>
@@ -455,10 +455,10 @@
           <p>$\displaystyle {}_5p_{20} = 1 - \tfrac{5}{80} = 0.9375$;&nbsp; ${}_5q_{20} = 1 - 0.9375 = 0.0625$;&nbsp; ${}_{5|3}q_{20} = {}_5p_{20} - {}_8p_{20} = 0.9375 - \big(1-\tfrac{8}{80}\big) = 0.9375 - 0.90 = 0.0375.$</p>
           <p><strong>Setup B — $S_0(x) = \left(\dfrac{50}{50+x}\right)^3$, $x \ge 0$.</strong> Re-base:</p>
           $$ {}_tp_{20} = \frac{S_0(20+t)}{S_0(20)} = \frac{\big(\frac{50}{70+t}\big)^3}{\big(\frac{50}{70}\big)^3} = \left(\frac{70}{70+t}\right)^3. $$
-          <p>$\displaystyle {}_5p_{20} = \left(\tfrac{70}{75}\right)^3 = 0.81317$;&nbsp; ${}_5q_{20} = 1 - 0.81317 = 0.18683$;&nbsp; ${}_{5|3}q_{20} = {}_5p_{20} - {}_8p_{20} = \left(\tfrac{70}{75}\right)^3 - \left(\tfrac{70}{78}\right)^3 = 0.81317 - 0.72281 = 0.09036.$</p>
+          <p>$\displaystyle {}_5p_{20} = \left(\tfrac{70}{75}\right)^3 = 0.81304$;&nbsp; ${}_5q_{20} = 1 - 0.81304 = 0.18696$;&nbsp; ${}_{5|3}q_{20} = {}_5p_{20} - {}_8p_{20} = \left(\tfrac{70}{75}\right)^3 - \left(\tfrac{70}{78}\right)^3 = 0.81304 - 0.72279 = 0.09025.$</p>
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>
             <p><strong>(A, uniform):</strong> $\boxed{0.9375}$ · $\boxed{0.0625}$ · $\boxed{0.0375}$.</p>
-            <p><strong>(B, $(50/(50{+}x))^3$):</strong> $\boxed{0.81317}$ · $\boxed{0.18683}$ · $\boxed{0.09036}$.</p>
+            <p><strong>(B, $(50/(50{+}x))^3$):</strong> $\boxed{0.81304}$ · $\boxed{0.18696}$ · $\boxed{0.09025}$.</p>
           </div>
           <p><em>The only step is re-basing with ${}_tp_x = S_0(x+t)/S_0(x)$; after that every quantity is arithmetic.</em></p>
         </div>
@@ -542,7 +542,7 @@
           <li><strong>Crossing the integer boundary.</strong> The shortcut formulas need the whole interval inside one year of age ($s+u\le1$). When $s+u>1$, <strong>split at the integer</strong> or — safer — express in $l$'s and interpolate. (Example 4.)</li>
           <li><strong>Wrong interpolation for the assumption.</strong> UDD uses <strong>linear</strong> interpolation of $l$; CFM uses <strong>exponential</strong> ($l_{x+t}=l_x^{1-t}l_{x+1}^t$). Mixing them up is a classic slip — and watch for problems that put UDD on some years and CFM on others.</li>
           <li><strong>CFM is memoryless in length, UDD is not.</strong> Under CFM ${}_uq_{x+s}$ depends only on $u$; under UDD it depends on both $s$ and $u$.</li>
-          <li><strong>"+½" rule is UDD-only.</strong> $\overset{\circ}{e}_x = e_x + \tfrac12$ holds <strong>exactly only under UDD</strong>. Under constant force it is an approximation (within-year mean lived is $q_x/\mu^*$, not exactly ½).</li>
+          <li><strong>"+½" rule is UDD-only.</strong> $\overset{\circ}{e}_x = e_x + \tfrac12$ holds <strong>exactly only under UDD</strong>. Under constant force it is only an approximation: the average fraction of the year of death that is lived is no longer exactly ½ (under UDD the fraction lived in the death year is uniform on $[0,1)$, mean ½ — that is what makes the rule exact).</li>
           <li><strong>Select tables: read across, then down.</strong> Advance along the row for the whole select period, then switch to the ultimate column at attained age $x+n$. Don't jump straight to ultimate at duration 0. And $q_{[x]+t} \le q_{x+t}$ — selection <em>lowers</em> mortality.</li>
           <li><strong>Mixing select age and attained age.</strong> $[60]+2$ and $[62]$ are both attained age 62 but have <strong>different</strong> mortality. Track the bracket — and remember $[x]$ never becomes $[x+1]$; to change selection age you must route through the ultimate column.</li>
           <li><strong>Diagonal vs across.</strong> If the table's headers are $q_{[x]}, q_{[x-1]+1}, \dots$ (attained-age rows), read <strong>down the diagonal</strong> to the ultimate column, not across. Check the headers first.</li>

@@ -52,7 +52,7 @@
       <p>A severity random variable $X$ is the dollar amount of a single loss. It is continuous, non-negative, and almost always <strong>right-skewed</strong> with a long right tail — a few enormous claims dominate. The whole game is choosing a distribution whose tail behaves the way the data's tail behaves.</p>
       <div class="callout note" data-icon="🧾">
         <div class="callout-title">Exam-table orientation (read once, save minutes on exam day)</div>
-        <p>You get the <em>Loss Models</em> exam tables (same as STAM) plus a normal CDF / inverse-CDF calculator. The tables give the <strong>pdf, cdf, raw moments $E[X^k]$, and limited moments $E[X\wedge d]$</strong> for every continuous distribution (except log-$t$), and add VaR/TVaR/mode for several. Appendix A is sorted by <em>number of parameters, descending</em> (A.2 three-param → A.3 two-param → ...); lognormal and single-parameter Pareto live in A.5; beta (finite support) in A.6. Appendix B holds the discrete $(a,b,0)$ and $(a,b,1)$ classes. Unless stated, every continuous distribution has domain $x>0$.</p>
+        <p>You get the <em>Loss Models</em> exam tables (same as STAM) plus a normal CDF / inverse-CDF calculator. The tables give the <strong>pdf, cdf, raw moments $E[X^k]$, and limited moments $E[X\wedge d]$</strong> for every continuous distribution (except log-$t$), and add VaR/TVaR/mode for several. Appendix A is organized by <em>family</em> — A.2 the transformed <em>beta</em> family (Burr, Pareto, inverse Pareto, …), A.3 the transformed <em>gamma</em> family (gamma, Weibull, exponential, and their inverses) — each sorted internally by number of parameters, descending; lognormal and single-parameter Pareto live in A.5; beta (finite support) in A.6. Appendix B holds the discrete $(a,b,0)$ and $(a,b,1)$ classes. Unless stated, every continuous distribution has domain $x>0$.</p>
       </div>
 
       <h3>2. The four equivalent descriptors (and how they connect)</h3>
@@ -132,14 +132,14 @@
         <li><strong>(c) Inversion</strong> $Y=X^{-1}$: a special, heavily-tested power transform. For any table distribution with an inverse counterpart, $X^{-1}$ follows the inverse distribution with the <em>same parameters except $\theta\to\theta^{-1}$</em> (e.g. gamma → inverse gamma, exponential → inverse exponential, Weibull → inverse Weibull, Pareto → inverse Pareto).</li>
         <li><strong>(d) Exponentiation</strong> $Y = e^{X}$: e.g., $X \sim \text{Normal}(\mu,\sigma^2) \Rightarrow Y = e^X \sim \text{Lognormal}(\mu,\sigma^2)$. The lognormal's $k$-th moment uses the normal MGF: $E[Y^k] = e^{k\mu + k^2\sigma^2/2}$.</li>
         <li><strong>(e) Shifting</strong> $Y=X+c$: e.g. a two-parameter Pareto shifted right by $\theta$ becomes a single-parameter Pareto.</li>
-        <li><strong>(f) Mixing.</strong> Let a parameter be random. If $X \mid \Lambda$ has cdf $F(x\mid\lambda)$ and $\Lambda$ has density $u(\lambda)$, the <strong>mixture</strong> is $F_X(x) = \int F(x\mid\lambda)\,u(\lambda)\,d\lambda$. Mixing <strong>always produces a heavier (or equal) tail</strong> and increases variance. (An exponential whose mean is gamma/inverse-gamma-mixed yields a Pareto.)</li>
+        <li><strong>(f) Mixing.</strong> Let a parameter be random. If $X \mid \Lambda$ has cdf $F(x\mid\lambda)$ and $\Lambda$ has density $u(\lambda)$, the <strong>mixture</strong> is $F_X(x) = \int F(x\mid\lambda)\,u(\lambda)\,d\lambda$. Mixing <strong>always produces a heavier (or equal) tail</strong>, and by the law of total variance the mixture's variance is at least the average of the conditional variances. (An exponential whose <em>mean</em> is inverse-gamma-mixed — equivalently, whose <em>rate</em> is gamma-mixed — yields a Pareto.)</li>
         <li><strong>(g) Splicing.</strong> Glue distinct densities on disjoint intervals: $f(x)=a_jf_j(x)$ on piece $j$, with each $f_j$ a legitimate density on its sub-interval and weights $a_j\ge0$ summing to 1.</li>
       </ul>
 
       <h3>12. The linear exponential family (LEF)</h3>
       <p>A distribution belongs to the <strong>linear exponential family</strong> if its probability function (discrete or continuous), with support not depending on $\theta$, can be written</p>
       <div class="formula">$$ f(x;\theta)=\frac{p(x)\,e^{r(\theta)\,x}}{q(\theta)},$$</div>
-      <p>where $\theta$ is the <em>natural</em> parameter. Members: <strong>Poisson, binomial (fixed $m$), gamma, normal, negative binomial (fixed $r$)</strong>. Non-members: <strong>beta, lognormal, inverse gamma, Pareto</strong>. For LEF members the mean and variance follow from $r,q$:</p>
+      <p>where $r(\theta)$ is the <em>natural (canonical)</em> parameter. Members: <strong>Poisson, binomial (fixed $m$), gamma, normal, negative binomial (fixed $r$)</strong>. Non-members: <strong>beta, lognormal, inverse gamma, Pareto</strong>. For LEF members the mean and variance follow from $r,q$:</p>
       <div class="formula">$$ E[X]=\mu(\theta)=\frac{q'(\theta)}{r'(\theta)\,q(\theta)},\qquad \text{Var}(X)=v(\theta)=\frac{\mu'(\theta)}{r'(\theta)}.$$</div>
 
       <h3>13. Discrete mixtures and the Bernoulli shortcut</h3>
@@ -284,7 +284,7 @@
           <p>Losses follow a Pareto with $\alpha=3$ and $\theta=2000$. Next year all losses inflate by 5%. Find next year's mean loss and the probability a loss exceeds 5000 next year.</p>
           <p><strong>Step 1 — Scale the parameter.</strong> Pareto is a scale family, $\theta$ is the scale. Inflation by 5%: $\theta_{\text{new}}=1.05\times 2000=2100$; $\alpha=3$ unchanged.</p>
           <p><strong>Step 2 — Mean.</strong> $E[X]=\dfrac{\theta}{\alpha-1}=\dfrac{2100}{3-1}=1050.$</p>
-          <p><strong>Step 3 — Tail probability.</strong> $S(5000)=\left(\dfrac{\theta}{x+\theta}\right)^\alpha=\left(\dfrac{2100}{5000+2100}\right)^3=(0.29577)^3=0.025878.$</p>
+          <p><strong>Step 3 — Tail probability.</strong> $S(5000)=\left(\dfrac{\theta}{x+\theta}\right)^\alpha=\left(\dfrac{2100}{5000+2100}\right)^3=(0.29577)^3=0.025875.$</p>
           <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>Mean $=\boxed{1050}$; $P(X>5000)=\boxed{0.0259}$ (≈ 2.59%).</div>
           <div class="callout note" data-icon="📌">
             <p><em>Sanity check via old parameters:</em> old $E[X]=2000/2=1000$; inflating the mean directly gives $1000\times1.05=1050$. ✓ (Mean inflates by the same factor — true in any scale family.)</p>
@@ -333,10 +333,10 @@
         <div class="ex-body">
           <p>Losses are lognormal with $\mu=7,\ \sigma=1.5$. (a) Find $P(X>3000)$. (b) Find $E[X]$. (c) After 10% inflation, give the new parameters and the new mean. (d) Find the 95th percentile of the <em>original</em> losses.</p>
           <p><strong>Part (a).</strong> $P(X>3000)=1-\Phi\!\left(\dfrac{\ln 3000-\mu}{\sigma}\right)$. $\ln 3000=8.00637$, $z=\dfrac{8.00637-7}{1.5}=0.6709$, $\Phi(0.6709)\approx0.7488$, so $P(X>3000)=0.2512.$</p>
-          <p><strong>Part (b).</strong> $E[X]=e^{\mu+\sigma^2/2}=e^{7+1.125}=e^{8.125}=3380.0.$</p>
-          <p><strong>Part (c).</strong> Inflation 10%: $\mu\to7+\ln(1.1)=7.09531$; $\sigma=1.5$ unchanged. New mean $=e^{7.09531+1.125}=e^{8.22031}=3718.0=1.1\times3380.$</p>
-          <p><strong>Part (d).</strong> $z_{0.95}=1.64485$, $y_{0.95}=\mu+z_{0.95}\sigma=7+1.64485(1.5)=9.46728$, $\pi_{0.95}=e^{9.46728}=12{,}912.$</p>
-          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $\boxed{0.2512}$; (b) $\approx\boxed{3380}$; (c) new $\mu=\boxed{7.0953}$, $\sigma=1.5$, new mean $\approx\boxed{3718}$; (d) $\pi_{0.95}\approx\boxed{12{,}912}$.</div>
+          <p><strong>Part (b).</strong> $E[X]=e^{\mu+\sigma^2/2}=e^{7+1.125}=e^{8.125}=3377.9.$</p>
+          <p><strong>Part (c).</strong> Inflation 10%: $\mu\to7+\ln(1.1)=7.09531$; $\sigma=1.5$ unchanged. New mean $=e^{7.09531+1.125}=e^{8.22031}=3715.7=1.1\times3377.9.$</p>
+          <p><strong>Part (d).</strong> $z_{0.95}=1.64485$, $y_{0.95}=\mu+z_{0.95}\sigma=7+1.64485(1.5)=9.46728$, $\pi_{0.95}=e^{9.46728}=12{,}930.$</p>
+          <div class="callout tip" data-icon="✅"><div class="callout-title">Answer</div>(a) $\boxed{0.2512}$; (b) $\approx\boxed{3378}$; (c) new $\mu=\boxed{7.0953}$, $\sigma=1.5$, new mean $\approx\boxed{3716}$; (d) $\pi_{0.95}\approx\boxed{12{,}930}$.</div>
         </div>
       </details>
 
@@ -539,8 +539,8 @@
       <details class="qa"><summary>Name a distribution in the linear exponential family and one that is not, and state why LEF matters.</summary>
         <div class="qa-answer">In LEF: gamma, normal, Poisson, binomial (fixed $m$), negative binomial (fixed $r$). Not: Pareto, lognormal, beta, inverse gamma. It matters because LEF members have tidy mean/variance via $\mu(\theta)=q'/(r'q)$, $v(\theta)=\mu'/r'$, and the family underlies later credibility/GLM theory.</div>
       </details>
-      <details class="qa"><summary>Why is a mixture $f_Z=0.5f_X+0.5f_Y$ generally heavier-tailed and higher-variance than either component?</summary>
-        <div class="qa-answer">By the law of total variance, $\text{Var}(Z)=E[\text{Var}(Z\mid \text{component})]+\text{Var}(E[Z\mid\text{component}])$. The second term (spread of the conditional means) is added on top of the average component variance, so mixing never reduces variance and fattens the tail.</div>
+      <details class="qa"><summary>Why does mixing $f_Z=0.5f_X+0.5f_Y$ fatten the tail and push the variance above the <em>average</em> of the component variances?</summary>
+        <div class="qa-answer">By the law of total variance, $\text{Var}(Z)=E[\text{Var}(Z\mid \text{component})]+\text{Var}(E[Z\mid\text{component}])$. The second term (spread of the conditional means) is added on top of the average component variance, so $\text{Var}(Z)$ is always at least the <em>weighted average</em> $\sum w_i\text{Var}(X_i)$ — though it can still sit <em>below</em> the largest single component's variance (an equal mix of $N(0,100)$ and $N(0,1)$ has variance $50.5&lt;100$). The tail is at least as heavy as the heavier component's, so mixing never lightens the tail.</div>
       </details>
 
     </div>

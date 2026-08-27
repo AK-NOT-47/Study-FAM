@@ -16,11 +16,11 @@
     <header class="article-head">
       <div class="eyebrow"><span class="badge s-fam-l">FAM-L</span> Formula Sheet · FAM-L</div>
       <h1>FAM-L Master Formula Sheet</h1>
-      <p class="lede">Every survival, insurance, annuity, premium, reserve, and multi-state formula you need for the long-term half of FAM — distilled to one dense, exam-ready page.</p>
+      <p class="lede">Every survival, insurance, annuity, premium, and reserve formula you need for the long-term half of FAM — distilled to one dense, exam-ready page. (Sections 11–12 preview ALTAM material and are not tested on FAM.)</p>
       <div class="meta-row">
         <span class="chip">📖 AMLCR · Ch. 1–8</span>
         <span class="chip">⏱️ ~2 hr review</span>
-        <span class="chip">🔑 survival · EPV · premiums · reserves · multi-state</span>
+        <span class="chip">🔑 survival · EPV · premiums · reserves</span>
       </div>
     </header>
 
@@ -36,7 +36,7 @@
         <span class="formula-label">Survival function (from age 0)</span>
         $$S_0(x) = \Pr[T_0 > x], \qquad S_0(0)=1,\quad S_0(\infty)=0,\quad \text{non-increasing.}$$
         <span class="formula-label">Survival from age $x$</span>
-        $$\;_t p_x = \Pr[T_x > t] = \frac{S_0(x+t)}{S_0(x)} = \frac{S_x(t)}{1}$$
+        $$\;_t p_x = \Pr[T_x > t] = \frac{S_0(x+t)}{S_0(x)} = S_x(t)$$
         <span class="formula-label">Deferred / general relations</span>
         $$\;_t q_x = 1 - \;_t p_x = \Pr[T_x \le t], \qquad p_x = \;_1 p_x,\quad q_x = \;_1 q_x$$
         $$\;_{t}p_x = \;_{s}p_x \cdot \;_{t-s}p_{x+s} \quad\text{(consistency / multiplicative)}$$
@@ -68,7 +68,7 @@
       <h2>3. Analytic Laws of Mortality</h2>
       <div class="formula">
         <span class="formula-label">Constant force: $\mu_{x}=\mu$ (all ages)</span>
-        $$\;_t p_x = e^{-\mu t}, \quad \mathring{e}_x = \frac{1}{\mu}, \quad \mathrm{Var}(T_x)=\frac{1}{\mu^2}, \quad A_x = \frac{\mu}{\mu+\delta}, \quad \bar a_x = \frac{1}{\mu+\delta}$$
+        $$\;_t p_x = e^{-\mu t}, \quad \mathring{e}_x = \frac{1}{\mu}, \quad \mathrm{Var}(T_x)=\frac{1}{\mu^2}, \quad \bar A_x = \frac{\mu}{\mu+\delta}, \quad \bar a_x = \frac{1}{\mu+\delta}$$
         <span class="formula-label">Uniform / De Moivre (uniform to age $\omega$), $0\le x < \omega$</span>
         $$S_0(x)=1-\frac{x}{\omega},\quad \mu_x=\frac{1}{\omega-x},\quad \;_tp_x=\frac{\omega-x-t}{\omega-x},\quad \;_tq_x=\frac{t}{\omega-x}$$
         $$T_x \sim \text{Uniform}(0,\omega-x),\quad \mathring{e}_x=\frac{\omega-x}{2},\quad \mathrm{Var}(T_x)=\frac{(\omega-x)^2}{12}$$
@@ -88,7 +88,7 @@
         $$\mu_x = -\frac{1}{\ell_x}\frac{d\ell_x}{dx}, \qquad \ell_{x+t}=\ell_x\exp\!\left(-\int_0^t\mu_{x+s}ds\right)$$
         <span class="formula-label">Central / integrated quantities</span>
         $$L_x = \int_0^1 \ell_{x+t}\,dt, \qquad T_x = \int_0^\infty \ell_{x+t}\,dt = \sum_{k=0}^\infty L_{x+k}, \qquad \mathring{e}_x = \frac{T_x}{\ell_x},\quad e_x=\frac{\sum_{k=1}^\infty \ell_{x+k}}{\ell_x}$$
-        $$m_x = \frac{d_x}{L_x}\;\text{(central death rate)}, \qquad a(x)=\frac{\int_0^1 t\,\ell_{x+t}dt}{L_x - \ell_{x+1}}\;\text{(avg age at death in year)}$$
+        $$m_x = \frac{d_x}{L_x}\;\text{(central death rate)}, \qquad a(x)=\frac{\int_0^1 t\,\ell_{x+t}\,\mu_{x+t}\,dt}{d_x}=\frac{L_x - \ell_{x+1}}{d_x}\;\text{(avg age at death in year)}$$
       </div>
 
       <h2>5. Fractional-Age Assumptions</h2>
@@ -98,7 +98,7 @@
       <div class="formula">
         $$\;_s q_x = s\,q_x, \qquad \;_s p_x = 1 - s\,q_x, \qquad \ell_{x+s} = \ell_x - s\,d_x$$
         $$\mu_{x+s} = \frac{q_x}{1 - s\,q_x}, \qquad \;_s p_x\,\mu_{x+s} = q_x \;\text{(density is constant in }s)$$
-        $$\;_{s}q_{x+t}\text{-type, and } \;_{u|s}q_x = s\,q_{x+u}\;\text{within a year},\qquad \mathring{e}_x = e_x + \tfrac12$$
+        $$\;_{u|s}q_x = s\,q_x\;\text{for } u+s\le 1,\qquad \;_{u|s}q_x = \;_u p_x\cdot s\,q_{x+u}\;\text{for integer } u,\qquad \mathring{e}_x = e_x + \tfrac12$$
       </div>
 
       <h3>Constant Force of Mortality (over each year of age)</h3>
@@ -108,7 +108,7 @@
       </div>
       <div class="callout note" data-icon="📌">
         <div class="callout-title">Comparison note</div>
-        <p>UDD ⇒ $\mu$ increases over the year; constant force ⇒ $\;_sq_x$ slightly below the UDD line. Both agree at integer ages.</p>
+        <p>UDD ⇒ $\mu$ increases over the year; constant force ⇒ $\;_sq_x$ slightly above the UDD line (since $1-(p_x)^s \ge s\,q_x$ for $0&lt;s&lt;1$). Both agree at integer ages.</p>
       </div>
 
       <h2>6. Select &amp; Ultimate Tables</h2>
@@ -145,7 +145,7 @@
 
       <h3>Recursions</h3>
       <div class="formula">
-        $$A_x = v\,q_x + v\,p_x\,A_{x+1}, \qquad \bar A_x = \;\text{(usually via UDD below)}$$
+        $$A_x = v\,q_x + v\,p_x\,A_{x+1} \qquad (\text{for } \bar A_x\text{, use the UDD relation below})$$
         $$A_{x:\overline{n|}} = v\,q_x + v\,p_x\,A_{x+1:\overline{n-1|}}$$
       </div>
 
@@ -159,10 +159,18 @@
         $$A_x^{(m)} = \frac{i}{i^{(m)}}\,A_x$$
       </div>
 
+      <h3>Claims-acceleration approximation (alternative to UDD)</h3>
+      <div class="formula">
+        <span class="formula-label">Accelerate the annual benefit by the average $\tfrac{m-1}{2m}$ of a year</span>
+        $$A_x^{(m)} \approx (1+i)^{\frac{m-1}{2m}}\,A_x, \qquad \bar A_x \approx (1+i)^{1/2}\,A_x \;\;(m\to\infty)$$
+        $$A^{(m)}_{x:\overline{n|}} \approx (1+i)^{\frac{m-1}{2m}}\,A^1_{x:\overline{n|}} + \;_nE_x \;\text{(accelerate the death piece only)}$$
+      </div>
+      <p>Numerically almost identical to the UDD factors above — either is accepted unless the question names one.</p>
+
       <h3>Increasing / Decreasing</h3>
       <div class="formula">
         $$(IA)_x = \sum_{k=0}^\infty (k+1)v^{k+1}\,\;_{k|}q_x, \quad (\bar I\bar A)_x = \int_0^\infty t\,e^{-\delta t}\,\;_tp_x\,\mu_{x+t}\,dt$$
-        $$(IA)_x + (DA)^1_{x:\overline{n|}} \text{ patterns; } (DA)^1_{x:\overline{n|}}=\sum_{k=0}^{n-1}(n-k)v^{k+1}\;_{k|}q_x$$
+        $$(IA)^1_{x:\overline{n|}} + (DA)^1_{x:\overline{n|}} = (n+1)\,A^1_{x:\overline{n|}}, \qquad (DA)^1_{x:\overline{n|}}=\sum_{k=0}^{n-1}(n-k)v^{k+1}\;_{k|}q_x$$
       </div>
 
       <h2>8. Annuity EPVs</h2>
@@ -239,6 +247,14 @@
         $$\Pr[L_0 > 0] = \Pr[K_x \le k^* - 1] = \;_{k^*}q_x \le \alpha,\quad\text{then solve } L_0(k^*)=0 \text{ for } P.$$
       </div>
 
+      <h3>Portfolio percentile premium principle ($N$ independent, identical policies)</h3>
+      <div class="formula">
+        <span class="formula-label">Aggregate loss $S=\sum_{i=1}^N L_{0,i}$, Normal approximation</span>
+        $$E[S] = N\,E[L_0], \qquad \mathrm{Var}[S] = N\,\mathrm{Var}[L_0]$$
+        $$\Pr[S>0] = \alpha \;\Longrightarrow\; E[S] + \Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}[S]} = 0$$
+      </div>
+      <p>Write $E[L_0]$ and $\mathrm{Var}(L_0)$ as functions of $P$, then solve. Per policy this is $E[L_0] = -\Phi^{-1}(1-\alpha)\sqrt{\mathrm{Var}(L_0)/N}$, so the loading above the equivalence premium shrinks like $1/\sqrt{N}$. ($\Phi^{-1}(0.95)=1.6449$.)</p>
+
       <h2>10. Policy Values / Reserves</h2>
       <p>$\;_tV$ = net premium policy value at time $t$ (EPV future benefits − EPV future premiums, given still in force).</p>
 
@@ -257,6 +273,22 @@
         $$\;_t V = \frac{1}{\;_t E_x}\Big(P\,\ddot a_{x:\overline{t|}} - A^1_{x:\overline{t|}}\Big) = \text{(accumulated past prem.)} - \text{(accumulated cost of insurance)}$$
       </div>
 
+      <h3>Gross vs. net policy values</h3>
+      <div class="formula">
+        $$\;_tV^{g} = \text{EPV}_{x+t}[\text{benefits} + \text{expenses}] - \text{EPV}_{x+t}[\text{gross premiums } G], \qquad \;_tV^{e} = \;_tV^{g} - \;_tV^{n}$$
+      </div>
+      <p>$\;_tV^{e}$ = expense policy value. With settlement expense $E$, the gross net amount at risk is $S + E - \;_{t+1}V^{g}$.</p>
+
+      <h3>Modified net premium policy values (Full Preliminary Term)</h3>
+      <div class="formula">
+        <span class="formula-label">Any modified method: valuation premiums $\alpha$ (year 1), $\beta$ (renewal)</span>
+        $$\alpha + \beta\,a_x = P\,\ddot a_x \quad(\text{EPV of modified premiums} = \text{EPV of benefits})$$
+        <span class="formula-label">FPT: first year valued as 1-year term</span>
+        $$\alpha = v\,q_x = A^1_{x:\overline{1|}}, \qquad \beta = \frac{A_{x+1}}{\ddot a_{x+1}}\;(\text{plan reissued to }(x+1)), \qquad \;_0V^{FPT} = \;_1V^{FPT} = 0$$
+        $$\;_tV^{FPT}_x = \;_{t-1}V^{n}_{x+1}\;(t\ge1), \qquad \text{whole life } b:\;\; \;_tV^{FPT}_x = b\left(1 - \frac{\ddot a_{x+t}}{\ddot a_{x+1}}\right)$$
+      </div>
+      <p>Modified reserves <strong>ignore expenses</strong> — the acquisition allowance is implicit in the lowered $\alpha$. For an $n$-year endowment the shifted plan is the $(n-1)$-year endowment on $(x+1)$, with $\beta\,\ddot a_{x+1:\overline{n-1|}} = A_{x+1:\overline{n-1|}}$.</p>
+
       <h3>Recursion (fully discrete, benefit $S$, premium $P_t$, expenses $e_t$, interest $i$)</h3>
       <div class="formula">
         $$(\;_t V + P_t - e_t)(1+i) = S\,q_{x+t} + p_{x+t}\,\;_{t+1}V$$
@@ -269,13 +301,17 @@
         $$(\;_tV + P_t)(1+i) = \;_{t+1}V + q_{x+t}\,(S - \;_{t+1}V)$$
       </div>
 
-      <h3>Thiele's differential equation (continuous; premium rate $P$, benefit $S$, expense rate $e_t$)</h3>
+      <h3>Thiele's differential equation (continuous; premium rate $P_t$, benefit $S$, expense rate $e_t$, settlement expense $E_t$ paid at death)</h3>
       <div class="formula">
         $$\frac{d}{dt}\;_t V = \delta_t\,\;_t V + P_t - e_t - \mu_{x+t}\big(S + E_t - \;_t V\big)$$
       </div>
       <p>Interpretation: reserve grows by interest + premium − expense, less the cost of paying out the net amount at risk $(S - \;_tV)$ at rate $\mu_{x+t}$.</p>
 
       <h2>11. Multiple-State Models</h2>
+      <div class="callout note" data-icon="🧾">
+        <div class="callout-title">Not on FAM — ALTAM preview</div>
+        <p>Sections 11–12 (multiple-state and multiple-decrement models) are <strong>ALTAM</strong> material. Skip them for FAM revision; they are kept here as a head start for the next exam.</p>
+      </div>
       <p>States $0,1,2,\dots$; $\;_tp_x^{ij}=\Pr[\text{in state } j \text{ at } x+t \mid \text{state } i \text{ at } x]$. Transition intensity $\mu_x^{ij}=\lim_{h\to0}\frac{\;_hp_x^{ij}}{h}$ ($i\ne j$), and total exit intensity $\mu_x^{i\bullet}=\sum_{j\ne i}\mu_x^{ij}$.</p>
       <div class="formula">
         <span class="formula-label">Stay-in-state (occupancy) probability</span>
